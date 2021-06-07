@@ -2,12 +2,10 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"log"
-	"math/rand"
 	"os"
 	"path/filepath"
-	"text/template"
-	"time"
 )
 
 /* TEMPLATE DEFINITION */
@@ -19,6 +17,7 @@ func init() {
 	template1 = template.Must(template.ParseGlob("./static/templates/*"))
 }
 
+//Used for writing logs
 func logWriter(logMessage string) {
 	//Logging info
 
@@ -38,9 +37,17 @@ func logWriter(logMessage string) {
 }
 
 func main() {
-	fmt.Printf("DEBUG: Hello, we are in func main\n") //Debug statement
-	rand.Seed(time.Now().UTC().UnixNano())            //Randomly Seed
+	fmt.Printf("Beginning unit golang tests...\n ")
+	j := Calculate(2)
+	fmt.Printf("DEBUG: here is j: %v\n", j)
+	logWriter("Test log message in main")
+}
 
-	//Handle our incoming web requests
-	handleRequests()
+func Calculate(x int) (result int) {
+	result = x + 2
+	return result
+}
+
+func Add(x, y int) int {
+	return x + y
 }

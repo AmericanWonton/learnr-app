@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        {{/* Here is our meta charset and title */}}
+        {{template "meta-title"}}
+        {{/* Need this for JuicyAds site verification */}}
+        <meta name="juicyads-site-verification" content="fb19097fa687d6d30d4510288a4cc96c">
+        {{/* Here is our pixel density markup */}}
+        {{template "pixel-dense"}}
+        {{/* Here is our FavIcon */}}
+        {{template "fav-icon1"}}
+        {{/* Here are our fonts */}}
+        {{template "fonts1"}}
+        {{/* Here are our Media Query and stylesheets */}}
+        {{template "media-queries"}}
+        {{/* Here is our Javascript or additional code needed */}}
+        <script src="static/js/pagehandling.js"></script>
+    </head>
+    <body>
+        {{/* Here is our header */}}
+        
+        {{/* Warning Page */}}
+        <div class="warningHolder">
+            <h1 class="largeWarning">Warning! This page contains adult content!</h1>
+            <p class="sentenceWarning">
+                The following website contains written sexual content intended for audiences at the age of majority in accordance with local,
+                federal, and international laws and regulations. By clicking "I ACCEPT" below, you acknowledge you are in compliance
+                with the laws and regulations in which you are subject to; whether they be local, federal, international, or otherwise.
+                Your acceptance of these terms waives me of any liability that may arise from your violation of any laws or regulations
+                you are subject to and releases me from any charges that arise from your criminal act of reading adult material while 
+                not legally permitted or allowed to do so. WE WILL NOT BE HELD RESPONSIBLE FOR THE PERPEPETRATION OF AN ILLEGAL ACT!
+            </p>
+        </div>
+        <div class="choiceHolder">
+            <p class="choiceP" onclick="createOkayCookie()">I accept</p>
+            <p class="choiceP" onclick="navigateHeader(2, 0)">I decline</p>
+        </div>
+        
+        {{/* Here is our footer */}}
+    </body>
+</html>
