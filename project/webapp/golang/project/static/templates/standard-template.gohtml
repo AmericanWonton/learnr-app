@@ -9,7 +9,7 @@
 {{end}}
 
 {{define "fav-icon1"}}
-    <link rel="shortcut icon" type="image/png" href="static/images/favicons/website-logo-512x512.png">
+    <link rel="shortcut icon" type="image/png" href="static/images/favicons/database.png">
 {{end}}
 
 {{define "fonts1"}}
@@ -140,84 +140,131 @@
 {{define "ajaxsignup"}}
     {{/* Here is the form setup */}}
     <div id="divformDivSignUp" class="divformDiv">
+        {{/* Sign Up Title Instruction */}}
         <div class="instructUserDiv">
             <p class="formSign">
                 Sign-Up
             </p>
         </div>
+        {{/* Begin signup form */}}
         <div class="signInAlignmentDiv">
             {{/* USERNAME */}}
-            <div class="labelDiv">
-                <p class="labelPText">
-                    USERNAME:
-                </p>
+            <div class="feildsSectionDiv">
+                <div class="labelDiv">
+                    <p class="labelPText">
+                        USERNAME:
+                    </p>
+                </div>
+                <div class="inputDiv">
+                    <input type="text" id="username" name="username" placeholder="username" minlength=1 maxlength=20 required>
+                    <br>
+                    <p id="form-input-info"></p>
+                </div>
             </div>
-            <div class="inputDiv">
-                <input type="text" id="username" name="username" placeholder="username" minlength=1 maxlength=20 required>
-                <br>
-                <p id="form-input-info"></p>
+            {{/* FIRSTNAME */}}
+            <div class="feildsSectionDiv">
+                <div class="labelDiv">
+                    <p class="labelPText">
+                        FIRSTNAME:
+                    </p>
+                </div>
+                <div class="inputDiv">
+                    <input type="text" id="firstname" name="firstname" placeholder="firstname" minlength=1 maxlength=20 required>
+                    <br>
+                    <p id="form-input-info"></p>
+                </div>
+            </div>
+            {{/* LASTNAME */}}
+            <div class="feildsSectionDiv">
+                <div class="labelDiv">
+                    <p class="labelPText">
+                        LASTNAME:
+                    </p>
+                </div>
+                <div class="inputDiv">
+                    <input type="text" id="lastname" name="lastname" placeholder="lastname" minlength=1 maxlength=20 required>
+                    <br>
+                    <p id="form-input-info"></p>
+                </div>
             </div>
             {{/* PASSWORD */}}
-            <div class="labelDiv">
-                <p class="labelPText">
-                    PASSWORD:
-                </p>
+            <div class="feildsSectionDiv">
+                <div class="labelDiv">
+                    <p class="labelPText">
+                        PASSWORD:
+                    </p>
+                </div>
+                <div class="inputDiv">
+                    <input type="password" id="password" name="password" placeholder="Password" minlength=8 maxlength=20 required>
+                    <br>
+                    <p id="form-input-info2"></p>
+                </div>
             </div>
             {{/* CHECK PASSWORD*/}}
-            <div class="labelDiv">
-                <p class="labelPText">
-                    RE-TYPE PASSWORD:
-                </p>
-            </div>
-            <div class="inputDiv">
-                <input type="password" id="passwordRetype" name="passwordRetype" placeholder="Re-type password" minlength=8 maxlength=20 required>
-                <br>
-                <p id="form-input-info2"></p>
+            <div class="feildsSectionDiv">
+                <div class="labelDiv">
+                    <p class="labelPText">
+                        RE-TYPE PASSWORD:
+                    </p>
+                </div>
+                <div class="inputDiv">
+                    <input type="password" id="passwordRetype" name="passwordRetype" placeholder="Re-type password" minlength=8 maxlength=20 required>
+                    <br>
+                    <p id="form-input-info2"></p>
+                </div>
             </div>
             {{/* EMAIL */}}
-            <div class="labelDiv">
-                <p class="labelPText">
-                    Email:
-                </p>
-            </div>
-            <div class="inputDiv"  ng-app="myApp" ng-controller="myCtrl">
-                <form name="myForm">
-                    <input type="email" ng-model="myEmailInput" id="email" name="myEmailInput" placeholder="Enter a valid email" maxlength=50>
-                </form>
-                <!-- Used to inform about status of email -->
-                <p class="labelPText" id="emailOkay">
-                    [[myForm.myEmailInput.$valid]]
-                </p>
+            <div class="feildsSectionDiv">
+                <div class="labelDiv">
+                    <p class="labelPText">
+                        Email:
+                    </p>
+                </div>
+                <div class="inputDiv">
+                    <input type="email" id="email" name="myEmailInput" placeholder="Enter a valid email" maxlength=50>
+                    <!-- Used to inform about status of email -->
+                    <p class="labelPText" id="emailOkay">
+                        
+                    </p>
+                </div>
             </div>
             {{/* PRIMARY PHONE NUMBER(S) */}}
             {{/* DEBUG: Need to collect multiple phone numbers; use angular to create new tab(s)*/}}
-            <div class="labelDiv">
-                <p class="labelPText">
-                    Primary Phone Numbers:
-                </p>
-            </div>
-            <div class="inputDiv">
-                <input type="text" id="primaryPhoneNums" name="primaryPhoneNums" placeholder="Primary phone number" minlength=1 maxlength=20>
-                <br>
-                <p id="form-input-info"></p>
+            <div class="feildsSectionDiv">
+                <div class="labelDiv">
+                    <p class="labelPText">
+                        Primary Phone Numbers:
+                    </p>
+                </div>
+                <div class="inputDiv">
+                    <input type="text" id="primaryPhoneNums" name="primaryPhoneNums" placeholder="Primary phone number" minlength=1 maxlength=20>
+                    <br>
+                    <p id="form-input-info"></p>
+                </div>
             </div>
             {{/* TELL US ABOUT YOU */}}
-            <div class="labelDiv">
-                <p class="labelPText">
-                    Tell us about you! Why do you want to join LearnR? Inform a friend/family member?
-                    Make your own learnR? We'd love to know!
-                </p>
-            </div>
-            <div class="inputDiv">
-                <textarea class="textareaTellMe" id="textareaTellMe" name="textareaTellMe" placeholder="Let us know!"></textarea>
+            <div class="feildsSectionDiv">
+                <div class="labelDiv">
+                    <p class="labelPText">
+                        Tell us about you! Why do you want to join LearnR? Inform a friend/family member?
+                        Make your own learnR? We'd love to know!
+                    </p>
+                </div>
+                <div class="inputDiv">
+                    <textarea class="textareaTellMe" id="textareaTellMe" name="textareaTellMe" placeholder="Let us know!"></textarea>
+                </div>
             </div>
             {{/* SUBMIT BUTTON */}}
-            <div class="fieldSection" id="signUpSubmitB">
-                <button id="submitSignUpButton">Submit</button>
+            <div class="feildsSectionDiv">
+                <div class="fieldSection" id="signUpSubmitB">
+                    <button id="submitSignUpButton">Submit</button>
+                </div>
             </div>
             {{/* INFORMITIVE DIV */}}
-            <div class="informativeDiv" id="informativeDivSignUp">
-                <p class="informtextP" id="informtextPSignUp"></p>
+            <div class="feildsSectionDiv">
+                <div class="informativeDiv" id="informativeDivSignUp">
+                    <p class="informtextP" id="informtextPSignUp"></p>
+                </div>
             </div>
         </div>
         <div class="informFormDiv" id="informFormDiv">

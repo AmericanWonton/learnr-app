@@ -143,6 +143,18 @@ body, html {
     /* debug styling */
 }
 
+.feildsSectionDiv{
+    /* Flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    align-content: center;
+    justify-content: center;
+    width: 100%;
+    /* styling */
+    padding: .5em;
+    /* debug */
+}
+
 .informFormDiv{
     /* flexbox styling */
     display: block;

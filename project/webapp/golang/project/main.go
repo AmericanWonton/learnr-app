@@ -22,6 +22,8 @@ func init() {
 	template1 = template.Must(template.ParseGlob("./static/templates/*"))
 	//Initialize Mongo Creds
 	getCredsMongo()
+	//Initialize our bad phrases
+	getbadWords()
 }
 
 func logWriter(logMessage string) {
