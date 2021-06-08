@@ -1,0 +1,6 @@
+To run, cd into the 'testing-project' directory 
+and run the following:
+go test in the testing directory
+OR 
+go test -v in the testing directory
+To run the integration file, run: go test -tags=integration

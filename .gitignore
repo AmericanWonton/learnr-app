@@ -1,2 +1,12 @@
 #Ignore my general notes
 generalnotes.txt
+
+#ignore all security folders
+security
+security/mongocreds.txt
+mongocreds.txt
+
+#ignore all logging folders
+logging
+weblog.txt
+project/webapp/golang/project/logging
