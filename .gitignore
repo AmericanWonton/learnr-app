@@ -9,3 +9,4 @@ mongocreds.txt
 #ignore all logging folders
 logging
 weblog.txt
+project/webapp/golang/project/logging
