@@ -1,6 +1,9 @@
 #Ignore my general notes
 generalnotes.txt
 
+#Ignore the bad phrases
+badphrases.txt
+
 #ignore all security folders
 security
 security/mongocreds.txt

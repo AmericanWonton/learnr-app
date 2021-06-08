@@ -17,6 +17,24 @@ var mongoClient *mongo.Client
 var theContext context.Context
 var mongoURI string //Connection string loaded
 
+/* App/Data type declarations for our application */
+// Desc: This person uses our app
+type User struct {
+	UserName    string   `json:"UserName"`
+	Password    string   `json:"Password"`
+	Firstname   string   `json:"Firstname"`
+	Lastname    string   `json:"Lastname"`
+	PhoneNums   []string `json:"PhoneNums"`
+	UserID      int      `json:"UserID"`
+	Email       []string `json:"Email"`
+	Whoare      string   `json:"Whoare"`
+	AdminOrgs   []int    `json:"AdminOrgs"`
+	OrgMember   []int    `json:"OrgMember"`
+	Banned      bool     `json:"Banned"`
+	DateCreated string   `json:"DateCreated"`
+	DateUpdated string   `json:"DateUpdated"`
+}
+
 //This gets the client to connect to our DB
 func connectDB() *mongo.Client {
 	//Setup Mongo connection to Atlas Cluster
