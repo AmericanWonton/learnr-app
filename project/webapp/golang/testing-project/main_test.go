@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -82,6 +83,13 @@ func TestLogWriter(t *testing.T) {
 	logWriter("This is a test message")
 }
 
+/* Test init example */
+func Testinit(t *testing.T) {
+	/* Template definition section
+	/* TEMPLATE DEFINITION */
+	template1 = template.Must(template.ParseGlob("./static/templates/*"))
+}
+
 /* Test HTTP Example */
 func TestHTTPRequest(t *testing.T) {
 	handler := func(w http.ResponseWriter, r *http.Request) {
@@ -99,3 +107,34 @@ func TestHTTPRequest(t *testing.T) {
 		t.Fatal("Status Code not okay: " + theErr.Error())
 	}
 }
+
+/* Test handle routes */
+/*
+func TestHandle(t *testing.T) {
+	//Here is our waitgroup
+	theTimer := 5
+	doneCounting := false
+	var wg sync.WaitGroup
+	go func() {
+		for l := 0; l != theTimer; l++ {
+			if !doneCounting {
+				time.Sleep(1 * time.Second)
+				fmt.Printf("The timer is...%v\n", l)
+			} else {
+				doneCounting = true
+				break
+			}
+		}
+		wg.Done()
+	}()
+
+	//Declare a func that will deter closing the handleRequest
+	for !doneCounting {
+		handleRequests()
+	}
+
+	wg.Wait()
+}
+*/
+
+/* Test Index */
