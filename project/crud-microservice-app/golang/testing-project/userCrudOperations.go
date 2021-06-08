@@ -68,21 +68,11 @@ func connectDB() *mongo.Client {
 /* USER CRUD OPERATIONS BEGINNING */
 //This adds a User to our database; called from anywhere
 func addUser(w http.ResponseWriter, req *http.Request) {
-	//Declare data to return
-	type ReturnMessage struct {
-		TheErr     string `json:"TheErr"`
-		ResultMsg  string `json:"ResultMsg"`
-		SuccOrFail int    `json:"SuccOrFail"`
-	}
-	theReturnMessage := ReturnMessage{}
-
 	//Collect JSON from Postman or wherever
 	//Get the byte slice from the request body ajax
 	bs, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		theErr := "Error reading the request from addUser: " + err.Error() + "\n" + string(bs)
-		theReturnMessage.SuccOrFail = 1
-		theReturnMessage.ResultMsg = theErr
 		logWriter(theErr)
 		fmt.Println(theErr)
 	}
@@ -94,7 +84,13 @@ func addUser(w http.ResponseWriter, req *http.Request) {
 	collectedUsers := []interface{}{postedUser}
 	//Insert Our Data
 	_, err2 := user_collection.InsertMany(context.TODO(), collectedUsers)
-
+	//Declare data to return
+	type ReturnMessage struct {
+		TheErr     string `json:"TheErr"`
+		ResultMsg  string `json:"ResultMsg"`
+		SuccOrFail int    `json:"SuccOrFail"`
+	}
+	theReturnMessage := ReturnMessage{}
 	if err2 != nil {
 		theErr := "Error adding User in addUser in crudoperations API: " + err2.Error()
 		logWriter(theErr)
