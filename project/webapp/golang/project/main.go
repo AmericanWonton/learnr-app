@@ -89,8 +89,6 @@ func getCredsMongo() {
 	theDB = strings.Replace(theDB, "\n", "", 1)
 
 	mongoURI = makeMongoString(theUsername, thePWord, theDB, text[0])
-
-	fmt.Printf("DEBUG: Here is mongoURI: \n", mongoURI)
 }
 
 /* This makes the mongo string from our base64 encoded password, username,
