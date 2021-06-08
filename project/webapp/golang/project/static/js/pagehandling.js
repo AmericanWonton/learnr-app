@@ -29,7 +29,7 @@ function navigateHeader(whichLink, whichgame) {
             break;
         case 7:
             //Go to Rules
-            window.location.assign("/rules");
+            window.location.assign("/signup");
             break;
         case 8:
             //Game Page

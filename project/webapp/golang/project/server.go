@@ -13,9 +13,9 @@ func handleRequests() {
 
 	http.Handle("/favicon.ico", http.NotFoundHandler()) //For missing FavIcon
 	//Serve our pages
-	myRouter.HandleFunc("/", index)      //Serve index page
-	myRouter.HandleFunc("/login", login) //Serve login page
-	myRouter.HandleFunc("/login", login) //Serve index page
+	myRouter.HandleFunc("/", index)        //Serve index page
+	myRouter.HandleFunc("/login", login)   //Serve login page
+	myRouter.HandleFunc("/signup", signup) //Serve index page
 	//Serve our static files
 	myRouter.Handle("/", http.FileServer(http.Dir("./static")))
 	myRouter.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))

@@ -27,13 +27,14 @@
 {{end}}
 
 {{/******* END OF HEAD SECTION *****/}}
+{{/******* SIGN IN SECTION ********/}}
 {{define "login_form_section"}}
     <div class="divLoginStuff">
         {{/* Section to sign Users in and create accounts */}}
         <div class="signInAndUpDiv" id="signInAndUpDiv">
             {{/* Div for handling sign-up */}}
             <div class="actionDiv" id="actionDiv1">
-                <button class="actionDivButton">Sign Up</button>
+                <button class="actionDivButton" onclick="navigateHeader(7)">Sign Up</button>
             </div>
             {{/* Div for handling signing-in */}}
             <div class="actionDiv" id="actionDiv2">
@@ -132,4 +133,95 @@
         });
     </script>
 {{end}} 
-{{/***** LOGIN FORM SECTION ******/}}
+{{/****** SIGN UP SECTION ******/}}
+
+
+{{/***** SIGN UP FORM *******/}}
+{{define "ajaxsignup"}}
+    {{/* Here is the form setup */}}
+    <div id="divformDivSignUp" class="divformDiv">
+        <div class="instructUserDiv">
+            <p class="formSign">
+                Sign-Up
+            </p>
+        </div>
+        <div class="signInAlignmentDiv">
+            {{/* USERNAME */}}
+            <div class="labelDiv">
+                <p class="labelPText">
+                    USERNAME:
+                </p>
+            </div>
+            <div class="inputDiv">
+                <input type="text" id="username" name="username" placeholder="username" minlength=1 maxlength=20 required>
+                <br>
+                <p id="form-input-info"></p>
+            </div>
+            {{/* PASSWORD */}}
+            <div class="labelDiv">
+                <p class="labelPText">
+                    PASSWORD:
+                </p>
+            </div>
+            {{/* CHECK PASSWORD*/}}
+            <div class="labelDiv">
+                <p class="labelPText">
+                    RE-TYPE PASSWORD:
+                </p>
+            </div>
+            <div class="inputDiv">
+                <input type="password" id="passwordRetype" name="passwordRetype" placeholder="Re-type password" minlength=8 maxlength=20 required>
+                <br>
+                <p id="form-input-info2"></p>
+            </div>
+            {{/* EMAIL */}}
+            <div class="labelDiv">
+                <p class="labelPText">
+                    Email:
+                </p>
+            </div>
+            <div class="inputDiv"  ng-app="myApp" ng-controller="myCtrl">
+                <form name="myForm">
+                    <input type="email" ng-model="myEmailInput" id="email" name="myEmailInput" placeholder="Enter a valid email" maxlength=50>
+                </form>
+                <!-- Used to inform about status of email -->
+                <p class="labelPText" id="emailOkay">
+                    [[myForm.myEmailInput.$valid]]
+                </p>
+            </div>
+            {{/* PRIMARY PHONE NUMBER(S) */}}
+            {{/* DEBUG: Need to collect multiple phone numbers; use angular to create new tab(s)*/}}
+            <div class="labelDiv">
+                <p class="labelPText">
+                    Primary Phone Numbers:
+                </p>
+            </div>
+            <div class="inputDiv">
+                <input type="text" id="primaryPhoneNums" name="primaryPhoneNums" placeholder="Primary phone number" minlength=1 maxlength=20>
+                <br>
+                <p id="form-input-info"></p>
+            </div>
+            {{/* TELL US ABOUT YOU */}}
+            <div class="labelDiv">
+                <p class="labelPText">
+                    Tell us about you! Why do you want to join LearnR? Inform a friend/family member?
+                    Make your own learnR? We'd love to know!
+                </p>
+            </div>
+            <div class="inputDiv">
+                <textarea class="textareaTellMe" id="textareaTellMe" name="textareaTellMe" placeholder="Let us know!"></textarea>
+            </div>
+            {{/* SUBMIT BUTTON */}}
+            <div class="fieldSection" id="signUpSubmitB">
+                <button id="submitSignUpButton">Submit</button>
+            </div>
+            {{/* INFORMITIVE DIV */}}
+            <div class="informativeDiv" id="informativeDivSignUp">
+                <p class="informtextP" id="informtextPSignUp"></p>
+            </div>
+        </div>
+        <div class="informFormDiv" id="informFormDiv">
+            <p class="informFormP" id="informFormP"></p>
+        </div>
+    </div>
+{{end}}

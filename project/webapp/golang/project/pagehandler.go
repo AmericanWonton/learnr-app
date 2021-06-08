@@ -16,10 +16,18 @@ func index(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/login", http.StatusSeeOther)
 }
 
-//Handles login/account creation page
+//Handles login/ page
 func login(w http.ResponseWriter, r *http.Request) {
 	/* Execute template, handle error */
 	err1 := template1.ExecuteTemplate(w, "login.gohtml", nil)
+	HandleError(w, err1)
+}
+
+//Handles the signup page
+func signup(w http.ResponseWriter, r *http.Request) {
+	fmt.Printf("DEBUG: Need to collect Username information and pass it into this template\n")
+	/* Execute template, handle error */
+	err1 := template1.ExecuteTemplate(w, "signup.gohtml", nil)
 	HandleError(w, err1)
 }
 
