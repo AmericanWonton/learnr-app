@@ -62,6 +62,8 @@ func connectDB() *mongo.Client {
 		log.Fatal(err)
 	}
 
+	fmt.Printf("DEBUG: We've connected to the MongoDB\n")
+
 	return theClient
 }
 
@@ -236,7 +238,7 @@ func updateUser(w http.ResponseWriter, req *http.Request) {
 	if canCrud {
 		//Update User
 		theTimeNow := time.Now()
-		userCollection := mongoClient.Database("microservice").Collection("users") //Here's our collection
+		userCollection := mongoClient.Database("learnR").Collection("users") //Here's our collection
 		theFilter := bson.M{
 			"userid": bson.M{
 				"$eq": theUserUpdate.UserID, // check if bool field has value of 'false'
@@ -439,6 +441,7 @@ func giveAllUsernames(w http.ResponseWriter, req *http.Request) {
 	}
 	theReturnMessage := ReturnMessage{}
 	theReturnMessage.SuccOrFail = 0 //Initially set to success
+
 	//Declare empty map to fill and return
 	usernameMap := make(map[string]bool) //Clear Map for future use on page load
 
@@ -465,7 +468,7 @@ func giveAllUsernames(w http.ResponseWriter, req *http.Request) {
 			logWriter(theErr)
 		}
 	}
-	//Loop over query results and fill hotdogs array
+	//Loop over query results and fill User Array
 	for currUser.Next(theContext) {
 		// create a value into which the single document can be decoded
 		var aUser User

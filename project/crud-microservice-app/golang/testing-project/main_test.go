@@ -1,9 +1,7 @@
 package main
 
 import (
-	"context"
 	"encoding/hex"
-	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -11,12 +9,14 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
-	"strings"
 	"testing"
 	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/stretchr/testify/assert"
 )
+
+/* Mongo DB Creds */
 
 /* Declarative structs for our testing */
 
@@ -54,7 +54,7 @@ func TestMain(m *testing.M) {
 
 //This is used for a default router we can run test http requests on
 func Router() *mux.Router {
-	router := mux.NewRouter()
+	router := mux.NewRouter().StrictSlash(true)
 	//Handle our User CRUD operations
 	router.HandleFunc("/addUser", addUser).Methods("POST")
 	router.HandleFunc("/deleteUser", deleteUser).Methods("POST")
@@ -68,6 +68,8 @@ func Router() *mux.Router {
 //This is setup values declared for testing
 func setup() {
 	fmt.Printf("Setting up test values...\n")
+	/* Start by connecting to Mongo client */
+	getCredsMongo()        //Get mongo creds
 	createCreateUserCrud() //Add our User Crud testing values for Create
 	//createReadUserCrud()   //Add our User Crud testing values for reading
 }
@@ -92,7 +94,8 @@ func createCreateUserCrud() {
 		DateUpdated: theTimeNow.Format("2006-01-02 15:04:05"),
 	}, 0, []string{"User successfully added in addUser"}})
 	//Bad User Crud
-	userCrudCreateResults = append(userCrudCreateResults, UserCrudCreate{User{}, 1, []string{"Error adding User in addUser", "Error reading the request"}})
+	userCrudCreateResults = append(userCrudCreateResults, UserCrudCreate{User{}, 1,
+		[]string{"Error adding User in addUser", "Error reading the request"}})
 }
 
 //This creates our Crud Testing cases for Reading Users
@@ -107,34 +110,6 @@ func shutdown() {
 
 /* Test API Call sections */
 //Test User Insert
-func TestUserAdd(t *testing.T) {
-	for _, test := range userCrudCreateResults {
-		/* start listener */
-		/* 1. Create Context */
-		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-		defer cancel()
-		/* 2. Marshal test case to JSON expect */
-		theJSONMessage, err := json.Marshal(test.TheUser)
-		if err != nil {
-			fmt.Println(err)
-			logWriter(err.Error())
-			log.Fatal(err)
-		}
-		/* 3. Create Post to JSON */
-		payload := strings.NewReader(string(theJSONMessage))
-		req, err := http.NewRequest("POST", "/addUser", payload)
-		if err != nil {
-			log.Fatal(err)
-		}
-		//req.Header.Add("Content-Type", "text/plain")
-		req.Header.Add("Content-Type", "application/json")
-		/* 4. Get response from Post */
-		resp := httptest.NewRecorder()
-		Router.ServeHTTP(resp, req)
-
-	}
-
-}
 
 /* Test directory read */
 func TestReadFile(t *testing.T) {
@@ -174,4 +149,13 @@ func TestHTTPRequest(t *testing.T) {
 	if 200 != resp.StatusCode {
 		t.Fatal("Status Code not okay: " + theErr.Error())
 	}
+}
+
+/* TESTING STUFF FOR OUR TESTING FILES! SHOULD BE COMMENTED OUT IF NOT NEEDED! */
+func TestGiveUsernames(t *testing.T) {
+
+	request, _ := http.NewRequest("GET", "/giveAllUsernames", nil)
+	response := httptest.NewRecorder()
+	Router().ServeHTTP(response, request)
+	assert.Equal(t, 200, response.Code, "OK response is expected")
 }
