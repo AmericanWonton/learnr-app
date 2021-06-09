@@ -1,0 +1,269 @@
+/* CSS Reset */
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+
+/* You need to initialize the parent elements to 100%
+for this to work correctly in the scrollable div */
+body, html {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    font: inherit;
+    vertical-align: baseline;
+    /* debug */
+    /* background-color: rgb(165, 122, 190); */
+}
+
+/* LOGIN PAGE STYLING */
+.mainContentDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    align-content: center;
+    justify-content: center;
+    align-self: center;
+    justify-self: center;
+    width: 100%;
+    height: 100%;
+    margin: 0em;
+    padding: 0em;
+    /* styling */
+    /* background-color: rgb(148, 148, 211); */
+    /* debug styling */
+    border: 1px solid rgb(118, 62, 151);
+}
+
+.divLoginStuff {
+    /* flex box display */
+    display: flex;
+    flex-flow: wrap;
+    align-content: center;
+    justify-content: center;
+    align-self: center;
+    justify-self: center;
+    width: 100%;
+    /* styling */
+    padding: 1rem;
+    margin: 1rem;
+    /* debug */
+    /* border: 1px solid green; */
+}
+
+.instructUserDiv{
+    /* flexbox display */
+    display: block;
+    align-content: center;
+    justify-content: center;
+    align-self: center;
+    justify-self: center;
+    text-align: center;
+    /* styling */
+
+    /* debug */
+    /* border: 1px solid pink; */
+}
+
+.signInAndUpDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    align-content: center;
+    align-self: center;
+    justify-content: center;
+    justify-self: center;
+    /* debug */
+    /* border: 1px solid salmon; */
+}
+
+.actionDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    align-content: center;
+    align-self: center;
+    justify-content: center;
+    justify-self: center;
+    /* styling */
+    padding-top: .5em;
+    padding-bottom: .5em;
+    /* debug */
+    /* border: 1px solid purple; */
+}
+
+.divformDiv {
+    /* Flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    align-content: center;
+    justify-content: center;
+    justify-self: center;
+    align-self: center;
+    /* styling */
+    padding-top: .2rem;
+    padding-bottom: .2rem;
+    /* debug styling */
+    
+}
+
+.signInAlignmentDiv{
+    /* Flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    align-content: center;
+    justify-content: center;
+    width: 100%;
+    /* debug styling */
+}
+
+.feildsSectionDiv{
+    /* Flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    align-content: center;
+    justify-content: center;
+    width: 100%;
+    /* styling */
+    padding: .5em;
+    /* debug */
+}
+
+.informFormDiv{
+    /* flexbox styling */
+    display: block;
+    align-content: center;
+    justify-content: center;
+    justify-self: center;
+    align-self: center;
+    width: 100%;
+}
+
+.informFormP{
+    text-align: center;
+    align-self: center;
+    justify-self: center;
+    font-size: 1rem;
+}
+
+/* SYTLING FOR THE FORMS */
+
+#sign-in-form {
+    align-self: center;
+}
+
+.labelDiv {
+    /* flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    justify-content: flex-end;
+    align-content: center;
+    width: 40%;
+    margin-right: 1em;
+    /* DEBUG */
+}
+
+.labelPText {
+    /* styling */
+    align-self: center;
+    font-size: 1rem;
+    padding-right: 1rem;
+    font-family: 'Goldman', cursive;
+    color: rgb(0, 0, 0);
+}
+
+.inputDiv {
+    /* flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    align-content: center;
+    justify-content: flex-start;
+    width: 40%;
+    margin-left: 1em;
+    /* Debug */
+}
+
+.fieldSection{
+    /* flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    justify-content: center;
+    align-content: center;
+    width: 100%;
+    /* styling */
+    padding-top: 1rem;
+    /* DEBUG */
+}
+
+#my-form-button{
+    display: inline-block;
+    text-align: center;
+    align-self: center;
+    /* styling */
+    font-size: 1rem;
+}
+
+#inputTextMobileUN{
+    /* font styling */
+    font-size: 1rem;
+    font-family: 'Nunito', sans-serif;
+}
+
+
+#inputTextMobilePW{
+    /* font styling */
+    font-size: 1rem;
+    font-family: 'Nunito', sans-serif;
+}
+
+#username-err {
+
+}
+
+#password-err {
+
+}
+
+.form-field-err {
+    font-size: 1rem;
+}
+
+.informtextP{
+    font-size: 2rem;
+    text-align: center;
+    align-self: center;
+    align-items: center;
+    font-family: 'IBM Plex Mono', monospace, sans-serif;
+}
+
+.formSign{
+    font-family: 'Nova Flat', cursive, sans-serif;
+    font-size: 2rem;
+    text-align: center;
+}

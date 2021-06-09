@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
@@ -10,14 +9,19 @@ import (
 
 //Handles all requests coming in
 func handleRequests() {
-	fmt.Printf("DEBUG: Hosting our server...\n")
 	myRouter := mux.NewRouter().StrictSlash(true)
 
 	http.Handle("/favicon.ico", http.NotFoundHandler()) //For missing FavIcon
 	//Serve our pages
-	myRouter.HandleFunc("/", index) //Serve index page
+	myRouter.HandleFunc("/", index)        //Serve index page
+	myRouter.HandleFunc("/login", login)   //Serve login page
+	myRouter.HandleFunc("/signup", signup) //Serve index page
+	//Serve our Validation API
+	myRouter.HandleFunc("/checkUsername", checkUsername).Methods("POST") //Check Username
+	myRouter.HandleFunc("/canLogin", canLogin).Methods("POST")           //Check User Login
+	myRouter.HandleFunc("/createUser", createUser).Methods("POST")       //Create User
 	//Serve our static files
 	myRouter.Handle("/", http.FileServer(http.Dir("./static")))
 	myRouter.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
-	log.Fatal(http.ListenAndServe(":3000", myRouter))
+	log.Fatal(http.ListenAndServe(":8080", myRouter))
 }

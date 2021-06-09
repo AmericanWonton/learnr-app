@@ -7,7 +7,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"strconv"
 	"strings"
 	"time"
 
@@ -321,99 +320,6 @@ func getUser(w http.ResponseWriter, req *http.Request) {
 	//Marshal it into our type
 	var theUserGet UserIDUser
 	json.Unmarshal(bs, &theUserGet)
-
-	//If we successfully decoded, we can insert our user
-	if canCrud {
-		/* Find the User with the given Username */
-		theUserReturned := User{} //Initialize User to be returned after Mongo query
-
-		userCollection := mongoClient.Database("learnR").Collection("users") //Here's our collection
-		theFilter := bson.M{
-			"userid": bson.M{
-				"$eq": theUserGet.TheUserID, // check if bool field has value of 'false'
-			},
-		}
-		findOptions := options.Find()
-		findUser, err := userCollection.Find(theContext, theFilter, findOptions)
-		theFind := 0 //A counter to track how many users we find
-		if findUser.Err() != nil {
-			if strings.Contains(err.Error(), "no documents in result") {
-				stringUserID := strconv.Itoa(theUserGet.TheUserID)
-				returnedErr := "For " + stringUserID + ", no User was returned: " + err.Error()
-				fmt.Println(returnedErr)
-				logWriter(returnedErr)
-				theReturnMessage.SuccOrFail = 1
-				theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
-				theReturnMessage.TheErr = append(theReturnMessage.TheErr, returnedErr)
-				theReturnMessage.ReturnedUser = User{}
-			} else {
-				stringUserID := strconv.Itoa(theUserGet.TheUserID)
-				returnedErr := "For " + stringUserID + ", there was a Mongo Error: " + err.Error()
-				fmt.Println(returnedErr)
-				logWriter(returnedErr)
-				theReturnMessage.SuccOrFail = 1
-				theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
-				theReturnMessage.TheErr = append(theReturnMessage.TheErr, returnedErr)
-				theReturnMessage.ReturnedUser = User{}
-			}
-		} else {
-			//Set initial values so the decode function dosen't freak out
-			theUserReturned.UserName = ""
-			theUserReturned.Password = ""
-			//Found User, decode to return
-			for findUser.Next(theContext) {
-				stringUserID := strconv.Itoa(theUserGet.TheUserID)
-				err := findUser.Decode(&theUserReturned)
-				if err != nil {
-					returnedErr := "For " + stringUserID +
-						", there was an error decoding document from Mongo: " + err.Error()
-					fmt.Println(returnedErr)
-					logWriter(returnedErr)
-					theReturnMessage.SuccOrFail = 1
-					theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
-					theReturnMessage.TheErr = append(theReturnMessage.TheErr, returnedErr)
-					theReturnMessage.ReturnedUser = User{}
-				} else if len(theUserReturned.UserName) <= 1 {
-					returnedErr := "For " + stringUserID +
-						", there was an no document from Mongo: " + err.Error()
-					fmt.Println(returnedErr)
-					logWriter(returnedErr)
-					theReturnMessage.SuccOrFail = 1
-					theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
-					theReturnMessage.TheErr = append(theReturnMessage.TheErr, returnedErr)
-					theReturnMessage.ReturnedUser = User{}
-				} else {
-					//Successful decode, do nothing
-				}
-				theFind = theFind + 1
-			}
-			findUser.Close(theContext)
-		}
-
-		if theFind <= 0 {
-			//Error, return an error back and log it
-			stringUserID := strconv.Itoa(theUserGet.TheUserID)
-			returnedErr := "For " + stringUserID +
-				", No User was returned."
-			fmt.Println(returnedErr)
-			logWriter(returnedErr)
-			theReturnMessage.SuccOrFail = 1
-			theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
-			theReturnMessage.TheErr = append(theReturnMessage.TheErr, returnedErr)
-			theReturnMessage.ReturnedUser = User{}
-		} else {
-			//Success, log the success and return User
-			stringUserID := strconv.Itoa(theUserGet.TheUserID)
-			returnedErr := "For " + stringUserID +
-				", User should be successfully decoded."
-			//fmt.Println(returnedErr)
-			logWriter(returnedErr)
-			theReturnMessage.SuccOrFail = 0
-			theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
-			theReturnMessage.TheErr = append(theReturnMessage.TheErr, "")
-			theReturnMessage.ReturnedUser = theUserReturned
-		}
-	}
 
 	//Format the JSON map for returning our results
 	theJSONMessage, err := json.Marshal(theReturnMessage)
