@@ -2,12 +2,14 @@ package main
 
 import (
 	"bufio"
+	"context"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -19,14 +21,8 @@ type AdminToken struct {
 }
 
 /* Used for API Calls */
-var giveUsernames string
-var sendEmailCall string
-var sendTextCall string
-var randomIDAPI string
-var getUserCall string
-var superUserPhone string
-var superUserACode string
-var superUesrEmail string
+const GETRANDOMID string = "http://localhost:4000/randomIDCreationAPI"
+const ADDUSERURL string = "http://localhost:4000/addUser"
 
 /* DEFINED SLURS */
 var slurs []string = []string{}
@@ -126,24 +122,39 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 	bsString := []byte(password)                  //Encode Password
 	encodedString := hex.EncodeToString(bsString) //Encode Password Pt2
 	theTimeNow := time.Now()
-	newUser := User{
-		UserName:    username,
-		Password:    encodedString,
-		Firstname:   firstname,
-		Lastname:    lastname,
-		PhoneNums:   phonenums,
-		UserID:      0, //DEBUG VALUE
-		Email:       email,
-		Whoare:      whoare,
-		AdminOrgs:   []int{},
-		OrgMember:   []int{},
-		Banned:      false,
-		DateCreated: theTimeNow.Format("2006-01-02 15:04:05"),
-		DateUpdated: theTimeNow.Format("2006-01-02 15:04:05"),
+
+	/* First call to random ID API */
+	goodIDGet, message, randomid := randomAPICall()
+	if goodIDGet {
+		newUser := User{
+			UserName:    username,
+			Password:    encodedString,
+			Firstname:   firstname,
+			Lastname:    lastname,
+			PhoneNums:   phonenums,
+			UserID:      randomid, //DEBUG VALUE
+			Email:       email,
+			Whoare:      whoare,
+			AdminOrgs:   []int{},
+			OrgMember:   []int{},
+			Banned:      false,
+			DateCreated: theTimeNow.Format("2006-01-02 15:04:05"),
+			DateUpdated: theTimeNow.Format("2006-01-02 15:04:05"),
+		}
+		//Attempt User Insert
+		goodAdd, message := callAddUser(newUser)
+		if goodAdd {
+			theSuccMessage.Message = message
+			theSuccMessage.SuccessNum = 0
+		} else {
+			theSuccMessage.Message = message
+			theSuccMessage.SuccessNum = 1
+		}
+	} else {
+		//Couldn't get random Numb
+		theSuccMessage.Message = message
+		theSuccMessage.SuccessNum = 1
 	}
-
-	fmt.Printf("DEBUG: User created: %v\n", newUser)
-
 	/* Send the response back to Ajax */
 	theJSONMessage, err := json.Marshal(theSuccMessage)
 	//Send the response back
@@ -188,4 +199,60 @@ func canLogin(w http.ResponseWriter, r *http.Request) {
 		logWriter(err.Error())
 	}
 	fmt.Fprint(w, string(theJSONMessage))
+}
+
+/* Gets a random API after calling our random API */
+func randomAPICall() (bool, string, int) {
+	goodGet, message, finalInt := true, "", 0
+	//Call our crudOperations Microservice in order to get our Usernames
+	//Create a context for timing out
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	req, err := http.NewRequest("GET", GETRANDOMID, nil)
+	if err != nil {
+		theErr := "There was an error getting Usernames in loadUsernames: " + err.Error()
+		logWriter(theErr)
+		goodGet, message = false, theErr
+	}
+
+	resp, err := http.DefaultClient.Do(req.WithContext(ctx))
+
+	if resp.StatusCode >= 300 || resp.StatusCode <= 199 {
+		goodGet, message = false, "Wrong response code gotten; failed to create random ID: "+strconv.Itoa(resp.StatusCode)
+	} else if err != nil {
+		theErr := "Had an error getting good random ID: " + err.Error()
+		logWriter(theErr)
+		goodGet, message = false, theErr
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		theErr := "There was an error getting a response for Usernames in loadUsernames: " + err.Error()
+		logWriter(theErr)
+		goodGet, message = false, theErr
+	}
+
+	//Marshal the response into a type we can read
+	type ReturnMessage struct {
+		TheErr     []string `json:"TheErr"`
+		ResultMsg  []string `json:"ResultMsg"`
+		SuccOrFail int      `json:"SuccOrFail"`
+		RandomID   int      `json:"RandomID"`
+	}
+	var returnedMessage ReturnMessage
+	json.Unmarshal(body, &returnedMessage)
+
+	//Assign our map variable to the map varialbe and see if it's okay
+	if returnedMessage.SuccOrFail != 0 {
+		errString := ""
+		for l := 0; l < len(returnedMessage.TheErr); l++ {
+			errString = errString + returnedMessage.TheErr[l]
+		}
+		goodGet, message = false, errString
+	} else {
+		finalInt = returnedMessage.RandomID
+	}
+
+	return goodGet, message, finalInt
 }

@@ -2,8 +2,13 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
+	"net/http"
+	"strconv"
+	"strings"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -57,4 +62,66 @@ func connectDB() *mongo.Client {
 	}
 
 	return theClient
+}
+
+/* Calls our CRUD service to add our new User */
+func callAddUser(newUser User) (bool, string) {
+	goodAdd, message := true, ""
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	/* 2. Marshal test case to JSON expect */
+	theJSONMessage, err := json.Marshal(newUser)
+	if err != nil {
+		fmt.Println(err)
+		logWriter(err.Error())
+		goodAdd, message = false, err.Error()
+	}
+	/* 3. Create Post to JSON */
+	payload := strings.NewReader(string(theJSONMessage))
+	req, err := http.NewRequest("POST", ADDUSERURL, payload)
+	if err != nil {
+		theErr := "There was an error posting User: " + err.Error()
+		fmt.Println(theErr)
+		logWriter(theErr)
+		goodAdd, message = false, theErr
+	}
+	req.Header.Add("Content-Type", "application/json")
+	/* 4. Get response from Post */
+	resp, err := http.DefaultClient.Do(req.WithContext(ctx))
+	if resp.StatusCode >= 300 || resp.StatusCode <= 199 {
+		theErr := "Failed response from addUser: " + strconv.Itoa(resp.StatusCode)
+		logWriter(theErr)
+		goodAdd, message = false, theErr
+	} else if err != nil {
+		theErr := "Failed response from addUser: " + strconv.Itoa(resp.StatusCode) + " " + err.Error()
+		logWriter(theErr)
+		goodAdd, message = false, theErr
+	}
+	//Declare message we expect to see returned
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		theErr := "There was an error reading response from UserCreate " + err.Error()
+		logWriter(theErr)
+		goodAdd, message = false, theErr
+	}
+	type ReturnMessage struct {
+		TheErr     []string `json:"TheErr"`
+		ResultMsg  []string `json:"ResultMsg"`
+		SuccOrFail int      `json:"SuccOrFail"`
+	}
+	var returnedMessage ReturnMessage
+	json.Unmarshal(body, &returnedMessage)
+	/* 5. Evaluate response in returnedMessage */
+	if returnedMessage.SuccOrFail != 0 {
+		theErr := ""
+		for n := 0; n < len(returnedMessage.TheErr); n++ {
+			theErr = theErr + returnedMessage.TheErr[n]
+		}
+		goodAdd, message = false, theErr
+	} else {
+		goodAdd, message = true, "User successfully added and able to log in"
+	}
+
+	return goodAdd, message
 }

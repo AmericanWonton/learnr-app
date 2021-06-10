@@ -104,7 +104,8 @@ window.addEventListener('DOMContentLoaded', function(){
                 var SuccessMSG = JSON.parse(item);
                 if (SuccessMSG.SuccessNum === 0){
                     console.log("DEBUG: User successfully created: " + SuccessMSG.Message);
-                    //location.reload();
+                    informtextPSignUp.innerHTML = "User succesfully created. Returning to login page...";
+                    setTimeout(() => { navigateHeader(1); }, 4000);
                 } else {
                     console.log("DEBUG: We have an error: " + SuccessMSG.SuccessNum + " " +
                     SuccessMSG.Message);

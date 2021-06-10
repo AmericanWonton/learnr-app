@@ -21,7 +21,8 @@ func handleRequests() {
 	myRouter.HandleFunc("/updateUser", updateUser).Methods("POST") //Update a User
 	myRouter.HandleFunc("/getUser", getUser).Methods("POST")       //Get User
 	//Serve our validation APIs
-	myRouter.HandleFunc("/giveAllUsernames", giveAllUsernames).Methods("GET") //Get all our Usernames
+	myRouter.HandleFunc("/giveAllUsernames", giveAllUsernames).Methods("GET")       //Get all our Usernames
+	myRouter.HandleFunc("/randomIDCreationAPI", randomIDCreationAPI).Methods("GET") //Get a random ID
 	//Serve our static files
 	log.Fatal(http.ListenAndServe(":4000", myRouter))
 }

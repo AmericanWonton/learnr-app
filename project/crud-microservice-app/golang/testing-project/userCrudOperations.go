@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"math/rand"
 	"net/http"
 	"strconv"
 	"strings"
@@ -549,6 +550,80 @@ func giveAllUsernames(w http.ResponseWriter, req *http.Request) {
 	//Send the response back
 	if err != nil {
 		errIs := "Error formatting JSON for return in giveAllUsernames: " + err.Error()
+		logWriter(errIs)
+	}
+	fmt.Fprint(w, string(theJSONMessage))
+}
+
+//This should give a random id value to both food groups
+func randomIDCreationAPI(w http.ResponseWriter, req *http.Request) {
+	type ReturnMessage struct {
+		TheErr     []string `json:"TheErr"`
+		ResultMsg  []string `json:"ResultMsg"`
+		SuccOrFail int      `json:"SuccOrFail"`
+		RandomID   int      `json:"RandomID"`
+	}
+	theReturnMessage := ReturnMessage{}
+	finalID := 0        //The final, unique ID to return to the food/user
+	randInt := 0        //The random integer added onto ID
+	randIntString := "" //The integer built through a string...
+	min, max := 0, 9    //The min and Max value for our randInt
+	foundID := false
+	for !foundID {
+		randInt = 0
+		randIntString = ""
+		//Create the random number, convert it to string
+		for i := 0; i < 12; i++ {
+			randInt = rand.Intn(max-min) + min
+			randIntString = randIntString + strconv.Itoa(randInt)
+		}
+		//Once we have a string of numbers, we can convert it back to an integer
+		theID, err := strconv.Atoi(randIntString)
+		if err != nil {
+			fmt.Printf("We got an error converting a string back to a number, %v\n", err)
+			fmt.Printf("Here is randInt: %v\n and randIntString: %v\n", randInt, randIntString)
+			theReturnMessage.TheErr = append(theReturnMessage.TheErr, "Error converting number")
+			theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, "Error converting number")
+			fmt.Println(err)
+			log.Fatal(err)
+			return
+		}
+		//Search all our collections to see if this UserID is unique
+		canExit := []bool{true}
+		//User collection
+		userCollection := mongoClient.Database("learnR").Collection("users") //Here's our collection
+		var testAUser User
+		theErr := userCollection.FindOne(theContext, bson.M{"userid": theID}).Decode(&testAUser)
+		if theErr != nil {
+			if strings.Contains(theErr.Error(), "no documents in result") {
+				canExit[0] = true
+			} else {
+				theErr := "There is another error getting random ID: " + err.Error()
+				logWriter(theErr)
+				theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
+				theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
+				canExit[0] = false
+				log.Fatal(theErr)
+			}
+		}
+		//Final check to see if we can exit this loop
+		if canExit[0] {
+			finalID = theID
+			foundID = true
+			theReturnMessage.RandomID = finalID
+			theReturnMessage.SuccOrFail = 0
+			theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, "Good new random ID added")
+		} else {
+			foundID = false
+		}
+	}
+
+	/* Return the marshaled response */
+	//Send the response back
+	theJSONMessage, err := json.Marshal(theReturnMessage)
+	//Send the response back
+	if err != nil {
+		errIs := "Error formatting JSON for return in randomIDCreationAPI: " + err.Error()
 		logWriter(errIs)
 	}
 	fmt.Fprint(w, string(theJSONMessage))

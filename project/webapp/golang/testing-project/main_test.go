@@ -23,6 +23,7 @@ const READUSERURL string = "http://localhost:4000/getUser"
 const UPDATEURL string = "http://localhost:4000/updateUser"
 const DELETEURL string = "http://localhost:4000/deleteUser"
 const GETALLUSERNAMESURL string = "http://localhost:4000/giveAllUsernames"
+const GETRANDOMID string = "http://localhost:4000/randomIDCreationAPI"
 
 //UserCrud Create
 type UserCrudCreate struct {
@@ -526,5 +527,56 @@ func TestUserDelete(t *testing.T) {
 		}
 		/* Maybe we can test the strings at some point... */
 		testNum = testNum + 1 //Increment this number for testing
+	}
+}
+
+func TestRandomID(t *testing.T) {
+	//Call our crudOperations Microservice in order to get our Usernames
+	//Create a context for timing out
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	req, err := http.NewRequest("GET", GETRANDOMID, nil)
+	if err != nil {
+		theErr := "There was an error getting Usernames in loadUsernames: " + err.Error()
+		t.Fatal(theErr)
+	}
+
+	resp, err := http.DefaultClient.Do(req.WithContext(ctx))
+
+	if resp.StatusCode >= 300 || resp.StatusCode <= 199 {
+		theRespCode := strconv.Itoa(resp.StatusCode)
+		t.Fatal("We have the wrong response code: " + theRespCode)
+		return
+	} else if err != nil {
+		t.Fatal("Had an error creating response: " + err.Error())
+		return
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		theErr := "There was an error getting a response for Usernames in loadUsernames: " + err.Error()
+		t.Fatal(theErr)
+	}
+
+	//Marshal the response into a type we can read
+	type ReturnMessage struct {
+		TheErr     []string `json:"TheErr"`
+		ResultMsg  []string `json:"ResultMsg"`
+		SuccOrFail int      `json:"SuccOrFail"`
+		RandomID   int      `json:"RandomID"`
+	}
+	var returnedMessage ReturnMessage
+	json.Unmarshal(body, &returnedMessage)
+
+	//Assign our map variable to the map varialbe and see if it's okay
+	if returnedMessage.SuccOrFail != 0 {
+		errString := ""
+		for l := 0; l < len(returnedMessage.TheErr); l++ {
+			errString = errString + returnedMessage.TheErr[l]
+		}
+		t.Fatal("Had an error getting map: " + errString)
+	} else {
+		fmt.Printf("Here is our random ID: %v\n", returnedMessage.RandomID)
 	}
 }
