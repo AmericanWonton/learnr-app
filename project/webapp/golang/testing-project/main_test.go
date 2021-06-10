@@ -24,6 +24,7 @@ const UPDATEURL string = "http://localhost:4000/updateUser"
 const DELETEURL string = "http://localhost:4000/deleteUser"
 const GETALLUSERNAMESURL string = "http://localhost:4000/giveAllUsernames"
 const GETRANDOMID string = "http://localhost:4000/randomIDCreationAPI"
+const GETUSERLOGIN string = "http://localhost:4000/userLogin"
 
 //UserCrud Create
 type UserCrudCreate struct {
@@ -61,6 +62,16 @@ type UserCrudDelete struct {
 
 var userCrudDeleteResults []UserCrudDelete
 
+//User Login
+type UserLoginTest struct {
+	TheUsername         string
+	ThePassword         string
+	ExpectedNum         int
+	ExpectedStringArray []string
+}
+
+var userLoginResults []UserLoginTest
+
 func TestMain(m *testing.M) {
 	//Build stuff for beginning of tests
 	log.Println("Starting stuff in TestMain")
@@ -84,6 +95,7 @@ func setup() {
 	createUserReadCrud()   //Add our User Crud testing values for Reading
 	createUserUpdateCrud() // Add our User Crud testing values for updating
 	createUserDeleteCrud() //Add our User Crud testing values for deleting
+	createUserLogin()      //Create creds for logging Users in
 }
 
 //This creates our Crud Testing cases for Creating Users
@@ -184,6 +196,25 @@ func createUserDeleteCrud() {
 	//Another not seen UserID
 	userCrudDeleteResults = append(userCrudDeleteResults, UserCrudDelete{-1, 1,
 		[]string{"Error deleting User in deleteUser", "Error reading the request"}})
+}
+
+//This creates our login tests for logging Users in
+func createUserLogin() {
+	//Good User Login
+	userLoginResults = append(userLoginResults, UserLoginTest{TheUsername: "TestUsername", ThePassword: hex.EncodeToString([]byte("testpword")),
+		ExpectedNum: 0, ExpectedStringArray: []string{"User should be successfully decoded."}})
+	//Bad User Login Username
+	userLoginResults = append(userLoginResults, UserLoginTest{TheUsername: "BadUsername", ThePassword: hex.EncodeToString([]byte("testpword")),
+		ExpectedNum: 1, ExpectedStringArray: []string{"No User was returned."}})
+	//Bad User Password Username
+	userLoginResults = append(userLoginResults, UserLoginTest{TheUsername: "BadUsername", ThePassword: hex.EncodeToString([]byte("badPWord")),
+		ExpectedNum: 1, ExpectedStringArray: []string{"No User was returned."}})
+	//Bad nil username
+	userLoginResults = append(userLoginResults, UserLoginTest{TheUsername: "", ThePassword: hex.EncodeToString([]byte("badPWord")),
+		ExpectedNum: 1, ExpectedStringArray: []string{"No User was returned."}})
+	//Bad nil password
+	userLoginResults = append(userLoginResults, UserLoginTest{TheUsername: "BadUsername", ThePassword: hex.EncodeToString([]byte("")),
+		ExpectedNum: 1, ExpectedStringArray: []string{"No User was returned."}})
 }
 
 //This is shutdown values/actions for testing
@@ -288,6 +319,66 @@ func TestUserAdd(t *testing.T) {
 		}
 		/* Maybe we can test the strings at some point... */
 		testNum = testNum + 1 //Increment this number for testing
+	}
+}
+
+//Test for User Login with Username and Password
+func TestUserLogin(t *testing.T) {
+	/* start listener */
+	type LoginData struct {
+		Username string `json:"Username"`
+		Password string `json:"Password"`
+	}
+	loginData := LoginData{Username: "TestUsername", Password: hex.EncodeToString([]byte("testpword"))}
+	/* 1. Create Context */
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	/* 2. Marshal test case to JSON expect */
+	theJSONMessage, err := json.Marshal(loginData)
+	if err != nil {
+		fmt.Println(err)
+		logWriter(err.Error())
+		log.Fatal(err)
+		t.Fatal("Could not Marshal JSON: " + err.Error())
+	}
+	/* 3. Create Post to JSON */
+	payload := strings.NewReader(string(theJSONMessage))
+	req, err := http.NewRequest("POST", GETUSERLOGIN, payload)
+	if err != nil {
+		log.Fatal(err)
+		t.Fatal("Had an issue creating a request: " + err.Error())
+	}
+	//req.Header.Add("Content-Type", "text/plain")
+	req.Header.Add("Content-Type", "application/json")
+	/* 4. Get response from Post */
+	resp, err := http.DefaultClient.Do(req.WithContext(ctx))
+	if resp.StatusCode >= 300 || resp.StatusCode <= 199 {
+		theRespCode := strconv.Itoa(resp.StatusCode)
+		t.Fatal("We have the wrong response code: " + theRespCode)
+	} else if err != nil {
+		t.Fatal("Had an error creating response: " + err.Error())
+	}
+	//Declare message we expect to see returned
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		theErr := "There was an error reading response from UserCreate " + err.Error()
+		t.Fatal(theErr)
+	}
+	type ReturnMessage struct {
+		TheErr     []string `json:"TheErr"`
+		ResultMsg  []string `json:"ResultMsg"`
+		SuccOrFail int      `json:"SuccOrFail"`
+		TheUser    User     `json:"TheUser"`
+	}
+	var returnedMessage ReturnMessage
+	json.Unmarshal(body, &returnedMessage)
+	/* 5. Evaluate response in returnedMessage for testing */
+	if returnedMessage.SuccOrFail != 0 {
+		theMessage := ""
+		for n := 0; n < len(returnedMessage.TheErr); n++ {
+			theMessage = theMessage + returnedMessage.TheErr[n]
+		}
+		log.Fatal(theMessage)
 	}
 }
 

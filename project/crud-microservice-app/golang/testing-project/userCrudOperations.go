@@ -555,6 +555,146 @@ func giveAllUsernames(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprint(w, string(theJSONMessage))
 }
 
+/* This function searches with a Username and password to return a yes or no response
+if the User is found; is so, we return the User, with a successful response.
+If not, we return a failed response and an empty User profile */
+func userLogin(w http.ResponseWriter, req *http.Request) {
+	canCrud := true
+	//Declare type to be returned later through JSON Response
+	type ReturnMessage struct {
+		TheErr     []string `json:"TheErr"`
+		ResultMsg  []string `json:"ResultMsg"`
+		SuccOrFail int      `json:"SuccOrFail"`
+		TheUser    User     `json:"TheUser"`
+	}
+	theResponseMessage := ReturnMessage{}
+	//Collect JSON from Postman or wherever
+	//Get the byte slice from the request body ajax
+	bs, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		fmt.Println(err)
+		logWriter(err.Error())
+		canCrud = false
+		theResponseMessage.ResultMsg = append(theResponseMessage.ResultMsg, "Could not get bytes")
+		theResponseMessage.TheErr = append(theResponseMessage.TheErr, "Could not get bytes")
+		theResponseMessage.SuccOrFail = 1
+	}
+
+	type LoginData struct {
+		Username string `json:"Username"`
+		Password string `json:"Password"`
+	}
+
+	//Marshal the user data into our type
+	var dataForLogin LoginData
+	json.Unmarshal(bs, &dataForLogin)
+
+	//Check for null values; exit program if password or Username are empty
+	if canCrud && dataForLogin.Username != "" && dataForLogin.Password != "" {
+		theUserReturned := User{} //Initialize User to be returned after Mongo query
+		//Query for the User, given the userID for the User
+		user_collection := mongoClient.Database("learnR").Collection("users") //Here's our collection
+		theFilter := bson.M{
+			"username": bson.M{
+				"$eq": dataForLogin.Username, // check if bool field has value of 'false'
+			},
+			"password": bson.M{
+				"$eq": dataForLogin.Password,
+			},
+		}
+		findOptions := options.Find()
+		findUser, err := user_collection.Find(theContext, theFilter, findOptions)
+		theFind := 0 //A counter to track how many users we find
+		if findUser.Err() != nil {
+			if strings.Contains(err.Error(), "no documents in result") {
+				returnedErr := "For " + dataForLogin.Username + ", no User was returned: " + err.Error()
+				fmt.Println(returnedErr)
+				logWriter(returnedErr)
+				theResponseMessage.SuccOrFail = 1
+				theResponseMessage.ResultMsg = append(theResponseMessage.ResultMsg, returnedErr)
+				theResponseMessage.TheErr = append(theResponseMessage.TheErr, returnedErr)
+				theResponseMessage.TheUser = User{}
+			} else {
+				returnedErr := "For " + dataForLogin.Username + ", there was a Mongo Error: " + err.Error()
+				fmt.Println(returnedErr)
+				logWriter(returnedErr)
+				theResponseMessage.SuccOrFail = 1
+				theResponseMessage.ResultMsg = append(theResponseMessage.ResultMsg, returnedErr)
+				theResponseMessage.TheErr = append(theResponseMessage.TheErr, returnedErr)
+				theResponseMessage.TheUser = User{}
+			}
+		} else {
+			//Set initial values so the decode function dosen't freak out
+			theUserReturned.UserName = ""
+			theUserReturned.Password = ""
+			//Found User, decode to return
+			for findUser.Next(theContext) {
+				err := findUser.Decode(&theUserReturned)
+				if err != nil {
+					returnedErr := "For " + dataForLogin.Username +
+						", there was an error decoding document from Mongo: " + err.Error()
+					fmt.Println(returnedErr)
+					logWriter(returnedErr)
+					theResponseMessage.SuccOrFail = 1
+					theResponseMessage.ResultMsg = append(theResponseMessage.ResultMsg, returnedErr)
+					theResponseMessage.TheErr = append(theResponseMessage.TheErr, returnedErr)
+					theResponseMessage.TheUser = User{}
+				} else if len(theUserReturned.UserName) <= 1 {
+					returnedErr := "For " + dataForLogin.Username +
+						", there was an no document from Mongo: " + err.Error()
+					fmt.Println(returnedErr)
+					logWriter(returnedErr)
+					theResponseMessage.SuccOrFail = 1
+					theResponseMessage.ResultMsg = append(theResponseMessage.ResultMsg, returnedErr)
+					theResponseMessage.TheErr = append(theResponseMessage.TheErr, returnedErr)
+					theResponseMessage.TheUser = User{}
+				} else {
+					//Successful decode, do nothing
+				}
+				theFind = theFind + 1
+			}
+			findUser.Close(theContext)
+		}
+
+		if theFind <= 0 {
+			//Error, return an error back and log it
+			returnedErr := "For " + dataForLogin.Username +
+				", No User was returned."
+			fmt.Println(returnedErr)
+			logWriter(returnedErr)
+			theResponseMessage.SuccOrFail = 1
+			theResponseMessage.ResultMsg = append(theResponseMessage.ResultMsg, returnedErr)
+			theResponseMessage.TheErr = append(theResponseMessage.TheErr, returnedErr)
+			theResponseMessage.TheUser = theUserReturned
+		} else {
+			//Success, log the success and return User
+			returnedErr := "For " + dataForLogin.Username +
+				", User should be successfully decoded."
+			//fmt.Println(returnedErr)
+			logWriter(returnedErr)
+			theResponseMessage.SuccOrFail = 0
+			theResponseMessage.ResultMsg = append(theResponseMessage.ResultMsg, returnedErr)
+			theResponseMessage.TheErr = append(theResponseMessage.TheErr, returnedErr)
+			theResponseMessage.TheUser = theUserReturned
+		}
+	} else {
+		theResponseMessage.ResultMsg = append(theResponseMessage.ResultMsg,
+			"Can Crud was false, or nil values: "+dataForLogin.Username+" "+dataForLogin.Password)
+		theResponseMessage.TheErr = append(theResponseMessage.TheErr,
+			"Can Crud was false, or nil values: "+dataForLogin.Username+" "+dataForLogin.Password)
+		theResponseMessage.SuccOrFail = 1
+	}
+
+	//Errors/Success are recorded, User given, send JSON back
+	theJSONMessage, err := json.Marshal(theResponseMessage)
+	//Send the response back
+	if err != nil {
+		errIs := "Error formatting JSON for return in userLogin: " + err.Error()
+		logWriter(errIs)
+	}
+	fmt.Fprint(w, string(theJSONMessage))
+}
+
 //This should give a random id value to both food groups
 func randomIDCreationAPI(w http.ResponseWriter, req *http.Request) {
 	type ReturnMessage struct {

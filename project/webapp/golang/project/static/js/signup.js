@@ -117,5 +117,4 @@ window.addEventListener('DOMContentLoaded', function(){
         });
         xhr.send(jsonString);
     });
-
 });
