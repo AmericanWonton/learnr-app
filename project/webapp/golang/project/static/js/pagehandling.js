@@ -17,14 +17,16 @@ function navigateHeader(whichLink, whichgame) {
             break;
         case 4:
             //Go to aboutme page
-            window.location.assign("/aboutme");
+            window.location.assign("/learnmore");
             break;
         case 5:
             //Go to messageme page
-            window.location.assign("/messageme");
+            window.location.assign("/sendhelp");
             break;
         case 6:
             //Go to Index
+            //Need to log User out
+
             window.location.assign("/");
             break;
         case 7:
@@ -33,7 +35,7 @@ function navigateHeader(whichLink, whichgame) {
             break;
         case 8:
             //Game Page
-            window.location.assign("/gamepage");
+            window.location.assign("/makeorganization");
             break;
         case 9:
             //Game Page

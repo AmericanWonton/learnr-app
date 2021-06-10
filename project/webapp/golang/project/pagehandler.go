@@ -19,6 +19,7 @@ const GETALLUSERNAMESURL string = "http://localhost:4000/giveAllUsernames"
 
 //ViewData
 type UserViewData struct {
+	TheUser        User   `json:"TheUser"`        //The User
 	Username       string `json:"Username"`       //The Username
 	UserID         int    `json:"UserID"`         //The UserID
 	MessageDisplay int    `json:"MessageDisplay"` //This is IF we need a message displayed
@@ -55,6 +56,7 @@ func mainpage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	vd := UserViewData{
+		TheUser:        aUser,
 		Username:       aUser.UserName,
 		UserID:         aUser.UserID,
 		MessageDisplay: 0,

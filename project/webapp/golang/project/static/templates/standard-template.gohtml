@@ -272,3 +272,61 @@
         </div>
     </div>
 {{end}}
+
+{{/**** MAIN_HEADER ****/}}
+{{define "header_everywhere"}}
+    <header class="every_header">
+        <div class="mbHeaderDiv">
+            <!--This will contain the sites name/Picture in large font-->
+            <div class="namediv">
+                <img class="headerImg" src="static/images/png/testTitleCard.png">
+            </div>
+            <!-- This arranges links to various pages -->
+            <div class="navigationHolderDiv">
+                <!-- Main Page -->
+                <div class="navigationLinkDiv">
+                    <p class="navigationLinkP" onclick="navigateHeader(3, 0)">
+                        Main Page
+                    </p>
+                </div>
+                <!-- Logout -->
+                <div class="navigationLinkDiv">
+                    <p class="navigationLinkP" onclick="logOut()">
+                        Logout
+                    </p>
+                </div>
+                <!-- Make Organization -->
+                <div class="navigationLinkDiv">
+                    <p class="navigationLinkP" onclick="navigateHeader(8, 0)">
+                        Make Organization
+                    </p>
+                </div>
+                <!-- Send Help -->
+                <div class="navigationLinkDiv">
+                    <p class="navigationLinkP" onclick="navigateHeader(5, 0)">
+                        Send Help
+                    </p>
+                </div>
+                <!-- Learn More -->
+                <div class="navigationLinkDiv">
+                    <p class="navigationLinkP" onclick="navigateHeader(4, 0)">
+                        Learn More
+                    </p>
+                </div>
+            </div>
+        </div>
+    </header>
+{{end}}
+
+
+{{/*** Javascript sections for data ***/}}
+{{define "sendUser"}}
+    <script>
+        setUser({{.}});
+    </script>
+{{end}}
+{{define "sendBanned"}}
+    <script>
+        setBanned({{.}});
+    </script>
+{{end}}

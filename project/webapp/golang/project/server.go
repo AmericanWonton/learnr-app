@@ -17,6 +17,8 @@ func handleRequests() {
 	myRouter.HandleFunc("/login", login)       //Serve login page
 	myRouter.HandleFunc("/signup", signup)     //Serve signup page
 	myRouter.HandleFunc("/mainpage", mainpage) //Serve main page
+	//Used for session work
+	myRouter.HandleFunc("/logUserOut", logUserOut).Methods("POST") //Remove our cookie after logging out user
 	//Serve our Validation API
 	myRouter.HandleFunc("/checkUsername", checkUsername).Methods("POST") //Check Username
 	myRouter.HandleFunc("/canLogin", canLogin).Methods("POST")           //Check User Login
