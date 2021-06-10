@@ -18,6 +18,7 @@ var template1 *template.Template
 
 //initial functions when starting the app
 func init() {
+	usernameMap = make(map[string]bool) //Clear all Usernames when loading so no problems are caused
 	//Initialize our web page templates
 	template1 = template.Must(template.ParseGlob("./static/templates/*"))
 	//Initialize Mongo Creds
