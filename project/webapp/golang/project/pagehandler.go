@@ -17,6 +17,14 @@ var usernameMap map[string]bool
 
 const GETALLUSERNAMESURL string = "http://localhost:4000/giveAllUsernames"
 
+//ViewData
+type UserViewData struct {
+	Username       string `json:"Username"`       //The Username
+	UserID         int    `json:"UserID"`         //The UserID
+	MessageDisplay int    `json:"MessageDisplay"` //This is IF we need a message displayed
+	Banned         bool   `json:"Banned"`         //If the User is banned, we display nothing
+}
+
 //Handles the Index requests; Ask User if they're legal here
 func index(w http.ResponseWriter, r *http.Request) {
 	/* REdirect, Index not needed */
@@ -35,6 +43,25 @@ func signup(w http.ResponseWriter, r *http.Request) {
 	usernameMap = loadUsernames() //Load all usernames
 	/* Execute template, handle error */
 	err1 := template1.ExecuteTemplate(w, "signup.gohtml", nil)
+	HandleError(w, err1)
+}
+
+//Handles the mainpage
+func mainpage(w http.ResponseWriter, r *http.Request) {
+	aUser := getUser(w, r)
+	//Redirect User if they are not logged in
+	if !alreadyLoggedIn(w, r) {
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	}
+	vd := UserViewData{
+		Username:       aUser.UserName,
+		UserID:         aUser.UserID,
+		MessageDisplay: 0,
+		Banned:         aUser.Banned,
+	}
+	/* Execute template, handle error */
+	err1 := template1.ExecuteTemplate(w, "mainpage.gohtml", vd)
 	HandleError(w, err1)
 }
 

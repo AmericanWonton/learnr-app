@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -124,4 +125,75 @@ func callAddUser(newUser User) (bool, string) {
 	}
 
 	return goodAdd, message
+}
+
+/* Calls our CRUD service to see if this User can login with the passed Username/Password */
+func callUserLogin(username string, password string) (bool, string, User) {
+	goodLogin, message, theUser := true, "", User{}
+
+	/* Call the API */
+	type LoginData struct {
+		Username string `json:"Username"`
+		Password string `json:"Password"`
+	}
+	loginData := LoginData{Username: username, Password: hex.EncodeToString([]byte(password))}
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	/* 2. Marshal test case to JSON expect */
+	theJSONMessage, err := json.Marshal(loginData)
+	if err != nil {
+		theErr := "Error marshaling JSON: " + err.Error()
+		goodLogin, message, theUser = false, theErr, User{}
+		logWriter(theErr)
+	}
+	/* 3. Create Post to JSON */
+	payload := strings.NewReader(string(theJSONMessage))
+	req, err := http.NewRequest("POST", GETUSERLOGIN, payload)
+	if err != nil {
+		theErr := "Error with request: " + err.Error()
+		goodLogin, message, theUser = false, theErr, User{}
+		logWriter(theErr)
+	}
+	//req.Header.Add("Content-Type", "text/plain")
+	req.Header.Add("Content-Type", "application/json")
+	/* 4. Get response from Post */
+	resp, err := http.DefaultClient.Do(req.WithContext(ctx))
+	if resp.StatusCode >= 300 || resp.StatusCode <= 199 {
+		theErr := "Error getting response code: " + strconv.Itoa(resp.StatusCode)
+		goodLogin, message, theUser = false, theErr, User{}
+		logWriter(theErr)
+	} else if err != nil {
+		theErr := "Error with response: " + err.Error()
+		goodLogin, message, theUser = false, theErr, User{}
+		logWriter(theErr)
+	}
+	//Declare message we expect to see returned
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		theErr := "There was an error reading response from UserCreate " + err.Error()
+		goodLogin, message, theUser = false, theErr, User{}
+		logWriter(theErr)
+	}
+	type ReturnMessage struct {
+		TheErr     []string `json:"TheErr"`
+		ResultMsg  []string `json:"ResultMsg"`
+		SuccOrFail int      `json:"SuccOrFail"`
+		TheUser    User     `json:"TheUser"`
+	}
+	var returnedMessage ReturnMessage
+	json.Unmarshal(body, &returnedMessage)
+	/* 5. Evaluate response in returnedMessage for testing */
+	if returnedMessage.SuccOrFail != 0 {
+		theMessage := ""
+		for n := 0; n < len(returnedMessage.TheErr); n++ {
+			theMessage = theMessage + returnedMessage.TheErr[n]
+		}
+		goodLogin, message, theUser = false, theMessage, User{}
+		logWriter(theMessage)
+	} else {
+		message = "User found"
+		theUser = returnedMessage.TheUser
+	}
+
+	return goodLogin, message, theUser
 }

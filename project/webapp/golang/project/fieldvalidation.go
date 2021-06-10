@@ -23,6 +23,7 @@ type AdminToken struct {
 /* Used for API Calls */
 const GETRANDOMID string = "http://localhost:4000/randomIDCreationAPI"
 const ADDUSERURL string = "http://localhost:4000/addUser"
+const GETUSERLOGIN string = "http://localhost:4000/userLogin"
 
 /* DEFINED SLURS */
 var slurs []string = []string{}
@@ -191,6 +192,19 @@ func canLogin(w http.ResponseWriter, r *http.Request) {
 	//Marshal the user data into our type
 	var dataForLogin LoginData
 	json.Unmarshal(bs, &dataForLogin)
+
+	/* Call our CRUD API to see if password and Username are correct */
+	goodLogin, message, returnedUser := callUserLogin(dataForLogin.Username, dataForLogin.Password)
+	if goodLogin {
+		theSuccMessage.SuccessNum = 0
+		theSuccMessage.Message = "Successful User login"
+		//Create User Session ID
+		createSessionID(w, r, returnedUser)
+	} else {
+		theSuccMessage.SuccessNum = 1
+		theSuccMessage.Message = "Failed User Login; Username/Password might not match"
+		logWriter(message)
+	}
 
 	//Return JSON
 	theJSONMessage, err := json.Marshal(theSuccMessage)
