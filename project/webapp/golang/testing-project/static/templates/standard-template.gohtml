@@ -9,7 +9,7 @@
 {{end}}
 
 {{define "fav-icon1"}}
-    <link rel="shortcut icon" type="image/png" href="static/images/favicons/website-logo-512x512.png">
+    <link rel="shortcut icon" type="image/png" href="static/images/favicons/database.png">
 {{end}}
 
 {{define "fonts1"}}
@@ -27,3 +27,248 @@
 {{end}}
 
 {{/******* END OF HEAD SECTION *****/}}
+{{/******* SIGN IN SECTION ********/}}
+{{define "login_form_section"}}
+    <div class="divLoginStuff">
+        {{/* Section to sign Users in and create accounts */}}
+        <div class="signInAndUpDiv" id="signInAndUpDiv">
+            {{/* Div for handling sign-up */}}
+            <div class="actionDiv" id="actionDiv1">
+                <button class="actionDivButton" onclick="navigateHeader(7)">Sign Up</button>
+            </div>
+            {{/* Div for handling signing-in */}}
+            <div class="actionDiv" id="actionDiv2">
+                {{template "signInFormAjax"}}
+            </div>
+        </div>
+    </div>
+{{end}}
+{{/**** SIGN-IN FORM USING AJAX **/}}
+{{define "signInFormAjax"}}
+    <div id="divformDivLogin" class="divformDiv">
+        <div class="instructUserDiv">
+            <p class="formSign">
+                Log-In
+            </p>
+        </div>
+        <div class="signInAlignmentDiv">
+            {{/* USERNAME */}}
+            <div class="labelDiv">
+                <p class="labelPText">
+                    USERNAME:
+                </p>
+            </div>
+            <div class="inputDiv">
+                <input type="text" name="username" placeholder="username" minlength=1 maxlength=20 id="inputTextMobileUN" required/>
+                <p class="form-field-err" id="username-err"></p>
+            </div>
+            {{/* PASSWORD */}}
+            <div class="labelDiv">
+                <p class="labelPText">
+                    PASSWORD:
+                </p>
+            </div>
+            <div class="inputDiv">
+                <input type="password" name="password" placeholder="password" minlength=1 maxlength=20 id="inputTextMobilePW" required/>
+                <p class="form-field-err" id="password-err"></p>
+            </div>
+            {{/* SUBMIT BUTTON */}}
+            <div class="fieldSection">
+                <button id="submitLoginButton">Submit</button>
+            </div>
+            {{/* INFORMITIVE DIV */}}
+            <div class="informativeDiv" id="informativeDivSignIn">
+                <p class="informtextP" id="informtextPSignIn"></p>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        //Define elements of the 'Ajax Form'
+        var inputTextMobileUN = document.getElementById("inputTextMobileUN");
+        var inputTextMobilePW = document.getElementById("inputTextMobilePW");
+        var submitLoginButton = document.getElementById("submitLoginButton");
+        var informtextPSignIn = document.getElementById("informtextPSignIn");
+
+        /* When clicked, submit the results of the login items;
+        if successful, it will redirect to the mainpage with your newly made cookie.
+        */
+        submitLoginButton.addEventListener("click", function(){
+            var LoginData = {
+                Username: String(inputTextMobileUN.value),
+                Password: String(inputTextMobilePW.value)
+            };
+
+            var jsonString = JSON.stringify(LoginData); //stringify JSON
+
+            //Call Ajax to see if password/username are correct
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/canLogin', true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.addEventListener('readystatechange', function(){
+                if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200){
+                    var Response = xhr.responseText;
+                    var SuccessMSG = JSON.parse(Response);
+                    if (Number(SuccessMSG.SuccessNum) === 0){
+                        //Successful User Search
+                        //Clear informtextPSignIn
+                        informtextPSignIn.innerHTML = "";
+                        informtextPSignIn.innerHTML = SuccessMSG.Message;
+                        //This User should have their cookie. Send them to the choice page
+                        navigateHeader(3);
+                    } else if (Number(SuccessMSG.SuccessNum) === 1){
+                        //Failed User Search
+                        //Clear informtextPSignIn
+                        informtextPSignIn.innerHTML = "";
+                        informtextPSignIn.innerHTML = SuccessMSG.Message;
+                    } else {
+                        //Failed User Search
+                        //Clear informtextPSignIn
+                        informtextPSignIn.innerHTML = "";
+                        informtextPSignIn.innerHTML = "Wrong information returned from server";
+                        console.log("Wrong number returned from canLogin: " + SuccessMSG.SuccessNum);
+                    }
+                }
+            });
+            xhr.send(jsonString);
+        });
+    </script>
+{{end}} 
+{{/****** SIGN UP SECTION ******/}}
+
+
+{{/***** SIGN UP FORM *******/}}
+{{define "ajaxsignup"}}
+    {{/* Here is the form setup */}}
+    <div id="divformDivSignUp" class="divformDiv">
+        {{/* Sign Up Title Instruction */}}
+        <div class="instructUserDiv">
+            <p class="formSign">
+                Sign-Up
+            </p>
+        </div>
+        {{/* Begin signup form */}}
+        <div class="signInAlignmentDiv">
+            {{/* USERNAME */}}
+            <div class="feildsSectionDiv">
+                <div class="labelDiv">
+                    <p class="labelPText">
+                        USERNAME:
+                    </p>
+                </div>
+                <div class="inputDiv">
+                    <input type="text" id="username" name="username" placeholder="username" minlength=1 maxlength=20 required>
+                    <br>
+                    <p id="form-input-info"></p>
+                </div>
+            </div>
+            {{/* FIRSTNAME */}}
+            <div class="feildsSectionDiv">
+                <div class="labelDiv">
+                    <p class="labelPText">
+                        FIRSTNAME:
+                    </p>
+                </div>
+                <div class="inputDiv">
+                    <input type="text" id="firstname" name="firstname" placeholder="firstname" minlength=1 maxlength=20 required>
+                    <br>
+                    <p id="form-input-info"></p>
+                </div>
+            </div>
+            {{/* LASTNAME */}}
+            <div class="feildsSectionDiv">
+                <div class="labelDiv">
+                    <p class="labelPText">
+                        LASTNAME:
+                    </p>
+                </div>
+                <div class="inputDiv">
+                    <input type="text" id="lastname" name="lastname" placeholder="lastname" minlength=1 maxlength=20 required>
+                    <br>
+                    <p id="form-input-info"></p>
+                </div>
+            </div>
+            {{/* PASSWORD */}}
+            <div class="feildsSectionDiv">
+                <div class="labelDiv">
+                    <p class="labelPText">
+                        PASSWORD:
+                    </p>
+                </div>
+                <div class="inputDiv">
+                    <input type="password" id="password" name="password" placeholder="Password" minlength=8 maxlength=20 required>
+                    <br>
+                    <p id="form-input-info2"></p>
+                </div>
+            </div>
+            {{/* CHECK PASSWORD*/}}
+            <div class="feildsSectionDiv">
+                <div class="labelDiv">
+                    <p class="labelPText">
+                        RE-TYPE PASSWORD:
+                    </p>
+                </div>
+                <div class="inputDiv">
+                    <input type="password" id="passwordRetype" name="passwordRetype" placeholder="Re-type password" minlength=8 maxlength=20 required>
+                    <br>
+                    <p id="form-input-info2"></p>
+                </div>
+            </div>
+            {{/* EMAIL */}}
+            <div class="feildsSectionDiv">
+                <div class="labelDiv">
+                    <p class="labelPText">
+                        Email:
+                    </p>
+                </div>
+                <div class="inputDiv">
+                    <input type="email" id="email" name="myEmailInput" placeholder="Enter a valid email" maxlength=50>
+                    <!-- Used to inform about status of email -->
+                    <p class="labelPText" id="emailOkay">
+                        
+                    </p>
+                </div>
+            </div>
+            {{/* PRIMARY PHONE NUMBER(S) */}}
+            {{/* DEBUG: Need to collect multiple phone numbers; use angular to create new tab(s)*/}}
+            <div class="feildsSectionDiv">
+                <div class="labelDiv">
+                    <p class="labelPText">
+                        Primary Phone Numbers:
+                    </p>
+                </div>
+                <div class="inputDiv">
+                    <input type="text" id="primaryPhoneNums" name="primaryPhoneNums" placeholder="Primary phone number" minlength=1 maxlength=20>
+                    <br>
+                    <p id="form-input-info"></p>
+                </div>
+            </div>
+            {{/* TELL US ABOUT YOU */}}
+            <div class="feildsSectionDiv">
+                <div class="labelDiv">
+                    <p class="labelPText">
+                        Tell us about you! Why do you want to join LearnR? Inform a friend/family member?
+                        Make your own learnR? We'd love to know!
+                    </p>
+                </div>
+                <div class="inputDiv">
+                    <textarea class="textareaTellMe" id="textareaTellMe" name="textareaTellMe" placeholder="Let us know!"></textarea>
+                </div>
+            </div>
+            {{/* SUBMIT BUTTON */}}
+            <div class="feildsSectionDiv">
+                <div class="fieldSection" id="signUpSubmitB">
+                    <button id="submitSignUpButton">Submit</button>
+                </div>
+            </div>
+            {{/* INFORMITIVE DIV */}}
+            <div class="feildsSectionDiv">
+                <div class="informativeDiv" id="informativeDivSignUp">
+                    <p class="informtextP" id="informtextPSignUp"></p>
+                </div>
+            </div>
+        </div>
+        <div class="informFormDiv" id="informFormDiv">
+            <p class="informFormP" id="informFormP"></p>
+        </div>
+    </div>
+{{end}}

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -10,6 +11,8 @@ import (
 //Handles all requests coming in
 func handleRequests() {
 	myRouter := mux.NewRouter().StrictSlash(true)
+
+	fmt.Printf("Handling requests on 4000...\n")
 
 	logWriter("We are now handling requests")
 	//Serve our User Crud API

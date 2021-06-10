@@ -13,30 +13,11 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
-	"github.com/stretchr/testify/assert"
 )
 
 /* Mongo DB Creds */
 
 /* Declarative structs for our testing */
-
-//UserCrud Create
-type UserCrudCreate struct {
-	TheUser             User
-	ExpectedNum         int
-	ExpectedStringArray []string
-}
-
-var userCrudCreateResults []UserCrudCreate
-
-//UserCrud Read
-type UserCrudRead struct {
-	TheUser             User
-	ExpectedNum         int
-	ExpectedStringArray []string
-}
-
-var userCrudReadResults []UserCrudRead
 
 func TestMain(m *testing.M) {
 	//Build stuff for beginning of tests
@@ -152,6 +133,7 @@ func TestHTTPRequest(t *testing.T) {
 }
 
 /* TESTING STUFF FOR OUR TESTING FILES! SHOULD BE COMMENTED OUT IF NOT NEEDED! */
+/*
 func TestGiveUsernames(t *testing.T) {
 
 	request, _ := http.NewRequest("GET", "/giveAllUsernames", nil)
@@ -159,3 +141,4 @@ func TestGiveUsernames(t *testing.T) {
 	Router().ServeHTTP(response, request)
 	assert.Equal(t, 200, response.Code, "OK response is expected")
 }
+*/

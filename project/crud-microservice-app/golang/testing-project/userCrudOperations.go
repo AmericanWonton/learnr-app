@@ -62,8 +62,6 @@ func connectDB() *mongo.Client {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("DEBUG: We've connected to the MongoDB\n")
-
 	return theClient
 }
 
@@ -96,11 +94,12 @@ func addUser(w http.ResponseWriter, req *http.Request) {
 	var postedUser User
 	json.Unmarshal(bs, &postedUser)
 
-	if canCrud {
+	//Check to see if we can perform CRUD operations and we aren't passing a null User
+	if canCrud && postedUser.UserID > 0 {
 		user_collection := mongoClient.Database("learnR").Collection("users") //Here's our collection
 		collectedUsers := []interface{}{postedUser}
 		//Insert Our Data
-		_, err2 := user_collection.InsertMany(context.TODO(), collectedUsers)
+		_, err2 := user_collection.InsertMany(theContext, collectedUsers)
 
 		if err2 != nil {
 			theErr := "Error adding User in addUser in crudoperations API: " + err2.Error()
@@ -115,6 +114,12 @@ func addUser(w http.ResponseWriter, req *http.Request) {
 			theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
 			theReturnMessage.SuccOrFail = 0
 		}
+	} else {
+		theErr := "Error adding User; could not perform CRUD or UserID was bad: " + strconv.Itoa(postedUser.UserID)
+		logWriter(theErr)
+		theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
+		theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
+		theReturnMessage.SuccOrFail = 1
 	}
 
 	theJSONMessage, err := json.Marshal(theReturnMessage)
@@ -158,7 +163,7 @@ func deleteUser(w http.ResponseWriter, req *http.Request) {
 	json.Unmarshal(bs, &postedUserID)
 
 	//Delete only if we had no issues above
-	if canCrud {
+	if canCrud && postedUserID.UserID > 0 {
 		//Search for User and delete
 		userCollection := mongoClient.Database("learnR").Collection("users") //Here's our collection
 		deletes := []bson.M{
@@ -188,13 +193,28 @@ func deleteUser(w http.ResponseWriter, req *http.Request) {
 			theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
 			theReturnMessage.SuccOrFail = 1
 		} else {
-			theErr := "User successfully deleted in deleteUser in crudoperations: " + string(bs)
-			fmt.Printf("DEBUG: %v . Here is the amount deleted:%v\n", theErr, bulkWrite.DeletedCount)
-			logWriter(theErr)
-			theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
-			theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
-			theReturnMessage.SuccOrFail = 0
+			//Check to see if delete count worked; must have deleted at least one
+			resultInt := bulkWrite.DeletedCount
+			if resultInt > 0 {
+				theErr := "User successfully deleted in deleteUser in crudoperations: " + string(bs)
+				logWriter(theErr)
+				theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
+				theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
+				theReturnMessage.SuccOrFail = 0
+			} else {
+				theErr := "No documents deleted for this given UserID: " + strconv.Itoa(postedUserID.UserID)
+				logWriter(theErr)
+				theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
+				theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
+				theReturnMessage.SuccOrFail = 1
+			}
 		}
+	} else {
+		theErr := "Error, could not CRUD operate in deleteUser, or the number we recieved was wrong: " + strconv.Itoa(postedUserID.UserID)
+		logWriter(theErr)
+		theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
+		theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
+		theReturnMessage.SuccOrFail = 1
 	}
 
 	//Write the response back
@@ -236,46 +256,63 @@ func updateUser(w http.ResponseWriter, req *http.Request) {
 
 	//Update User if we have successfully decoded from JSON
 	if canCrud {
-		//Update User
-		theTimeNow := time.Now()
-		userCollection := mongoClient.Database("learnR").Collection("users") //Here's our collection
-		theFilter := bson.M{
-			"userid": bson.M{
-				"$eq": theUserUpdate.UserID, // check if bool field has value of 'false'
-			},
-		}
-		updatedDocument := bson.M{
-			"$set": bson.M{
-				"username":    theUserUpdate.UserName,
-				"password":    theUserUpdate.Password,
-				"firstname":   theUserUpdate.Firstname,
-				"lastname":    theUserUpdate.Lastname,
-				"phonenums":   theUserUpdate.PhoneNums,
-				"userid":      theUserUpdate.UserID,
-				"email":       theUserUpdate.Email,
-				"whoare":      theUserUpdate.Whoare,
-				"adminorgs":   theUserUpdate.AdminOrgs,
-				"orgmember":   theUserUpdate.OrgMember,
-				"banned":      theUserUpdate.Banned,
-				"datecreated": theUserUpdate.DateCreated,
-				"dateupdated": theTimeNow.Format("2006-01-02 15:04:05"),
-			},
-		}
-		updatedInfo, err := userCollection.UpdateOne(theContext, theFilter, updatedDocument)
+		//Update User if their User ID != 0 or nil
+		if theUserUpdate.UserID != 0 {
+			//Update User
+			theTimeNow := time.Now()
+			userCollection := mongoClient.Database("learnR").Collection("users") //Here's our collection
+			theFilter := bson.M{
+				"userid": bson.M{
+					"$eq": theUserUpdate.UserID, // check if bool field has value of 'false'
+				},
+			}
+			updatedDocument := bson.M{
+				"$set": bson.M{
+					"username":    theUserUpdate.UserName,
+					"password":    theUserUpdate.Password,
+					"firstname":   theUserUpdate.Firstname,
+					"lastname":    theUserUpdate.Lastname,
+					"phonenums":   theUserUpdate.PhoneNums,
+					"userid":      theUserUpdate.UserID,
+					"email":       theUserUpdate.Email,
+					"whoare":      theUserUpdate.Whoare,
+					"adminorgs":   theUserUpdate.AdminOrgs,
+					"orgmember":   theUserUpdate.OrgMember,
+					"banned":      theUserUpdate.Banned,
+					"datecreated": theUserUpdate.DateCreated,
+					"dateupdated": theTimeNow.Format("2006-01-02 15:04:05"),
+				},
+			}
+			updateResult, err := userCollection.UpdateOne(theContext, theFilter, updatedDocument)
 
-		if err != nil {
-			theErr := "Error writing update User in updateUser in crudoperations: " + err.Error()
+			if err != nil {
+				theErr := "Error writing update User in updateUser in crudoperations: " + err.Error()
+				logWriter(theErr)
+				theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
+				theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
+				theReturnMessage.SuccOrFail = 1
+			} else {
+				//Check to see if anything was updated; if not, return the error
+				if updateResult.ModifiedCount < 1 {
+					theErr := "No document updated with this ID: " + strconv.Itoa(theUserUpdate.UserID)
+					logWriter(theErr)
+					theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
+					theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
+					theReturnMessage.SuccOrFail = 1
+				} else {
+					theErr := "User successfully updated in updateUser in crudoperations: " + string(bs) + "\n"
+					logWriter(theErr)
+					theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
+					theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
+					theReturnMessage.SuccOrFail = 0
+				}
+			}
+		} else {
+			theErr := "The User ID was not found: " + strconv.Itoa(theUserUpdate.UserID)
 			logWriter(theErr)
 			theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
 			theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
 			theReturnMessage.SuccOrFail = 1
-		} else {
-			theErr := "User successfully updated in updateUser in crudoperations: " + string(bs)
-			fmt.Printf("DEBUG: %v. Here is the update results: %v\n", theErr, updatedInfo.ModifiedCount)
-			logWriter(theErr)
-			theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
-			theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
-			theReturnMessage.SuccOrFail = 0
 		}
 	}
 
@@ -322,11 +359,10 @@ func getUser(w http.ResponseWriter, req *http.Request) {
 	var theUserGet UserIDUser
 	json.Unmarshal(bs, &theUserGet)
 
-	//If we successfully decoded, we can insert our user
-	if canCrud {
+	//If we successfully decoded, (and the UesrID is not 0) we can get our user
+	if canCrud && theUserGet.TheUserID > 0 {
 		/* Find the User with the given Username */
-		theUserReturned := User{} //Initialize User to be returned after Mongo query
-
+		var theUserReturned User                                             //Initialize User to be returned after Mongo query
 		userCollection := mongoClient.Database("learnR").Collection("users") //Here's our collection
 		theFilter := bson.M{
 			"userid": bson.M{
@@ -336,7 +372,7 @@ func getUser(w http.ResponseWriter, req *http.Request) {
 		findOptions := options.Find()
 		findUser, err := userCollection.Find(theContext, theFilter, findOptions)
 		theFind := 0 //A counter to track how many users we find
-		if findUser.Err() != nil {
+		if findUser.Err() != nil || err != nil {
 			if strings.Contains(err.Error(), "no documents in result") {
 				stringUserID := strconv.Itoa(theUserGet.TheUserID)
 				returnedErr := "For " + stringUserID + ", no User was returned: " + err.Error()
@@ -357,9 +393,6 @@ func getUser(w http.ResponseWriter, req *http.Request) {
 				theReturnMessage.ReturnedUser = User{}
 			}
 		} else {
-			//Set initial values so the decode function dosen't freak out
-			theUserReturned.UserName = ""
-			theUserReturned.Password = ""
 			//Found User, decode to return
 			for findUser.Next(theContext) {
 				stringUserID := strconv.Itoa(theUserGet.TheUserID)
@@ -395,7 +428,6 @@ func getUser(w http.ResponseWriter, req *http.Request) {
 			stringUserID := strconv.Itoa(theUserGet.TheUserID)
 			returnedErr := "For " + stringUserID +
 				", No User was returned."
-			fmt.Println(returnedErr)
 			logWriter(returnedErr)
 			theReturnMessage.SuccOrFail = 1
 			theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
@@ -413,6 +445,16 @@ func getUser(w http.ResponseWriter, req *http.Request) {
 			theReturnMessage.TheErr = append(theReturnMessage.TheErr, "")
 			theReturnMessage.ReturnedUser = theUserReturned
 		}
+	} else {
+		//Error, return an error back and log it
+		stringUserID := strconv.Itoa(theUserGet.TheUserID)
+		returnedErr := "For " + stringUserID +
+			", No User was returned. UserID was also not accepted: " + stringUserID
+		logWriter(returnedErr)
+		theReturnMessage.SuccOrFail = 1
+		theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
+		theReturnMessage.TheErr = append(theReturnMessage.TheErr, returnedErr)
+		theReturnMessage.ReturnedUser = User{}
 	}
 
 	//Format the JSON map for returning our results
@@ -454,14 +496,12 @@ func giveAllUsernames(w http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		if strings.Contains(err.Error(), "no documents in result") {
 			theErr := "No documents were returned for users in giveAllUsernames in MongoDB: " + err.Error()
-			fmt.Printf("DEBUG: %v\n", theErr)
 			theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
 			theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
 			theReturnMessage.SuccOrFail = 1
 			logWriter(theErr)
 		} else {
 			theErr := "There was an error returning results for this Users, :" + err.Error()
-			fmt.Printf("DEBUG: %v\n", theErr)
 			theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
 			theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
 			theReturnMessage.SuccOrFail = 1
