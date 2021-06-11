@@ -19,6 +19,7 @@ const GETALLUSERNAMESURL string = "http://localhost:4000/giveAllUsernames"
 
 //ViewData
 type UserViewData struct {
+	TheUser        User   `json:"TheUser"`        //The User
 	Username       string `json:"Username"`       //The Username
 	UserID         int    `json:"UserID"`         //The UserID
 	MessageDisplay int    `json:"MessageDisplay"` //This is IF we need a message displayed
@@ -55,6 +56,7 @@ func mainpage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	vd := UserViewData{
+		TheUser:        aUser,
 		Username:       aUser.UserName,
 		UserID:         aUser.UserID,
 		MessageDisplay: 0,
@@ -62,6 +64,86 @@ func mainpage(w http.ResponseWriter, r *http.Request) {
 	}
 	/* Execute template, handle error */
 	err1 := template1.ExecuteTemplate(w, "mainpage.gohtml", vd)
+	HandleError(w, err1)
+}
+
+//Handles the learnmore page
+func learnmore(w http.ResponseWriter, r *http.Request) {
+	aUser := getUser(w, r)
+	//Redirect User if they are not logged in
+	if !alreadyLoggedIn(w, r) {
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	}
+	vd := UserViewData{
+		TheUser:        aUser,
+		Username:       aUser.UserName,
+		UserID:         aUser.UserID,
+		MessageDisplay: 0,
+		Banned:         aUser.Banned,
+	}
+	/* Execute template, handle error */
+	err1 := template1.ExecuteTemplate(w, "learnmore.gohtml", vd)
+	HandleError(w, err1)
+}
+
+//Handles the sendhelp page
+func sendhelp(w http.ResponseWriter, r *http.Request) {
+	aUser := getUser(w, r)
+	//Redirect User if they are not logged in
+	if !alreadyLoggedIn(w, r) {
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	}
+	vd := UserViewData{
+		TheUser:        aUser,
+		Username:       aUser.UserName,
+		UserID:         aUser.UserID,
+		MessageDisplay: 0,
+		Banned:         aUser.Banned,
+	}
+	/* Execute template, handle error */
+	err1 := template1.ExecuteTemplate(w, "sendhelp.gohtml", vd)
+	HandleError(w, err1)
+}
+
+//Handles the learnr page
+func learnr(w http.ResponseWriter, r *http.Request) {
+	aUser := getUser(w, r)
+	//Redirect User if they are not logged in
+	if !alreadyLoggedIn(w, r) {
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	}
+	vd := UserViewData{
+		TheUser:        aUser,
+		Username:       aUser.UserName,
+		UserID:         aUser.UserID,
+		MessageDisplay: 0,
+		Banned:         aUser.Banned,
+	}
+	/* Execute template, handle error */
+	err1 := template1.ExecuteTemplate(w, "learnr.gohtml", vd)
+	HandleError(w, err1)
+}
+
+//Handles the makeorg page
+func makeorg(w http.ResponseWriter, r *http.Request) {
+	aUser := getUser(w, r)
+	//Redirect User if they are not logged in
+	if !alreadyLoggedIn(w, r) {
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	}
+	vd := UserViewData{
+		TheUser:        aUser,
+		Username:       aUser.UserName,
+		UserID:         aUser.UserID,
+		MessageDisplay: 0,
+		Banned:         aUser.Banned,
+	}
+	/* Execute template, handle error */
+	err1 := template1.ExecuteTemplate(w, "makeorg.gohtml", vd)
 	HandleError(w, err1)
 }
 

@@ -1,7 +1,11 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -79,4 +83,44 @@ func alreadyLoggedIn(w http.ResponseWriter, req *http.Request) bool {
 	cookie.MaxAge = sessionLength
 	http.SetCookie(w, cookie)
 	return ok
+}
+
+//Logs User out of session by removing cookie
+func logUserOut(w http.ResponseWriter, r *http.Request) {
+	//Collect JSON from Postman or wherever
+	//Get the byte slice from the request body ajax
+	bs, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		fmt.Println(err)
+		logWriter(err.Error())
+	}
+
+	//Send a response back to Ajax after session is made
+	type SuccessMSG struct {
+		Message    string `json:"Message"`
+		SuccessNum int    `json:"SuccessNum"`
+	}
+	theSuccMessage := SuccessMSG{Message: "Successful Session delete", SuccessNum: 0}
+
+	//Marshal the user data into our type
+	var userSessionUser User
+	json.Unmarshal(bs, &userSessionUser)
+
+	//Remove this User from the map
+	delete(dbUsers, userSessionUser.UserName)
+	//Remove from Session map
+	sessionID := ""
+	for key, element := range dbSessions {
+		if strings.Contains(userSessionUser.UserName, element.username) {
+			sessionID = key
+		}
+	}
+	delete(dbSessions, sessionID)
+	//Return JSON
+	theJSONMessage, err := json.Marshal(theSuccMessage)
+	if err != nil {
+		fmt.Println(err)
+		logWriter(err.Error())
+	}
+	fmt.Fprint(w, string(theJSONMessage))
 }
