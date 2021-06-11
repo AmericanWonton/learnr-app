@@ -13,10 +13,12 @@ func handleRequests() {
 
 	http.Handle("/favicon.ico", http.NotFoundHandler()) //For missing FavIcon
 	//Serve our pages
-	myRouter.HandleFunc("/", index)            //Serve index page
-	myRouter.HandleFunc("/login", login)       //Serve login page
-	myRouter.HandleFunc("/signup", signup)     //Serve signup page
-	myRouter.HandleFunc("/mainpage", mainpage) //Serve main page
+	myRouter.HandleFunc("/", index)              //Serve index page
+	myRouter.HandleFunc("/login", login)         //Serve login page
+	myRouter.HandleFunc("/signup", signup)       //Serve signup page
+	myRouter.HandleFunc("/mainpage", mainpage)   //Serve main page
+	myRouter.HandleFunc("/learnmore", learnmore) //Serve learnmore page
+	myRouter.HandleFunc("/sendhelp", sendhelp)   //Serve the sendhelp page
 	//Used for session work
 	myRouter.HandleFunc("/logUserOut", logUserOut).Methods("POST") //Remove our cookie after logging out user
 	//Serve our Validation API

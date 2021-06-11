@@ -16,11 +16,11 @@ function navigateHeader(whichLink, whichgame) {
             window.location.assign("/mainpage");
             break;
         case 4:
-            //Go to aboutme page
+            //Go to learnmore page
             window.location.assign("/learnmore");
             break;
         case 5:
-            //Go to messageme page
+            //Go to Send Help Page
             window.location.assign("/sendhelp");
             break;
         case 6:
@@ -34,11 +34,11 @@ function navigateHeader(whichLink, whichgame) {
             window.location.assign("/signup");
             break;
         case 8:
-            //Game Page
+            //Make Organization
             window.location.assign("/makeorganization");
             break;
         case 9:
-            //Game Page
+            //Admin Page
             window.location.assign("/admin");
             break;
         default:
