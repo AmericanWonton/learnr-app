@@ -41,6 +41,18 @@ type User struct {
 	DateUpdated string   `json:"DateUpdated"`
 }
 
+//LearnR Org
+type LearnrOrg struct {
+	OrgID       int      `json:"OrgID"` //Unique ID of this organization
+	Name        int      `json:"Name"`  //Name of this organization
+	OrgGoals    []string //A list of goals for this organization
+	UserList    []int    //All the Users in this organization
+	AdminList   []int    //A list of all the Admins in this organization,(UserIDs)
+	LearnrList  []int    //A list of all learnr ints in this organization
+	DateCreated string   `json:"DateCreated"`
+	DateUpdated string   `json:"DateUpdated"`
+}
+
 //This gets the client to connect to our DB
 func connectDB() *mongo.Client {
 	//Setup Mongo connection to Atlas Cluster

@@ -16,15 +16,17 @@ function navigateHeader(whichLink, whichgame) {
             window.location.assign("/mainpage");
             break;
         case 4:
-            //Go to aboutme page
-            window.location.assign("/aboutme");
+            //Go to learnmore page
+            window.location.assign("/learnmore");
             break;
         case 5:
-            //Go to messageme page
-            window.location.assign("/messageme");
+            //Go to Send Help Page
+            window.location.assign("/sendhelp");
             break;
         case 6:
             //Go to Index
+            //Need to log User out
+
             window.location.assign("/");
             break;
         case 7:
@@ -32,13 +34,16 @@ function navigateHeader(whichLink, whichgame) {
             window.location.assign("/signup");
             break;
         case 8:
-            //Game Page
-            window.location.assign("/gamepage");
+            //Make Organization
+            window.location.assign("/makeorg");
             break;
         case 9:
-            //Game Page
+            //Admin Page
             window.location.assign("/admin");
             break;
+        case 10:
+            //Make LearR Page
+            window.location.assign("/learnr");
         default:
             console.log("Error, wrong whichLink entered: " + whichLink);
             break;

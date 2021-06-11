@@ -16,10 +16,17 @@ import (
 /* TEMPLATE DEFINITION */
 var template1 *template.Template
 
+/* Template funcmap */
+var funcMap = template.FuncMap{
+	"uppercase": strings.ToUpper, //upperCase is a key we can call inside of the template html file
+	"isAdmin":   isAdmin,         //Check to see if a User is an admin
+}
+
 //initial functions when starting the app
 func init() {
+	usernameMap = make(map[string]bool) //Clear all Usernames when loading so no problems are caused
 	//Initialize our web page templates
-	template1 = template.Must(template.ParseGlob("./static/templates/*"))
+	template1 = template.Must(template.New("").Funcs(funcMap).ParseGlob("./static/templates/*"))
 	//Initialize Mongo Creds
 	getCredsMongo()
 	//Initialize our bad phrases

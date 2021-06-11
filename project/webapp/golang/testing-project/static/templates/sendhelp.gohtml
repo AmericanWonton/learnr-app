@@ -13,18 +13,28 @@
         {{template "media-queries"}}
         {{/* Here is our Javascript or additional code needed */}}
         <script src="static/js/pagehandling.js"></script>
-        <script src="static/js/login.js"></script>
+        <script src="static/js/app.js"></script>
         {{/* AngularJS for added email address */}}
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
     </head>
     <body>
-        {{/* Here is our header */}}
+        {{/* Send data to javascript */}}
+        {{$theUser := .TheUser}}
+        {{$theUsername := .Username}}
+        {{$theUserID := .UserID}}
+        {{$messageDisplay := .MessageDisplay}}
+        {{$banned := .Banned}}
+
+        {{template "sendUser" $theUser}}
+        {{template "sendBanned" $banned}}
         
-        {{/* Login section */}}
+        {{/* Here is our header */}}
+        {{template "header_everywhere" $theUser}}
+
+        
+        {{/* Main */}}
         <div class="mainContentDiv">
-            <div class="divLoginStuff">
-                {{template "login_form_section"}}
-            </div>
+            <p>In the Send Help Page</p>
         </div>
         {{/* Here is our footer */}}
     </body>
