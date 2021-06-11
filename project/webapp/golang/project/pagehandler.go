@@ -107,6 +107,46 @@ func sendhelp(w http.ResponseWriter, r *http.Request) {
 	HandleError(w, err1)
 }
 
+//Handles the learnr page
+func learnr(w http.ResponseWriter, r *http.Request) {
+	aUser := getUser(w, r)
+	//Redirect User if they are not logged in
+	if !alreadyLoggedIn(w, r) {
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	}
+	vd := UserViewData{
+		TheUser:        aUser,
+		Username:       aUser.UserName,
+		UserID:         aUser.UserID,
+		MessageDisplay: 0,
+		Banned:         aUser.Banned,
+	}
+	/* Execute template, handle error */
+	err1 := template1.ExecuteTemplate(w, "learnr.gohtml", vd)
+	HandleError(w, err1)
+}
+
+//Handles the makeorg page
+func makeorg(w http.ResponseWriter, r *http.Request) {
+	aUser := getUser(w, r)
+	//Redirect User if they are not logged in
+	if !alreadyLoggedIn(w, r) {
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	}
+	vd := UserViewData{
+		TheUser:        aUser,
+		Username:       aUser.UserName,
+		UserID:         aUser.UserID,
+		MessageDisplay: 0,
+		Banned:         aUser.Banned,
+	}
+	/* Execute template, handle error */
+	err1 := template1.ExecuteTemplate(w, "makeorg.gohtml", vd)
+	HandleError(w, err1)
+}
+
 // Handle Errors passing templates
 func HandleError(w http.ResponseWriter, err error) {
 	if err != nil {

@@ -270,3 +270,15 @@ func randomAPICall() (bool, string, int) {
 
 	return goodGet, message, finalInt
 }
+
+/* Checks to see if this User is an admin. This is called from our gotemplate,
+to see if User can create a learnR. If 0, they are an admin */
+func isAdmin(aUser User) int {
+	isAdmin := 1
+
+	if len(aUser.AdminOrgs) > 0 {
+		isAdmin = 0
+	}
+
+	return isAdmin
+}

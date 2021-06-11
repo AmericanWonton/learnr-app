@@ -301,6 +301,17 @@
                         Make Organization
                     </p>
                 </div>
+                <!-- Create LearnR; NOTE: This should only be 
+                visible if the User has at least ONE admin org they are
+                apart of -->
+                {{$userExampOrg := isAdmin .}}
+                {{if eq $userExampOrg 0}}
+                    <div class="navigationLinkDiv">
+                        <p class="navigationLinkP" onclick="navigateHeader(10, 0)">
+                            Make LearnR (Admins Only!)
+                        </p>
+                    </div>
+                {{end}}
                 <!-- Send Help -->
                 <div class="navigationLinkDiv">
                     <p class="navigationLinkP" onclick="navigateHeader(5, 0)">

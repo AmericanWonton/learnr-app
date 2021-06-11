@@ -18,9 +18,6 @@
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
     </head>
     <body>
-        {{/* Here is our header */}}
-        {{template "header_everywhere"}}
-
         {{/* Send data to javascript */}}
         {{$theUser := .TheUser}}
         {{$theUsername := .Username}}
@@ -30,6 +27,11 @@
 
         {{template "sendUser" $theUser}}
         {{template "sendBanned" $banned}}
+
+        {{/* Here is our header */}}
+        {{template "header_everywhere" $theUser}}
+
+        
         {{/* Login section */}}
         <div class="mainContentDiv">
             

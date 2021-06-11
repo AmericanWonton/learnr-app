@@ -35,12 +35,15 @@ function navigateHeader(whichLink, whichgame) {
             break;
         case 8:
             //Make Organization
-            window.location.assign("/makeorganization");
+            window.location.assign("/makeorg");
             break;
         case 9:
             //Admin Page
             window.location.assign("/admin");
             break;
+        case 10:
+            //Make LearR Page
+            window.location.assign("/learnr");
         default:
             console.log("Error, wrong whichLink entered: " + whichLink);
             break;
