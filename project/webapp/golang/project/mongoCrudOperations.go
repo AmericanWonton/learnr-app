@@ -44,7 +44,7 @@ type User struct {
 //LearnR Org
 type LearnrOrg struct {
 	OrgID       int      `json:"OrgID"` //Unique ID of this organization
-	Name        int      `json:"Name"`  //Name of this organization
+	Name        string   `json:"Name"`  //Name of this organization
 	OrgGoals    []string //A list of goals for this organization
 	UserList    []int    //All the Users in this organization
 	AdminList   []int    //A list of all the Admins in this organization,(UserIDs)
