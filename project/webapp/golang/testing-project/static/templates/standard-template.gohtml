@@ -329,6 +329,64 @@
     </header>
 {{end}}
 
+{{/* MAKE ORG SECTION */}}
+{{define "makeorg"}}
+    <div class="divformDiv" id="divFormMakeOrg">
+        {{/* Make Org Instruction */}}
+        <div class="instructUserDiv">
+            <p class="formSign">
+                Make your organization here! Tell me the name of your Organization and what you hope
+                to inform others about. It could be a political campaign, education on a subject
+                you're passionate about, or details for your next big event. What do YOU
+                want others to LEARN about and why?
+            </p>
+        </div>
+        {{/* Begin Make LearnR Org */}}
+        <div class="signInAlignmentDiv">
+            {{/* LEARNR ORG NAME */}}
+            <div class="feildsSectionDiv">
+                <div class="labelDiv">
+                    <p class="labelPText">
+                        Name of LearnR Organization:
+                    </p>
+                </div>
+                <div class="inputDiv">
+                    <input type="text" id="learnrorgname" name="learnrorgname" placeholder="Name of LearnR Organization" 
+                    minlength=1 maxlength=25 required>
+                    <br>
+                    <p id="form-input-info"></p>
+                </div>
+            </div>
+            {{/* TELL US ABOUT YOUR ORGANIZATION */}}
+            <div class="feildsSectionDiv">
+                <div class="labelDiv">
+                    <p class="labelPText">
+                        LearnR Goals:
+                    </p>
+                </div>
+                <div class="inputDiv">
+                    <textarea class="textareaTellMe" id="textareaTellMe" name="textareaTellMe"
+                     placeholder="Let us know why you want to make a LearnR Organization!"></textarea>
+                </div>
+            </div>
+            {{/* SUBMIT BUTTON */}}
+            <div class="feildsSectionDiv">
+                <div class="fieldSection" id="signUpSubmitB">
+                    <button id="submitSignUpButton">Submit</button>
+                </div>
+            </div>
+            {{/* INFORMITIVE DIV */}}
+            <div class="feildsSectionDiv">
+                <div class="informativeDiv" id="informativeDivSignUp">
+                    <p class="informtextP" id="informtextPSignUp"></p>
+                </div>
+            </div>
+        </div>
+        <div class="informFormDiv" id="informFormDiv">
+            <p class="informFormP" id="informFormP"></p>
+        </div>
+    </div>
+{{end}}
 
 {{/*** Javascript sections for data ***/}}
 {{define "sendUser"}}
@@ -341,3 +399,5 @@
         setBanned({{.}});
     </script>
 {{end}}
+
+
