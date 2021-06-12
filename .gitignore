@@ -14,3 +14,4 @@ logging
 weblog.txt
 project/webapp/golang/project/logging
 project/crud-microservice-app/golang/testing-project/test-data
+project/webapp/golang/testing-project/logging

@@ -14,15 +14,10 @@ import (
 	"time"
 )
 
-//Admin token for making actions
-type AdminToken struct {
-	AdminID string `json:"AdminID"`
-	UserID  int    `json:"UserID"`
-}
-
 /* Used for API Calls */
 const GETRANDOMID string = "http://localhost:4000/randomIDCreationAPI"
 const ADDUSERURL string = "http://localhost:4000/addUser"
+const ADDLEARNRORGURL string = "http://localhost:4000/addLearnOrg"
 const GETUSERLOGIN string = "http://localhost:4000/userLogin"
 
 /* DEFINED SLURS */
