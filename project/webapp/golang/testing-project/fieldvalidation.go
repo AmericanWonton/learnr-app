@@ -23,6 +23,7 @@ type AdminToken struct {
 /* Used for API Calls */
 const GETRANDOMID string = "http://localhost:4000/randomIDCreationAPI"
 const ADDUSERURL string = "http://localhost:4000/addUser"
+const ADDLEARNRORGURL string = "http://localhost:4000/addLearnOrg"
 const GETUSERLOGIN string = "http://localhost:4000/userLogin"
 
 /* DEFINED SLURS */

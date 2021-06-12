@@ -16,6 +16,7 @@ var allUsernames []string
 var usernameMap map[string]bool
 
 const GETALLUSERNAMESURL string = "http://localhost:4000/giveAllUsernames"
+const GETALLLEARNRORGURL string = "http://localhost:4000/giveAllLearnROrg"
 
 //ViewData
 type UserViewData struct {
