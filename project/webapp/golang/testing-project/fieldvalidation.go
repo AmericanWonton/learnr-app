@@ -20,6 +20,10 @@ const ADDUSERURL string = "http://localhost:4000/addUser"
 const ADDLEARNRORGURL string = "http://localhost:4000/addLearnOrg"
 const GETUSERLOGIN string = "http://localhost:4000/userLogin"
 
+/* Used for LearnR/LearnR Org creation */
+var allLearnROrgNames []string
+var learnOrgMap map[string]bool
+
 /* DEFINED SLURS */
 var slurs []string = []string{}
 
@@ -47,9 +51,9 @@ func getbadWords() {
 }
 
 //Checks the Usernames after every keystroke
-func checkUsername(w http.ResponseWriter, req *http.Request) {
+func checkUsername(w http.ResponseWriter, r *http.Request) {
 	//Get the byte slice from the request body ajax
-	bs, err := ioutil.ReadAll(req.Body)
+	bs, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -64,6 +68,27 @@ func checkUsername(w http.ResponseWriter, req *http.Request) {
 		fmt.Fprint(w, "ContainsLanguage")
 	} else {
 		fmt.Fprint(w, usernameMap[sbs])
+	}
+}
+
+//Checks the LearnROrg Names after every keystroke
+func checkLearnROrgNames(w http.ResponseWriter, r *http.Request) {
+	//Get the byte slice from the request body ajax
+	bs, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	sbs := string(bs)
+
+	if len(sbs) <= 0 {
+		fmt.Fprint(w, "TooShort")
+	} else if len(sbs) > 20 {
+		fmt.Fprint(w, "TooLong")
+	} else if containsLanguage(sbs) {
+		fmt.Fprint(w, "ContainsLanguage")
+	} else {
+		fmt.Fprint(w, learnOrgMap[sbs])
 	}
 }
 

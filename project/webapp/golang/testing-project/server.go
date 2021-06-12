@@ -24,9 +24,10 @@ func handleRequests() {
 	//Used for session work
 	myRouter.HandleFunc("/logUserOut", logUserOut).Methods("POST") //Remove our cookie after logging out user
 	//Serve our Validation API
-	myRouter.HandleFunc("/checkUsername", checkUsername).Methods("POST") //Check Username
-	myRouter.HandleFunc("/canLogin", canLogin).Methods("POST")           //Check User Login
-	myRouter.HandleFunc("/createUser", createUser).Methods("POST")       //Create User
+	myRouter.HandleFunc("/checkUsername", checkUsername).Methods("POST")             //Check Username
+	myRouter.HandleFunc("/checkLearnROrgNames", checkLearnROrgNames).Methods("POST") //Check LearnROrg Name
+	myRouter.HandleFunc("/canLogin", canLogin).Methods("POST")                       //Check User Login
+	myRouter.HandleFunc("/createUser", createUser).Methods("POST")                   //Create User
 	//Serve our static files
 	myRouter.Handle("/", http.FileServer(http.Dir("./static")))
 	myRouter.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
