@@ -409,7 +409,7 @@ func TestUserRead(t *testing.T) {
 		json.Unmarshal(body, &returnedMessage)
 		/* 5. Evaluate response in returnedMessage for testing */
 		if test.ExpectedNum != returnedMessage.SuccOrFail {
-			fmt.Printf("We here testexpected\n")
+			fmt.Printf("We here test un-expected\n")
 			t.Fatal("Wrong num recieved on testcase " + strconv.Itoa(testNum) +
 				" :" + strconv.Itoa(returnedMessage.SuccOrFail) + " Expected: " + strconv.Itoa(test.ExpectedNum))
 		}
@@ -474,7 +474,7 @@ func TestGetAllUsernames(t *testing.T) {
 
 //Test for Deleting Users
 func TestUserDelete(t *testing.T) {
-	time.Sleep(8 * time.Second) //Might needed for CRUD updating
+	time.Sleep(2 * time.Second) //Might needed for CRUD updating
 	testNum := 0                //Used for incrementing
 	for _, test := range userCrudDeleteResults {
 		/* 1. Create Context */
@@ -528,7 +528,7 @@ func TestUserDelete(t *testing.T) {
 		json.Unmarshal(body, &returnedMessage)
 		/* 5. Evaluate response in returnedMessage for testing */
 		if test.ExpectedNum != returnedMessage.SuccOrFail {
-			fmt.Printf("We here testexpected\n")
+			fmt.Printf("We here test un-expected\n")
 			t.Fatal("Wrong num recieved on testcase " + strconv.Itoa(testNum) +
 				" :" + strconv.Itoa(returnedMessage.SuccOrFail) + " Expected: " + strconv.Itoa(test.ExpectedNum))
 		}

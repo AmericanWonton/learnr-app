@@ -883,6 +883,89 @@ func getLearnOrg(w http.ResponseWriter, req *http.Request) {
 
 /* LEARNR CRUD OPERATIONS ENDING */
 
+/* This funciton returns a map of all OrgNames entered in our database when called,
+(should be called wherever we need to create an LearnR Org) */
+func giveAllLearnROrg(w http.ResponseWriter, req *http.Request) {
+	//Declare data to return
+	type ReturnMessage struct {
+		TheErr             []string        `json:"TheErr"`
+		ResultMsg          []string        `json:"ResultMsg"`
+		SuccOrFail         int             `json:"SuccOrFail"`
+		ReturnedOrgNameMap map[string]bool `json:"ReturnedOrgNameMap"`
+	}
+	theReturnMessage := ReturnMessage{}
+	theReturnMessage.SuccOrFail = 0 //Initially set to success
+
+	//Declare empty map to fill and return
+	orgNameMap := make(map[string]bool) //Clear Map for future use on page load
+
+	learnROrgCollection := mongoClient.Database("learnR").Collection("learnorg") //Here's our collection
+
+	//Query Mongo for all Users
+	theFilter := bson.M{}
+	findOptions := options.Find()
+	currOrg, err := learnROrgCollection.Find(theContext, theFilter, findOptions)
+	if err != nil {
+		if strings.Contains(err.Error(), "no documents in result") {
+			theErr := "No documents were returned for orgs in giveAllLearnROrgs in MongoDB: " + err.Error()
+			theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
+			theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
+			theReturnMessage.SuccOrFail = 1
+			logWriter(theErr)
+		} else {
+			theErr := "There was an error returning results for this Org, :" + err.Error()
+			theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
+			theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
+			theReturnMessage.SuccOrFail = 1
+			logWriter(theErr)
+		}
+	}
+	//Loop over query results and fill User Array
+	for currOrg.Next(theContext) {
+		// create a value into which the single document can be decoded
+		var aOrg LearnrOrg
+		err := currOrg.Decode(&aOrg)
+		if err != nil {
+			theErr := "Error decoding Orgs in MongoDB in giveAllLearnROrgs: " + err.Error()
+			theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
+			theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
+			theReturnMessage.SuccOrFail = 0
+			logWriter(theErr)
+		}
+		//Fill Username map with the found Username
+		orgNameMap[aOrg.Name] = true
+	}
+	// Close the cursor once finished
+	currOrg.Close(theContext)
+
+	//Check to see if anyusernames were returned or we have errors
+	if theReturnMessage.SuccOrFail >= 1 {
+		theErr := "There are a number of errors for returning these Organization Names..."
+		theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
+		theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
+	} else if len(orgNameMap) <= 0 {
+		theErr := "No usernames returned...this could be the site's first deployment with no Organizations!"
+		theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
+		theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
+		theReturnMessage.SuccOrFail = 1
+	} else {
+		theErr := "No issues returning Organizations"
+		theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
+		theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
+		theReturnMessage.SuccOrFail = 0
+	}
+	theReturnMessage.ReturnedOrgNameMap = orgNameMap //Add our final OrgMap
+
+	//Format the JSON map for returning our results
+	theJSONMessage, err := json.Marshal(theReturnMessage)
+	//Send the response back
+	if err != nil {
+		errIs := "Error formatting JSON for return in giveAllLearnROrgs: " + err.Error()
+		logWriter(errIs)
+	}
+	fmt.Fprint(w, string(theJSONMessage))
+}
+
 /* VALIDATION API BEGINNING */
 
 /* This function returns a map of ALL Usernames entered in our database
@@ -963,89 +1046,6 @@ func giveAllUsernames(w http.ResponseWriter, req *http.Request) {
 	//Send the response back
 	if err != nil {
 		errIs := "Error formatting JSON for return in giveAllUsernames: " + err.Error()
-		logWriter(errIs)
-	}
-	fmt.Fprint(w, string(theJSONMessage))
-}
-
-/* This funciton returns a map of all OrgNames entered in our database when called,
-(should be called wherever we need to create an LearnR Org) */
-func giveAllLearnROrg(w http.ResponseWriter, req *http.Request) {
-	//Declare data to return
-	type ReturnMessage struct {
-		TheErr             []string        `json:"TheErr"`
-		ResultMsg          []string        `json:"ResultMsg"`
-		SuccOrFail         int             `json:"SuccOrFail"`
-		ReturnedOrgNameMap map[string]bool `json:"ReturnedOrgNameMap"`
-	}
-	theReturnMessage := ReturnMessage{}
-	theReturnMessage.SuccOrFail = 0 //Initially set to success
-
-	//Declare empty map to fill and return
-	orgNameMap := make(map[string]bool) //Clear Map for future use on page load
-
-	learnROrgCollection := mongoClient.Database("learnR").Collection("learnorg") //Here's our collection
-
-	//Query Mongo for all Users
-	theFilter := bson.M{}
-	findOptions := options.Find()
-	currOrg, err := learnROrgCollection.Find(theContext, theFilter, findOptions)
-	if err != nil {
-		if strings.Contains(err.Error(), "no documents in result") {
-			theErr := "No documents were returned for orgs in giveAllLearnROrgs in MongoDB: " + err.Error()
-			theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
-			theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
-			theReturnMessage.SuccOrFail = 1
-			logWriter(theErr)
-		} else {
-			theErr := "There was an error returning results for this Org, :" + err.Error()
-			theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
-			theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
-			theReturnMessage.SuccOrFail = 1
-			logWriter(theErr)
-		}
-	}
-	//Loop over query results and fill User Array
-	for currOrg.Next(theContext) {
-		// create a value into which the single document can be decoded
-		var aOrg LearnrOrg
-		err := currOrg.Decode(&aOrg)
-		if err != nil {
-			theErr := "Error decoding Orgs in MongoDB in giveAllLearnROrgs: " + err.Error()
-			theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
-			theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
-			theReturnMessage.SuccOrFail = 0
-			logWriter(theErr)
-		}
-		//Fill Username map with the found Username
-		orgNameMap[aOrg.Name] = true
-	}
-	// Close the cursor once finished
-	currOrg.Close(theContext)
-
-	//Check to see if anyusernames were returned or we have errors
-	if theReturnMessage.SuccOrFail >= 1 {
-		theErr := "There are a number of errors for returning these Organization Names..."
-		theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
-		theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
-	} else if len(orgNameMap) <= 0 {
-		theErr := "No usernames returned...this could be the site's first deployment with no Organizations!"
-		theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
-		theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
-		theReturnMessage.SuccOrFail = 1
-	} else {
-		theErr := "No issues returning Organizations"
-		theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
-		theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
-		theReturnMessage.SuccOrFail = 0
-	}
-	theReturnMessage.ReturnedOrgNameMap = orgNameMap //Add our final OrgMap
-
-	//Format the JSON map for returning our results
-	theJSONMessage, err := json.Marshal(theReturnMessage)
-	//Send the response back
-	if err != nil {
-		errIs := "Error formatting JSON for return in giveAllLearnROrgs: " + err.Error()
 		logWriter(errIs)
 	}
 	fmt.Fprint(w, string(theJSONMessage))

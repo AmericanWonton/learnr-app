@@ -80,7 +80,7 @@ func createCreateLearnOrgCrud() {
 }
 
 //This creates our CRUD Testing cases for Reading LearnOrgs
-func createLearnOrgCrud() {
+func createLearnOrgReadCrud() {
 	//Good LearnOrg Crud Read
 	learnOrgCrudReadResults = append(learnOrgCrudReadResults, LearnOrgCrudRead{1111, 0, []string{"LearnOrg successfully read in getLearnOrg"}})
 	//Bad LearnOrg CRUD Read
@@ -306,7 +306,7 @@ func TestLearnROrgRead(t *testing.T) {
 		json.Unmarshal(body, &returnedMessage)
 		/* 5. Evaluate response in returnedMessage for testing */
 		if test.ExpectedNum != returnedMessage.SuccOrFail {
-			fmt.Printf("We here testexpected\n")
+			fmt.Printf("We here test un-expected\n")
 			t.Fatal("Wrong num recieved on testcase " + strconv.Itoa(testNum) +
 				" :" + strconv.Itoa(returnedMessage.SuccOrFail) + " Expected: " + strconv.Itoa(test.ExpectedNum))
 		}
@@ -369,16 +369,16 @@ func TestGetAllLearnROrgNames(t *testing.T) {
 func TestLearnROrgsDelete(t *testing.T) {
 	time.Sleep(4 * time.Second) //Might needed for CRUD updating
 	testNum := 0                //Used for incrementing
-	for _, test := range userCrudDeleteResults {
+	for _, test := range learnOrgCrudDeleteResults {
 		/* 1. Create Context */
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
 		/* 2. Marshal test case to JSON expect */
-		type UserDelete struct {
-			UserID int `json:"UserID"`
+		type OrgDelete struct {
+			OrgID int `json:"OrgID"`
 		}
-		aUserID := UserDelete{UserID: test.TheUserID}
-		theJSONMessage, err := json.Marshal(aUserID)
+		orgID := OrgDelete{OrgID: test.TheLearnOrgID}
+		theJSONMessage, err := json.Marshal(orgID)
 		if err != nil {
 			fmt.Println(err)
 			logWriter(err.Error())
@@ -387,7 +387,7 @@ func TestLearnROrgsDelete(t *testing.T) {
 		}
 		/* 3. Create Post to JSON */
 		payload := strings.NewReader(string(theJSONMessage))
-		req, err := http.NewRequest("POST", DELETEURL, payload)
+		req, err := http.NewRequest("POST", DELETELEARNRORGURL, payload)
 		if err != nil {
 			log.Fatal(err)
 			t.Fatal("Had an error making request: " + err.Error())

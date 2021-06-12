@@ -41,7 +41,7 @@ func setup() {
 	createUserLogin()      //Create creds for logging Users in
 	/* Add values for LearnR Org test cases */
 	createCreateLearnOrgCrud()
-	createLearnOrgCrud()
+	createLearnOrgReadCrud()
 	createLearnOrgUpdateCrud()
 	createLearnOrgDeleteCrud()
 }
