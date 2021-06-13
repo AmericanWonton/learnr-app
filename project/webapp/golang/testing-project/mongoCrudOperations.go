@@ -53,6 +53,11 @@ type LearnrOrg struct {
 	DateUpdated string   `json:"DateUpdated"`
 }
 
+//LearnR
+type Learnr struct {
+	Name string `json:""`
+}
+
 //This gets the client to connect to our DB
 func connectDB() *mongo.Client {
 	//Setup Mongo connection to Atlas Cluster
