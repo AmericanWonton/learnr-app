@@ -55,15 +55,55 @@ type LearnrOrg struct {
 
 //LearnR
 type Learnr struct {
-	ID          int      `json:"ID"`          //ID of this LearnR
-	Name        string   `json:"Name"`        //Name of this LearnR
-	Tags        []string `json:"Tags"`        //Tags that describe this LearnR
-	Description []string `json:"Description"` //Description of this LearnR
-	PhoneNums   []string `json:"PhoneNums"`
-	LearnRTexts []int    `json:"LearnRTexts"` //IDs of texts that get sent to Users and their response values
-	Active      bool     `json:"Active"`      //Whether this LearnR is still active
-	DateCreated string   `json:"DateCreated"`
-	DateUpdated string   `json:"DateUpdated"`
+	ID            int             `json:"ID"`          //ID of this LearnR
+	InfoID        int             `json:"InfoID"`      //Links to the LearnRInfo object which holds data
+	Name          string          `json:"Name"`        //Name of this LearnR
+	Tags          []string        `json:"Tags"`        //Tags that describe this LearnR
+	Description   []string        `json:"Description"` //Description of this LearnR
+	PhoneNums     []string        `json:"PhoneNums"`
+	LearnRInforms []LearnRInforms `json:"LearnRInforms"` //What we'll text to our Users
+	Active        bool            `json:"Active"`        //Whether this LearnR is still active
+	DateCreated   string          `json:"DateCreated"`
+	DateUpdated   string          `json:"DateUpdated"`
+}
+
+//LearnRInfo
+type LearnrInfo struct {
+	ID               int             `json:"ID"`               //ID of this LearnR Info
+	LearnRID         int             `json:"LearnRID"`         //The LearnR ID related to this info
+	AllSessions      []LearnRSession `json:"AllSessions"`      //An array of all the sessions
+	FinishedSessions []LearnRSession `json:"FinishedSessions"` //An array of complete sessions only
+	DateCreated      string          `json:"DateCreated"`
+	DateUpdated      string          `json:"DateUpdated"`
+}
+
+//LearnRSession
+type LearnRSession struct {
+	ID               int             `json:"ID"`               //ID of this session
+	LearnRID         int             `json:"LearnRID"`         //ID of this LearnR
+	LearnRName       string          `json:"LearnRName"`       //Name of this LearnR
+	TheLearnR        Learnr          `json:"TheLearnR"`        //The actual LearnR
+	TheUser          User            `json:"TheUser"`          //Who is the User that sent this LearnR to someone?
+	TargetUserNumber string          `json:"TargetUserNumber"` //User this session started to
+	Ongoing          bool            `json:"Ongoing"`          //Is this session ongoing? Determined by time
+	TextsSent        []LearnRInforms `json:"TextsSent"`        //All the Informs our program sent to User
+	UserResponses    []string        `json:"UserResponses"`    //All the text responses sent by the User
+	DateCreated      string          `json:"DateCreated"`
+	DateUpdated      string          `json:"DateUpdated"`
+}
+
+//LearnRInforms
+type LearnRInforms struct {
+	ID          int    `json:"ID"`         //ID of this Inform
+	Name        string `json:"Name"`       //Name of this Inform
+	LearnRID    int    `json:"LearnRID"`   //ID of the LearnR this belongs to
+	LearnRName  string `json:"LearnRName"` //Name this LearnR belongs to
+	Order       int    `json:"Order"`      //The Order in the LearnR this will be
+	TheInfo     string `json:"TheInfo"`    //What you want to say to someone
+	ShouldWait  bool   `json:"ShouldWait"` //Should this info wait for User Response?
+	WaitTime    int    `json:"WaitTime"`   //How much time should User be given to read this text?
+	DateCreated string `json:"DateCreated"`
+	DateUpdated string `json:"DateUpdated"`
 }
 
 //This gets the client to connect to our DB
