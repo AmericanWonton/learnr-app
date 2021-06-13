@@ -42,7 +42,7 @@ function setUserID(userid){
 }
 
 function setEmail(emails){
-    TheUser.Email = emails;
+    TheUser.Email.push(emails);
 }
 
 function setWhoAre(whoare){

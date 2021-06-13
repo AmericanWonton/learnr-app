@@ -427,8 +427,8 @@
 {{end}}
 {{define "setEmail"}}
     <script>
-        var variablepassed = {{.}};
-        setEmail({{.}});
+        var variablepassed = String("{{.}}");
+        setEmail(variablepassed);
     </script>
 {{end}}
 {{define "setWhoAre"}}

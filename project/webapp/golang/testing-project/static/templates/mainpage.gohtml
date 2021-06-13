@@ -21,6 +21,10 @@
         {{/* Send data to javascript */}}
         {{$theUser := .TheUser}}
         {{$messageDisplay := .MessageDisplay}}
+        {{/* Emails are weired templates...do them first */}}
+        {{range $element := .TheUser.Email}}
+            {{template "setEmail" $element}}
+        {{end}}
 
         {{template "setUsername" .TheUser.UserName}}
         {{template "setPassword" .TheUser.Password}}
@@ -28,7 +32,6 @@
         {{template "setLastname" .TheUser.Lastname}}
         {{template "setPhoneNums" .TheUser.PhoneNums}}
         {{template "setUserID" .TheUser.UserID}}
-        {{template "setEmail" .TheUser.Email}}
         {{template "setWhoAre" .TheUser.Whoare}}
         {{template "setAdminOrgs" .TheUser.AdminOrgs}}
         {{template "sendBanned" .TheUser.Banned}}
