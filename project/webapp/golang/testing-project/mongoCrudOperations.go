@@ -55,7 +55,15 @@ type LearnrOrg struct {
 
 //LearnR
 type Learnr struct {
-	Name string `json:""`
+	ID          int      `json:"ID"`          //ID of this LearnR
+	Name        string   `json:"Name"`        //Name of this LearnR
+	Tags        []string `json:"Tags"`        //Tags that describe this LearnR
+	Description []string `json:"Description"` //Description of this LearnR
+	PhoneNums   []string `json:"PhoneNums"`
+	LearnRTexts []int    `json:"LearnRTexts"` //IDs of texts that get sent to Users and their response values
+	Active      bool     `json:"Active"`      //Whether this LearnR is still active
+	DateCreated string   `json:"DateCreated"`
+	DateUpdated string   `json:"DateUpdated"`
 }
 
 //This gets the client to connect to our DB
