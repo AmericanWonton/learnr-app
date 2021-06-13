@@ -389,15 +389,81 @@
 {{end}}
 
 {{/*** Javascript sections for data ***/}}
-{{define "sendUser"}}
+{{/* SEND USER DATA BEGINNING */}}
+{{define "setUsername"}}
     <script>
-        setUser({{.}});
+        var variablepassed = "{{.}}";
+        setUsername(variablepassed);
+    </script>
+{{end}}
+{{define "setPassword"}}
+    <script>
+        var variablepassed = "{{.}}";
+        setPassword(variablepassed);
+    </script>
+{{end}}
+{{define "setFirstname"}}
+    <script>
+        var variablepassed = "{{.}}";
+        setFirstname(variablepassed);
+    </script>
+{{end}}
+{{define "setLastname"}}
+    <script>
+        var variablepassed = "{{.}}";
+        setLastname(variablepassed);
+    </script>
+{{end}}
+{{define "setPhoneNums"}}
+    <script>
+        setPhoneNums({{.}});
+    </script>
+{{end}}
+{{define "setUserID"}}
+    <script>
+        var variablepassed = Number({{.}});
+        setUserID({{.}});
+    </script>
+{{end}}
+{{define "setEmail"}}
+    <script>
+        var variablepassed = {{.}};
+        setEmail({{.}});
+    </script>
+{{end}}
+{{define "setWhoAre"}}
+    <script>
+        var variablepassed = "{{.}}";
+        setWhoAre(variablepassed);
+    </script>
+{{end}}
+{{define "setAdminOrgs"}}
+    <script>
+        setAdminOrgs({{.}});
+    </script>
+{{end}}
+{{define "setOrgMember"}}
+    <script>
+        setOrgMember({{.}});
     </script>
 {{end}}
 {{define "sendBanned"}}
     <script>
-        setBanned({{.}});
+        var variablepassed = Boolean({{.}});
+        setBanned(variablepassed);
     </script>
 {{end}}
-
+{{define "setDateCreated"}}
+    <script>
+        var variablepassed = "{{.}}";
+        setDateCreated(variablepassed);
+    </script>
+{{end}}
+{{define "setDateUpdated"}}
+    <script>
+        var variablepassed = "{{.}}";
+        setDateUpdated(variablepassed);
+    </script>
+{{end}}
+{{/* SEND USER DATA ENDING */}}
 

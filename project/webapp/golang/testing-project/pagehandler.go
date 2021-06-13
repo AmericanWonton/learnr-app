@@ -20,11 +20,21 @@ const GETALLLEARNRORGURL string = "http://localhost:4000/giveAllLearnROrg"
 
 //ViewData
 type UserViewData struct {
-	TheUser        User   `json:"TheUser"`        //The User
-	Username       string `json:"Username"`       //The Username
-	UserID         int    `json:"UserID"`         //The UserID
-	MessageDisplay int    `json:"MessageDisplay"` //This is IF we need a message displayed
-	Banned         bool   `json:"Banned"`         //If the User is banned, we display nothing
+	TheUser        User     `json:"TheUser"`        //The User
+	Username       string   `json:"Username"`       //The Username
+	Password       string   `json:"Password"`       //The Password
+	Firstname      string   `json:"Firstname"`      //The First name
+	Lastname       string   `json:"Lastname"`       //The Last name
+	PhoneNums      []string `json:"PhoneNums"`      //The Phone numbers
+	UserID         int      `json:"UserID"`         //The UserID
+	Email          []string `json:"Email"`          //The Emails
+	Whoare         string   `json:"Whoare"`         //Who is this person
+	AdminOrgs      []int    `json:"AdminOrgs"`      //List of admin orgs
+	OrgMember      []int    `json:"OrgMember"`      //List of organizations this Member is apart of
+	Banned         bool     `json:"Banned"`         //If the User is banned, we display nothing
+	DateCreated    string   `json:"DateCreated"`    //Date this User was created
+	DateUpdated    string   `json:"DateUpdated"`    //Date this User was updated
+	MessageDisplay int      `json:"MessageDisplay"` //This is IF we need a message displayed
 }
 
 //Handles the Index requests; Ask User if they're legal here
@@ -59,9 +69,19 @@ func mainpage(w http.ResponseWriter, r *http.Request) {
 	vd := UserViewData{
 		TheUser:        aUser,
 		Username:       aUser.UserName,
+		Password:       aUser.Password,
+		Firstname:      aUser.Firstname,
+		Lastname:       aUser.Lastname,
+		PhoneNums:      aUser.PhoneNums,
 		UserID:         aUser.UserID,
-		MessageDisplay: 0,
+		Email:          aUser.Email,
+		Whoare:         aUser.Whoare,
+		AdminOrgs:      aUser.AdminOrgs,
+		OrgMember:      aUser.OrgMember,
 		Banned:         aUser.Banned,
+		DateCreated:    aUser.DateCreated,
+		DateUpdated:    aUser.DateUpdated,
+		MessageDisplay: 0,
 	}
 	/* Execute template, handle error */
 	err1 := template1.ExecuteTemplate(w, "mainpage.gohtml", vd)

@@ -20,13 +20,20 @@
     <body>
         {{/* Send data to javascript */}}
         {{$theUser := .TheUser}}
-        {{$theUsername := .Username}}
-        {{$theUserID := .UserID}}
         {{$messageDisplay := .MessageDisplay}}
-        {{$banned := .Banned}}
 
-        {{template "sendUser" $theUser}}
-        {{template "sendBanned" $banned}}
+        {{template "setUsername" .TheUser.UserName}}
+        {{template "setPassword" .TheUser.Password}}
+        {{template "setFirstname" .TheUser.Firstname}}
+        {{template "setLastname" .TheUser.Lastname}}
+        {{template "setPhoneNums" .TheUser.PhoneNums}}
+        {{template "setUserID" .TheUser.UserID}}
+        {{template "setEmail" .TheUser.Email}}
+        {{template "setWhoAre" .TheUser.Whoare}}
+        {{template "setAdminOrgs" .TheUser.AdminOrgs}}
+        {{template "sendBanned" .TheUser.Banned}}
+        {{template "setDateCreated" .TheUser.DateCreated}}
+        {{template "setDateUpdated" .TheUser.DateUpdated}}
 
         {{/* Here is our header */}}
         {{template "header_everywhere" $theUser}}
