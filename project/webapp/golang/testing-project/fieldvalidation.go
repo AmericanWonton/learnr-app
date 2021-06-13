@@ -17,6 +17,7 @@ import (
 /* Used for API Calls */
 const GETRANDOMID string = "http://localhost:4000/randomIDCreationAPI"
 const ADDUSERURL string = "http://localhost:4000/addUser"
+const UPDATEURL string = "http://localhost:4000/updateUser"
 const ADDLEARNRORGURL string = "http://localhost:4000/addLearnOrg"
 const GETUSERLOGIN string = "http://localhost:4000/userLogin"
 
@@ -83,12 +84,33 @@ func checkLearnROrgNames(w http.ResponseWriter, r *http.Request) {
 
 	if len(sbs) <= 0 {
 		fmt.Fprint(w, "TooShort")
-	} else if len(sbs) > 20 {
+	} else if len(sbs) > 25 {
 		fmt.Fprint(w, "TooLong")
 	} else if containsLanguage(sbs) {
 		fmt.Fprint(w, "ContainsLanguage")
 	} else {
 		fmt.Fprint(w, learnOrgMap[sbs])
+	}
+}
+
+//This checks the 'about LearnROrg' section after every keystroke
+func checkOrgAbout(w http.ResponseWriter, r *http.Request) {
+	//Get the byte slice from the request body ajax
+	bs, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	sbs := string(bs)
+
+	if len(sbs) <= 0 {
+		fmt.Fprint(w, "TooShort")
+	} else if len(sbs) > 400 {
+		fmt.Fprint(w, "TooLong")
+	} else if containsLanguage(sbs) {
+		fmt.Fprint(w, "ContainsLanguage")
+	} else {
+		fmt.Fprint(w, "okay")
 	}
 }
 
@@ -231,6 +253,97 @@ func canLogin(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 		logWriter(err.Error())
+	}
+	fmt.Fprint(w, string(theJSONMessage))
+}
+
+/* Creates LearnrOrg, if everything checks */
+func createLearnROrg(w http.ResponseWriter, r *http.Request) {
+	//Declare Ajax return statements to be sent back
+	type SuccessMSG struct {
+		Message    string `json:"Message"`
+		SuccessNum int    `json:"SuccessNum"`
+	}
+	theSuccMessage := SuccessMSG{
+		Message:    "LearnR Organization created successfully",
+		SuccessNum: 0,
+	}
+
+	//Declare struct we are expecting
+	type SendJSON struct {
+		TheLearnOrg LearnrOrg `json:"TheLearnOrg"`
+		OurUser     User      `json:"OurUser"`
+	}
+	//Get the byte slice from the request
+	bs, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		fmt.Println(err)
+		logWriter(err.Error())
+	}
+
+	//Marshal it into our type
+	var ourJSON SendJSON
+	json.Unmarshal(bs, &ourJSON)
+
+	/* perform Crud API here to insert the new User */
+	theTimeNow := time.Now()
+
+	/* First call to random ID API */
+	goodIDGet, message, randomid := randomAPICall()
+	if goodIDGet {
+		newLearnROrg := LearnrOrg{
+			OrgID:       randomid,
+			Name:        ourJSON.TheLearnOrg.Name,
+			OrgGoals:    ourJSON.TheLearnOrg.OrgGoals,
+			UserList:    []int{ourJSON.OurUser.UserID},
+			AdminList:   []int{ourJSON.OurUser.UserID},
+			LearnrList:  []int{},
+			DateCreated: theTimeNow.Format("2006-01-02 15:04:05"),
+			DateUpdated: theTimeNow.Format("2006-01-02 15:04:05"),
+		}
+		//Attempt User Insert
+		goodAdd, message := calladdLearnOrg(newLearnROrg)
+		if goodAdd {
+			//Need to update our User as well
+			updatedUser := User{
+				UserName:    ourJSON.OurUser.UserName,
+				Password:    ourJSON.OurUser.Password,
+				Firstname:   ourJSON.OurUser.Firstname,
+				Lastname:    ourJSON.OurUser.Lastname,
+				PhoneNums:   ourJSON.OurUser.PhoneNums,
+				UserID:      ourJSON.OurUser.UserID,
+				Email:       ourJSON.OurUser.Email,
+				Whoare:      ourJSON.OurUser.Whoare,
+				AdminOrgs:   append(ourJSON.OurUser.AdminOrgs, randomid),
+				OrgMember:   append(ourJSON.OurUser.OrgMember, randomid),
+				Banned:      ourJSON.OurUser.Banned,
+				DateCreated: ourJSON.OurUser.DateCreated,
+				DateUpdated: theTimeNow.Format("2006-01-02 15:04:05"),
+			}
+			goodAdd2, message2 := callUpdateUser(updatedUser)
+
+			if goodAdd2 {
+				theSuccMessage.Message = message2
+				theSuccMessage.SuccessNum = 0
+			} else {
+				theSuccMessage.Message = message2
+				theSuccMessage.SuccessNum = 1
+			}
+		} else {
+			theSuccMessage.Message = message
+			theSuccMessage.SuccessNum = 1
+		}
+	} else {
+		//Couldn't get random Numb
+		theSuccMessage.Message = message
+		theSuccMessage.SuccessNum = 1
+	}
+	/* Send the response back to Ajax */
+	theJSONMessage, err := json.Marshal(theSuccMessage)
+	//Send the response back
+	if err != nil {
+		errIs := "Error formatting JSON for return in createUser: " + err.Error()
+		logWriter(errIs)
 	}
 	fmt.Fprint(w, string(theJSONMessage))
 }
