@@ -20,11 +20,21 @@ const GETALLLEARNRORGURL string = "http://localhost:4000/giveAllLearnROrg"
 
 //ViewData
 type UserViewData struct {
-	TheUser        User   `json:"TheUser"`        //The User
-	Username       string `json:"Username"`       //The Username
-	UserID         int    `json:"UserID"`         //The UserID
-	MessageDisplay int    `json:"MessageDisplay"` //This is IF we need a message displayed
-	Banned         bool   `json:"Banned"`         //If the User is banned, we display nothing
+	TheUser        User     `json:"TheUser"`        //The User
+	Username       string   `json:"Username"`       //The Username
+	Password       string   `json:"Password"`       //The Password
+	Firstname      string   `json:"Firstname"`      //The First name
+	Lastname       string   `json:"Lastname"`       //The Last name
+	PhoneNums      []string `json:"PhoneNums"`      //The Phone numbers
+	UserID         int      `json:"UserID"`         //The UserID
+	Email          []string `json:"Email"`          //The Emails
+	Whoare         string   `json:"Whoare"`         //Who is this person
+	AdminOrgs      []int    `json:"AdminOrgs"`      //List of admin orgs
+	OrgMember      []int    `json:"OrgMember"`      //List of organizations this Member is apart of
+	Banned         bool     `json:"Banned"`         //If the User is banned, we display nothing
+	DateCreated    string   `json:"DateCreated"`    //Date this User was created
+	DateUpdated    string   `json:"DateUpdated"`    //Date this User was updated
+	MessageDisplay int      `json:"MessageDisplay"` //This is IF we need a message displayed
 }
 
 //Handles the Index requests; Ask User if they're legal here
@@ -59,9 +69,19 @@ func mainpage(w http.ResponseWriter, r *http.Request) {
 	vd := UserViewData{
 		TheUser:        aUser,
 		Username:       aUser.UserName,
+		Password:       aUser.Password,
+		Firstname:      aUser.Firstname,
+		Lastname:       aUser.Lastname,
+		PhoneNums:      aUser.PhoneNums,
 		UserID:         aUser.UserID,
-		MessageDisplay: 0,
+		Email:          aUser.Email,
+		Whoare:         aUser.Whoare,
+		AdminOrgs:      aUser.AdminOrgs,
+		OrgMember:      aUser.OrgMember,
 		Banned:         aUser.Banned,
+		DateCreated:    aUser.DateCreated,
+		DateUpdated:    aUser.DateUpdated,
+		MessageDisplay: 0,
 	}
 	/* Execute template, handle error */
 	err1 := template1.ExecuteTemplate(w, "mainpage.gohtml", vd)
@@ -130,6 +150,7 @@ func learnr(w http.ResponseWriter, r *http.Request) {
 
 //Handles the makeorg page
 func makeorg(w http.ResponseWriter, r *http.Request) {
+	learnOrgMap = loadLearnROrgs()
 	aUser := getUser(w, r)
 	//Redirect User if they are not logged in
 	if !alreadyLoggedIn(w, r) {
@@ -214,4 +235,62 @@ func loadUsernames() map[string]bool {
 	}
 
 	return mapOusernameToReturn
+}
+
+//Calls 'giveAllLearnROrgs' to run a mongo query to get all LearnROrgs, then puts in a map to return
+func loadLearnROrgs() map[string]bool {
+	mapOLearnOrgsToReturn := make(map[string]bool) //LearnROrg map to load our values into
+	//Call our crudOperations Microservice in order to get our Org Names
+	//Create a context for timing out
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	req, err := http.NewRequest("GET", GETALLLEARNRORGURL, nil)
+	if err != nil {
+		theErr := "There was an error getting LearnROrgs in loadLearnROrgs: " + err.Error()
+		logWriter(theErr)
+		fmt.Println(theErr)
+	}
+
+	resp, err := http.DefaultClient.Do(req.WithContext(ctx))
+
+	if resp.StatusCode >= 300 || resp.StatusCode <= 199 {
+		theErr := "There was an error reaching out to loadLearnROrg API: " + strconv.Itoa(resp.StatusCode)
+		fmt.Println(theErr)
+		logWriter(theErr)
+	} else if err != nil {
+		theErr := "Error from response to loadLearnROrg: " + err.Error()
+		fmt.Println(theErr)
+		logWriter(theErr)
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		theErr := "There was an error getting a response for LearnROrgs in loadLearnROrgs: " + err.Error()
+		logWriter(theErr)
+		fmt.Println(theErr)
+	}
+
+	//Marshal the response into a type we can read
+	type ReturnMessage struct {
+		TheErr             []string        `json:"TheErr"`
+		ResultMsg          []string        `json:"ResultMsg"`
+		SuccOrFail         int             `json:"SuccOrFail"`
+		ReturnedOrgNameMap map[string]bool `json:"ReturnedOrgNameMap"`
+	}
+	var returnedMessage ReturnMessage
+	json.Unmarshal(body, &returnedMessage)
+
+	//Assign our map variable to the map varialbe and see if it's okay
+	if returnedMessage.SuccOrFail != 0 {
+		errString := ""
+		for l := 0; l < len(returnedMessage.TheErr); l++ {
+			errString = errString + returnedMessage.TheErr[l]
+		}
+		logWriter(errString)
+		fmt.Println(errString)
+	} else {
+		mapOLearnOrgsToReturn = returnedMessage.ReturnedOrgNameMap
+	}
+	return mapOLearnOrgsToReturn
 }

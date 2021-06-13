@@ -16,7 +16,6 @@ import (
 
 /* DEFINE CRUD POSTS URLS FOR LOCALHOST */
 const READUSERURL string = "http://localhost:4000/getUser"
-const UPDATEURL string = "http://localhost:4000/updateUser"
 const DELETEURL string = "http://localhost:4000/deleteUser"
 
 //UserCrud Create
