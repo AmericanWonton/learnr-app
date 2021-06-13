@@ -55,12 +55,13 @@ type LearnrOrg struct {
 
 //LearnR
 type Learnr struct {
-	ID            int             `json:"ID"`          //ID of this LearnR
-	InfoID        int             `json:"InfoID"`      //Links to the LearnRInfo object which holds data
-	Name          string          `json:"Name"`        //Name of this LearnR
-	Tags          []string        `json:"Tags"`        //Tags that describe this LearnR
-	Description   []string        `json:"Description"` //Description of this LearnR
-	PhoneNums     []string        `json:"PhoneNums"`
+	ID            int             `json:"ID"`            //ID of this LearnR
+	InfoID        int             `json:"InfoID"`        //Links to the LearnRInfo object which holds data
+	OrgID         int             `json:"OrgID"`         //Which organization does this belong to
+	Name          string          `json:"Name"`          //Name of this LearnR
+	Tags          []string        `json:"Tags"`          //Tags that describe this LearnR
+	Description   []string        `json:"Description"`   //Description of this LearnR
+	PhoneNums     []string        `json:"PhoneNums"`     //Phone Nums attatched to this LearnR
 	LearnRInforms []LearnRInforms `json:"LearnRInforms"` //What we'll text to our Users
 	Active        bool            `json:"Active"`        //Whether this LearnR is still active
 	DateCreated   string          `json:"DateCreated"`

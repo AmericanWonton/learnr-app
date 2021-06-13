@@ -20,11 +20,16 @@ func handleRequests() {
 	myRouter.HandleFunc("/deleteUser", deleteUser).Methods("POST") //Delete a User
 	myRouter.HandleFunc("/updateUser", updateUser).Methods("POST") //Update a User
 	myRouter.HandleFunc("/getUser", getUser).Methods("POST")       //Get User
-	//Serve our LearnR Crud API
+	//Serve our LearnROrg Crud API
 	myRouter.HandleFunc("/addLearnOrg", addLearnOrg).Methods("POST")       //Add a LearnROrg
 	myRouter.HandleFunc("/deleteLearnOrg", deleteLearnOrg).Methods("POST") //Delete a LearnROrg
 	myRouter.HandleFunc("/updateLearnOrg", updateLearnOrg).Methods("POST") //Update a LearnROrg
 	myRouter.HandleFunc("/getLearnOrg", getLearnOrg).Methods("POST")       //Get LearnROrg
+	//Serve our LearnR Crud API
+	myRouter.HandleFunc("/addLearnR", addLearnR).Methods("POST")       //Add a LearnROrg
+	myRouter.HandleFunc("/deleteLearnR", deleteLearnR).Methods("POST") //Delete a LearnROrg
+	myRouter.HandleFunc("/updateLearnR", updateLearnR).Methods("POST") //Update a LearnROrg
+	myRouter.HandleFunc("/getLearnR", getLearnR).Methods("POST")       //Get LearnROrg
 	//Serve our validation APIs
 	myRouter.HandleFunc("/giveAllUsernames", giveAllUsernames).Methods("GET")       //Get all our Usernames
 	myRouter.HandleFunc("/giveAllLearnROrg", giveAllLearnROrg).Methods("GET")       //Get all our LearnROrg Names
