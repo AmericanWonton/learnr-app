@@ -92,10 +92,6 @@ type LearnrCrudDelete struct {
 
 var learnrCrudDeleteResults []LearnrCrudDelete
 
-/* LearnRInfo CRUD creation */
-
-/*  Create CRUD Operations for LearnROrg */
-
 //This creates our Crud Testing cases for Creating LearnOrgs
 func createCreateLearnOrgCrud() {
 	theTimeNow := time.Now() //Used for creating time later
@@ -591,10 +587,9 @@ func TestLearnRUpdate(t *testing.T) {
 func TestLearnRRead(t *testing.T) {
 	testNum := 0 //Used for incrementing
 	for _, test := range learnRCrudReadResults {
-		success, message, learnr := callReadLearnR(test.ID)
+		success, message, _ := callReadLearnR(test.ID)
 		if success != test.ExpectedTruth {
-			t.Fatal("Failed at this step: " + strconv.Itoa(testNum) + " :" + message + " " +
-				learnr.Name)
+			t.Fatal("Failed at this step: " + strconv.Itoa(testNum) + " :" + message + " ")
 		}
 		testNum = testNum + 1 //Increment this number for testing
 	}
