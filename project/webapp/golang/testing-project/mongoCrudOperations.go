@@ -23,6 +23,36 @@ var mongoClient *mongo.Client
 var theContext context.Context
 var mongoURI string //Connection string loaded
 
+/* DEFINE URL FOR LOCALHOST */
+//LearnROrg
+const READLEARNRORGURL string = "http://localhost:4000/getLearnOrg"
+const UPDATELEARNRORGURL string = "http://localhost:4000/updateLearnOrg"
+const DELETELEARNRORGURL string = "http://localhost:4000/deleteLearnOrg"
+
+//LearnR
+const ADDLEARNRURL string = "http://localhost:4000/addLearnR"
+const READLEARNRURL string = "http://localhost:4000/getLearnR"
+const UPDATELEARNRURL string = "http://localhost:4000/updateLearnR"
+const DELETELEARNRURL string = "http://localhost:4000/deleteLearnR"
+
+//LearnRInfo
+const ADDLEARNRINFOURL string = "http://localhost:4000/addLearnrInfo"
+const READLEARNRINFOURL string = "http://localhost:4000/getLearnrInfo"
+const UPDATELEARNRINFOURL string = "http://localhost:4000/updateLearnrInfo"
+const DELETELEARNRINFOURL string = "http://localhost:4000/deleteLearnrInfo"
+
+//LearnRInfo
+const ADDLEARNRSESSIONSURL string = "http://localhost:4000/addLearnRSession"
+const READLEARNRSESSIONSURL string = "http://localhost:4000/getLearnRSession"
+const UPDATELEARNRSESSIONSURL string = "http://localhost:4000/updateLearnRSession"
+const DELETELEARNRSESSIONSURL string = "http://localhost:4000/deleteLearnRSession"
+
+//LearnRInform
+const ADDLEARNRINFORMURL string = "http://localhost:4000/addLearnRInforms"
+const READLEARNRINFORMURL string = "http://localhost:4000/getLearnRInforms"
+const UPDATELEARNRINFORMURL string = "http://localhost:4000/updateLearnRInforms"
+const DELETELEARNRINFORMURL string = "http://localhost:4000/deleteLearnRInforms"
+
 /* App/Data type declarations for our application */
 // Desc: This person uses our app
 type User struct {

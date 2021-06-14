@@ -13,10 +13,7 @@ import (
 	"time"
 )
 
-/* DEFINE URL FOR LOCALHOST */
-const READLEARNRORGURL string = "http://localhost:4000/getLearnOrg"
-const UPDATELEARNRORGURL string = "http://localhost:4000/updateLearnOrg"
-const DELETELEARNRORGURL string = "http://localhost:4000/deleteLearnOrg"
+/* LearnORG CRUD Section */
 
 //LearnOrg CRUD Create
 type LearnOrgCrudCreate struct {
@@ -53,6 +50,47 @@ type LearnOrgCrudDelete struct {
 }
 
 var learnOrgCrudDeleteResults []LearnOrgCrudDelete
+
+/* LearnR CRUD Section */
+//LearnR CRUD Add
+type LearnrCrudCreate struct {
+	LearnR              Learnr
+	ExpectedNum         int
+	ExpectedStringArray []string
+}
+
+var learnRCrudCreateResults []LearnrCrudCreate
+
+//LearnR Crud Read
+type LearnrCrudRead struct {
+	ID                  int
+	ExpectedNum         int
+	ExpectedStringArray []string
+}
+
+var learnRCrudReadResults []LearnrCrudRead
+
+//LearnR Crud Update
+type LearnRCrudUpdate struct {
+	TheLearnr           Learnr
+	ExpectedNum         int
+	ExpectedStringArray []string
+}
+
+var learnrCrudUpdateResults []LearnRCrudUpdate
+
+//Learnr CRUD Delete
+type LearnrCrudDelete struct {
+	ID                  int
+	ExpectedNum         int
+	ExpectedStringArray []string
+}
+
+var learnrCrudDeleteResults []LearnrCrudDelete
+
+/* LearnRInfo CRUD creation */
+
+/*  Create CRUD Operations for LearnROrg */
 
 //This creates our Crud Testing cases for Creating LearnOrgs
 func createCreateLearnOrgCrud() {
@@ -138,6 +176,96 @@ func createLearnOrgDeleteCrud() {
 	//Another not seen OrgID
 	learnOrgCrudDeleteResults = append(learnOrgCrudDeleteResults, LearnOrgCrudDelete{-1, 1,
 		[]string{"Error deleting LearnOrg in deleteLearnOrg", "Error reading the request"}})
+}
+
+/* Create CRUD Operations for LearnR */
+
+//This creates our Crud Testing cases for Creating Learnr
+func createCreateLearnrCrud() {
+	theTimeNow := time.Now() //Used for creating time later
+	//Good Crud Create
+	learnRCrudCreateResults = append(learnRCrudCreateResults, LearnrCrudCreate{Learnr{
+		ID:            1111,
+		InfoID:        1234,
+		OrgID:         4444,
+		Name:          "The Test LearnR",
+		Tags:          []string{"coolnes", "awesomeness"},
+		Description:   []string{"This is a test thing", "It's a test learnr"},
+		PhoneNums:     []string{"1314324567"},
+		LearnRInforms: []LearnRInforms{},
+		Active:        true,
+		DateCreated:   theTimeNow.Format("2006-01-02 15:04:05"),
+		DateUpdated:   theTimeNow.Format("2006-01-02 15:04:05"),
+	}, 0, []string{"Learnr successfully added in addlearnr"}})
+	//Empty Crud
+	learnRCrudCreateResults = append(learnRCrudCreateResults, LearnrCrudCreate{Learnr{}, 1,
+		[]string{"Error adding Learnr in addLearnr", "Error adding Learnr in addLearnr in crudoperations API"}})
+	// with Zero value
+	learnRCrudCreateResults = append(learnRCrudCreateResults, LearnrCrudCreate{Learnr{ID: 0}, 1,
+		[]string{"Error adding Learnr in addLearnr", "Error reading the request"}})
+	// with negative OrgID value
+	learnRCrudCreateResults = append(learnRCrudCreateResults, LearnrCrudCreate{Learnr{ID: -1}, 1,
+		[]string{"Error adding Learnr in addLearnr", "Error reading the request"}})
+}
+
+//This creates our CRUD Testing cases for Reading Learnr
+func createLearnrReadCrud() {
+	//Good Crud Read
+	learnRCrudReadResults = append(learnRCrudReadResults, LearnrCrudRead{1111, 0, []string{"Learnr successfully read in getLearnr"}})
+	//Bad CRUD Read
+	learnRCrudReadResults = append(learnRCrudReadResults, LearnrCrudRead{0, 1,
+		[]string{"Error adding Learnr in addLearnr", "Error reading the request"}})
+	//Not seen ID
+	learnRCrudReadResults = append(learnRCrudReadResults, LearnrCrudRead{4000000, 1,
+		[]string{"Error adding Learnr in addLearnr", "Error reading the request"}})
+	//Another not seen ID
+	learnRCrudReadResults = append(learnRCrudReadResults, LearnrCrudRead{-1, 1,
+		[]string{"Error adding Learnr in addLearnr", "Error reading the request"}})
+}
+
+//This creates our CRUD Update cases for Updating Learnr
+func createLearnrUpdateCrud() {
+	theTimeNow := time.Now() //Used for creating time later
+	//Good Learnr Crud Create
+	learnrCrudUpdateResults = append(learnrCrudUpdateResults, LearnRCrudUpdate{Learnr{
+		ID:            1111,
+		InfoID:        1234,
+		OrgID:         1234,
+		Name:          "TestR Revised",
+		Tags:          []string{"boof", "yee"},
+		Description:   []string{"Sometimes change is good"},
+		PhoneNums:     []string{"134455666", "44556677"},
+		LearnRInforms: []LearnRInforms{},
+		Active:        false,
+		DateCreated:   theTimeNow.Format("2006-01-02 15:04:05"),
+		DateUpdated:   theTimeNow.Format("2006-01-02 15:04:05"),
+	}, 0, []string{"LearnR successfully updated in addLearnR"}})
+	//Bad Non-Existent ID
+	learnrCrudUpdateResults = append(learnrCrudUpdateResults, LearnRCrudUpdate{Learnr{
+		OrgID:       400000,
+		Name:        "TestOrg Revised",
+		DateCreated: theTimeNow.Format("2006-01-02 15:04:05"),
+		DateUpdated: theTimeNow.Format("2006-01-02 15:04:05"),
+	}, 1, []string{"Error updating LearnR in updateLearnR", "Error reading the request"}})
+	//Bad Empty LearnOrg Crud
+	learnrCrudUpdateResults = append(learnrCrudUpdateResults, LearnRCrudUpdate{Learnr{}, 1,
+		[]string{"Error adding LearnR in updateLearnR", "Error reading the request"}})
+}
+
+//This creates our CRUD Delete Cases for deleting Learnr
+func createLearnrDeleteCrud() {
+	//Good Crud Read
+	learnrCrudDeleteResults = append(learnrCrudDeleteResults, LearnrCrudDelete{1111, 0,
+		[]string{"Learnr successfully deleted in deleteLearnr"}})
+	//Bad Learnr CRUD Read
+	learnrCrudDeleteResults = append(learnrCrudDeleteResults, LearnrCrudDelete{0, 1,
+		[]string{"Error deleting Learnr in deleteLearnr", "Error reading the request"}})
+	//Not seen ID
+	learnrCrudDeleteResults = append(learnrCrudDeleteResults, LearnrCrudDelete{4000000, 1,
+		[]string{"Error deleting Learnr in deleteLearnr", "Error reading the request"}})
+	//Another not seen ID
+	learnrCrudDeleteResults = append(learnrCrudDeleteResults, LearnrCrudDelete{-1, 1,
+		[]string{"Error deleting Learnr in deleteLearnr", "Error reading the request"}})
 }
 
 /* Here are our Test calls to the CRUD APIs */
