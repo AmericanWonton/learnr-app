@@ -1302,7 +1302,7 @@ func addLearnRInforms(w http.ResponseWriter, req *http.Request) {
 	//Get the byte slice from the request body ajax
 	bs, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		theErr := "Error reading the request from learnRSession: " + err.Error() + "\n" + string(bs)
+		theErr := "Error reading the request from learnRInforms: " + err.Error() + "\n" + string(bs)
 		theReturnMessage.SuccOrFail = 1
 		theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
 		theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
@@ -1311,31 +1311,31 @@ func addLearnRInforms(w http.ResponseWriter, req *http.Request) {
 		canCrud = false //Reading failed, need to return failure
 	}
 	//Marshal it into our type
-	var postedType LearnRSession
+	var postedType LearnRInforms
 	json.Unmarshal(bs, &postedType)
 
 	//Check to see if we can perform CRUD operations and we aren't passing a null item
 	if canCrud && postedType.ID > 0 {
-		theCollection := mongoClient.Database("learnR").Collection("learnrsession") //Here's our collection
+		theCollection := mongoClient.Database("learnR").Collection("learnrinforms") //Here's our collection
 		collectedInterface := []interface{}{postedType}
 		//Insert Our Data
 		_, err2 := theCollection.InsertMany(theContext, collectedInterface)
 
 		if err2 != nil {
-			theErr := "Error adding LearnRSession in addLearnRSession in crudoperations API: " + err2.Error()
+			theErr := "Error adding LearnRInforms in addLearnRInforms in crudoperations API: " + err2.Error()
 			logWriter(theErr)
 			theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
 			theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
 			theReturnMessage.SuccOrFail = 1
 		} else {
-			theErr := "LearnRSession successfully added in addlearnRSession in crudoperations: " + string(bs)
+			theErr := "LearnRInforms successfully added in addlearnRInforms in crudoperations: " + string(bs)
 			logWriter(theErr)
 			theReturnMessage.TheErr = append(theReturnMessage.TheErr, "")
 			theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
 			theReturnMessage.SuccOrFail = 0
 		}
 	} else {
-		theErr := "Error adding LearnRSession; could not perform CRUD or ID was bad: " + strconv.Itoa(postedType.ID)
+		theErr := "Error adding LearnRInforms; could not perform CRUD or ID was bad: " + strconv.Itoa(postedType.ID)
 		logWriter(theErr)
 		theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
 		theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
@@ -1366,7 +1366,7 @@ func deleteLearnRInforms(w http.ResponseWriter, req *http.Request) {
 	//Get the byte slice from the request body ajax
 	bs, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		theErr := "Error reading the request from deleteSession: " + err.Error() + "\n" + string(bs)
+		theErr := "Error reading the request from deleteInforms: " + err.Error() + "\n" + string(bs)
 		theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
 		theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
 		theReturnMessage.SuccOrFail = 1
@@ -1375,17 +1375,17 @@ func deleteLearnRInforms(w http.ResponseWriter, req *http.Request) {
 		canCrud = false
 	}
 	//Declare JSON we're looking for
-	type LearnRSessionDelete struct {
+	type LearnRInformsDelete struct {
 		ID int `json:"ID"`
 	}
 	//Marshal it into our type
-	var postedType LearnRSessionDelete
+	var postedType LearnRInformsDelete
 	json.Unmarshal(bs, &postedType)
 
 	//Delete only if we had no issues above
 	if canCrud && postedType.ID > 0 {
 		//Search for User and delete
-		collection := mongoClient.Database("learnR").Collection("learnrsession") //Here's our collection
+		collection := mongoClient.Database("learnR").Collection("learnrinforms") //Here's our collection
 		deletes := []bson.M{
 			{"id": postedType.ID},
 		} //Here's our filter to look for
@@ -1407,7 +1407,7 @@ func deleteLearnRInforms(w http.ResponseWriter, req *http.Request) {
 		// run bulk write
 		bulkWrite, err := collection.BulkWrite(theContext, writes)
 		if err != nil {
-			theErr := "Error writing delete learnrSession in deleteLearnRSession in crudoperations: " + err.Error()
+			theErr := "Error writing delete learnrInforms in deleteLearnRInforms in crudoperations: " + err.Error()
 			logWriter(theErr)
 			theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
 			theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
@@ -1416,13 +1416,13 @@ func deleteLearnRInforms(w http.ResponseWriter, req *http.Request) {
 			//Check to see if delete count worked; must have deleted at least one
 			resultInt := bulkWrite.DeletedCount
 			if resultInt > 0 {
-				theErr := "LearnRSession successfully deleted in deletelearnRSession in crudoperations: " + string(bs)
+				theErr := "LearnRInforms successfully deleted in deletelearnRInforms in crudoperations: " + string(bs)
 				logWriter(theErr)
 				theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
 				theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
 				theReturnMessage.SuccOrFail = 0
 			} else {
-				theErr := "No documents deleted for this given learnRSesion: " + strconv.Itoa(postedType.ID)
+				theErr := "No documents deleted for this given learnRInforms: " + strconv.Itoa(postedType.ID)
 				logWriter(theErr)
 				theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
 				theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
@@ -1430,7 +1430,7 @@ func deleteLearnRInforms(w http.ResponseWriter, req *http.Request) {
 			}
 		}
 	} else {
-		theErr := "Error, could not CRUD operate in deleteLearnRSession, or the number we recieved was wrong: " +
+		theErr := "Error, could not CRUD operate in deleteLearnRInforms, or the number we recieved was wrong: " +
 			strconv.Itoa(postedType.ID)
 		logWriter(theErr)
 		theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
@@ -1462,7 +1462,7 @@ func updateLearnRInforms(w http.ResponseWriter, req *http.Request) {
 	//Unwrap from JSON
 	bs, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		theErr := "Error reading the request from updateSession: " + err.Error() + "\n" + string(bs)
+		theErr := "Error reading the request from updateInforms: " + err.Error() + "\n" + string(bs)
 		theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
 		theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
 		theReturnMessage.SuccOrFail = 1
@@ -1472,7 +1472,7 @@ func updateLearnRInforms(w http.ResponseWriter, req *http.Request) {
 	}
 
 	//Marshal it into our type
-	var theTypePosted LearnRSession
+	var theTypePosted LearnRInforms
 	json.Unmarshal(bs, &theTypePosted)
 
 	//Update item if we have successfully decoded from JSON
@@ -1481,7 +1481,7 @@ func updateLearnRInforms(w http.ResponseWriter, req *http.Request) {
 		if theTypePosted.ID != 0 {
 			//Update User
 			theTimeNow := time.Now()
-			collection := mongoClient.Database("learnR").Collection("learnrsession") //Here's our collection
+			collection := mongoClient.Database("learnR").Collection("learnrinforms") //Here's our collection
 			theFilter := bson.M{
 				"id": bson.M{
 					"$eq": theTypePosted.ID, // check if bool field has value of 'false'
@@ -1489,23 +1489,22 @@ func updateLearnRInforms(w http.ResponseWriter, req *http.Request) {
 			}
 			updatedDocument := bson.M{
 				"$set": bson.M{
-					"id":               theTypePosted.ID,
-					"learnrid":         theTypePosted.LearnRID,
-					"learnrname":       theTypePosted.LearnRName,
-					"thelearnr":        theTypePosted.TheLearnR,
-					"theuser":          theTypePosted.TheUser,
-					"targetusernumber": theTypePosted.TargetUserNumber,
-					"ongoing":          theTypePosted.Ongoing,
-					"textssent":        theTypePosted.TextsSent,
-					"userresponses":    theTypePosted.UserResponses,
-					"datecreated":      theTypePosted.DateCreated,
-					"dateupdated":      theTimeNow.Format("2006-01-02 15:04:05"),
+					"id":          theTypePosted.ID,
+					"name":        theTypePosted.Name,
+					"learnrid":    theTypePosted.LearnRID,
+					"learnrname":  theTypePosted.LearnRName,
+					"order":       theTypePosted.Order,
+					"theinfo":     theTypePosted.TheInfo,
+					"shouldwait":  theTypePosted.ShouldWait,
+					"waittime":    theTypePosted.WaitTime,
+					"datecreated": theTypePosted.DateCreated,
+					"dateupdated": theTimeNow.Format("2006-01-02 15:04:05"),
 				},
 			}
 			updateResult, err := collection.UpdateOne(theContext, theFilter, updatedDocument)
 
 			if err != nil {
-				theErr := "Error writing update LearnRSession in updatelearnRSession in crudoperations: " + err.Error()
+				theErr := "Error writing update LearnRInform in updatelearnRInform in crudoperations: " + err.Error()
 				logWriter(theErr)
 				theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
 				theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
@@ -1519,7 +1518,7 @@ func updateLearnRInforms(w http.ResponseWriter, req *http.Request) {
 					theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
 					theReturnMessage.SuccOrFail = 1
 				} else {
-					theErr := "LearnRSession successfully updated in updateLearnRSession in crudoperations: " + string(bs) + "\n"
+					theErr := "LearnRInform successfully updated in updateLearnRInform in crudoperations: " + string(bs) + "\n"
 					logWriter(theErr)
 					theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
 					theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
@@ -1527,7 +1526,7 @@ func updateLearnRInforms(w http.ResponseWriter, req *http.Request) {
 				}
 			}
 		} else {
-			theErr := "The LearnRSession ID was not found: " + strconv.Itoa(theTypePosted.ID)
+			theErr := "The LearnRInform ID was not found: " + strconv.Itoa(theTypePosted.ID)
 			logWriter(theErr)
 			theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
 			theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
@@ -1549,10 +1548,10 @@ func getLearnRInforms(w http.ResponseWriter, req *http.Request) {
 	canCrud := true
 	//Declare data to return
 	type ReturnMessage struct {
-		TheErr          []string      `json:"TheErr"`
-		ResultMsg       []string      `json:"ResultMsg"`
-		SuccOrFail      int           `json:"SuccOrFail"`
-		ReturnedSession LearnRSession `json:"ReturnedSession"`
+		TheErr               []string      `json:"TheErr"`
+		ResultMsg            []string      `json:"ResultMsg"`
+		SuccOrFail           int           `json:"SuccOrFail"`
+		ReturnedLearnRInform LearnRInforms `json:"ReturnedLearnRInform"`
 	}
 	theReturnMessage := ReturnMessage{}
 	theReturnMessage.SuccOrFail = 0 //Initially set to success
@@ -1560,7 +1559,7 @@ func getLearnRInforms(w http.ResponseWriter, req *http.Request) {
 	//Unwrap from JSON
 	bs, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		theErr := "Error reading the request from getLearnRSession: " + err.Error() + "\n" + string(bs)
+		theErr := "Error reading the request from getLearnRInform: " + err.Error() + "\n" + string(bs)
 		theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
 		theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
 		theReturnMessage.SuccOrFail = 1
@@ -1570,19 +1569,19 @@ func getLearnRInforms(w http.ResponseWriter, req *http.Request) {
 	}
 
 	//Decalre JSON we recieve
-	type LearnRSessionID struct {
+	type LearnRInformID struct {
 		ID int `json:"ID"`
 	}
 
 	//Marshal it into our type
-	var typePosted LearnRSessionID
+	var typePosted LearnRInformID
 	json.Unmarshal(bs, &typePosted)
 
 	//If we successfully decoded, (and the ID is not 0) we can get our item
 	if canCrud && typePosted.ID > 0 {
 		/* Find the LearnRInfo with the given ID */
-		var itemReturned LearnRSession                                           //Initialize Item to be returned after Mongo query
-		collection := mongoClient.Database("learnR").Collection("learnrsession") //Here's our collection
+		var itemReturned LearnRInforms                                           //Initialize Item to be returned after Mongo query
+		collection := mongoClient.Database("learnR").Collection("learnrinforms") //Here's our collection
 		theFilter := bson.M{
 			"id": bson.M{
 				"$eq": typePosted.ID, // check if bool field has value of 'false'
@@ -1594,13 +1593,13 @@ func getLearnRInforms(w http.ResponseWriter, req *http.Request) {
 		if find.Err() != nil || err != nil {
 			if strings.Contains(err.Error(), "no documents in result") {
 				stringUserID := strconv.Itoa(typePosted.ID)
-				returnedErr := "For " + stringUserID + ", no LearnRSession was returned: " + err.Error()
+				returnedErr := "For " + stringUserID + ", no LearnRInform was returned: " + err.Error()
 				fmt.Println(returnedErr)
 				logWriter(returnedErr)
 				theReturnMessage.SuccOrFail = 1
 				theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
 				theReturnMessage.TheErr = append(theReturnMessage.TheErr, returnedErr)
-				theReturnMessage.ReturnedSession = LearnRSession{}
+				theReturnMessage.ReturnedLearnRInform = LearnRInforms{}
 			} else {
 				stringUserID := strconv.Itoa(typePosted.ID)
 				returnedErr := "For " + stringUserID + ", there was a Mongo Error: " + err.Error()
@@ -1609,10 +1608,10 @@ func getLearnRInforms(w http.ResponseWriter, req *http.Request) {
 				theReturnMessage.SuccOrFail = 1
 				theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
 				theReturnMessage.TheErr = append(theReturnMessage.TheErr, returnedErr)
-				theReturnMessage.ReturnedSession = LearnRSession{}
+				theReturnMessage.ReturnedLearnRInform = LearnRInforms{}
 			}
 		} else {
-			//Found Learnorg, decode to return
+			//Found Item, decode to return
 			for find.Next(theContext) {
 				stringid := strconv.Itoa(typePosted.ID)
 				err := find.Decode(&itemReturned)
@@ -1624,7 +1623,7 @@ func getLearnRInforms(w http.ResponseWriter, req *http.Request) {
 					theReturnMessage.SuccOrFail = 1
 					theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
 					theReturnMessage.TheErr = append(theReturnMessage.TheErr, returnedErr)
-					theReturnMessage.ReturnedLearnRInfo = LearnrInfo{}
+					theReturnMessage.ReturnedLearnRInform = LearnRInforms{}
 				} else if itemReturned.ID <= 1 {
 					returnedErr := "For " + stringid +
 						", there was an no document from Mongo: " + err.Error()
@@ -1633,7 +1632,7 @@ func getLearnRInforms(w http.ResponseWriter, req *http.Request) {
 					theReturnMessage.SuccOrFail = 1
 					theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
 					theReturnMessage.TheErr = append(theReturnMessage.TheErr, returnedErr)
-					theReturnMessage.ReturnedLearnRInfo = LearnrInfo{}
+					theReturnMessage.ReturnedLearnRInform = LearnRInforms{}
 				} else {
 					//Successful decode, do nothing
 				}
@@ -1646,34 +1645,34 @@ func getLearnRInforms(w http.ResponseWriter, req *http.Request) {
 			//Error, return an error back and log it
 			stringID := strconv.Itoa(typePosted.ID)
 			returnedErr := "For " + stringID +
-				", No LearnRInfo was returned."
+				", No LearnRInform was returned."
 			logWriter(returnedErr)
 			theReturnMessage.SuccOrFail = 1
 			theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
 			theReturnMessage.TheErr = append(theReturnMessage.TheErr, returnedErr)
-			theReturnMessage.ReturnedSession = LearnRSession{}
+			theReturnMessage.ReturnedLearnRInform = LearnRInforms{}
 		} else {
 			//Success, log the success and return Item
 			stringID := strconv.Itoa(typePosted.ID)
 			returnedErr := "For " + stringID +
-				", LearnrSession should be successfully decoded."
+				", LearnrInform should be successfully decoded."
 			//fmt.Println(returnedErr)
 			logWriter(returnedErr)
 			theReturnMessage.SuccOrFail = 0
 			theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
 			theReturnMessage.TheErr = append(theReturnMessage.TheErr, "")
-			theReturnMessage.ReturnedSession = itemReturned
+			theReturnMessage.ReturnedLearnRInform = itemReturned
 		}
 	} else {
 		//Error, return an error back and log it
 		theIDString := strconv.Itoa(typePosted.ID)
 		returnedErr := "For " + theIDString +
-			", No LearnRSession was returned. LearnSession was also not accepted: " + theIDString
+			", No LearnRInform was returned. LearnInform was also not accepted: " + theIDString
 		logWriter(returnedErr)
 		theReturnMessage.SuccOrFail = 1
 		theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
 		theReturnMessage.TheErr = append(theReturnMessage.TheErr, returnedErr)
-		theReturnMessage.ReturnedSession = LearnRSession{}
+		theReturnMessage.ReturnedLearnRInform = LearnRInforms{}
 	}
 
 	//Format the JSON map for returning our results
