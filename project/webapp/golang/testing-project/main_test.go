@@ -54,6 +54,16 @@ func setup() {
 	createLearnrInfoReadCrud()
 	createLearnrInfoUpdateCrud()
 	createLearnrInfoDeleteCrud()
+	/* Add values for LearnrSession test cases */
+	createCreateLearnrSessionCrud()
+	createLearnrSessionReadCrud()
+	createLearnrSessionUpdateCrud()
+	createLearnrSessionDeleteCrud()
+	/* Add values for LearnRInform test cases */
+	createCreateLearnRInformCrud()
+	createLearnRInformReadCrud()
+	createLearnRInformUpdateCrud()
+	createLearnRInformDeleteCrud()
 }
 
 //This is shutdown values/actions for testing
