@@ -417,3 +417,262 @@ func calladdLearnOrg(newLearnROrg LearnrOrg) (bool, string) {
 
 	return goodAdd, message
 }
+
+/* CRUD Operations for LearnR */
+func callAddLearnR(newLearnR Learnr) (bool, string) {
+	goodAdd, message := true, ""
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	/* 2. Marshal test case to JSON expect */
+	theJSONMessage, err := json.Marshal(newLearnR)
+	if err != nil {
+		fmt.Println(err)
+		logWriter(err.Error())
+		goodAdd, message = false, err.Error()
+	}
+	/* 3. Create Post to JSON */
+	payload := strings.NewReader(string(theJSONMessage))
+	req, err := http.NewRequest("POST", ADDLEARNRURL, payload)
+	if err != nil {
+		theErr := "There was an error posting Learnr: " + err.Error()
+		fmt.Println(theErr)
+		logWriter(theErr)
+		goodAdd, message = false, theErr
+	}
+	req.Header.Add("Content-Type", "application/json")
+	/* 4. Get response from Post */
+	resp, err := http.DefaultClient.Do(req.WithContext(ctx))
+	if resp.StatusCode >= 300 || resp.StatusCode <= 199 {
+		theErr := "Failed response from addLearnr: " + strconv.Itoa(resp.StatusCode)
+		logWriter(theErr)
+		goodAdd, message = false, theErr
+	} else if err != nil {
+		theErr := "Failed response from addLearnr: " + strconv.Itoa(resp.StatusCode) + " " + err.Error()
+		logWriter(theErr)
+		goodAdd, message = false, theErr
+	}
+	//Declare message we expect to see returned
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		theErr := "There was an error reading response from learnRCreate " + err.Error()
+		logWriter(theErr)
+		goodAdd, message = false, theErr
+	}
+	type ReturnMessage struct {
+		TheErr     []string `json:"TheErr"`
+		ResultMsg  []string `json:"ResultMsg"`
+		SuccOrFail int      `json:"SuccOrFail"`
+	}
+	var returnedMessage ReturnMessage
+	json.Unmarshal(body, &returnedMessage)
+	/* 5. Evaluate response in returnedMessage */
+	if returnedMessage.SuccOrFail != 0 {
+		theErr := ""
+		for n := 0; n < len(returnedMessage.TheErr); n++ {
+			theErr = theErr + returnedMessage.TheErr[n]
+		}
+		goodAdd, message = false, theErr
+	} else {
+		goodAdd, message = true, "Learnr successfully added and able to log in"
+	}
+
+	return goodAdd, message
+}
+
+func callUpdateLearnR(updatedLearnr Learnr) (bool, string) {
+	goodAdd, message := true, ""
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	/* 2. Marshal test case to JSON expect */
+	theJSONMessage, err := json.Marshal(updatedLearnr)
+	if err != nil {
+		fmt.Println(err)
+		logWriter(err.Error())
+		goodAdd, message = false, err.Error()
+	}
+	/* 3. Create Post to JSON */
+	payload := strings.NewReader(string(theJSONMessage))
+	req, err := http.NewRequest("POST", UPDATELEARNRURL, payload)
+	if err != nil {
+		theErr := "There was an error posting Updated Learnr: " + err.Error()
+		fmt.Println(theErr)
+		logWriter(theErr)
+		goodAdd, message = false, theErr
+	}
+	req.Header.Add("Content-Type", "application/json")
+	/* 4. Get response from Post */
+	resp, err := http.DefaultClient.Do(req.WithContext(ctx))
+	if resp.StatusCode >= 300 || resp.StatusCode <= 199 {
+		theErr := "Failed response from updateLearnR: " + strconv.Itoa(resp.StatusCode)
+		logWriter(theErr)
+		goodAdd, message = false, theErr
+	} else if err != nil {
+		theErr := "Failed response from updatedLearnr: " + strconv.Itoa(resp.StatusCode) + " " + err.Error()
+		logWriter(theErr)
+		goodAdd, message = false, theErr
+	}
+	//Declare message we expect to see returned
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		theErr := "There was an error reading response from learnrUpdate " + err.Error()
+		logWriter(theErr)
+		goodAdd, message = false, theErr
+	}
+	type ReturnMessage struct {
+		TheErr     []string `json:"TheErr"`
+		ResultMsg  []string `json:"ResultMsg"`
+		SuccOrFail int      `json:"SuccOrFail"`
+	}
+	var returnedMessage ReturnMessage
+	json.Unmarshal(body, &returnedMessage)
+	/* 5. Evaluate response in returnedMessage */
+	if returnedMessage.SuccOrFail != 0 {
+		theErr := ""
+		for n := 0; n < len(returnedMessage.TheErr); n++ {
+			theErr = theErr + returnedMessage.TheErr[n]
+		}
+		goodAdd, message = false, theErr
+	} else {
+		goodAdd, message = true, "Learnr successfully updated"
+	}
+
+	return goodAdd, message
+}
+
+func callReadLearnR(theid int) (bool, string, Learnr) {
+	goodAdd, message := true, ""
+
+	/* 1. Create Context */
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	/* 2. Marshal test case to JSON expect */
+	type LearnRID struct {
+		ID int `json:"ID"`
+	}
+	theID := LearnRID{ID: theid}
+	theJSONMessage, err := json.Marshal(theID)
+	if err != nil {
+		fmt.Println(err)
+		logWriter(err.Error())
+		log.Fatal(err)
+		goodAdd, message = false, err.Error()
+	}
+	/* 3. Create Post to JSON */
+	payload := strings.NewReader(string(theJSONMessage))
+	req, err := http.NewRequest("POST", READLEARNRURL, payload)
+	if err != nil {
+		theErr := "We had an error with this request: %v\n" + err.Error()
+		fmt.Println(theErr)
+		goodAdd, message = false, theErr
+	}
+	req.Header.Add("Content-Type", "application/json")
+	/* 4. Get response from Post */
+	resp, err := http.DefaultClient.Do(req.WithContext(ctx))
+	//defer resp.Body.Close()
+	if resp.StatusCode >= 300 || resp.StatusCode <= 199 {
+		theErr := "We had an error with this response: " + strconv.Itoa(resp.StatusCode)
+		goodAdd, message = false, theErr
+		resp.Body.Close()
+		logWriter(theErr)
+	} else if err != nil {
+		theErr := "We had an error with this response: " + strconv.Itoa(resp.StatusCode)
+		goodAdd, message = false, theErr
+		resp.Body.Close()
+		logWriter(theErr)
+	}
+	//Declare message we expect to see returned
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		theErr := "There was an error reading response from UserCreate " + err.Error()
+		goodAdd, message = false, theErr
+	}
+	type ReturnMessage struct {
+		TheErr         []string `json:"TheErr"`
+		ResultMsg      []string `json:"ResultMsg"`
+		SuccOrFail     int      `json:"SuccOrFail"`
+		ReturnedLearnR Learnr   `json:"ReturnedLearnR"`
+	}
+	var returnedMessage ReturnMessage
+	json.Unmarshal(body, &returnedMessage)
+	/* 5. Evaluate response in returnedMessage */
+	if returnedMessage.SuccOrFail != 0 {
+		theErr := ""
+		for n := 0; n < len(returnedMessage.TheErr); n++ {
+			theErr = theErr + returnedMessage.TheErr[n]
+		}
+		goodAdd, message = false, theErr
+	} else {
+		goodAdd, message = true, "Learnr successfully updated"
+	}
+
+	return goodAdd, message, returnedMessage.ReturnedLearnR
+}
+
+func callDeleteLearnR(theid int) (bool, string) {
+	goodAdd, message := true, ""
+
+	/* 1. Create Context */
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	/* 2. Marshal test case to JSON expect */
+	type LearnRDelete struct {
+		ID int `json:"ID"`
+	}
+	theID := LearnRDelete{ID: theid}
+	theJSONMessage, err := json.Marshal(theID)
+	if err != nil {
+		fmt.Println(err)
+		logWriter(err.Error())
+		log.Fatal(err)
+		goodAdd, message = false, err.Error()
+	}
+	/* 3. Create Post to JSON */
+	payload := strings.NewReader(string(theJSONMessage))
+	req, err := http.NewRequest("POST", DELETELEARNRURL, payload)
+	if err != nil {
+		theErr := "We had an error with this request: %v\n" + err.Error()
+		fmt.Println(theErr)
+		goodAdd, message = false, theErr
+	}
+	req.Header.Add("Content-Type", "application/json")
+	/* 4. Get response from Post */
+	resp, err := http.DefaultClient.Do(req.WithContext(ctx))
+	if resp.StatusCode >= 300 || resp.StatusCode <= 199 {
+		theErr := "We had an error with this response: " + strconv.Itoa(resp.StatusCode)
+		goodAdd, message = false, theErr
+		resp.Body.Close()
+		logWriter(theErr)
+	} else if err != nil {
+		theErr := "We had an error with this response: " + strconv.Itoa(resp.StatusCode)
+		goodAdd, message = false, theErr
+		resp.Body.Close()
+		logWriter(theErr)
+	}
+	//Declare message we expect to see returned
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		theErr := "There was an error reading response from learnRDelete " + err.Error()
+		goodAdd, message = false, theErr
+	}
+	type ReturnMessage struct {
+		TheErr     []string `json:"TheErr"`
+		ResultMsg  []string `json:"ResultMsg"`
+		SuccOrFail int      `json:"SuccOrFail"`
+	}
+	var returnedMessage ReturnMessage
+	json.Unmarshal(body, &returnedMessage)
+	/* 5. Evaluate response in returnedMessage */
+	if returnedMessage.SuccOrFail != 0 {
+		theErr := ""
+		for n := 0; n < len(returnedMessage.TheErr); n++ {
+			theErr = theErr + returnedMessage.TheErr[n]
+		}
+		goodAdd, message = false, theErr
+	} else {
+		goodAdd, message = true, "Learnr successfully deleted"
+	}
+
+	return goodAdd, message
+}

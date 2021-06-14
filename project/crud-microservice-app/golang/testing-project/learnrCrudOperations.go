@@ -1221,7 +1221,7 @@ func getLearnRSession(w http.ResponseWriter, req *http.Request) {
 					theReturnMessage.SuccOrFail = 1
 					theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
 					theReturnMessage.TheErr = append(theReturnMessage.TheErr, returnedErr)
-					theReturnMessage.ReturnedLearnRInfo = LearnrInfo{}
+					theReturnMessage.ReturnedSession = LearnRSession{}
 				} else if itemReturned.ID <= 1 {
 					returnedErr := "For " + stringid +
 						", there was an no document from Mongo: " + err.Error()
@@ -1230,7 +1230,7 @@ func getLearnRSession(w http.ResponseWriter, req *http.Request) {
 					theReturnMessage.SuccOrFail = 1
 					theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
 					theReturnMessage.TheErr = append(theReturnMessage.TheErr, returnedErr)
-					theReturnMessage.ReturnedLearnRInfo = LearnrInfo{}
+					theReturnMessage.ReturnedSession = LearnRSession{}
 				} else {
 					//Successful decode, do nothing
 				}

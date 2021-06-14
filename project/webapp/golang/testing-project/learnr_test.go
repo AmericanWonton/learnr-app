@@ -56,6 +56,7 @@ var learnOrgCrudDeleteResults []LearnOrgCrudDelete
 type LearnrCrudCreate struct {
 	LearnR              Learnr
 	ExpectedNum         int
+	ExpectedTruth       bool
 	ExpectedStringArray []string
 }
 
@@ -65,6 +66,7 @@ var learnRCrudCreateResults []LearnrCrudCreate
 type LearnrCrudRead struct {
 	ID                  int
 	ExpectedNum         int
+	ExpectedTruth       bool
 	ExpectedStringArray []string
 }
 
@@ -74,6 +76,7 @@ var learnRCrudReadResults []LearnrCrudRead
 type LearnRCrudUpdate struct {
 	TheLearnr           Learnr
 	ExpectedNum         int
+	ExpectedTruth       bool
 	ExpectedStringArray []string
 }
 
@@ -83,6 +86,7 @@ var learnrCrudUpdateResults []LearnRCrudUpdate
 type LearnrCrudDelete struct {
 	ID                  int
 	ExpectedNum         int
+	ExpectedTruth       bool
 	ExpectedStringArray []string
 }
 
@@ -196,30 +200,30 @@ func createCreateLearnrCrud() {
 		Active:        true,
 		DateCreated:   theTimeNow.Format("2006-01-02 15:04:05"),
 		DateUpdated:   theTimeNow.Format("2006-01-02 15:04:05"),
-	}, 0, []string{"Learnr successfully added in addlearnr"}})
+	}, 0, true, []string{"Learnr successfully added in addlearnr"}})
 	//Empty Crud
-	learnRCrudCreateResults = append(learnRCrudCreateResults, LearnrCrudCreate{Learnr{}, 1,
+	learnRCrudCreateResults = append(learnRCrudCreateResults, LearnrCrudCreate{Learnr{}, 1, false,
 		[]string{"Error adding Learnr in addLearnr", "Error adding Learnr in addLearnr in crudoperations API"}})
 	// with Zero value
-	learnRCrudCreateResults = append(learnRCrudCreateResults, LearnrCrudCreate{Learnr{ID: 0}, 1,
+	learnRCrudCreateResults = append(learnRCrudCreateResults, LearnrCrudCreate{Learnr{ID: 0}, 1, false,
 		[]string{"Error adding Learnr in addLearnr", "Error reading the request"}})
 	// with negative OrgID value
-	learnRCrudCreateResults = append(learnRCrudCreateResults, LearnrCrudCreate{Learnr{ID: -1}, 1,
+	learnRCrudCreateResults = append(learnRCrudCreateResults, LearnrCrudCreate{Learnr{ID: -1}, 1, false,
 		[]string{"Error adding Learnr in addLearnr", "Error reading the request"}})
 }
 
 //This creates our CRUD Testing cases for Reading Learnr
 func createLearnrReadCrud() {
 	//Good Crud Read
-	learnRCrudReadResults = append(learnRCrudReadResults, LearnrCrudRead{1111, 0, []string{"Learnr successfully read in getLearnr"}})
+	learnRCrudReadResults = append(learnRCrudReadResults, LearnrCrudRead{1111, 0, true, []string{"Learnr successfully read in getLearnr"}})
 	//Bad CRUD Read
-	learnRCrudReadResults = append(learnRCrudReadResults, LearnrCrudRead{0, 1,
+	learnRCrudReadResults = append(learnRCrudReadResults, LearnrCrudRead{0, 1, false,
 		[]string{"Error adding Learnr in addLearnr", "Error reading the request"}})
 	//Not seen ID
-	learnRCrudReadResults = append(learnRCrudReadResults, LearnrCrudRead{4000000, 1,
+	learnRCrudReadResults = append(learnRCrudReadResults, LearnrCrudRead{4000000, 1, false,
 		[]string{"Error adding Learnr in addLearnr", "Error reading the request"}})
 	//Another not seen ID
-	learnRCrudReadResults = append(learnRCrudReadResults, LearnrCrudRead{-1, 1,
+	learnRCrudReadResults = append(learnRCrudReadResults, LearnrCrudRead{-1, 1, false,
 		[]string{"Error adding Learnr in addLearnr", "Error reading the request"}})
 }
 
@@ -239,36 +243,37 @@ func createLearnrUpdateCrud() {
 		Active:        false,
 		DateCreated:   theTimeNow.Format("2006-01-02 15:04:05"),
 		DateUpdated:   theTimeNow.Format("2006-01-02 15:04:05"),
-	}, 0, []string{"LearnR successfully updated in addLearnR"}})
+	}, 0, true, []string{"LearnR successfully updated in addLearnR"}})
 	//Bad Non-Existent ID
 	learnrCrudUpdateResults = append(learnrCrudUpdateResults, LearnRCrudUpdate{Learnr{
 		OrgID:       400000,
 		Name:        "TestOrg Revised",
 		DateCreated: theTimeNow.Format("2006-01-02 15:04:05"),
 		DateUpdated: theTimeNow.Format("2006-01-02 15:04:05"),
-	}, 1, []string{"Error updating LearnR in updateLearnR", "Error reading the request"}})
+	}, 1, false, []string{"Error updating LearnR in updateLearnR", "Error reading the request"}})
 	//Bad Empty LearnOrg Crud
-	learnrCrudUpdateResults = append(learnrCrudUpdateResults, LearnRCrudUpdate{Learnr{}, 1,
+	learnrCrudUpdateResults = append(learnrCrudUpdateResults, LearnRCrudUpdate{Learnr{}, 1, false,
 		[]string{"Error adding LearnR in updateLearnR", "Error reading the request"}})
 }
 
 //This creates our CRUD Delete Cases for deleting Learnr
 func createLearnrDeleteCrud() {
 	//Good Crud Read
-	learnrCrudDeleteResults = append(learnrCrudDeleteResults, LearnrCrudDelete{1111, 0,
+	learnrCrudDeleteResults = append(learnrCrudDeleteResults, LearnrCrudDelete{1111, 0, true,
 		[]string{"Learnr successfully deleted in deleteLearnr"}})
 	//Bad Learnr CRUD Read
-	learnrCrudDeleteResults = append(learnrCrudDeleteResults, LearnrCrudDelete{0, 1,
+	learnrCrudDeleteResults = append(learnrCrudDeleteResults, LearnrCrudDelete{0, 1, false,
 		[]string{"Error deleting Learnr in deleteLearnr", "Error reading the request"}})
 	//Not seen ID
-	learnrCrudDeleteResults = append(learnrCrudDeleteResults, LearnrCrudDelete{4000000, 1,
+	learnrCrudDeleteResults = append(learnrCrudDeleteResults, LearnrCrudDelete{4000000, 1, false,
 		[]string{"Error deleting Learnr in deleteLearnr", "Error reading the request"}})
 	//Another not seen ID
-	learnrCrudDeleteResults = append(learnrCrudDeleteResults, LearnrCrudDelete{-1, 1,
+	learnrCrudDeleteResults = append(learnrCrudDeleteResults, LearnrCrudDelete{-1, 1, false,
 		[]string{"Error deleting Learnr in deleteLearnr", "Error reading the request"}})
 }
 
-/* Here are our Test calls to the CRUD APIs */
+/* Tests for LearnR Org*/
+
 //Add a LearnROrg
 func TestLearnROrgAdd(t *testing.T) {
 	testNum := 0 //Used for incrementing
@@ -554,6 +559,55 @@ func TestLearnROrgsDelete(t *testing.T) {
 				" :" + strconv.Itoa(returnedMessage.SuccOrFail) + " Expected: " + strconv.Itoa(test.ExpectedNum))
 		}
 		/* Maybe we can test the strings at some point... */
+		testNum = testNum + 1 //Increment this number for testing
+	}
+}
+
+/* Tests for LearnR */
+func TestLearnRAdd(t *testing.T) {
+	testNum := 0 //Used for incrementing
+	for _, test := range learnRCrudCreateResults {
+		success, message := callAddLearnR(test.LearnR)
+		if success != test.ExpectedTruth {
+			t.Fatal("Failed at this step: " + strconv.Itoa(testNum) + " :" + message)
+		}
+		testNum = testNum + 1
+	}
+}
+
+//Test for updating LearnR
+func TestLearnRUpdate(t *testing.T) {
+	testNum := 0 //Used for incrementing
+	for _, test := range learnrCrudUpdateResults {
+		success, message := callUpdateLearnR(test.TheLearnr)
+		if success != test.ExpectedTruth {
+			t.Fatal("Failed at this step: " + strconv.Itoa(testNum) + " :" + message)
+		}
+		testNum = testNum + 1 //Increment this number for testing
+	}
+}
+
+//Test for Reading LearnR
+func TestLearnRRead(t *testing.T) {
+	testNum := 0 //Used for incrementing
+	for _, test := range learnRCrudReadResults {
+		success, message, learnr := callReadLearnR(test.ID)
+		if success != test.ExpectedTruth {
+			t.Fatal("Failed at this step: " + strconv.Itoa(testNum) + " :" + message + " " +
+				learnr.Name)
+		}
+		testNum = testNum + 1 //Increment this number for testing
+	}
+}
+
+//Test for Deleting LearnR
+func TestLearnRDelete(t *testing.T) {
+	testNum := 0 //Used for incrementing
+	for _, test := range learnrCrudDeleteResults {
+		success, message := callDeleteLearnR(test.ID)
+		if success != test.ExpectedTruth {
+			t.Fatal("Failed at this step: " + strconv.Itoa(testNum) + " :" + message)
+		}
 		testNum = testNum + 1 //Increment this number for testing
 	}
 }
