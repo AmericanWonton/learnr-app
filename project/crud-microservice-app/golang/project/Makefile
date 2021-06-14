@@ -1,0 +1,2 @@
+runprogram:
+	go run *.go

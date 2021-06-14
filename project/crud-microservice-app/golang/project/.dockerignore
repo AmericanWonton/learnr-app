@@ -1,0 +1,5 @@
+#ignore notes
+notes.txt
+
+#ignore the Makefile
+Makefile
