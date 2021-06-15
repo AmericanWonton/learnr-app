@@ -354,3 +354,10 @@ func loadLearnrs() map[string]bool {
 	}
 	return mapOLearnrsToReturn
 }
+
+//Calls 'giveLearnROrgs' to run a mongo query to get all LearnOrgs this User is Admin of
+func loadLearnROrgArray() []LearnrOrg {
+	arrayOReturn := []LearnrOrg{}
+
+	return arrayOReturn
+}

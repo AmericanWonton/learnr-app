@@ -869,6 +869,120 @@ func getLearnOrg(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprint(w, string(theJSONMessage))
 }
 
+//This gets all the LearnOrgs the User is Admin of
+func getLearnOrgAdminOf(w http.ResponseWriter, req *http.Request) {
+	canCrud := true
+	//Declare data to return
+	type TheReturnMessage struct {
+		TheErr            []string    `json:"TheErr"`
+		ResultMsg         []string    `json:"ResultMsg"`
+		SuccOrFail        int         `json:"SuccOrFail"`
+		ReturnedLearnOrgs []LearnrOrg `json:"ReturnedLearnOrgs"`
+	}
+	theReturnMessage := TheReturnMessage{}
+	theReturnMessage.SuccOrFail = 0 //Initially set to success
+
+	//Unwrap from JSON
+	bs, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		theErr := "Error reading the request from getLearnOrgAdminOf: " + err.Error() + "\n" + string(bs)
+		theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
+		theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
+		theReturnMessage.SuccOrFail = 1
+		logWriter(theErr)
+		fmt.Println(theErr)
+		canCrud = false
+	}
+
+	//Decalre JSON we recieve
+	type TheAdminOrgs struct {
+		TheIDS []int `json:"TheIDS"`
+	}
+
+	//Marshal it into our type
+	var theitem TheAdminOrgs
+	json.Unmarshal(bs, &theitem)
+
+	//If we successfully decoded, (and the IDs are not 0
+	if canCrud && len(theitem.TheIDS) > 0 {
+		/* Call our 'getLearnROrg' function for everyID this User is Admin of, (unless the ID is 0) */
+		for j := 0; j < len(theitem.TheIDS); j++ {
+			goodIDGet := true
+			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+			defer cancel()
+			req, err := http.NewRequest("POST", "http://localhost:4000/getLearnOrg", nil)
+			if err != nil {
+				theErr := "There was an error getting LearnROrgs in loadLearnROrgs: " + err.Error()
+				logWriter(theErr)
+				fmt.Println(theErr)
+				goodIDGet = false
+			}
+
+			resp, err := http.DefaultClient.Do(req.WithContext(ctx))
+
+			if resp.StatusCode >= 300 || resp.StatusCode <= 199 {
+				theErr := "There was an error reaching out to loadLearnROrg API: " + strconv.Itoa(resp.StatusCode)
+				fmt.Println(theErr)
+				logWriter(theErr)
+				goodIDGet = false
+			} else if err != nil {
+				theErr := "Error from response to loadLearnROrg: " + err.Error()
+				fmt.Println(theErr)
+				logWriter(theErr)
+				goodIDGet = false
+			}
+			defer resp.Body.Close()
+
+			body, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				theErr := "There was an error getting a response for LearnROrgs in loadLearnROrgs: " + err.Error()
+				logWriter(theErr)
+				fmt.Println(theErr)
+				goodIDGet = false
+			}
+
+			//Marshal the response into a type we can read
+			type ReturnMessage struct {
+				TheErr           []string  `json:"TheErr"`
+				ResultMsg        []string  `json:"ResultMsg"`
+				SuccOrFail       int       `json:"SuccOrFail"`
+				ReturnedLearnOrg LearnrOrg `json:"ReturnedLearnOrg"`
+			}
+			var returnedMessage ReturnMessage
+			json.Unmarshal(body, &returnedMessage)
+
+			//Evaluate if we can add this learnOrg to our map of returned LearnOrgs for this Admin User
+			if !goodIDGet || returnedMessage.SuccOrFail != 0 || returnedMessage.ReturnedLearnOrg.OrgID == 0 {
+				theErr := "Had an issue getting an ID for this Admin User and the LearnR Org: "
+				for k := 0; k < len(returnedMessage.TheErr); k++ {
+					theErr = theErr + returnedMessage.TheErr[k]
+				}
+				logWriter(theErr)
+			} else {
+				//Good ID, add it to return
+				theReturnMessage.ReturnedLearnOrgs = append(theReturnMessage.ReturnedLearnOrgs, returnedMessage.ReturnedLearnOrg)
+			}
+		}
+	} else {
+		//Error, return an error back and log it
+		returnedErr := "Can crud was not true or we had an error parsing IDs"
+		logWriter(returnedErr)
+		theReturnMessage.SuccOrFail = 1
+		theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
+		theReturnMessage.TheErr = append(theReturnMessage.TheErr, returnedErr)
+		theReturnMessage.ReturnedLearnOrgs = []LearnrOrg{}
+	}
+
+	//Format the JSON map for returning our results
+	theJSONMessage, err := json.Marshal(theReturnMessage)
+	//Send the response back
+	if err != nil {
+		errIs := "Error formatting JSON for return in getUser: " + err.Error()
+		logWriter(errIs)
+	}
+	fmt.Fprint(w, string(theJSONMessage))
+}
+
 /* LEARNR CRUD OPERATIONS ENDING */
 
 /* This funciton returns a map of all OrgNames entered in our database when called,
