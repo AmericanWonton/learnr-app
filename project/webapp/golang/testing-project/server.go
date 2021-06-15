@@ -26,6 +26,7 @@ func handleRequests() {
 	//Serve our Validation API
 	myRouter.HandleFunc("/checkUsername", checkUsername).Methods("POST")             //Check Username
 	myRouter.HandleFunc("/checkLearnROrgNames", checkLearnROrgNames).Methods("POST") //Check LearnROrg Name
+	myRouter.HandleFunc("/checkLearnRNames", checkLearnRNames).Methods("POST")       //Check Learnr Name
 	myRouter.HandleFunc("/checkOrgAbout", checkOrgAbout).Methods("POST")             //Check LearnOrg About
 	myRouter.HandleFunc("/createLearnROrg", createLearnROrg).Methods("POST")         //Create a LearnR Org
 	myRouter.HandleFunc("/canLogin", canLogin).Methods("POST")                       //Check User Login

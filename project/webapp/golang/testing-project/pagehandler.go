@@ -17,6 +17,7 @@ var usernameMap map[string]bool
 
 const GETALLUSERNAMESURL string = "http://localhost:4000/giveAllUsernames"
 const GETALLLEARNRORGURL string = "http://localhost:4000/giveAllLearnROrg"
+const GETALLLEARNRURL string = "http://localhost:4000/giveAllLearnr"
 
 //ViewData
 type UserViewData struct {
@@ -130,6 +131,7 @@ func sendhelp(w http.ResponseWriter, r *http.Request) {
 
 //Handles the learnr page
 func learnr(w http.ResponseWriter, r *http.Request) {
+	learnrMap = loadLearnrs() //Get all our LearnR names for validation
 	aUser := getUser(w, r)
 	//Redirect User if they are not logged in
 	if !alreadyLoggedIn(w, r) {
@@ -293,4 +295,62 @@ func loadLearnROrgs() map[string]bool {
 		mapOLearnOrgsToReturn = returnedMessage.ReturnedOrgNameMap
 	}
 	return mapOLearnOrgsToReturn
+}
+
+//Calls 'giveAllLearnRs' to run a mongo query to get all LearnR, then put in a map to return
+func loadLearnrs() map[string]bool {
+	mapOLearnrsToReturn := make(map[string]bool) //LearnROrg map to load our values into
+	//Call our crudOperations Microservice in order to get our Org Names
+	//Create a context for timing out
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	req, err := http.NewRequest("GET", GETALLLEARNRURL, nil)
+	if err != nil {
+		theErr := "There was an error getting Learnrs in loadLearnR: " + err.Error()
+		logWriter(theErr)
+		fmt.Println(theErr)
+	}
+
+	resp, err := http.DefaultClient.Do(req.WithContext(ctx))
+
+	if resp.StatusCode >= 300 || resp.StatusCode <= 199 {
+		theErr := "There was an error reaching out to loadLearnr API: " + strconv.Itoa(resp.StatusCode)
+		fmt.Println(theErr)
+		logWriter(theErr)
+	} else if err != nil {
+		theErr := "Error from response to loadLearnr: " + err.Error()
+		fmt.Println(theErr)
+		logWriter(theErr)
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		theErr := "There was an error getting a response for LearnR in loadLearnRs: " + err.Error()
+		logWriter(theErr)
+		fmt.Println(theErr)
+	}
+
+	//Marshal the response into a type we can read
+	type ReturnMessage struct {
+		TheErr              []string        `json:"TheErr"`
+		ResultMsg           []string        `json:"ResultMsg"`
+		SuccOrFail          int             `json:"SuccOrFail"`
+		ReturnedLearnRNames map[string]bool `json:"ReturnedLearnRNames"`
+	}
+	var returnedMessage ReturnMessage
+	json.Unmarshal(body, &returnedMessage)
+
+	//Assign our map variable to the map varialbe and see if it's okay
+	if returnedMessage.SuccOrFail != 0 {
+		errString := ""
+		for l := 0; l < len(returnedMessage.TheErr); l++ {
+			errString = errString + returnedMessage.TheErr[l]
+		}
+		logWriter(errString)
+		fmt.Println(errString)
+	} else {
+		mapOLearnrsToReturn = returnedMessage.ReturnedLearnRNames
+	}
+	return mapOLearnrsToReturn
 }

@@ -954,6 +954,89 @@ func giveAllLearnROrg(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprint(w, string(theJSONMessage))
 }
 
+/* This function returns a map of all LearnR names entered in our DB when called,
+(should be called whenever we need to create a new LearnR)*/
+func giveAllLearnr(w http.ResponseWriter, req *http.Request) {
+	//Declare data to return
+	type ReturnMessage struct {
+		TheErr              []string        `json:"TheErr"`
+		ResultMsg           []string        `json:"ResultMsg"`
+		SuccOrFail          int             `json:"SuccOrFail"`
+		ReturnedLearnRNames map[string]bool `json:"ReturnedLearnRNames"`
+	}
+	theReturnMessage := ReturnMessage{}
+	theReturnMessage.SuccOrFail = 0 //Initially set to success
+
+	//Declare empty map to fill and return
+	learnrNameMap := make(map[string]bool) //Clear Map for future use on page load
+
+	collection := mongoClient.Database("learnR").Collection("learnr") //Here's our collection
+
+	//Query Mongo for all Users
+	theFilter := bson.M{}
+	findOptions := options.Find()
+	curr, err := collection.Find(theContext, theFilter, findOptions)
+	if err != nil {
+		if strings.Contains(err.Error(), "no documents in result") {
+			theErr := "No documents were returned for orgs in givelearnrnames in MongoDB: " + err.Error()
+			theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
+			theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
+			theReturnMessage.SuccOrFail = 1
+			logWriter(theErr)
+		} else {
+			theErr := "There was an error returning results for this learnr, :" + err.Error()
+			theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
+			theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
+			theReturnMessage.SuccOrFail = 1
+			logWriter(theErr)
+		}
+	}
+	//Loop over query results and fill User Array
+	for curr.Next(theContext) {
+		// create a value into which the single document can be decoded
+		var item Learnr
+		err := curr.Decode(&item)
+		if err != nil {
+			theErr := "Error decoding Learnr in MongoDB in giveAllLearnrs: " + err.Error()
+			theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
+			theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
+			theReturnMessage.SuccOrFail = 0
+			logWriter(theErr)
+		}
+		//Fill Username map with the found Username
+		learnrNameMap[item.Name] = true
+	}
+	// Close the cursor once finished
+	curr.Close(theContext)
+
+	//Check to see if anyusernames were returned or we have errors
+	if theReturnMessage.SuccOrFail >= 1 {
+		theErr := "There are a number of errors for returning these Learnr Names..."
+		theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
+		theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
+	} else if len(learnrNameMap) <= 0 {
+		theErr := "No learnr returned...this could be the site's first deployment with no learnrs!"
+		theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
+		theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
+		theReturnMessage.SuccOrFail = 1
+	} else {
+		theErr := "No issues returning learnrs"
+		theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
+		theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
+		theReturnMessage.SuccOrFail = 0
+	}
+	theReturnMessage.ReturnedLearnRNames = learnrNameMap //Add our final OrgMap
+
+	//Format the JSON map for returning our results
+	theJSONMessage, err := json.Marshal(theReturnMessage)
+	//Send the response back
+	if err != nil {
+		errIs := "Error formatting JSON for return in giveAllLearnROrgs: " + err.Error()
+		logWriter(errIs)
+	}
+	fmt.Fprint(w, string(theJSONMessage))
+}
+
 /* VALIDATION API BEGINNING */
 
 /* This function returns a map of ALL Usernames entered in our database

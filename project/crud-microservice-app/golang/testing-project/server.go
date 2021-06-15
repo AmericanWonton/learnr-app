@@ -48,6 +48,7 @@ func handleRequests() {
 	//Serve our validation APIs
 	myRouter.HandleFunc("/giveAllUsernames", giveAllUsernames).Methods("GET")       //Get all our Usernames
 	myRouter.HandleFunc("/giveAllLearnROrg", giveAllLearnROrg).Methods("GET")       //Get all our LearnROrg Names
+	myRouter.HandleFunc("/giveAllLearnr", giveAllLearnr).Methods("GET")             //Get all our Learnr Names
 	myRouter.HandleFunc("/randomIDCreationAPI", randomIDCreationAPI).Methods("GET") //Get a random ID
 	myRouter.HandleFunc("/userLogin", userLogin).Methods("POST")                    //Get a random ID
 	//Serve our static files

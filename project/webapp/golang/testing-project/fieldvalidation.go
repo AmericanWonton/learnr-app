@@ -25,6 +25,10 @@ const GETUSERLOGIN string = "http://localhost:4000/userLogin"
 var allLearnROrgNames []string
 var learnOrgMap map[string]bool
 
+/* Used for LearnR creation */
+var allLearnRNames []string
+var learnrMap map[string]bool
+
 /* DEFINED SLURS */
 var slurs []string = []string{}
 
@@ -90,6 +94,27 @@ func checkLearnROrgNames(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, "ContainsLanguage")
 	} else {
 		fmt.Fprint(w, learnOrgMap[sbs])
+	}
+}
+
+//Checks the LearnR Names after every key stroke
+func checkLearnRNames(w http.ResponseWriter, r *http.Request) {
+	//Get the byte slice from the request body ajax
+	bs, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	sbs := string(bs)
+
+	if len(sbs) <= 0 {
+		fmt.Fprint(w, "TooShort")
+	} else if len(sbs) > 25 {
+		fmt.Fprint(w, "TooLong")
+	} else if containsLanguage(sbs) {
+		fmt.Fprint(w, "ContainsLanguage")
+	} else {
+		fmt.Fprint(w, learnrMap[sbs])
 	}
 }
 
@@ -412,6 +437,8 @@ func isAdmin(aUser User) int {
 	if len(aUser.AdminOrgs) > 0 {
 		isAdmin = 0
 	}
+
+	fmt.Printf("DEBUG: Here is is admin: %v\n", isAdmin)
 
 	return isAdmin
 }

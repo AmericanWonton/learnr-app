@@ -81,9 +81,9 @@ window.addEventListener('DOMContentLoaded', function(){
             Password: String(password.value),
             Firstname: String(firstname.value),
             Lastname: String(lastname.value),
-            PhoneNums: new Array(),
+            PhoneNums: [String(primaryPhoneNums.value)],
             UserID:   0,
-            Email: new Array(),
+            Email: [String(email.value)],
             Whoare: String(textareaTellMe.value),
             AdminOrgs: new Array(),
             OrgMember: new Array(),
@@ -91,8 +91,6 @@ window.addEventListener('DOMContentLoaded', function(){
             DateCreated: "",
             DateUpdated: "",
         };
-        newUser.Email.push(String(email.value));
-        newUser.PhoneNums.push(String(primaryPhoneNums.value))
 
         var jsonString = JSON.stringify(newUser);
         var xhr = new XMLHttpRequest();

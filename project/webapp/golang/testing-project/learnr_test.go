@@ -583,6 +583,11 @@ func TestLearnRUpdate(t *testing.T) {
 	}
 }
 
+//Test for gettings all LearnR Names
+func TestGetAllLearnRNames(t *testing.T) {
+	_ = loadLearnrs()
+}
+
 //Test for Reading LearnR
 func TestLearnRRead(t *testing.T) {
 	testNum := 0 //Used for incrementing
