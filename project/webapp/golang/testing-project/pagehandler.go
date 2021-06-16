@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -17,25 +18,27 @@ var usernameMap map[string]bool
 
 const GETALLUSERNAMESURL string = "http://localhost:4000/giveAllUsernames"
 const GETALLLEARNRORGURL string = "http://localhost:4000/giveAllLearnROrg"
+const GETALLLEARNORGUSERADMIN string = "http://localhost:4000/getLearnOrgAdminOf"
 const GETALLLEARNRURL string = "http://localhost:4000/giveAllLearnr"
 
 //ViewData
 type UserViewData struct {
-	TheUser        User     `json:"TheUser"`        //The User
-	Username       string   `json:"Username"`       //The Username
-	Password       string   `json:"Password"`       //The Password
-	Firstname      string   `json:"Firstname"`      //The First name
-	Lastname       string   `json:"Lastname"`       //The Last name
-	PhoneNums      []string `json:"PhoneNums"`      //The Phone numbers
-	UserID         int      `json:"UserID"`         //The UserID
-	Email          []string `json:"Email"`          //The Emails
-	Whoare         string   `json:"Whoare"`         //Who is this person
-	AdminOrgs      []int    `json:"AdminOrgs"`      //List of admin orgs
-	OrgMember      []int    `json:"OrgMember"`      //List of organizations this Member is apart of
-	Banned         bool     `json:"Banned"`         //If the User is banned, we display nothing
-	DateCreated    string   `json:"DateCreated"`    //Date this User was created
-	DateUpdated    string   `json:"DateUpdated"`    //Date this User was updated
-	MessageDisplay int      `json:"MessageDisplay"` //This is IF we need a message displayed
+	TheUser        User        `json:"TheUser"`        //The User
+	Username       string      `json:"Username"`       //The Username
+	Password       string      `json:"Password"`       //The Password
+	Firstname      string      `json:"Firstname"`      //The First name
+	Lastname       string      `json:"Lastname"`       //The Last name
+	PhoneNums      []string    `json:"PhoneNums"`      //The Phone numbers
+	UserID         int         `json:"UserID"`         //The UserID
+	Email          []string    `json:"Email"`          //The Emails
+	Whoare         string      `json:"Whoare"`         //Who is this person
+	AdminOrgs      []int       `json:"AdminOrgs"`      //List of admin orgs
+	OrgMember      []int       `json:"OrgMember"`      //List of organizations this Member is apart of
+	AdminOrgList   []LearnrOrg `json:"AdminOrgList"`   //List of organization objects this User is Admin of(used on SOME pages)
+	Banned         bool        `json:"Banned"`         //If the User is banned, we display nothing
+	DateCreated    string      `json:"DateCreated"`    //Date this User was created
+	DateUpdated    string      `json:"DateUpdated"`    //Date this User was updated
+	MessageDisplay int         `json:"MessageDisplay"` //This is IF we need a message displayed
 }
 
 //Handles the Index requests; Ask User if they're legal here
@@ -133,6 +136,7 @@ func sendhelp(w http.ResponseWriter, r *http.Request) {
 func learnr(w http.ResponseWriter, r *http.Request) {
 	learnrMap = loadLearnrs() //Get all our LearnR names for validation
 	aUser := getUser(w, r)
+	theAdminOrgs := loadLearnROrgArray(aUser)
 	//Redirect User if they are not logged in
 	if !alreadyLoggedIn(w, r) {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
@@ -142,7 +146,11 @@ func learnr(w http.ResponseWriter, r *http.Request) {
 		TheUser:        aUser,
 		Username:       aUser.UserName,
 		UserID:         aUser.UserID,
+		PhoneNums:      aUser.PhoneNums,
+		Email:          aUser.Email,
+		AdminOrgs:      aUser.AdminOrgs,
 		MessageDisplay: 0,
+		AdminOrgList:   theAdminOrgs,
 		Banned:         aUser.Banned,
 	}
 	/* Execute template, handle error */
@@ -152,7 +160,7 @@ func learnr(w http.ResponseWriter, r *http.Request) {
 
 //Handles the makeorg page
 func makeorg(w http.ResponseWriter, r *http.Request) {
-	learnOrgMap = loadLearnROrgs()
+	learnOrgMapNames = loadLearnROrgs()
 	aUser := getUser(w, r)
 	//Redirect User if they are not logged in
 	if !alreadyLoggedIn(w, r) {
@@ -356,8 +364,58 @@ func loadLearnrs() map[string]bool {
 }
 
 //Calls 'giveLearnROrgs' to run a mongo query to get all LearnOrgs this User is Admin of
-func loadLearnROrgArray() []LearnrOrg {
-	arrayOReturn := []LearnrOrg{}
+func loadLearnROrgArray(aUser User) []LearnrOrg {
+	type TheAdminOrgs struct {
+		TheIDS []int `json:"TheIDS"`
+	}
+	theID := TheAdminOrgs{TheIDS: aUser.AdminOrgs}
+	theJSONMessage, err := json.Marshal(theID)
+	if err != nil {
+		fmt.Println(err)
+		logWriter(err.Error())
+		log.Fatal(err)
+	}
+	payload := strings.NewReader(string(theJSONMessage))
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	req, err := http.NewRequest("POST", GETALLLEARNORGUSERADMIN, payload)
+	if err != nil {
+		theErr := "There was an error getting LearnROrgs in loadLearnROrgs: " + err.Error()
+		logWriter(theErr)
+		fmt.Println(theErr)
+	}
+	req.Header.Add("Content-Type", "application/json")
+	resp, err := http.DefaultClient.Do(req.WithContext(ctx))
+
+	if resp.StatusCode >= 300 || resp.StatusCode <= 199 {
+		theErr := "There was an error reaching out to loadLearnROrg API: " + strconv.Itoa(resp.StatusCode)
+		fmt.Println(theErr)
+		logWriter(theErr)
+	} else if err != nil {
+		theErr := "Error from response to loadLearnROrg: " + err.Error()
+		fmt.Println(theErr)
+		logWriter(theErr)
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		theErr := "There was an error getting a response for LearnROrgs in loadLearnROrgs: " + err.Error()
+		logWriter(theErr)
+		fmt.Println(theErr)
+	}
+
+	//Marshal the response into a type we can read
+	type TheReturnMessage struct {
+		TheErr            []string    `json:"TheErr"`
+		ResultMsg         []string    `json:"ResultMsg"`
+		SuccOrFail        int         `json:"SuccOrFail"`
+		ReturnedLearnOrgs []LearnrOrg `json:"ReturnedLearnOrgs"`
+	}
+	var returnedMessage TheReturnMessage
+	json.Unmarshal(body, &returnedMessage)
+
+	arrayOReturn := returnedMessage.ReturnedLearnOrgs
 
 	return arrayOReturn
 }

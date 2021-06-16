@@ -845,7 +845,7 @@ func getLearnOrg(w http.ResponseWriter, req *http.Request) {
 			theReturnMessage.SuccOrFail = 0
 			theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
 			theReturnMessage.TheErr = append(theReturnMessage.TheErr, "")
-			theReturnMessage.ReturnedLearnOrg = LearnrOrg{}
+			theReturnMessage.ReturnedLearnOrg = theLearnOrgReturned
 		}
 	} else {
 		//Error, return an error back and log it

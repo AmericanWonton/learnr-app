@@ -44,7 +44,10 @@
         
         {{/* Main */}}
         <div class="mainContentDiv">
-            
+            <p>Here is our Admin Orgs</p>
+            {{range $element := .AdminOrgList}}
+                {{$element.Name}}
+            {{end}}
         </div>
         {{/* Here is our footer */}}
     </body>
