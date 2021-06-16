@@ -430,14 +430,23 @@
             </div>
             {{/* TAGS */}}
             <div class="feildsSectionDiv">
-                <div class="labelDiv">
-                    <p class="labelPText">
-                        LearnR Description:
-                    </p>
+                <!-- Hold all the tags in this Div -->
+                <div class="resultHolderTagDiv" id="resultHolderTagDiv">
+
                 </div>
-                <div class="inputDiv">
-                    <textarea class="textareaTellMe" id="textareaTellMe" name="textareaTellMe"
-                     placeholder="What is this LearnR about?"></textarea>
+                <div class="multiInputHolderDiv">
+                    <div class="labelDiv">
+                        <p class="labelPText">
+                            LearnR Tag:
+                        </p>
+                    </div>
+                    <div class="inputDiv">
+                        <textarea class="textareaTellMe" id="tagDesc" name="tagDesc"
+                        placeholder="What word describes this LearnR?" minlength=1 maxlength=20 required></textarea>
+                        <div class="addLearnRTagDiv" id="addLearnRDiv">
+                            <button class="addLearnRTagButton" id="addLearnRTagButton" onclick="addLearnRTag()">Add Learnr Tag</button>
+                        </div>
+                    </div>
                 </div>
             </div>
             {{/* WHICH ORGANIZATION */}}

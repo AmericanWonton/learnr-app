@@ -1,3 +1,6 @@
+var learnrTags = 0; //This increases every time we click our buttons,(used mostly for naming)
+let learnrTagStrings = new Map(); //This contains all of our tags
+
 //Add our listener events to window loading
 window.addEventListener('DOMContentLoaded', function(){
     var theLearnR = {
@@ -89,3 +92,48 @@ window.addEventListener('DOMContentLoaded', function(){
     });
 
 });
+
+/* Called when 'addLearnRTagButton' is clicked. Add the string to our
+learnrTagStrings, then make a Div that will be appended to resultHolderTagDiv.
+These can be deleted anytime. */
+function addLearnRTag(){
+    /* Declare variables */
+    var tagDesc = document.getElementById("tagDesc");
+    var resultHolderTagDiv = document.getElementById("resultHolderTagDiv");
+
+    /* Create our divs to append to resultHolderTagDiv */
+    var resultTagDiv = document.createElement("div");
+    resultTagDiv.setAttribute("id", "resultTagDiv" + learnrTags.toString());
+    resultTagDiv.setAttribute("class", "resultTagDiv");
+    resultTagDiv.setAttribute("name", "resultTagDiv" + learnrTags.toString());
+    
+    var resultTagP = document.createElement("p");
+    resultTagP.setAttribute("id", "resultTagP" + learnrTags.toString());
+    resultTagP.setAttribute("class", "resultTagP");
+    resultTagP.setAttribute("name", "resultTagP" + learnrTags.toString());
+    resultTagP.innerHTML = String(tagDesc.value);
+
+    /* Add first elements to each other */
+    resultTagDiv.appendChild(resultTagP);
+    /* Add the tag to our current map */
+    learnrTagStrings.set(Number(learnrTags), String(tagDesc.value));
+    /* add the appropriate function on click */
+    var thePosition = Number(learnrTags); //Used for deleteing tags
+    resultTagDiv.addEventListener("click", function(){
+        //Remove from this position
+        learnrTagStrings.delete(thePosition);
+        resultTagDiv.remove();
+    });
+
+    /* Add to result holder div for display */
+    resultHolderTagDiv.appendChild(resultTagDiv);
+
+    /* Clear the text box after entry */
+    tagDesc.value = "";
+    tagDesc.innerHTML = "";
+
+    for (const [key, value] of learnrTagStrings.entries()){
+        console.log("Here is our key: " + key + " and here is our value: " + value);
+    }
+    learnrTags = learnrTags + 1; //Needed to interact with our map and other values
+}
