@@ -372,7 +372,7 @@
             {{/* SUBMIT BUTTON */}}
             <div class="feildsSectionDiv">
                 <div class="fieldSection" id="signUpSubmitB">
-                    <button id="submitLearnROrg">Submit</button>
+                    <button id="submitLearnR">Submit</button>
                 </div>
             </div>
             {{/* INFORMITIVE DIV */}}
@@ -390,7 +390,90 @@
 
 {{/* LEARNR MAKE SECTION */}}
 {{define "makelearnr"}}
-    
+    <div class="divformDiv" id="divFormMakeLearnr">
+        {{/* Make Learnr Instruction */}}
+        <div class="instructUserDiv">
+            <p class="formSign">
+                Make your Learnr here! Add the text messages you'd like to send to your 
+                Users below,(160 characters each!). A good Learnr should be respectful. A 
+                good Learnr should also be well documented, with links to respectable sources
+                or research. Don't be afraid to update your Learnr if that research is updated!
+            </p>
+        </div>
+        {{/* Begin Make LearnR */}}
+        <div class="signInAlignmentDiv">
+            {{/* LEARNR NAME */}}
+            <div class="feildsSectionDiv">
+                <div class="labelDiv">
+                    <p class="labelPText">
+                        Name of LearnR:
+                    </p>
+                </div>
+                <div class="inputDiv">
+                    <input type="text" id="learnrname" name="learnrname" placeholder="Name of LearnR" 
+                    minlength=1 maxlength=40 required>
+                    <br>
+                    <p id="inputLearnRInfo"></p>
+                </div>
+            </div>
+            {{/* DESCRIPTION */}}
+            <div class="feildsSectionDiv">
+                <div class="labelDiv">
+                    <p class="labelPText">
+                        LearnR Description:
+                    </p>
+                </div>
+                <div class="inputDiv">
+                    <textarea class="textareaTellMe" id="textareaTellMe" name="textareaTellMe"
+                     placeholder="What is this LearnR about?"></textarea>
+                </div>
+            </div>
+            {{/* TAGS */}}
+            <div class="feildsSectionDiv">
+                <div class="labelDiv">
+                    <p class="labelPText">
+                        LearnR Description:
+                    </p>
+                </div>
+                <div class="inputDiv">
+                    <textarea class="textareaTellMe" id="textareaTellMe" name="textareaTellMe"
+                     placeholder="What is this LearnR about?"></textarea>
+                </div>
+            </div>
+            {{/* WHICH ORGANIZATION */}}
+            <div class="feildsSectionDiv">
+                <div class="labelDiv">
+                    <p class="labelPText">
+                        Which Organization is this under?
+                    </p>
+                </div>
+                <div class="inputDiv">
+                    <select name="learnrorgs" id="learnrorgs">
+                        {{range $element := .}}
+                            <option value="{{$element.OrgID}}">{{$element.Name}}</option>
+                        {{end}}
+                    </select>
+                </div>
+            </div>
+            {{/* LEARNRINFO */}}
+
+            {{/* SUBMIT BUTTON */}}
+            <div class="feildsSectionDiv">
+                <div class="fieldSection" id="signUpSubmitB">
+                    <button id="submitLearnROrg">Submit</button>
+                </div>
+            </div>
+            {{/* INFORMITIVE DIV */}}
+            <div class="feildsSectionDiv">
+                <div class="informativeDiv" id="informativeDivLearnOrg">
+                    <p class="informtextP" id="informtextPLearnOrg"></p>
+                </div>
+            </div>
+        </div>
+        <div class="informFormDiv" id="informFormDiv">
+            <p class="informFormP" id="informFormP"></p>
+        </div>
+    </div>
 {{end}}
 
 {{/*** Javascript sections for data ***/}}

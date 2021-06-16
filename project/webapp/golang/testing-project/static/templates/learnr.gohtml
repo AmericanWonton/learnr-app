@@ -14,6 +14,7 @@
         {{/* Here is our Javascript or additional code needed */}}
         <script src="static/js/pagehandling.js"></script>
         <script src="static/js/app.js"></script>
+        <script src="static/js/learnr.js"></script>
         {{/* AngularJS for added email address */}}
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
     </head>
@@ -44,10 +45,7 @@
         
         {{/* Main */}}
         <div class="mainContentDiv">
-            <p>Here is our Admin Orgs</p>
-            {{range $element := .AdminOrgList}}
-                {{$element.Name}}
-            {{end}}
+            {{template "makelearnr" .AdminOrgList}}
         </div>
         {{/* Here is our footer */}}
     </body>

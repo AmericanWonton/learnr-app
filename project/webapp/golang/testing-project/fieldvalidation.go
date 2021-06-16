@@ -109,7 +109,7 @@ func checkLearnRNames(w http.ResponseWriter, r *http.Request) {
 
 	if len(sbs) <= 0 {
 		fmt.Fprint(w, "TooShort")
-	} else if len(sbs) > 25 {
+	} else if len(sbs) > 40 {
 		fmt.Fprint(w, "TooLong")
 	} else if containsLanguage(sbs) {
 		fmt.Fprint(w, "ContainsLanguage")
@@ -118,7 +118,7 @@ func checkLearnRNames(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-//This checks the 'about LearnROrg' section after every keystroke
+//This checks the 'about LearnROrg' section after every keystroke. Also works for LearnR About
 func checkOrgAbout(w http.ResponseWriter, r *http.Request) {
 	//Get the byte slice from the request body ajax
 	bs, err := ioutil.ReadAll(r.Body)
