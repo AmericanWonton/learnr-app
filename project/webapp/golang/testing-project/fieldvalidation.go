@@ -23,7 +23,7 @@ const GETUSERLOGIN string = "http://localhost:4000/userLogin"
 
 /* Used for LearnR/LearnR Org creation */
 var allLearnROrgNames []string
-var learnOrgMap map[string]bool
+var learnOrgMapNames map[string]bool
 
 /* Used for LearnR creation */
 var allLearnRNames []string
@@ -93,7 +93,7 @@ func checkLearnROrgNames(w http.ResponseWriter, r *http.Request) {
 	} else if containsLanguage(sbs) {
 		fmt.Fprint(w, "ContainsLanguage")
 	} else {
-		fmt.Fprint(w, learnOrgMap[sbs])
+		fmt.Fprint(w, learnOrgMapNames[sbs])
 	}
 }
 

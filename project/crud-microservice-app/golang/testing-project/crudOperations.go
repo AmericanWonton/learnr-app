@@ -908,16 +908,28 @@ func getLearnOrgAdminOf(w http.ResponseWriter, req *http.Request) {
 		/* Call our 'getLearnROrg' function for everyID this User is Admin of, (unless the ID is 0) */
 		for j := 0; j < len(theitem.TheIDS); j++ {
 			goodIDGet := true
+			type LearnOrgID struct {
+				TheLearnOrgID int `json:"TheLearnOrgID"`
+			}
+			theID := LearnOrgID{TheLearnOrgID: theitem.TheIDS[j]}
+			theJSONMessage, err := json.Marshal(theID)
+			if err != nil {
+				fmt.Println(err)
+				logWriter(err.Error())
+				log.Fatal(err)
+				goodIDGet = false
+			}
+			payload := strings.NewReader(string(theJSONMessage))
 			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 			defer cancel()
-			req, err := http.NewRequest("POST", "http://localhost:4000/getLearnOrg", nil)
+			req, err := http.NewRequest("POST", "http://localhost:4000/getLearnOrg", payload)
 			if err != nil {
 				theErr := "There was an error getting LearnROrgs in loadLearnROrgs: " + err.Error()
 				logWriter(theErr)
 				fmt.Println(theErr)
 				goodIDGet = false
 			}
-
+			req.Header.Add("Content-Type", "application/json")
 			resp, err := http.DefaultClient.Do(req.WithContext(ctx))
 
 			if resp.StatusCode >= 300 || resp.StatusCode <= 199 {

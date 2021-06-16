@@ -24,9 +24,9 @@ var funcMap = template.FuncMap{
 
 //initial functions when starting the app
 func init() {
-	usernameMap = make(map[string]bool) //Clear all Usernames when loading so no problems are caused
-	learnOrgMap = make(map[string]bool) //Clear all Org Names when loading so no problems are caused
-	learnrMap = make(map[string]bool)   //Clear all Learnr Names when loading so no problems are caused
+	usernameMap = make(map[string]bool)      //Clear all Usernames when loading so no problems are caused
+	learnOrgMapNames = make(map[string]bool) //Clear all Org Names when loading so no problems are caused
+	learnrMap = make(map[string]bool)        //Clear all Learnr Names when loading so no problems are caused
 	//Initialize our web page templates
 	template1 = template.Must(template.New("").Funcs(funcMap).ParseGlob("./static/templates/*"))
 	//Initialize Mongo Creds
