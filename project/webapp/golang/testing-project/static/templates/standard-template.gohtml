@@ -428,27 +428,6 @@
                      placeholder="What is this LearnR about?"></textarea>
                 </div>
             </div>
-            {{/* TAGS */}}
-            <div class="feildsSectionDiv">
-                <!-- Hold all the tags in this Div -->
-                <div class="resultHolderTagDiv" id="resultHolderTagDiv">
-
-                </div>
-                <div class="multiInputHolderDiv">
-                    <div class="labelDiv">
-                        <p class="labelPText">
-                            LearnR Tag:
-                        </p>
-                    </div>
-                    <div class="inputDiv">
-                        <textarea class="textareaTellMe" id="tagDesc" name="tagDesc"
-                        placeholder="What word describes this LearnR?" minlength=1 maxlength=20 required></textarea>
-                        <div class="addLearnRTagDiv" id="addLearnRDiv">
-                            <button class="addLearnRTagButton" id="addLearnRTagButton" onclick="addLearnRTag()">Add Learnr Tag</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
             {{/* WHICH ORGANIZATION */}}
             <div class="feildsSectionDiv">
                 <div class="labelDiv">
@@ -464,12 +443,78 @@
                     </select>
                 </div>
             </div>
-            {{/* LEARNRINFO */}}
+            {{/* TAGS */}}
+            <div class="feildsSectionDiv">
+                <!-- Hold all the tags in this Div -->
+                <div class="resultHolderTagDiv" id="resultHolderTagDiv">
 
+                </div>
+                <div class="multiInputHolderDiv">
+                    <div class="labelDiv">
+                        <p class="labelPText">
+                            LearnR Tag:
+                        </p>
+                    </div>
+                    <div class="inputDiv">
+                        <textarea class="textareaTellMe" id="tagDesc" name="tagDesc"
+                        placeholder="What word describes this LearnR?" minlength=1 maxlength=20 required></textarea>
+                        <div class="addLearnRTagDiv" id="addLearnRTagDiv">
+                            <button class="addLearnRTagButton" id="addLearnRTagButton" onclick="addLearnRTag()">Add Learnr Tag</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{/* LEARNRINFORMS */}}
+            <div class="feildsSectionDiv">
+                <div class="resultHolderInformDiv" id="resultHolderInformDiv">
+
+                </div>
+                <div class="multiInputHolderDiv">
+                    <!-- The text text -->
+                    <div class="labelDiv">
+                        <p class="labelPText">
+                            What texts do you want the Reader to have?
+                        </p>
+                    </div>
+                    <div class="inputDiv">
+                        <textarea class="textareaTellMe" id="textDesc" name="textDesc"
+                        placeholder="What do you want this text to say?" minlength=1 maxlength=160 required></textarea>
+                    </div>
+                    <!-- Should wait -->
+                    <div class="labelDiv">
+                        <p class="labelPText">
+                            Should this text be given time to be read before sending the next text?
+                        </p>
+                    </div>
+                    <div class="inputDiv">
+                        <select name="timewait" id="timewait">
+                            <option value="true">True</option>
+                            <option value="false">False</option>
+                        </select>
+                    </div>
+                    <!-- Amount of time waiting -->
+                    <div class="labelDiv">
+                        <p class="labelPText">
+                            How much time should the User be waiting?
+                        </p>
+                    </div>
+                    <div class="inputDiv">
+                        <input type="number" id="timewaiting" name="timewaiting" 
+                        placeholder="Amount of seconds to wait before sending text" minlength=1
+                        maxlength=300>
+                    </div>
+                    <!-- Submit -->
+                    <div class="inputDiv">
+                        <div class="addLearnRTagDiv" id="addLearnRInformDiv">
+                            <button class="addLearnRTagButton" id="addLearnRInformButton" onclick="addInform()">Add Learnr Inform</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             {{/* SUBMIT BUTTON */}}
             <div class="feildsSectionDiv">
                 <div class="fieldSection" id="signUpSubmitB">
-                    <button id="submitLearnROrg">Submit</button>
+                    <button id="submitLearnR">Submit</button>
                 </div>
             </div>
             {{/* INFORMITIVE DIV */}}
