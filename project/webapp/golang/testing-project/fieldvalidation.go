@@ -373,6 +373,143 @@ func createLearnROrg(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, string(theJSONMessage))
 }
 
+/* Creates a LearnR, if everything checks. Also
+creates a learnRInfo to keep track of this LearnRs information overtime.
+Finally, we'll update the LearnR Org with this new ID */
+func createLearnR(w http.ResponseWriter, r *http.Request) {
+	//Declare Ajax return statements to be sent back
+	type SuccessMSG struct {
+		Message    string `json:"Message"`
+		SuccessNum int    `json:"SuccessNum"`
+	}
+	theSuccMessage := SuccessMSG{
+		Message:    "LearnR Organization created successfully",
+		SuccessNum: 0,
+	}
+
+	//Declare struct we are expecting
+	type SendJSON struct {
+		TheLearnr Learnr `json:"TheLearnr"`
+		OurUser   User   `json:"OurUser"`
+	}
+	//Get the byte slice from the request
+	bs, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		fmt.Println(err)
+		logWriter(err.Error())
+	}
+
+	//Marshal it into our type
+	var ourJSON SendJSON
+	json.Unmarshal(bs, &ourJSON)
+
+	/* Create basic learnr for data entry */
+	theTimeNow := time.Now()
+	goodIDGet, message, randomid := randomAPICall()
+	if goodIDGet {
+		theLearnr := Learnr{
+			ID:            randomid,
+			InfoID:        0,
+			OrgID:         ourJSON.TheLearnr.OrgID,
+			Name:          ourJSON.TheLearnr.Name,
+			Tags:          ourJSON.TheLearnr.Tags,
+			Description:   ourJSON.TheLearnr.Description,
+			PhoneNums:     []string{},
+			LearnRInforms: []LearnRInforms{},
+			Active:        true,
+			DateCreated:   theTimeNow.Format("2006-01-02 15:04:05"),
+			DateUpdated:   theTimeNow.Format("2006-01-02 15:04:05"),
+		}
+		//Create LearnrInfo for this LearnR
+		goodIDGet, message, randomid := randomAPICall()
+		if goodIDGet {
+			//Create LearnR and add CRUD it to our DB
+			theLearnRInfo := LearnrInfo{
+				ID:               randomid,
+				LearnRID:         theLearnr.ID,
+				AllSessions:      []LearnRSession{},
+				FinishedSessions: []LearnRSession{},
+				DateCreated:      theTimeNow.Format("2006-01-02 15:04:05"),
+				DateUpdated:      theTimeNow.Format("2006-01-02 15:04:05"),
+			}
+			goodAdd, message := callAddLearnrInfo(theLearnRInfo)
+			if goodAdd {
+				//LearnRInfo added successfully, add it to our LearnR
+				theLearnr.InfoID = theLearnRInfo.ID
+				//Fix LearnRInforms to have unique, correct values
+				goodFixing := true //Determines if LearnRInforms successfully updated
+				for n := 0; n < len(theLearnr.LearnRInforms); n++ {
+					goodIDGet, _, randomid := randomAPICall()
+					if goodIDGet {
+						theLearnr.LearnRInforms[n].ID = randomid
+						theLearnr.LearnRInforms[n].LearnRName = theLearnr.Name
+						theLearnr.LearnRInforms[n].DateCreated = theTimeNow.Format("2006-01-02 15:04:05")
+						theLearnr.LearnRInforms[n].DateUpdated = theTimeNow.Format("2006-01-02 15:04:05")
+						theLearnr.LearnRInforms[n].Name = "LearnrInfo" + strconv.Itoa(n)
+						theLearnr.LearnRInforms[n].Order = n
+						goodAdd, _ := callAddLearnRInform(theLearnr.LearnRInforms[n])
+						if !goodAdd {
+							//Could not add to DB
+							goodFixing = false
+							break
+						}
+					} else {
+						goodFixing = false
+						break
+					}
+				}
+				if goodFixing {
+					//The Learnr has all values fixed/created, we can now add it to DB
+					addLearnR, message := callAddLearnR(theLearnr)
+					if addLearnR {
+						//LearnR Added to DB; need to update the ORG it's under with our new ID
+						theLearnOrgs := loadLearnROrgArray(ourJSON.OurUser)
+						for j := 0; j < len(theLearnOrgs); j++ {
+							if theLearnOrgs[j].OrgID == theLearnr.OrgID {
+								updatedLearnROrg := theLearnOrgs[j]
+								updatedLearnROrg.LearnrList = append(updatedLearnROrg.LearnrList, theLearnr.ID)
+								updatedLearnROrg.DateUpdated = theTimeNow.Format("2006-01-02 15:04:05")
+								goodUpdate, message := callUpdateLearnOrg(updatedLearnROrg)
+								if goodUpdate {
+									theSuccMessage.SuccessNum = 0
+									theSuccMessage.Message = "LearnR successfully added and all organizations updated"
+								} else {
+									theSuccMessage.SuccessNum = 1
+									theSuccMessage.Message = "Failed to add LearnR to DB: " + message
+								}
+							}
+						}
+					} else {
+						theSuccMessage.SuccessNum = 1
+						theSuccMessage.Message = "Failed to add LearnR to DB: " + message
+					}
+				} else {
+					theSuccMessage.SuccessNum = 1
+					theSuccMessage.Message = "Failed to get proper ID: " + message
+				}
+			} else {
+				theSuccMessage.SuccessNum = 1
+				theSuccMessage.Message = "Failed to get proper ID: " + message
+			}
+		} else {
+			theSuccMessage.SuccessNum = 1
+			theSuccMessage.Message = "Failed to get proper ID: " + message
+		}
+	} else {
+		theSuccMessage.SuccessNum = 1
+		theSuccMessage.Message = "Failed to get proper ID: " + message
+	}
+
+	/* Send the response back to Ajax */
+	theJSONMessage, err := json.Marshal(theSuccMessage)
+	//Send the response back
+	if err != nil {
+		errIs := "Error formatting JSON for return in createUser: " + err.Error()
+		logWriter(errIs)
+	}
+	fmt.Fprint(w, string(theJSONMessage))
+}
+
 /* Gets a random API after calling our random API */
 func randomAPICall() (bool, string, int) {
 	goodGet, message, finalInt := true, "", 0

@@ -25,7 +25,7 @@ window.addEventListener('DOMContentLoaded', function(){
     var learnrname = document.getElementById("learnrname");
     var textareaTellMe = document.getElementById("textareaTellMe");
     var learnrorgs = document.getElementById("learnrorgs");
-    var informtextPLearnOrg = document.getElementById("informtextPLearnOrg");
+    var informtextPLearnr = document.getElementById("informtextPLearnr");
     var submitLearnR = document.getElementById("submitLearnR");
 
     /* Intitially set this to disabled so User needs to input values
@@ -112,7 +112,53 @@ window.addEventListener('DOMContentLoaded', function(){
 
     /* Submit this LearnR for review! */
     submitLearnR.addEventListener('click', function(){
+        submitLearnR.disabled = true; //Disable this until Ajax comes back
+        //Add all our LearnInforms to this array
+        var learnInformArray = [];
+        for (const [key, value] of learnrInforms.entries()){
+            learnInformArray.push(value);
+            console.log("Here is our key: " + key + " and here is our value: " + value);
+        }
+        //Add our tags to an array as well
+        var learnrTagArray = [];
+        for (const [key, value] of learnrTagStrings.entries()){
+            learnrTagArray.push(value);
+            console.log("Here is our key: " + key + " and here is our value: " + value);
+        }
+        //Add our new variables to our LearnR Array
+        theLearnR.LearnRInforms = learnInformArray;
+        theLearnR.Tags = learnrTagArray;
+        theLearnR.Description.push(String(textareaTellMe.value));
+        theLearnR.Name = String(learnrname.value);
+        //Use Ajax to send this information
+        //Declare Full JSON to send, with our UserID
+        var SendJSON = {
+            TheLearnr: theLearnR,
+            OurUser: TheUser,
+        };
 
+        var jsonString = JSON.stringify(SendJSON);
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/createLearnR', true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.addEventListener('readystatechange', function(){
+            if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200){
+                var item = xhr.responseText;
+                var SuccessMSG = JSON.parse(item);
+                if (SuccessMSG.SuccessNum === 0){
+
+                    informtextPLearnr.innerHTML = "LearnR succesfully created. Returning to mainpage...";
+                    setTimeout(() => { navigateHeader(3); }, 4000);
+                } else {
+                    submitLearnR.disabled = false;
+                    console.log("DEBUG: We have an error: " + SuccessMSG.SuccessNum + " " +
+                    SuccessMSG.Message);
+                    document.getElementById("informtextPLearnr").innerHTML = SuccessMSG.Message;
+                    document.getElementById("informtextPLearnr").value = SuccessMSG.Message;
+                }
+            }
+        });
+        xhr.send(jsonString);
     });
 
 });
