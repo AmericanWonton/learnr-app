@@ -72,14 +72,18 @@ window.addEventListener('DOMContentLoaded', function(){
         var newLearnOrg = {
             OrgID: 0,
             Name: String(learnrorgname.value),
-            OrgGoals: new Array(),
-            UserList: new Array(),
-            AdminList: new Array(),
-            LearnrList: new Array(),
+            OrgGoals: [],
+            UserList: [],
+            AdminList: [],
+            LearnrList: [],
             DateCreated: "",
             DateUpdated: ""
         };
         newLearnOrg.OrgGoals.push(String(textareaTellMe.value));
+
+        for (var l = 0; l < TheUser.AdminOrgs.length; l++){
+            console.log("DEBUG: Our Array here is: " + TheUser.AdminOrgs[l]);
+        }
 
         //Declare Full JSON to send, with our UserID
         var SendJSON = {
@@ -87,6 +91,9 @@ window.addEventListener('DOMContentLoaded', function(){
             OurUser: TheUser,
         };
 
+        for (var l = 0; l < TheUser.AdminOrgs.length; l++){
+            console.log("DEBUG: Here is our admin value: " + TheUser.AdminOrgs[l]);
+        }
         var jsonString = JSON.stringify(SendJSON);
         var xhr = new XMLHttpRequest();
         xhr.open('POST', '/createLearnROrg', true);
@@ -108,5 +115,4 @@ window.addEventListener('DOMContentLoaded', function(){
         });
         xhr.send(jsonString);
     });
-
 });

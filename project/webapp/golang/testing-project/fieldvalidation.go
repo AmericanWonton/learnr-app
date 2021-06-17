@@ -310,6 +310,8 @@ func createLearnROrg(w http.ResponseWriter, r *http.Request) {
 	var ourJSON SendJSON
 	json.Unmarshal(bs, &ourJSON)
 
+	fmt.Printf("DEBUG: Here is our UserArray before: %v\n", ourJSON.OurUser.AdminOrgs)
+
 	/* perform Crud API here to insert the new User */
 	theTimeNow := time.Now()
 
@@ -339,15 +341,20 @@ func createLearnROrg(w http.ResponseWriter, r *http.Request) {
 				UserID:      ourJSON.OurUser.UserID,
 				Email:       ourJSON.OurUser.Email,
 				Whoare:      ourJSON.OurUser.Whoare,
-				AdminOrgs:   append(ourJSON.OurUser.AdminOrgs, randomid),
-				OrgMember:   append(ourJSON.OurUser.OrgMember, randomid),
+				AdminOrgs:   ourJSON.OurUser.AdminOrgs,
+				OrgMember:   ourJSON.OurUser.OrgMember,
 				Banned:      ourJSON.OurUser.Banned,
 				DateCreated: ourJSON.OurUser.DateCreated,
 				DateUpdated: theTimeNow.Format("2006-01-02 15:04:05"),
 			}
+			updatedUser.AdminOrgs = append(updatedUser.AdminOrgs, randomid)
+			updatedUser.OrgMember = append(updatedUser.OrgMember, randomid)
+			fmt.Printf("DEBUG: Here is our updated User: %v\n", updatedUser)
 			goodAdd2, message2 := callUpdateUser(updatedUser)
 
 			if goodAdd2 {
+				//Update our User Session too
+				dbUsers[updatedUser.UserName] = updatedUser
 				theSuccMessage.Message = message2
 				theSuccMessage.SuccessNum = 0
 			} else {
@@ -464,20 +471,26 @@ func createLearnR(w http.ResponseWriter, r *http.Request) {
 					if addLearnR {
 						//LearnR Added to DB; need to update the ORG it's under with our new ID
 						theLearnOrgs := loadLearnROrgArray(ourJSON.OurUser)
+						finalFixing := true //Will determine if our learnorgs are updated correctly
 						for j := 0; j < len(theLearnOrgs); j++ {
 							if theLearnOrgs[j].OrgID == theLearnr.OrgID {
 								updatedLearnROrg := theLearnOrgs[j]
 								updatedLearnROrg.LearnrList = append(updatedLearnROrg.LearnrList, theLearnr.ID)
 								updatedLearnROrg.DateUpdated = theTimeNow.Format("2006-01-02 15:04:05")
-								goodUpdate, message := callUpdateLearnOrg(updatedLearnROrg)
-								if goodUpdate {
-									theSuccMessage.SuccessNum = 0
-									theSuccMessage.Message = "LearnR successfully added and all organizations updated"
-								} else {
-									theSuccMessage.SuccessNum = 1
-									theSuccMessage.Message = "Failed to add LearnR to DB: " + message
+								goodUpdate, _ := callUpdateLearnOrg(updatedLearnROrg)
+								if !goodUpdate {
+									finalFixing = false
+									break
 								}
 							}
+						}
+						if finalFixing {
+							//Return success
+							theSuccMessage.SuccessNum = 0
+							theSuccMessage.Message = "LearnR successfully added and all organizations updated"
+						} else {
+							theSuccMessage.SuccessNum = 1
+							theSuccMessage.Message = "Failed to add LearnR to DB: "
 						}
 					} else {
 						theSuccMessage.SuccessNum = 1

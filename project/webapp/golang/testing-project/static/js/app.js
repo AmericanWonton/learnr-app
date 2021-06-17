@@ -3,12 +3,12 @@ var TheUser = {
     Password: "",
     Firstname: "",
     Lastname: "",
-    PhoneNums: new Array(),
+    PhoneNums: [],
     UserID: 0,
-    Email: new Array(),
+    Email: [],
     Whoare: "",
-    AdminOrgs: new Array(),
-    OrgMember: new Array(),
+    AdminOrgs: [],
+    OrgMember: [],
     Banned: false,
     DateCreated: "",
     DateUpdated: ""
@@ -51,6 +51,9 @@ function setWhoAre(whoare){
 
 function setAdminOrgs(adorgs){
     TheUser.AdminOrgs.push(adorgs);
+    for (var l = 0; l < TheUser.AdminOrgs.length; l++){
+        console.log("DEBUG: Our Array here is: " + TheUser.AdminOrgs[l]);
+    }
 }
 
 function setOrgMember(themembersorg){

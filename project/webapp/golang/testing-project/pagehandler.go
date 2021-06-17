@@ -171,7 +171,11 @@ func makeorg(w http.ResponseWriter, r *http.Request) {
 		TheUser:        aUser,
 		Username:       aUser.UserName,
 		UserID:         aUser.UserID,
+		PhoneNums:      aUser.PhoneNums,
+		Email:          aUser.Email,
+		AdminOrgs:      aUser.AdminOrgs,
 		MessageDisplay: 0,
+		AdminOrgList:   []LearnrOrg{},
 		Banned:         aUser.Banned,
 	}
 	/* Execute template, handle error */
