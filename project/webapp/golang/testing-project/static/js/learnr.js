@@ -32,6 +32,8 @@ window.addEventListener('DOMContentLoaded', function(){
     /* Intitially set this to disabled so User needs to input values
     for this LearnR */
     submitLearnR.disabled = true;
+    /* Initially set the orgid, in case User dosen't change their selection */
+    theLearnR.OrgID = Number(learnrorgs.value); //Adjust orgID value
 
     /* Check the database for LearnR Name when the key is pressed! */
     learnrname.addEventListener('input', function(){
@@ -97,6 +99,7 @@ window.addEventListener('DOMContentLoaded', function(){
     /* Changes our LearnR object to the organization ID when dropdown menu is selected */
     learnrorgs.addEventListener('change', function(){
         theLearnR.OrgID = Number(learnrorgs.value); //Adjust orgID value
+        console.log("DEBUG: The LearnRID id now: " + theLearnR.OrgID);
     });
 
     /* Disables the 'timewaiting' obect based on whether or not
@@ -118,13 +121,11 @@ window.addEventListener('DOMContentLoaded', function(){
         var learnInformArray = [];
         for (const [key, value] of learnrInforms.entries()){
             learnInformArray.push(value);
-            console.log("Here is our key: " + key + " and here is our value: " + value);
         }
         //Add our tags to an array as well
         var learnrTagArray = [];
         for (const [key, value] of learnrTagStrings.entries()){
             learnrTagArray.push(value);
-            console.log("Here is our key: " + key + " and here is our value: " + value);
         }
         //Add our new variables to our LearnR Array
         theLearnR.LearnRInforms = learnInformArray;
@@ -204,7 +205,7 @@ function addLearnRTag(){
     tagDesc.innerHTML = "";
 
     for (const [key, value] of learnrTagStrings.entries()){
-        console.log("Here is our key: " + key + " and here is our value: " + value);
+        
     }
     learnrTags = learnrTags + 1; //Needed to interact with our map and other values
 }

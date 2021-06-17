@@ -471,7 +471,8 @@ func createLearnR(w http.ResponseWriter, r *http.Request) {
 					if addLearnR {
 						//LearnR Added to DB; need to update the ORG it's under with our new ID
 						theLearnOrgs := loadLearnROrgArray(ourJSON.OurUser)
-						finalFixing := true //Will determine if our learnorgs are updated correctly
+						finalFixing := true    //Will determine if our learnorgs are updated correctly
+						foundLearnOrg := false //Determines if learnorg is found and updated
 						for j := 0; j < len(theLearnOrgs); j++ {
 							if theLearnOrgs[j].OrgID == theLearnr.OrgID {
 								updatedLearnROrg := theLearnOrgs[j]
@@ -482,9 +483,10 @@ func createLearnR(w http.ResponseWriter, r *http.Request) {
 									finalFixing = false
 									break
 								}
+								foundLearnOrg = true
 							}
 						}
-						if finalFixing {
+						if finalFixing && foundLearnOrg {
 							//Return success
 							theSuccMessage.SuccessNum = 0
 							theSuccMessage.Message = "LearnR successfully added and all organizations updated"
@@ -587,8 +589,6 @@ func isAdmin(aUser User) int {
 	if len(aUser.AdminOrgs) > 0 {
 		isAdmin = 0
 	}
-
-	fmt.Printf("DEBUG: Here is is admin: %v\n", isAdmin)
 
 	return isAdmin
 }

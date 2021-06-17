@@ -51,9 +51,6 @@ function setWhoAre(whoare){
 
 function setAdminOrgs(adorgs){
     TheUser.AdminOrgs.push(adorgs);
-    for (var l = 0; l < TheUser.AdminOrgs.length; l++){
-        console.log("DEBUG: Our Array here is: " + TheUser.AdminOrgs[l]);
-    }
 }
 
 function setOrgMember(themembersorg){
