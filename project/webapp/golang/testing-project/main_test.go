@@ -49,6 +49,7 @@ func setup() {
 	createLearnrReadCrud()
 	createLearnrUpdateCrud()
 	createLearnrDeleteCrud()
+	createLearnRSpecialGet()
 	/* Add values for LearnRInfo test cases */
 	createCreateLearnrInfoCrud()
 	createLearnrInfoReadCrud()

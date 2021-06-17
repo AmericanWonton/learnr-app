@@ -23,22 +23,23 @@ const GETALLLEARNRURL string = "http://localhost:4000/giveAllLearnr"
 
 //ViewData
 type UserViewData struct {
-	TheUser        User        `json:"TheUser"`        //The User
-	Username       string      `json:"Username"`       //The Username
-	Password       string      `json:"Password"`       //The Password
-	Firstname      string      `json:"Firstname"`      //The First name
-	Lastname       string      `json:"Lastname"`       //The Last name
-	PhoneNums      []string    `json:"PhoneNums"`      //The Phone numbers
-	UserID         int         `json:"UserID"`         //The UserID
-	Email          []string    `json:"Email"`          //The Emails
-	Whoare         string      `json:"Whoare"`         //Who is this person
-	AdminOrgs      []int       `json:"AdminOrgs"`      //List of admin orgs
-	OrgMember      []int       `json:"OrgMember"`      //List of organizations this Member is apart of
-	AdminOrgList   []LearnrOrg `json:"AdminOrgList"`   //List of organization objects this User is Admin of(used on SOME pages)
-	Banned         bool        `json:"Banned"`         //If the User is banned, we display nothing
-	DateCreated    string      `json:"DateCreated"`    //Date this User was created
-	DateUpdated    string      `json:"DateUpdated"`    //Date this User was updated
-	MessageDisplay int         `json:"MessageDisplay"` //This is IF we need a message displayed
+	TheUser          User        `json:"TheUser"`          //The User
+	Username         string      `json:"Username"`         //The Username
+	Password         string      `json:"Password"`         //The Password
+	Firstname        string      `json:"Firstname"`        //The First name
+	Lastname         string      `json:"Lastname"`         //The Last name
+	PhoneNums        []string    `json:"PhoneNums"`        //The Phone numbers
+	UserID           int         `json:"UserID"`           //The UserID
+	Email            []string    `json:"Email"`            //The Emails
+	Whoare           string      `json:"Whoare"`           //Who is this person
+	AdminOrgs        []int       `json:"AdminOrgs"`        //List of admin orgs
+	OrgMember        []int       `json:"OrgMember"`        //List of organizations this Member is apart of
+	AdminOrgList     []LearnrOrg `json:"AdminOrgList"`     //List of organization objects this User is Admin of(used on SOME pages)
+	Banned           bool        `json:"Banned"`           //If the User is banned, we display nothing
+	OrganizedLearnRs []Learnr    `json:"OrganizedLearnRs"` //An array of Learnrs with User input for ordering
+	DateCreated      string      `json:"DateCreated"`      //Date this User was created
+	DateUpdated      string      `json:"DateUpdated"`      //Date this User was updated
+	MessageDisplay   int         `json:"MessageDisplay"`   //This is IF we need a message displayed
 }
 
 //Handles the Index requests; Ask User if they're legal here
@@ -65,27 +66,34 @@ func signup(w http.ResponseWriter, r *http.Request) {
 //Handles the mainpage
 func mainpage(w http.ResponseWriter, r *http.Request) {
 	aUser := getUser(w, r)
+	theLearnRs, goodGet, message := getSpecialLearnRs()
+	if !goodGet {
+		logWriter("Issue getting Learnrs for this page: " + message)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	}
 	//Redirect User if they are not logged in
 	if !alreadyLoggedIn(w, r) {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
 	vd := UserViewData{
-		TheUser:        aUser,
-		Username:       aUser.UserName,
-		Password:       aUser.Password,
-		Firstname:      aUser.Firstname,
-		Lastname:       aUser.Lastname,
-		PhoneNums:      aUser.PhoneNums,
-		UserID:         aUser.UserID,
-		Email:          aUser.Email,
-		Whoare:         aUser.Whoare,
-		AdminOrgs:      aUser.AdminOrgs,
-		OrgMember:      aUser.OrgMember,
-		Banned:         aUser.Banned,
-		DateCreated:    aUser.DateCreated,
-		DateUpdated:    aUser.DateUpdated,
-		MessageDisplay: 0,
+		TheUser:          aUser,
+		Username:         aUser.UserName,
+		Password:         aUser.Password,
+		Firstname:        aUser.Firstname,
+		Lastname:         aUser.Lastname,
+		PhoneNums:        aUser.PhoneNums,
+		UserID:           aUser.UserID,
+		Email:            aUser.Email,
+		Whoare:           aUser.Whoare,
+		AdminOrgs:        aUser.AdminOrgs,
+		OrgMember:        aUser.OrgMember,
+		Banned:           aUser.Banned,
+		OrganizedLearnRs: theLearnRs,
+		DateCreated:      aUser.DateCreated,
+		DateUpdated:      aUser.DateUpdated,
+		MessageDisplay:   0,
 	}
 	/* Execute template, handle error */
 	err1 := template1.ExecuteTemplate(w, "mainpage.gohtml", vd)

@@ -72,6 +72,15 @@ type LearnrCrudRead struct {
 
 var learnRCrudReadResults []LearnrCrudRead
 
+type LearnrCrudSpecialGet struct {
+	ID                  int
+	ExpectedNum         int
+	ExpectedTruth       bool
+	ExpectedStringArray []string
+}
+
+var learnRSpecialCrudResults []LearnrCrudSpecialGet
+
 //LearnR Crud Update
 type LearnRCrudUpdate struct {
 	TheLearnr           Learnr
@@ -266,6 +275,12 @@ func createLearnrDeleteCrud() {
 	//Another not seen ID
 	learnrCrudDeleteResults = append(learnrCrudDeleteResults, LearnrCrudDelete{-1, 1, false,
 		[]string{"Error deleting Learnr in deleteLearnr", "Error reading the request"}})
+}
+
+//This creates special test cases for gettings special Learnr arrays
+func createLearnRSpecialGet() {
+	//Good Crud Read
+	learnRSpecialCrudResults = append(learnRSpecialCrudResults, LearnrCrudSpecialGet{1111, 0, true, []string{"Got our Special Learnrs successfully"}})
 }
 
 /* Tests for LearnR Org*/
@@ -595,6 +610,20 @@ func TestLearnRRead(t *testing.T) {
 		success, message, _ := callReadLearnR(test.ID)
 		if success != test.ExpectedTruth {
 			t.Fatal("Failed at this step: " + strconv.Itoa(testNum) + " :" + message + " ")
+		}
+		testNum = testNum + 1 //Increment this number for testing
+	}
+}
+
+//Test for Getting special LearnR
+func TestSpecialLearnrGet(t *testing.T) {
+	testNum := 0 //Used for incrementing
+	for _, test := range learnRSpecialCrudResults {
+		learnr, success, message := getSpecialLearnRs()
+		if success != test.ExpectedTruth {
+			t.Fatal("Failed at this step: " + strconv.Itoa(testNum) + " :" + message + " ")
+		} else {
+			fmt.Printf("Here is our Learnr: %v\n", learnr)
 		}
 		testNum = testNum + 1 //Increment this number for testing
 	}
