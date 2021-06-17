@@ -34,7 +34,7 @@ function setLastname(lastname){
 }
 
 function setPhoneNums(phonenums){
-    TheUser.PhoneNums = phonenums;
+    TheUser.PhoneNums.push(phonenums);
 }
 
 function setUserID(userid){
@@ -50,11 +50,11 @@ function setWhoAre(whoare){
 }
 
 function setAdminOrgs(adorgs){
-    TheUser.AdminOrgs = adorgs;
+    TheUser.AdminOrgs.push(adorgs);
 }
 
 function setOrgMember(themembersorg){
-    TheUser.OrgMember = themembersorg;
+    TheUser.OrgMember.push(themembersorg);
 }
 
 function setBanned(banned){

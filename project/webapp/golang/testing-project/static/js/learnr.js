@@ -26,6 +26,7 @@ window.addEventListener('DOMContentLoaded', function(){
     var textareaTellMe = document.getElementById("textareaTellMe");
     var learnrorgs = document.getElementById("learnrorgs");
     var informtextPLearnr = document.getElementById("informtextPLearnr");
+    var informtextPLearnrDesc = document.getElementById("informtextPLearnrDesc");
     var submitLearnR = document.getElementById("submitLearnR");
 
     /* Intitially set this to disabled so User needs to input values
@@ -73,19 +74,19 @@ window.addEventListener('DOMContentLoaded', function(){
             if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200){
                 var item = xhr.responseText;
                 if (item == 'TooShort') {
-                    informtextPLearnOrg.innerHTML = 'Please tell us why you want to make this LearnR Organization';
+                    informtextPLearnrDesc.innerHTML = 'Please tell us why you want to make this LearnR Organization';
                     submitLearnR.disabled = true;
                 } else if (item == 'TooLong'){
-                    informtextPLearnOrg.innerHTML = 'LearnR Organization about section must be under 400 characters';
+                    informtextPLearnrDesc.innerHTML = 'LearnR Organization about section must be under 400 characters';
                     submitLearnR.disabled = true;
                 } else if (item == 'ContainsLanguage'){
-                    informtextPLearnOrg.innerHTML = 'This section contains innapropriate content; please contact our help center for more information.';
+                    informtextPLearnrDesc.innerHTML = 'This section contains innapropriate content; please contact our help center for more information.';
                     submitLearnR.disabled = true;
                 } else if (item == 'okay') {
-                    informtextPLearnOrg.innerHTML = '';
+                    informtextPLearnrDesc.innerHTML = '';
                     submitLearnR.disabled = false;
                 } else {
-                    informtextPLearnOrg.innerHTML = 'Error checking your LearnR Organiztion about section';
+                    informtextPLearnrDesc.innerHTML = 'Error checking your LearnR Organiztion about section';
                     submitLearnR.disabled = true;
                 }
             }

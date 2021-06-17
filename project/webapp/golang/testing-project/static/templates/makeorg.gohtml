@@ -22,19 +22,30 @@
         {{/* Send data to javascript */}}
         {{$theUser := .TheUser}}
         {{$messageDisplay := .MessageDisplay}}
-        {{/* Emails are weired templates...do them first */}}
+        {{/* Need to loop through arrays because Javascript dosen't like what gets passed in */}}
+        {{/* Emails */}}
         {{range $element := .TheUser.Email}}
             {{template "setEmail" $element}}
+        {{end}}
+        {{/* Admin Orgs */}}
+        {{range $element := .TheUser.AdminOrgs}}
+            {{template "setAdminOrgs" $element}}
+        {{end}}
+        {{/* Org Member */}}
+        {{range $element := .TheUser.OrgMember}}
+            {{template "setOrgMember" $element}}
+        {{end}}
+        {{/* Phone Nums */}}
+        {{range $element := .TheUser.PhoneNums}}
+            {{template "setPhoneNums" $element}}
         {{end}}
 
         {{template "setUsername" .TheUser.UserName}}
         {{template "setPassword" .TheUser.Password}}
         {{template "setFirstname" .TheUser.Firstname}}
         {{template "setLastname" .TheUser.Lastname}}
-        {{template "setPhoneNums" .TheUser.PhoneNums}}
         {{template "setUserID" .TheUser.UserID}}
         {{template "setWhoAre" .TheUser.Whoare}}
-        {{template "setAdminOrgs" .TheUser.AdminOrgs}}
         {{template "sendBanned" .TheUser.Banned}}
         {{template "setDateCreated" .TheUser.DateCreated}}
         {{template "setDateUpdated" .TheUser.DateUpdated}}

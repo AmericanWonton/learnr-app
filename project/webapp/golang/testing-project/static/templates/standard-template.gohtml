@@ -372,7 +372,7 @@
             {{/* SUBMIT BUTTON */}}
             <div class="feildsSectionDiv">
                 <div class="fieldSection" id="signUpSubmitB">
-                    <button id="submitLearnR">Submit</button>
+                    <button id="submitLearnROrg">Submit</button>
                 </div>
             </div>
             {{/* INFORMITIVE DIV */}}
@@ -426,6 +426,7 @@
                 <div class="inputDiv">
                     <textarea class="textareaTellMe" id="textareaTellMe" name="textareaTellMe"
                      placeholder="What is this LearnR about?"></textarea>
+                     <p id="informtextPLearnrDesc"></p>
                 </div>
             </div>
             {{/* WHICH ORGANIZATION */}}
@@ -558,7 +559,8 @@
 {{end}}
 {{define "setPhoneNums"}}
     <script>
-        setPhoneNums({{.}});
+        var variablepassed = String("{{.}}");
+        setPhoneNums(variablepassed);
     </script>
 {{end}}
 {{define "setUserID"}}
@@ -581,12 +583,14 @@
 {{end}}
 {{define "setAdminOrgs"}}
     <script>
-        setAdminOrgs({{.}});
+        var variablepassed = Number("{{.}}");
+        setAdminOrgs(variablepassed);
     </script>
 {{end}}
 {{define "setOrgMember"}}
     <script>
-        setOrgMember({{.}});
+        var variablepassed = Number("{{.}}");
+        setOrgMember(variablepassed);
     </script>
 {{end}}
 {{define "sendBanned"}}
