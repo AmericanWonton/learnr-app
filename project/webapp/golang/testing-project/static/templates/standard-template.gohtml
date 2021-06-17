@@ -388,6 +388,149 @@
     </div>
 {{end}}
 
+{{/* LEARNR MAKE SECTION */}}
+{{define "makelearnr"}}
+    <div class="divformDiv" id="divFormMakeLearnr">
+        {{/* Make Learnr Instruction */}}
+        <div class="instructUserDiv">
+            <p class="formSign">
+                Make your Learnr here! Add the text messages you'd like to send to your 
+                Users below,(160 characters each!). A good Learnr should be respectful. A 
+                good Learnr should also be well documented, with links to respectable sources
+                or research. Don't be afraid to update your Learnr if that research is updated!
+            </p>
+        </div>
+        {{/* Begin Make LearnR */}}
+        <div class="signInAlignmentDiv">
+            {{/* LEARNR NAME */}}
+            <div class="feildsSectionDiv">
+                <div class="labelDiv">
+                    <p class="labelPText">
+                        Name of LearnR:
+                    </p>
+                </div>
+                <div class="inputDiv">
+                    <input type="text" id="learnrname" name="learnrname" placeholder="Name of LearnR" 
+                    minlength=1 maxlength=40 required>
+                    <br>
+                    <p id="inputLearnRInfo"></p>
+                </div>
+            </div>
+            {{/* DESCRIPTION */}}
+            <div class="feildsSectionDiv">
+                <div class="labelDiv">
+                    <p class="labelPText">
+                        LearnR Description:
+                    </p>
+                </div>
+                <div class="inputDiv">
+                    <textarea class="textareaTellMe" id="textareaTellMe" name="textareaTellMe"
+                     placeholder="What is this LearnR about?"></textarea>
+                     <p id="informtextPLearnrDesc"></p>
+                </div>
+            </div>
+            {{/* WHICH ORGANIZATION */}}
+            <div class="feildsSectionDiv">
+                <div class="labelDiv">
+                    <p class="labelPText">
+                        Which Organization is this under?
+                    </p>
+                </div>
+                <div class="inputDiv">
+                    <select name="learnrorgs" id="learnrorgs">
+                        {{range $element := .}}
+                            <option value="{{$element.OrgID}}">{{$element.Name}}</option>
+                        {{end}}
+                    </select>
+                </div>
+            </div>
+            {{/* TAGS */}}
+            <div class="feildsSectionDiv">
+                <!-- Hold all the tags in this Div -->
+                <div class="resultHolderTagDiv" id="resultHolderTagDiv">
+
+                </div>
+                <div class="multiInputHolderDiv">
+                    <div class="labelDiv">
+                        <p class="labelPText">
+                            LearnR Tag:
+                        </p>
+                    </div>
+                    <div class="inputDiv">
+                        <textarea class="textareaTellMe" id="tagDesc" name="tagDesc"
+                        placeholder="What word describes this LearnR?" minlength=1 maxlength=20 required></textarea>
+                        <div class="addLearnRTagDiv" id="addLearnRTagDiv">
+                            <button class="addLearnRTagButton" id="addLearnRTagButton" onclick="addLearnRTag()">Add Learnr Tag</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{/* LEARNRINFORMS */}}
+            <div class="feildsSectionDiv">
+                <div class="resultHolderInformDiv" id="resultHolderInformDiv">
+
+                </div>
+                <div class="multiInputHolderDiv">
+                    <!-- The text text -->
+                    <div class="labelDiv">
+                        <p class="labelPText">
+                            What texts do you want the Reader to have?
+                        </p>
+                    </div>
+                    <div class="inputDiv">
+                        <textarea class="textareaTellMe" id="textDesc" name="textDesc"
+                        placeholder="What do you want this text to say?" minlength=1 maxlength=160 required></textarea>
+                    </div>
+                    <!-- Should wait -->
+                    <div class="labelDiv">
+                        <p class="labelPText">
+                            Should this text be given time to be read before sending the next text?
+                        </p>
+                    </div>
+                    <div class="inputDiv">
+                        <select name="timewait" id="timewait">
+                            <option value="true">True</option>
+                            <option value="false">False</option>
+                        </select>
+                    </div>
+                    <!-- Amount of time waiting -->
+                    <div class="labelDiv">
+                        <p class="labelPText">
+                            How much time should the User be waiting?
+                        </p>
+                    </div>
+                    <div class="inputDiv">
+                        <input type="number" id="timewaiting" name="timewaiting" 
+                        placeholder="Amount of seconds to wait before sending text" minlength=1
+                        maxlength=300>
+                    </div>
+                    <!-- Submit -->
+                    <div class="inputDiv">
+                        <div class="addLearnRTagDiv" id="addLearnRInformDiv">
+                            <button class="addLearnRTagButton" id="addLearnRInformButton" onclick="addInform()">Add Learnr Inform</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{/* SUBMIT BUTTON */}}
+            <div class="feildsSectionDiv">
+                <div class="fieldSection" id="signUpSubmitB">
+                    <button id="submitLearnR">Submit</button>
+                </div>
+            </div>
+            {{/* INFORMITIVE DIV */}}
+            <div class="feildsSectionDiv">
+                <div class="informativeDiv" id="informativeDivLearnOrg">
+                    <p class="informtextP" id="informtextPLearnr"></p>
+                </div>
+            </div>
+        </div>
+        <div class="informFormDiv" id="informFormDiv">
+            <p class="informFormP" id="informFormP"></p>
+        </div>
+    </div>
+{{end}}
+
 {{/*** Javascript sections for data ***/}}
 {{/* SEND USER DATA BEGINNING */}}
 {{define "setUsername"}}
@@ -416,7 +559,8 @@
 {{end}}
 {{define "setPhoneNums"}}
     <script>
-        setPhoneNums({{.}});
+        var variablepassed = String("{{.}}");
+        setPhoneNums(variablepassed);
     </script>
 {{end}}
 {{define "setUserID"}}
@@ -439,12 +583,14 @@
 {{end}}
 {{define "setAdminOrgs"}}
     <script>
-        setAdminOrgs({{.}});
+        var variablepassed = Number("{{.}}");
+        setAdminOrgs(variablepassed);
     </script>
 {{end}}
 {{define "setOrgMember"}}
     <script>
-        setOrgMember({{.}});
+        var variablepassed = Number("{{.}}");
+        setOrgMember(variablepassed);
     </script>
 {{end}}
 {{define "sendBanned"}}

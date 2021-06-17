@@ -3,12 +3,12 @@ var TheUser = {
     Password: "",
     Firstname: "",
     Lastname: "",
-    PhoneNums: new Array(),
+    PhoneNums: [],
     UserID: 0,
-    Email: new Array(),
+    Email: [],
     Whoare: "",
-    AdminOrgs: new Array(),
-    OrgMember: new Array(),
+    AdminOrgs: [],
+    OrgMember: [],
     Banned: false,
     DateCreated: "",
     DateUpdated: ""
@@ -34,7 +34,7 @@ function setLastname(lastname){
 }
 
 function setPhoneNums(phonenums){
-    TheUser.PhoneNums = phonenums;
+    TheUser.PhoneNums.push(phonenums);
 }
 
 function setUserID(userid){
@@ -50,11 +50,11 @@ function setWhoAre(whoare){
 }
 
 function setAdminOrgs(adorgs){
-    TheUser.AdminOrgs = adorgs;
+    TheUser.AdminOrgs.push(adorgs);
 }
 
 function setOrgMember(themembersorg){
-    TheUser.OrgMember = themembersorg;
+    TheUser.OrgMember.push(themembersorg);
 }
 
 function setBanned(banned){

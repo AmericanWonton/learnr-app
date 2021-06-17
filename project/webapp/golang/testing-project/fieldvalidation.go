@@ -23,7 +23,11 @@ const GETUSERLOGIN string = "http://localhost:4000/userLogin"
 
 /* Used for LearnR/LearnR Org creation */
 var allLearnROrgNames []string
-var learnOrgMap map[string]bool
+var learnOrgMapNames map[string]bool
+
+/* Used for LearnR creation */
+var allLearnRNames []string
+var learnrMap map[string]bool
 
 /* DEFINED SLURS */
 var slurs []string = []string{}
@@ -89,11 +93,32 @@ func checkLearnROrgNames(w http.ResponseWriter, r *http.Request) {
 	} else if containsLanguage(sbs) {
 		fmt.Fprint(w, "ContainsLanguage")
 	} else {
-		fmt.Fprint(w, learnOrgMap[sbs])
+		fmt.Fprint(w, learnOrgMapNames[sbs])
 	}
 }
 
-//This checks the 'about LearnROrg' section after every keystroke
+//Checks the LearnR Names after every key stroke
+func checkLearnRNames(w http.ResponseWriter, r *http.Request) {
+	//Get the byte slice from the request body ajax
+	bs, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	sbs := string(bs)
+
+	if len(sbs) <= 0 {
+		fmt.Fprint(w, "TooShort")
+	} else if len(sbs) > 40 {
+		fmt.Fprint(w, "TooLong")
+	} else if containsLanguage(sbs) {
+		fmt.Fprint(w, "ContainsLanguage")
+	} else {
+		fmt.Fprint(w, learnrMap[sbs])
+	}
+}
+
+//This checks the 'about LearnROrg' section after every keystroke. Also works for LearnR About
 func checkOrgAbout(w http.ResponseWriter, r *http.Request) {
 	//Get the byte slice from the request body ajax
 	bs, err := ioutil.ReadAll(r.Body)
@@ -285,6 +310,8 @@ func createLearnROrg(w http.ResponseWriter, r *http.Request) {
 	var ourJSON SendJSON
 	json.Unmarshal(bs, &ourJSON)
 
+	fmt.Printf("DEBUG: Here is our UserArray before: %v\n", ourJSON.OurUser.AdminOrgs)
+
 	/* perform Crud API here to insert the new User */
 	theTimeNow := time.Now()
 
@@ -314,15 +341,20 @@ func createLearnROrg(w http.ResponseWriter, r *http.Request) {
 				UserID:      ourJSON.OurUser.UserID,
 				Email:       ourJSON.OurUser.Email,
 				Whoare:      ourJSON.OurUser.Whoare,
-				AdminOrgs:   append(ourJSON.OurUser.AdminOrgs, randomid),
-				OrgMember:   append(ourJSON.OurUser.OrgMember, randomid),
+				AdminOrgs:   ourJSON.OurUser.AdminOrgs,
+				OrgMember:   ourJSON.OurUser.OrgMember,
 				Banned:      ourJSON.OurUser.Banned,
 				DateCreated: ourJSON.OurUser.DateCreated,
 				DateUpdated: theTimeNow.Format("2006-01-02 15:04:05"),
 			}
+			updatedUser.AdminOrgs = append(updatedUser.AdminOrgs, randomid)
+			updatedUser.OrgMember = append(updatedUser.OrgMember, randomid)
+			fmt.Printf("DEBUG: Here is our updated User: %v\n", updatedUser)
 			goodAdd2, message2 := callUpdateUser(updatedUser)
 
 			if goodAdd2 {
+				//Update our User Session too
+				dbUsers[updatedUser.UserName] = updatedUser
 				theSuccMessage.Message = message2
 				theSuccMessage.SuccessNum = 0
 			} else {
@@ -338,6 +370,151 @@ func createLearnROrg(w http.ResponseWriter, r *http.Request) {
 		theSuccMessage.Message = message
 		theSuccMessage.SuccessNum = 1
 	}
+	/* Send the response back to Ajax */
+	theJSONMessage, err := json.Marshal(theSuccMessage)
+	//Send the response back
+	if err != nil {
+		errIs := "Error formatting JSON for return in createUser: " + err.Error()
+		logWriter(errIs)
+	}
+	fmt.Fprint(w, string(theJSONMessage))
+}
+
+/* Creates a LearnR, if everything checks. Also
+creates a learnRInfo to keep track of this LearnRs information overtime.
+Finally, we'll update the LearnR Org with this new ID */
+func createLearnR(w http.ResponseWriter, r *http.Request) {
+	//Declare Ajax return statements to be sent back
+	type SuccessMSG struct {
+		Message    string `json:"Message"`
+		SuccessNum int    `json:"SuccessNum"`
+	}
+	theSuccMessage := SuccessMSG{
+		Message:    "LearnR Organization created successfully",
+		SuccessNum: 0,
+	}
+
+	//Declare struct we are expecting
+	type SendJSON struct {
+		TheLearnr Learnr `json:"TheLearnr"`
+		OurUser   User   `json:"OurUser"`
+	}
+	//Get the byte slice from the request
+	bs, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		fmt.Println(err)
+		logWriter(err.Error())
+	}
+
+	//Marshal it into our type
+	var ourJSON SendJSON
+	json.Unmarshal(bs, &ourJSON)
+
+	/* Create basic learnr for data entry */
+	theTimeNow := time.Now()
+	goodIDGet, message, randomid := randomAPICall()
+	if goodIDGet {
+		theLearnr := Learnr{
+			ID:            randomid,
+			InfoID:        0,
+			OrgID:         ourJSON.TheLearnr.OrgID,
+			Name:          ourJSON.TheLearnr.Name,
+			Tags:          ourJSON.TheLearnr.Tags,
+			Description:   ourJSON.TheLearnr.Description,
+			PhoneNums:     []string{},
+			LearnRInforms: []LearnRInforms{},
+			Active:        true,
+			DateCreated:   theTimeNow.Format("2006-01-02 15:04:05"),
+			DateUpdated:   theTimeNow.Format("2006-01-02 15:04:05"),
+		}
+		//Create LearnrInfo for this LearnR
+		goodIDGet, message, randomid := randomAPICall()
+		if goodIDGet {
+			//Create LearnR and add CRUD it to our DB
+			theLearnRInfo := LearnrInfo{
+				ID:               randomid,
+				LearnRID:         theLearnr.ID,
+				AllSessions:      []LearnRSession{},
+				FinishedSessions: []LearnRSession{},
+				DateCreated:      theTimeNow.Format("2006-01-02 15:04:05"),
+				DateUpdated:      theTimeNow.Format("2006-01-02 15:04:05"),
+			}
+			goodAdd, message := callAddLearnrInfo(theLearnRInfo)
+			if goodAdd {
+				//LearnRInfo added successfully, add it to our LearnR
+				theLearnr.InfoID = theLearnRInfo.ID
+				//Fix LearnRInforms to have unique, correct values
+				goodFixing := true //Determines if LearnRInforms successfully updated
+				for n := 0; n < len(theLearnr.LearnRInforms); n++ {
+					goodIDGet, _, randomid := randomAPICall()
+					if goodIDGet {
+						theLearnr.LearnRInforms[n].ID = randomid
+						theLearnr.LearnRInforms[n].LearnRName = theLearnr.Name
+						theLearnr.LearnRInforms[n].DateCreated = theTimeNow.Format("2006-01-02 15:04:05")
+						theLearnr.LearnRInforms[n].DateUpdated = theTimeNow.Format("2006-01-02 15:04:05")
+						theLearnr.LearnRInforms[n].Name = "LearnrInfo" + strconv.Itoa(n)
+						theLearnr.LearnRInforms[n].Order = n
+						goodAdd, _ := callAddLearnRInform(theLearnr.LearnRInforms[n])
+						if !goodAdd {
+							//Could not add to DB
+							goodFixing = false
+							break
+						}
+					} else {
+						goodFixing = false
+						break
+					}
+				}
+				if goodFixing {
+					//The Learnr has all values fixed/created, we can now add it to DB
+					addLearnR, message := callAddLearnR(theLearnr)
+					if addLearnR {
+						//LearnR Added to DB; need to update the ORG it's under with our new ID
+						theLearnOrgs := loadLearnROrgArray(ourJSON.OurUser)
+						finalFixing := true    //Will determine if our learnorgs are updated correctly
+						foundLearnOrg := false //Determines if learnorg is found and updated
+						for j := 0; j < len(theLearnOrgs); j++ {
+							if theLearnOrgs[j].OrgID == theLearnr.OrgID {
+								updatedLearnROrg := theLearnOrgs[j]
+								updatedLearnROrg.LearnrList = append(updatedLearnROrg.LearnrList, theLearnr.ID)
+								updatedLearnROrg.DateUpdated = theTimeNow.Format("2006-01-02 15:04:05")
+								goodUpdate, _ := callUpdateLearnOrg(updatedLearnROrg)
+								if !goodUpdate {
+									finalFixing = false
+									break
+								}
+								foundLearnOrg = true
+							}
+						}
+						if finalFixing && foundLearnOrg {
+							//Return success
+							theSuccMessage.SuccessNum = 0
+							theSuccMessage.Message = "LearnR successfully added and all organizations updated"
+						} else {
+							theSuccMessage.SuccessNum = 1
+							theSuccMessage.Message = "Failed to add LearnR to DB: "
+						}
+					} else {
+						theSuccMessage.SuccessNum = 1
+						theSuccMessage.Message = "Failed to add LearnR to DB: " + message
+					}
+				} else {
+					theSuccMessage.SuccessNum = 1
+					theSuccMessage.Message = "Failed to get proper ID: " + message
+				}
+			} else {
+				theSuccMessage.SuccessNum = 1
+				theSuccMessage.Message = "Failed to get proper ID: " + message
+			}
+		} else {
+			theSuccMessage.SuccessNum = 1
+			theSuccMessage.Message = "Failed to get proper ID: " + message
+		}
+	} else {
+		theSuccMessage.SuccessNum = 1
+		theSuccMessage.Message = "Failed to get proper ID: " + message
+	}
+
 	/* Send the response back to Ajax */
 	theJSONMessage, err := json.Marshal(theSuccMessage)
 	//Send the response back

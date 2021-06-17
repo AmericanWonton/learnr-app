@@ -35,3 +35,91 @@
 2021/06/14 13:31:10 This is a test message
 2021/06/14 13:58:32 This is a test message
 2021/06/14 14:30:10 This is a test message
+2021/06/15 10:00:41 No usernames returned...this could be the site's first deployment with no users!
+2021/06/15 10:01:48 No usernames returned...this could be the site's first deployment with no Organizations!
+2021/06/15 10:08:57 No usernames returned...this could be the site's first deployment with no users!
+2021/06/15 10:10:20 No usernames returned...this could be the site's first deployment with no users!
+2021/06/15 10:10:21 No usernames returned...this could be the site's first deployment with no users!
+2021/06/15 10:12:01 No usernames returned...this could be the site's first deployment with no Organizations!
+2021/06/15 10:56:25 This is a test message
+2021/06/16 09:49:56 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 09:53:38 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 09:55:46 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 09:58:36 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 10:02:16 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 10:06:52 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 11:06:43 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 11:10:32 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 13:20:58 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 13:23:14 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 13:23:38 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 13:23:41 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 13:27:02 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 13:28:27 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 13:31:11 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 13:31:13 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 13:33:34 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 13:34:28 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 13:44:53 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 13:45:03 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 13:45:05 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 13:45:41 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 13:47:56 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 13:48:40 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 13:48:41 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 13:54:25 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 13:54:35 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 13:54:40 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 14:03:08 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 14:03:20 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 14:03:22 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 14:10:15 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 14:18:42 For americanwonton, No User was returned.
+2021/06/16 14:18:42 For americanwonton, No User was returned.
+2021/06/16 14:18:42 For americanwonton, No User was returned.
+2021/06/16 14:18:42 For americanwonton, No User was returned.
+2021/06/16 14:18:51 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 14:18:53 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 18:37:00 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 18:39:57 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 18:42:13 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 18:42:20 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 18:43:49 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 18:45:13 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 18:45:14 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 18:49:59 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 18:50:10 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 18:51:08 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 18:51:24 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 18:52:56 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 18:52:59 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 18:55:26 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 18:56:09 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/16 18:56:12 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/17 10:23:29 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/17 10:48:49 No usernames returned...this could be the site's first deployment with no users!
+2021/06/17 10:50:21 No usernames returned...this could be the site's first deployment with no Organizations!
+2021/06/17 10:51:15 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/17 10:52:19 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/17 10:57:04 No usernames returned...this could be the site's first deployment with no users!
+2021/06/17 10:57:56 No usernames returned...this could be the site's first deployment with no Organizations!
+2021/06/17 11:09:51 No usernames returned...this could be the site's first deployment with no users!
+2021/06/17 11:10:51 No usernames returned...this could be the site's first deployment with no Organizations!
+2021/06/17 11:11:02 No usernames returned...this could be the site's first deployment with no Organizations!
+2021/06/17 11:11:39 No usernames returned...this could be the site's first deployment with no Organizations!
+2021/06/17 11:11:41 No usernames returned...this could be the site's first deployment with no Organizations!
+2021/06/17 11:26:49 No usernames returned...this could be the site's first deployment with no users!
+2021/06/17 11:27:28 No usernames returned...this could be the site's first deployment with no Organizations!
+2021/06/17 11:29:35 No usernames returned...this could be the site's first deployment with no Organizations!
+2021/06/17 12:03:55 No usernames returned...this could be the site's first deployment with no users!
+2021/06/17 12:04:33 No usernames returned...this could be the site's first deployment with no Organizations!
+2021/06/17 12:11:14 No usernames returned...this could be the site's first deployment with no users!
+2021/06/17 12:12:24 No usernames returned...this could be the site's first deployment with no Organizations!
+2021/06/17 12:12:28 No usernames returned...this could be the site's first deployment with no Organizations!
+2021/06/17 12:44:34 No usernames returned...this could be the site's first deployment with no users!
+2021/06/17 12:45:12 No usernames returned...this could be the site's first deployment with no Organizations!
+2021/06/17 12:46:25 No learnr returned...this could be the site's first deployment with no learnrs!
+2021/06/17 13:44:49 No usernames returned...this could be the site's first deployment with no users!
+2021/06/17 13:44:51 No usernames returned...this could be the site's first deployment with no users!
+2021/06/17 13:45:47 No usernames returned...this could be the site's first deployment with no Organizations!
+2021/06/17 13:47:19 No learnr returned...this could be the site's first deployment with no learnrs!
