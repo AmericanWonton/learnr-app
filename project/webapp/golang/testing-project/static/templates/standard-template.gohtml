@@ -531,6 +531,11 @@
     </div>
 {{end}}
 
+{{/* MAIN PAGE SECTION */}}
+{{define "learnrholder"}}
+
+{{end}}
+
 {{/*** Javascript sections for data ***/}}
 {{/* SEND USER DATA BEGINNING */}}
 {{define "setUsername"}}
@@ -612,4 +617,138 @@
     </script>
 {{end}}
 {{/* SEND USER DATA ENDING */}}
-
+{{/* SEND LEARNR DATA BEGINNING */}}
+{{define "sendLearnR"}}
+    <script>
+        sendLearnR();
+        debugLearnR();
+    </script>
+{{end}}
+{{define "sendid"}}
+    <script>
+        var variablepassed = Number({{.}});
+        setid(variablepassed);
+    </script>
+{{end}}
+{{define "sendinfoid"}}
+    <script>
+        var variablepassed = Number({{.}});
+        setinfoid(variablepassed);
+    </script>
+{{end}}
+{{define "orgid"}}
+    <script>
+        var variablepassed = Number({{.}});
+        setorgid(variablepassed);
+    </script>
+{{end}}
+{{define "learnrname"}}
+    <script>
+        var variablepassed = "{{.}}";
+        setlearnrname(variablepassed);
+    </script>
+{{end}}
+{{define "settags"}}
+    <script>
+        var variablepassed = "{{.}}";
+        settags(variablepassed);
+    </script>
+{{end}}
+{{define "setdescription"}}
+    <script>
+        var variablepassed = "{{.}}";
+        setdescription(variablepassed);
+    </script>
+{{end}}
+{{define "learnrphonenums"}}
+    <script>
+        var variablepassed = "{{.}}";
+        setlearnrphonenums(variablepassed);
+    </script>
+{{end}}
+{{define "learnractive"}}
+    <script>
+        var variablepassed = Boolean({{.}});
+        setlearnractive(variablepassed);
+    </script>
+{{end}}
+{{define "learnrdatecreated"}}
+    <script>
+        var variablepassed = "{{.}}";
+        setlearnrdatecreated(variablepassed);
+    </script>
+{{end}}
+{{define "learnrdateupdated"}}
+    <script>
+        var variablepassed = "{{.}}";
+        setlearnrupdated(variablepassed);
+    </script>
+{{end}}
+{{/* SEND USER DATA ENDING */}}
+{{/* Send DATA FOR LEARNRINFORM BEGINNING */}}
+{{define "sendtheinform"}}
+    <script>
+        sendLearnRInform();
+    </script>
+{{end}}
+{{define "sendlearnrinformid"}}
+    <script>
+        var variablepassed = Number({{.}});
+        sendlearnrinformid(variablepassed);
+    </script>
+{{end}}
+{{define "sendlearnrinformname"}}
+    <script>
+        var variablepassed = "{{.}}";
+        setlearnrinformname(variablepassed);
+    </script>
+{{end}}
+{{define "sendlearnrlearnrinformid"}}
+    <script>
+        var variablepassed = Number({{.}});
+        sendlearnrinformid(variablepassed);
+    </script>
+{{end}}
+{{define "sendlearnrnameinform"}}
+    <script>
+        var variablepassed = "{{.}}";
+        setlearnrnameinform(variablepassed);
+    </script>
+{{end}}
+{{define "sendorderinform"}}
+    <script>
+        var variablepassed = Number({{.}});
+        setlearnrinformorder(variablepassed);
+    </script>
+{{end}}
+{{define "sendinfoinform"}}
+    <script>
+        var variablepassed = "{{.}}";
+        setlearnrinfo(variablepassed);
+    </script>
+{{end}}
+{{define "sendshouldwaitinform"}}
+    <script>
+        var variablepassed = Boolean({{.}});
+        setshouldwaitinform(variablepassed);
+    </script>
+{{end}}
+{{define "sendwaittimeinform"}}
+    <script>
+        var variablepassed = Number({{.}});
+        setwaittimeinform(variablepassed);
+    </script>
+{{end}}
+{{define "senddatecreatedinform"}}
+    <script>
+        var variablepassed = "{{.}}";
+        setdatecreatedinform(variablepassed);
+    </script>
+{{end}}
+{{define "senddateupdatedinform"}}
+    <script>
+        var variablepassed = "{{.}}";
+        setdateupdatedinform(variablepassed);
+    </script>
+{{end}}
+{{/* SEND DATA FOR LEARNRNFORM ENDING */}}
