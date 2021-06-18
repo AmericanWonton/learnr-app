@@ -14,6 +14,7 @@
         {{/* Here is our Javascript or additional code needed */}}
         <script src="static/js/pagehandling.js"></script>
         <script src="static/js/app.js"></script>
+        <script src="static/js/mainpage.js"></script>
         {{/* AngularJS for added email address */}}
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
     </head>
@@ -38,6 +39,16 @@
         {{range $element := .TheUser.PhoneNums}}
             {{template "setPhoneNums" $element}}
         {{end}}
+        {{template "setUsername" .TheUser.UserName}}
+        {{template "setPassword" .TheUser.Password}}
+        {{template "setFirstname" .TheUser.Firstname}}
+        {{template "setLastname" .TheUser.Lastname}}
+        {{template "setUserID" .TheUser.UserID}}
+        {{template "setWhoAre" .TheUser.Whoare}}
+        {{template "sendBanned" .TheUser.Banned}}
+        {{template "setDateCreated" .TheUser.DateCreated}}
+        {{template "setDateUpdated" .TheUser.DateUpdated}}
+
         {{/* LearnRs */}}
         {{range $element := .OrganizedLearnRs}}
             {{/* Add basic stats to LearnR */}}
@@ -49,18 +60,18 @@
             {{template "learnrdatecreated" $element.DateCreated}}
             {{template "learnrdateupdated" $element.DateUpdated}}
             {{/* Add values for arrays to Learnr */}}
-            {{range $element1 := .OrganizedLearnRs.Tags}}
+            {{range $element1 := $element.Tags}}
                 {{template "settags" $element1}}
             {{end}}
-            {{range $element2 := .OrganizedLearnRs.Description}}
+            {{range $element2 := $element.Description}}
                 {{template "setdescription" $element2}}
             {{end}}
-            {{range $element3 := .OrganizedLearnRs.PhoneNums}}
+            {{range $element3 := $element.PhoneNums}}
                 {{template "learnrphonenums" $element3}}
             {{end}}
 
             {{/* Add values for LearnInforms */}}
-            {{range $element4 := .OrganizedLearnRs.LearnRInforms}}
+            {{range $element4 := $element.LearnRInforms}}
                 {{template "sendlearnrinformid" $element4.ID}}
                 {{template "sendlearnrinformname" $element4.Name}}
                 {{template "sendlearnrlearnrinformid" $element4.LearnRID}}
@@ -80,15 +91,7 @@
             
         {{end}}
 
-        {{template "setUsername" .TheUser.UserName}}
-        {{template "setPassword" .TheUser.Password}}
-        {{template "setFirstname" .TheUser.Firstname}}
-        {{template "setLastname" .TheUser.Lastname}}
-        {{template "setUserID" .TheUser.UserID}}
-        {{template "setWhoAre" .TheUser.Whoare}}
-        {{template "sendBanned" .TheUser.Banned}}
-        {{template "setDateCreated" .TheUser.DateCreated}}
-        {{template "setDateUpdated" .TheUser.DateUpdated}}
+        
 
         {{/* Here is our header */}}
         {{template "header_everywhere" $theUser}}
@@ -102,7 +105,6 @@
             <div class="learnrHolderDiv">
 
             </div>
-            
         </div>
         {{/* Here is our footer */}}
     </body>
