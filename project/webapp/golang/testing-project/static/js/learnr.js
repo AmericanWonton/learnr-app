@@ -118,12 +118,12 @@ window.addEventListener('DOMContentLoaded', function(){
     submitLearnR.addEventListener('click', function(){
         submitLearnR.disabled = true; //Disable this until Ajax comes back
         //Add all our LearnInforms to this array
-        var learnInformArray = [];
+        let learnInformArray = [];
         for (const [key, value] of learnrInforms.entries()){
             learnInformArray.push(value);
         }
         //Add our tags to an array as well
-        var learnrTagArray = [];
+        let learnrTagArray = [];
         for (const [key, value] of learnrTagStrings.entries()){
             learnrTagArray.push(value);
         }
@@ -140,6 +140,7 @@ window.addEventListener('DOMContentLoaded', function(){
         };
 
         var jsonString = JSON.stringify(SendJSON);
+        console.log("DEBUG: Here is our LearnR: " + JSON.stringify(theLearnR));
         var xhr = new XMLHttpRequest();
         xhr.open('POST', '/createLearnR', true);
         xhr.setRequestHeader("Content-Type", "application/json");
@@ -216,6 +217,7 @@ function addInform(){
     /* Declare our variables for later use */
     var textDesc = document.getElementById("textDesc");
     var timewait = document.getElementById("timewait");
+    var learnrname = document.getElementById("learnrname");
     var timewaiting = document.getElementById("timewaiting");
     var resultHolderInformDiv = document.getElementById("resultHolderInformDiv");
 
@@ -223,8 +225,8 @@ function addInform(){
     var learnrInform = {
         ID: 0,
         Name: "",
-        LearnRID: "",
-        LearnRName: "",
+        LearnRID: 0,
+        LearnRName: String(learnrname.value),
         Order: 0,
         TheInfo: String(textDesc.value),
         ShouldWait: false,
@@ -234,6 +236,7 @@ function addInform(){
     };
     /* Add time wait if it is selected */
     if (timewait.value != "false") {
+        console.log("DEBUG: We switched this learnrinform to true.");
         learnrInform.ShouldWait = true;
         learnrInform.WaitTime = Number(timewaiting.value);
     } 
@@ -255,7 +258,7 @@ function addInform(){
     /* Add first elements to each other */
     resultLearnrInformDiv.appendChild(resultInformP);
     /* Add the LearnRInform to our current map */
-    learnrInforms.set(Number(learnrInformsCount), String(textDesc.value));
+    learnrInforms.set(Number(learnrInformsCount), learnrInform);
     /* add the appropriate function on click */
     var thePosition = Number(learnrInformsCount); //Used for deleteing tags
     resultLearnrInformDiv.addEventListener("click", function(){

@@ -286,7 +286,6 @@ func updateUser(w http.ResponseWriter, req *http.Request) {
 			}
 			updateResult, err := userCollection.UpdateOne(theContext, theFilter, updatedDocument)
 
-			fmt.Printf("DEBUG: The User we got is: %v\n", theUserUpdate)
 			if err != nil {
 				theErr := "Error writing update User in updateUser in crudoperations: " + err.Error()
 				logWriter(theErr)
