@@ -1,6 +1,6 @@
-var learnrArray = [];
+let learnrArray = [];
 
-var learnrAssemble = {
+let learnrAssemble = {
     ID: 0,
     InfoID: 0,
     OrgID: 0,
@@ -14,7 +14,7 @@ var learnrAssemble = {
     DateUpdated: ""
 }; //Used to assemble new Learnrs through templates
 
-var learnrInforms = {
+let learnrInforms = {
     ID: 0,
     Name: "",
     LearnRID: 0,
@@ -26,6 +26,10 @@ var learnrInforms = {
     DateCreated: "",
     DateUpdated: ""
 }; //Used for assembling LearnrInforms to add to Learnrs
+
+window.addEventListener('DOMContentLoaded', function(){
+    //addlearnRVisuals();
+});
 
 /* This takes the learnr array we've created and begins to list it on our page.
 Divs will be created, being added into 'learnrHolderDiv'*/
@@ -71,7 +75,7 @@ function addlearnRVisuals(){
         //Create P to go inside Div for Description. Parent ==> descriptionHolder
         var theString = ""; //Used to put into inner HTML
         //Get value for description
-        for (var j = 0; j < learnrArray[n].Description; j++){
+        for (var j = 0; j < learnrArray[n].Description.length; j++){
             theString = theString + learnrArray[n].Description[j];
         }
         var pDescription = document.createElement("p");
@@ -153,19 +157,17 @@ function addlearnRVisuals(){
 
         /* All elements have been added to the learnr. Add to learnrHolderDiv */
         learnrHolderDiv.appendChild(resultLearnrHolder);
+
+        /* DEBUG PRINTING */
+        console.log("DEBUG: Added our first value learnr to webpage: " + learnrArray[n].Name);
     }
 }
 
 /* Add the learnr to our array once it's assembled */
 function sendLearnR(){
+    console.log("DEBUG: Here is what's coming in: " + JSON.stringify(learnrAssemble));
     learnrArray.push(learnrAssemble);
-}
-
-/* Debug function */
-function debugLearnR(){
-    for (var n = 0; n < learnrArray.length; n++) {
-        console.log("DEBUG: Here is this spot in the learnr array: " + learnrArray[n].Name)
-    }
+    console.log("DEBUG: Here is our learnrArray: " + JSON.stringify(learnrArray));
 }
 
 /* Add LearnR values */

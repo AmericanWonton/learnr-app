@@ -11,12 +11,12 @@
         {{template "fonts1"}}
         {{/* Here are our Media Query and stylesheets */}}
         {{template "media-queries"}}
+        {{/* AngularJS for certain functionality */}}
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
         {{/* Here is our Javascript or additional code needed */}}
         <script src="static/js/pagehandling.js"></script>
         <script src="static/js/app.js"></script>
         <script src="static/js/mainpage.js"></script>
-        {{/* AngularJS for added email address */}}
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
     </head>
     <body>
         {{/* Send data to javascript */}}
@@ -85,27 +85,28 @@
                 {{template "sendtheinform"}}
             {{end}}
 
-
             {{/* Learnr is assembled, send it to Javascript object */}}
             {{template "sendLearnR"}}
-            
         {{end}}
-
-        
 
         {{/* Here is our header */}}
         {{template "header_everywhere" $theUser}}
 
         
         {{/* Login section */}}
-        <div class="mainContentDiv" id="mainContentDiv">
+        <div class="mainContentDiv" id="mainContentDiv" ng-app="mymainpageApp" ng-controller="myCtrl">
             <div class="searchFieldDiv">
 
             </div>
-            <div class="learnrHolderDiv">
-
+            <div class="learnrHolderDiv" id="learnrHolderDiv">
+                <p ng-repeat="x in jsLearnRArray track by $index">[[x.Name]]</p>
             </div>
         </div>
+
+        <script>
+            
+        </script>
+        <script src="static/js/mainpageapp.js"></script>
         {{/* Here is our footer */}}
     </body>
 </html>

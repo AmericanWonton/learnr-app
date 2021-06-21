@@ -477,6 +477,19 @@ body, html {
 }
 
 /* LearnR Div Holder styling */
+.learnrHolderDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    width: 100%;
+    /* styling */
+    padding: .3em;
+    /* styling */
+    border: 1px solid red;
+}
+
 .resultLearnrHolder{
     /* flexbox styling */
     display: flex;
@@ -488,6 +501,7 @@ body, html {
     padding: .3em;
     margin: .2em;
     border: 1px solid black;
+    /* debug */
 }
 
 .infolearnrHolder{
@@ -501,6 +515,9 @@ body, html {
     justify-self: center;
     width: 100%;
     /* styling */
+
+    /* debug */
+    border: 1px solid brown;
     
 }
 
@@ -515,8 +532,15 @@ body, html {
     justify-self: center;
     width: 45%;
     /* styling */
+
+    /* debug */
+    border: 1px solid purple;
 }
 
+.learnRField{
+    font-size: 1rem;
+    color: black;
+}
 
 .aBigInfoDiv {
     /* flexbox styling */
@@ -530,6 +554,8 @@ body, html {
     width: 100%;
     /* styling */
 
+    /* debug styling */
+    border: 1px solid seagreen;
 }
 
 .interiorBigInfoDiv {
@@ -545,6 +571,8 @@ body, html {
     /* styling */
     padding-left: .3em;
     padding-right: .3em;
+    /* debug */
+    border: 1px solid aquamarine;
 }
 
 .textHolder {
@@ -559,6 +587,8 @@ body, html {
     width: 100%;
     /* stlying */
     padding: .5em;
+    /* debug */
+    border: 1px solid gold;
 }
 
 .textFont{
