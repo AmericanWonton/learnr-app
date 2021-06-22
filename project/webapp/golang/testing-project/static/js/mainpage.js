@@ -1,4 +1,6 @@
 let learnrArray = [];
+let learnrMap = new Map();
+let mapNumLearnR = 0;
 
 let learnrAssemble = {
     ID: 0,
@@ -26,6 +28,9 @@ let learnrInforms = {
     DateCreated: "",
     DateUpdated: ""
 }; //Used for assembling LearnrInforms to add to Learnrs
+
+let learnrInformsMap = new Map();
+let mapNumInform = 0;
 
 window.addEventListener('DOMContentLoaded', function(){
     //addlearnRVisuals();
@@ -165,9 +170,20 @@ function addlearnRVisuals(){
 
 /* Add the learnr to our array once it's assembled */
 function sendLearnR(){
+    //Add our learnrInforms
+    let newLearnInformsArray = [];
+    for (const [key, value] of learnrInformsMap.entries()){
+        newLearnInformsArray.push(value);
+    }
+    learnrAssemble.LearnrInforms = newLearnInformsArray;
+    //learnrArray.push(learnrAssemble);
     console.log("DEBUG: Here is what's coming in: " + JSON.stringify(learnrAssemble));
-    learnrArray.push(learnrAssemble);
-    console.log("DEBUG: Here is our learnrArray: " + JSON.stringify(learnrArray));
+    learnrMap.set(mapNumLearnR, learnrAssemble);
+    mapNumLearnR = mapNumLearnR + 1;
+    //Reset leraninform values
+    mapNumInform = 0;
+    learnrInformsMap.clear();
+    //console.log("DEBUG: Here is our learnrArray: " + JSON.stringify(learnrArray));
 }
 
 /* Add LearnR values */
@@ -253,5 +269,8 @@ function setdateupdatedinform(thevalue){
 /* Send the created LearnRInform into the learnrAssemble Array 
 with LearnrInforms inside it */
 function sendLearnRInform(){
-    learnrAssemble.LearnrInforms.push(learnrInforms);
+    //learnrAssemble.LearnrInforms.push(learnrInforms);
+    //DEBUG: Add learnr informs at the end
+    learnrInformsMap.set(Number(mapNumInform), learnrInforms);
+    mapNumInform = mapNumInform + 1;
 }

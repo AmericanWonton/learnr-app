@@ -16,8 +16,9 @@ app.controller('myCtrl', function($scope) {
     ];
     //Add our learnrs to this array above
     $scope.loadLearnrs = function(){
-        for (var n = 0; n < learnrArray.length; n++) {
-            this.jsLearnRArray.push(learnrArray[n]);
+        //Add map values to this array
+        for (const [key, value] of learnrMap.entries()){
+            this.jsLearnRArray.push(value);
         }
         for (var q = 0; q < this.jsLearnRArray.length; q++){
             console.log("Here is jsleanrr at spot " +
