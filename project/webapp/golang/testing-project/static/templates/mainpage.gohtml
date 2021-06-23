@@ -16,12 +16,13 @@
         {{/* Here is our Javascript or additional code needed */}}
         <script src="static/js/pagehandling.js"></script>
         <script src="static/js/app.js"></script>
-        <script src="static/js/mainpage.js"></script>
+        <script src="static/js/mainpageapp.js"></script>
     </head>
-    <body>
+    <body ng-app="mymainpageApp" ng-controller="myCtrl" id="theMainBody">
         {{/* Send data to javascript */}}
         {{$theUser := .TheUser}}
         {{$messageDisplay := .MessageDisplay}}
+        {{$thelearnrs := .OrganizedLearnRs}}
         {{/* Need to loop through arrays because Javascript dosen't like what gets passed in */}}
         {{/* Emails */}}
         {{range $element := .TheUser.Email}}
@@ -49,52 +50,11 @@
         {{template "setDateCreated" .TheUser.DateCreated}}
         {{template "setDateUpdated" .TheUser.DateUpdated}}
 
-        {{/* LearnRs */}}
-        {{range $element := .OrganizedLearnRs}}
-            {{/* Add basic stats to LearnR */}}
-            {{template "sendid" $element.ID}}
-            {{template "sendinfoid" $element.InfoID}}
-            {{template "orgid" $element.OrgID}}
-            {{template "learnrname" $element.Name}}
-            {{template "learnractive" $element.Active}}
-            {{template "learnrdatecreated" $element.DateCreated}}
-            {{template "learnrdateupdated" $element.DateUpdated}}
-            {{/* Add values for arrays to Learnr */}}
-            {{range $element1 := $element.Tags}}
-                {{template "settags" $element1}}
-            {{end}}
-            {{range $element2 := $element.Description}}
-                {{template "setdescription" $element2}}
-            {{end}}
-            {{range $element3 := $element.PhoneNums}}
-                {{template "learnrphonenums" $element3}}
-            {{end}}
-
-            {{/* Add values for LearnInforms */}}
-            {{range $element4 := $element.LearnRInforms}}
-                {{template "sendlearnrinformid" $element4.ID}}
-                {{template "sendlearnrinformname" $element4.Name}}
-                {{template "sendlearnrlearnrinformid" $element4.LearnRID}}
-                {{template "sendlearnrnameinform" $element4.LearnRName}}
-                {{template "sendorderinform" $element4.Order}}
-                {{template "sendinfoinform" $element4.TheInfo}}
-                {{template "sendshouldwaitinform" $element4.ShouldWait}}
-                {{template "sendwaittimeinform" $element4.WaitTime}}
-                {{template "senddatecreatedinform" $element4.DateCreated}}
-                {{template "senddateupdatedinform" $element4.DateUpdated}}
-                {{template "sendtheinform"}}
-            {{end}}
-
-            {{/* Learnr is assembled, send it to Javascript object */}}
-            {{template "sendLearnR"}}
-        {{end}}
-
         {{/* Here is our header */}}
         {{template "header_everywhere" $theUser}}
 
-        
-        {{/* Login section */}}
-        <div class="mainContentDiv" id="mainContentDiv" ng-app="mymainpageApp" ng-controller="myCtrl">
+        {{/* LearnR section */}}
+        <div class="mainContentDiv" id="mainContentDiv">
             <div class="searchFieldDiv">
 
             </div>
@@ -102,11 +62,6 @@
                 <p ng-repeat="x in jsLearnRArray track by $index">[[x.Name]]</p>
             </div>
         </div>
-
-        <script>
-            
-        </script>
-        <script src="static/js/mainpageapp.js"></script>
         {{/* Here is our footer */}}
     </body>
 </html>

@@ -16,6 +16,9 @@ import (
 var allUsernames []string
 var usernameMap map[string]bool
 
+/* Used for displaying Learners */
+var displayLearnrs []Learnr
+
 const GETALLUSERNAMESURL string = "http://localhost:4000/giveAllUsernames"
 const GETALLLEARNRORGURL string = "http://localhost:4000/giveAllLearnROrg"
 const GETALLLEARNORGUSERADMIN string = "http://localhost:4000/getLearnOrgAdminOf"
@@ -65,6 +68,8 @@ func signup(w http.ResponseWriter, r *http.Request) {
 
 //Handles the mainpage
 func mainpage(w http.ResponseWriter, r *http.Request) {
+	//Erase the learnrs loaded
+	displayLearnrs = nil
 	aUser := getUser(w, r)
 	theLearnRs, goodGet, message := getSpecialLearnRs()
 	if !goodGet {
@@ -72,6 +77,7 @@ func mainpage(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
+	displayLearnrs = theLearnRs //Set Learnrs for display
 	//Redirect User if they are not logged in
 	if !alreadyLoggedIn(w, r) {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
@@ -430,4 +436,29 @@ func loadLearnROrgArray(aUser User) []LearnrOrg {
 	arrayOReturn := returnedMessage.ReturnedLearnOrgs
 
 	return arrayOReturn
+}
+
+//Called from Ajax; gives all the learnrs to Javascript for display
+func giveAllLearnrDisplay(w http.ResponseWriter, r *http.Request) {
+	//Declare Ajax return statements to be sent back
+	type SuccessMSG struct {
+		Message           string   `json:"Message"`
+		SuccessNum        int      `json:"SuccessNum"`
+		TheDisplayLearnrs []Learnr `json:"TheDisplayLearnrs"`
+	}
+	theSuccMessage := SuccessMSG{
+		Message:           "Got all Learnrs",
+		SuccessNum:        0,
+		TheDisplayLearnrs: displayLearnrs,
+	}
+
+	//fmt.Printf("DEBUG: Here is our learnr display we are returning: %v\n", theSuccMessage.TheDisplayLearnrs)
+	/* Send the response back to Ajax */
+	theJSONMessage, err := json.Marshal(theSuccMessage)
+	//Send the response back
+	if err != nil {
+		errIs := "Error formatting JSON for return in giveAllLearnrDisplay: " + err.Error()
+		logWriter(errIs)
+	}
+	fmt.Fprint(w, string(theJSONMessage))
 }

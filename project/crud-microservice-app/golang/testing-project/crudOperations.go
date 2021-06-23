@@ -1205,7 +1205,6 @@ func specialLearnRGive(w http.ResponseWriter, req *http.Request) {
 	//Do CRUD operations if allowed
 	if canCrud {
 		/* Begin building crud operation based on our criteria */
-		var theLearnRReturned Learnr                                      //Initialize Learnr to be returned after Mongo query
 		collection := mongoClient.Database("learnR").Collection("learnr") //Here's our collection
 		theFilter := bson.M{}
 		findOptions := options.Find()
@@ -1239,6 +1238,7 @@ func specialLearnRGive(w http.ResponseWriter, req *http.Request) {
 		} else {
 			//Found Learnr, decode to return
 			for find.Next(theContext) {
+				var theLearnRReturned Learnr
 				err := find.Decode(&theLearnRReturned)
 				if err != nil {
 					returnedErr := "For " +
