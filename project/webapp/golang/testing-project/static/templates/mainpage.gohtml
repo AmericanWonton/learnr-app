@@ -58,10 +58,9 @@
             <div class="searchFieldDiv">
 
             </div>
-            <div class="learnrHolderDiv" id="learnrHolderDiv">
-                [[ learnRSet() ]]
-                <p>Here is where our repeating jsLearnRS should be...</p>
-                <p ng-repeat="x in jsLearnRArray track by $index">[[x.Name]]</p>
+            <div class="learnrHolderDiv" id="learnrHolderDiv" ng-show='caseData'>
+                <!-- Begin assembling our learnrs here with Angular -->
+                <p ng-show='caseData' ng-repeat="x in jsLearnRArray track by $index">[[x.Name]]</p>
             </div>
         </div>
         {{/* Here is our footer */}}

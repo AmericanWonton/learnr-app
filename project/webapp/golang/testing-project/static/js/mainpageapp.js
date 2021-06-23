@@ -9,35 +9,12 @@ app.config(function($interpolateProvider) {
 });
 
 //Main Controller
-app.controller('myCtrl', function($scope) {
+app.controller('myCtrl', function($scope, $timeout) {
+    /* Use for casedata loading */
+    $scope.caseData = null;
     //Learnr/LearnRInforms Declarations
     $scope.jsLearnRArray = [];
     $scope.jsLearnInformArray = [];
-    $scope.learnrAssemble = {
-        ID: 0,
-        InfoID: 0,
-        OrgID: 0,
-        Name: "",
-        Tags: [],
-        Description: [],
-        PhoneNums: [],
-        LearnrInforms: [],
-        Active: true,
-        DateCreated: "",
-        DateUpdated: ""
-    };
-    $scope.learnrInforms = {
-        ID: 0,
-        Name: "",
-        LearnRID: 0,
-        LearnRName: "",
-        Order: 0,
-        TheInfo: "",
-        ShouldWait: true,
-        WaitTime: 0,
-        DateCreated: "",
-        DateUpdated: ""
-    };
     /* LearnrSet
     Calls Ajax to get our Learnrs and put them into our jsLearnRArray */
     $scope.learnRSet = function() {
@@ -50,16 +27,8 @@ app.controller('myCtrl', function($scope) {
                 var SuccessMSG = JSON.parse(item);
                 if (SuccessMSG.SuccessNum === 0){
                     $scope.jsLearnRArray = SuccessMSG.TheDisplayLearnrs;
-                    console.log("Here is our jsLearnRArray: " + JSON.stringify($scope.jsLearnRArray));
-                    //Test add the p
-                    for (var a = 0; a < $scope.jsLearnRArray.length; a++){
-                        var resultLearnrHolder = document.createElement("p");
-                        resultLearnrHolder.setAttribute("id", "testp" + a.toString());
-                        resultLearnrHolder.setAttribute("class", "noot");
-                        resultLearnrHolder.setAttribute("name", "testp" + n.toString());
-                        resultLearnrHolder.innerHTML = String($scope.jsLearnRArray);
-                        
-                    }
+                    console.log("DEBUG: Here is our jsLearnRArray: " + JSON.stringify($scope.jsLearnRArray));
+                    $scope.caseData = 'hey!';
                 } else {
                     console.log("Failed to reach out to giveAllLearnrDisplay");
                 }
@@ -67,17 +36,11 @@ app.controller('myCtrl', function($scope) {
         });
         xhr.send("testsend");
     };
-    //$scope.learnRSet();
-    //Set functions for learnrInform
-    $scope.informAdder = function(value) {
-        console.log("Trying to add informAdder");
-        $scope.learnrAssemble.LearnrInforms.push(value);
-        return $scope.learnrAssemble.LearnrInforms;
-    };
-    //Set the learnr to array
-    $scope.learnrAdder = function(value) {
-        this.jsLearnRArray.push(value);
-    };
+    $scope.learnRSet();
+    //mimic a delay in getting the data from $http
+    $timeout(function () {
+        $scope.caseData = 'hey!';
+    }, 1000);
     //Give all Learnrs in an array 
     $scope.giveLearnrs = function() {
         return this.jsLearnRArray;
