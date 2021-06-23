@@ -13,6 +13,7 @@
         {{template "media-queries"}}
         {{/* AngularJS for certain functionality */}}
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-animate.js"></script>
         {{/* Here is our Javascript or additional code needed */}}
         <script src="static/js/pagehandling.js"></script>
         <script src="static/js/app.js"></script>
@@ -59,8 +60,7 @@
 
             </div>
             <div class="learnrHolderDiv" id="learnrHolderDiv" ng-show='caseData'>
-                <!-- Begin assembling our learnrs here with Angular -->
-                <p ng-show='caseData' ng-repeat="x in jsLearnRArray track by $index">[[x.Name]]</p>
+                
             </div>
         </div>
         {{/* Here is our footer */}}

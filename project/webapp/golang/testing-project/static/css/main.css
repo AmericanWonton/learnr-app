@@ -490,6 +490,19 @@ body, html {
     border: 1px solid red;
 }
 
+.descriptionHolder{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    width: 100%;
+    /* styling */
+    padding: .2em;
+    /* styling */
+    border: 1px solid rgb(18, 145, 184);
+}
+
 .resultLearnrHolder{
     /* flexbox styling */
     display: flex;
@@ -572,7 +585,7 @@ body, html {
     padding-left: .3em;
     padding-right: .3em;
     /* debug */
-    border: 1px solid aquamarine;
+    border: 3px solid aquamarine;
 }
 
 .textHolder {
@@ -593,4 +606,36 @@ body, html {
 
 .textFont{
     font-size: 1rem;
+}
+
+.allTextHolder{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    justify-items: center;
+    align-self: center;
+    justify-self: center;
+    width: 100%;
+    /* stlying */
+    
+    /* debug */
+    border: 1px solid pink;
+}
+
+.aTextHolder{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    justify-items: center;
+    align-self: center;
+    justify-self: center;
+    width: 100%;
+    /* stlying */
+    
+    /* debug */
+    border: 1px solid rgb(0, 0, 0);
 }
