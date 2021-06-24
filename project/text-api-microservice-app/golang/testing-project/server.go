@@ -16,6 +16,8 @@ const TESTPINGURL string = "http://13.59.100.23/testLocalPing"
 func handleRequests() {
 	myRouter := mux.NewRouter().StrictSlash(true)
 
+	//Web request/Text Request handling
+	myRouter.HandleFunc("/initialLearnRStart", initialLearnRStart).Methods("POST") //Handle incoming learnr initiations
 	//Test Ping to our Server
 	myRouter.HandleFunc("/testLocalPing", testLocalPing).Methods("POST")
 	log.Fatal(http.ListenAndServe(":3200", myRouter))
