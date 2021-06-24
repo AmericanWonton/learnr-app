@@ -5,9 +5,11 @@ import (
 	b64 "encoding/base64"
 	"fmt"
 	"log"
+	"math/rand"
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 )
 
 /* DEFINED SLURS */
@@ -41,7 +43,14 @@ func init() {
 }
 
 func main() {
+	rand.Seed(time.Now().UTC().UnixNano()) //Randomly Seed
 
+	//Mongo Connect
+	mongoClient = connectDB()
+	defer mongoClient.Disconnect(theContext) //Disconnect in 10 seconds if you can't connect
+
+	//Handle our incoming web requests
+	handleRequests()
 }
 
 //Get mongo creds

@@ -1,6 +1,8 @@
 package main
 
 import (
+	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -8,7 +10,10 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"strconv"
+	"strings"
 	"testing"
+	"time"
 )
 
 func TestMain(m *testing.M) {
@@ -79,5 +84,57 @@ func TestHTTPRequest(t *testing.T) {
 	fmt.Printf("Here is our response code: %v\n", string(body))
 	if 200 != resp.StatusCode {
 		t.Fatal("Status Code not okay: " + theErr.Error())
+	}
+}
+
+//This pings our AWS service to check it it's up
+func TestServerPing(t *testing.T) {
+	/* start listener */
+	type SendJSON struct {
+		TestNum int `json:"TestNum"`
+	}
+	sendJSON := SendJSON{TestNum: 0}
+	/* 1. Create Context */
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	/* 2. Marshal test case to JSON expect */
+	theJSONMessage, err := json.Marshal(sendJSON)
+	if err != nil {
+		fmt.Println(err)
+		logWriter(err.Error())
+		log.Fatal(err)
+	}
+	/* 3. Create Post to JSON */
+	payload := strings.NewReader(string(theJSONMessage))
+	req, err := http.NewRequest("POST", TESTPINGURL, payload)
+	if err != nil {
+		log.Fatal(err)
+	}
+	//req.Header.Add("Content-Type", "text/plain")
+	req.Header.Add("Content-Type", "application/json")
+	/* 4. Get response from Post */
+	resp, err := http.DefaultClient.Do(req.WithContext(ctx))
+	if resp.StatusCode >= 300 || resp.StatusCode <= 199 {
+		theRespCode := strconv.Itoa(resp.StatusCode)
+		t.Fatal("We have the wrong response code: " + theRespCode)
+	} else if err != nil {
+		t.Fatal("Had an error creating response: " + err.Error())
+	}
+	//Declare message we expect to see returned
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		theErr := "There was an error reading response from testLocalPing " + err.Error()
+		t.Fatal(theErr)
+	}
+	type SuccessMSG struct {
+		Message    string `json:"Message"`
+		SuccessNum int    `json:"SuccessNum"`
+	}
+	var returnedMessage SuccessMSG
+	json.Unmarshal(body, &returnedMessage)
+
+	if returnedMessage.SuccessNum != 0 {
+		t.Fatal("Wrong reponse gotten from testLocalPing: " + returnedMessage.Message +
+			" SuccessNum = " + strconv.Itoa(returnedMessage.SuccessNum))
 	}
 }
