@@ -16,3 +16,4 @@ Makefile
 
 #some security
 text-microservice-keypair.pem
+installallbinary
