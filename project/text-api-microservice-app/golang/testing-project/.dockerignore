@@ -1,0 +1,18 @@
+#ignore test-data
+test-data/test.data
+test-data
+
+#ignore local test files
+learnr_test.go
+learnr2_test.go
+main_test.go
+user_test.go
+
+#ignore notes
+notes.txt
+
+#ignore the Makefile
+Makefile
+
+#some security
+text-microservice-keypair.pem

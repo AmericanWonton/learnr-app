@@ -1,0 +1,7 @@
+To connect to AWS:
+
+In security: 
+
+scp -i text-microservice-keypair.pem superdbbinary ubuntu@ec2-13-59-100-23.us-east-2.compute.amazonaws.com:
+
+ssh -i text-microservice-keypair.pem ubuntu@ec2-13-59-100-23.us-east-2.compute.amazonaws.com
