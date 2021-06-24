@@ -75,11 +75,11 @@ function addlearnRVisuals(learnrArray){
         //Initially set to hidden; will be unhidden with 'textDropDownDiv'
         allTextHolder.style.display = "none";
 
+        //Got texts, add allTextHolder to textDecisionHolder
+        textDecisionHolder.appendChild(allTextHolder);
 
-        console.log("DEBUG: About to add some infotext to our allTextHolder: " +  learnrArray[n].LearnRInforms[0].TheInfo);
         //Loop thorough texts to add text divs/texts to the allTextHolder
-        for (var k = 0; k < learnrArray[n].LearnrInforms.length; k++) {
-            console.log("DEBUG: Here is this infotext: " + learnrArray[n].LearnRInforms[k].TheInfo);
+        for (var k = 0; k < learnrArray[n].LearnRInforms.length; k++) {
             //Create Div to hold text. Parent ==> allTextHolder
             var aTextHolder = document.createElement("div");
             aTextHolder.setAttribute("id", "aTextHolder" + n.toString() + k.toString());
@@ -91,7 +91,7 @@ function addlearnRVisuals(learnrArray){
             aText.setAttribute("id", "aText" + n.toString() + k.toString());
             aText.setAttribute("class", "textFont");
             aText.setAttribute("name", "aText" + n.toString() + k.toString());
-            aText.innerHTML = learnrArray[n].LearnrInforms[k].TheInfo;
+            aText.innerHTML = learnrArray[n].LearnRInforms[k].TheInfo;
             
             //Add text to div
             aTextHolder.appendChild(aText);
@@ -107,21 +107,21 @@ function addlearnRVisuals(learnrArray){
         //textDropDownDiv.style.backgroundImage = 'url(static/images/svg/downarrow.svg)'; //Set image
         textDropDownDiv.innerHTML = "Click to see texts";
         //Add event listener for this button
+        var whatAllText = "allTextHolder" + n.toString(); //The name of the ID we will be changing
         textDropDownDiv.addEventListener('click', function(){
-            //Evaluate 'allTextHolder' to see if it's hidden
-            if (allTextHolder.style.display === "none") {
+            var theAllText = document.getElementById(whatAllText);
+            if (document.getElementById(theAllText).style.display === "none"){
                 //textDropDownDiv.style.backgroundImage = 'url(static/images/svg/uparrow.svg)'; //Set Image
-                allTextHolder.style.display = "flex";
+                document.getElementById(theAllText).style.display = "flex";
+                //console.log("DEBUG: Showing this 'allTExtHolder': " + allTextHolder.getAttribute("id"));
             } else {
                 //textDropDownDiv.style.backgroundImage = 'url(static/images/svg/downarrow.svg)'; //Set Image
-                allTextHolder.style.display = "none";
+                document.getElementById(theAllText).style.display = "none";
+                //console.log("DEBUG: Hiding this 'allTExtHolder': " + allTextHolder.getAttribute("id"));
             }
         });
         //Add this button to div first
         textDecisionHolder.appendChild(textDropDownDiv);
-
-        //Got texts, add allTextHolder to textDecisionHolder
-        textDecisionHolder.appendChild(allTextHolder);
 
         /* textDecisionHolder assembled, add it to infolearnrHolder */
         infolearnrHolder.appendChild(textDecisionHolder);
@@ -133,7 +133,7 @@ function addlearnRVisuals(learnrArray){
         learnrHolderDiv.appendChild(resultLearnrHolder);
 
         /* DEBUG PRINTING */
-        console.log("DEBUG: Added our first value learnr to webpage: " + learnrArray[n].Name);
+        
     }
 }
 
