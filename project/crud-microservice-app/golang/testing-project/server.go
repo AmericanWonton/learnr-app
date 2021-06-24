@@ -27,10 +27,11 @@ func handleRequests() {
 	myRouter.HandleFunc("/getLearnOrg", getLearnOrg).Methods("POST")               //Get LearnROrg
 	myRouter.HandleFunc("/getLearnOrgAdminOf", getLearnOrgAdminOf).Methods("POST") //Get LearnROrg this user is admin of
 	//Serve our LearnR Crud API
-	myRouter.HandleFunc("/addLearnR", addLearnR).Methods("POST")       //Add a LearnR
-	myRouter.HandleFunc("/deleteLearnR", deleteLearnR).Methods("POST") //Delete a LearnR
-	myRouter.HandleFunc("/updateLearnR", updateLearnR).Methods("POST") //Update a LearnR
-	myRouter.HandleFunc("/getLearnR", getLearnR).Methods("POST")       //Get LearnR
+	myRouter.HandleFunc("/addLearnR", addLearnR).Methods("POST")                 //Add a LearnR
+	myRouter.HandleFunc("/deleteLearnR", deleteLearnR).Methods("POST")           //Delete a LearnR
+	myRouter.HandleFunc("/updateLearnR", updateLearnR).Methods("POST")           //Update a LearnR
+	myRouter.HandleFunc("/getLearnR", getLearnR).Methods("POST")                 //Get LearnR
+	myRouter.HandleFunc("/specialLearnRGive", specialLearnRGive).Methods("POST") //Gets an array of special learnrs
 	//Serve our LearnRInfo Crud API
 	myRouter.HandleFunc("/addLearnrInfo", addLearnrInfo).Methods("POST")       //Add a LearnRInfo
 	myRouter.HandleFunc("/deleteLearnrInfo", deleteLearnrInfo).Methods("POST") //Delete a LearnRInfo

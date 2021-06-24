@@ -422,7 +422,7 @@ func createLearnR(w http.ResponseWriter, r *http.Request) {
 			Tags:          ourJSON.TheLearnr.Tags,
 			Description:   ourJSON.TheLearnr.Description,
 			PhoneNums:     []string{},
-			LearnRInforms: []LearnRInforms{},
+			LearnRInforms: ourJSON.TheLearnr.LearnRInforms,
 			Active:        true,
 			DateCreated:   theTimeNow.Format("2006-01-02 15:04:05"),
 			DateUpdated:   theTimeNow.Format("2006-01-02 15:04:05"),
@@ -450,6 +450,7 @@ func createLearnR(w http.ResponseWriter, r *http.Request) {
 					if goodIDGet {
 						theLearnr.LearnRInforms[n].ID = randomid
 						theLearnr.LearnRInforms[n].LearnRName = theLearnr.Name
+						theLearnr.LearnRInforms[n].LearnRID = theLearnr.ID
 						theLearnr.LearnRInforms[n].DateCreated = theTimeNow.Format("2006-01-02 15:04:05")
 						theLearnr.LearnRInforms[n].DateUpdated = theTimeNow.Format("2006-01-02 15:04:05")
 						theLearnr.LearnRInforms[n].Name = "LearnrInfo" + strconv.Itoa(n)

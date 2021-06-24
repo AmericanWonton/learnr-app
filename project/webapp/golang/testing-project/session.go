@@ -11,7 +11,7 @@ import (
 	"github.com/google/uuid"
 )
 
-const sessionLength int = 180 //Length of sessions
+const sessionLength int = 400 //Length of sessions
 
 //Here's our session struct
 type theSession struct {

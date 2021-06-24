@@ -475,3 +475,167 @@ body, html {
     font-size: 1rem;
     color: black;
 }
+
+/* LearnR Div Holder styling */
+.learnrHolderDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    width: 100%;
+    /* styling */
+    padding: .3em;
+    /* styling */
+    border: 1px solid red;
+}
+
+.descriptionHolder{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    width: 100%;
+    /* styling */
+    padding: .2em;
+    /* styling */
+    border: 1px solid rgb(18, 145, 184);
+}
+
+.resultLearnrHolder{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    width: 100%;
+    /* styling */
+    padding: .3em;
+    margin: .2em;
+    border: 1px solid black;
+    /* debug */
+}
+
+.infolearnrHolder{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    justify-items: center;
+    align-self: center;
+    justify-self: center;
+    width: 100%;
+    /* styling */
+
+    /* debug */
+    border: 1px solid brown;
+    
+}
+
+.aInfoDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    justify-items: center;
+    align-self: center;
+    justify-self: center;
+    width: 45%;
+    /* styling */
+
+    /* debug */
+    border: 1px solid purple;
+}
+
+.learnRField{
+    font-size: 1rem;
+    color: black;
+}
+
+.aBigInfoDiv {
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    justify-items: center;
+    align-self: center;
+    justify-self: center;
+    width: 100%;
+    /* styling */
+
+    /* debug styling */
+    border: 1px solid seagreen;
+}
+
+.interiorBigInfoDiv {
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    justify-items: center;
+    align-self: center;
+    justify-self: center;
+    width: 100%;
+    /* styling */
+    padding-left: .3em;
+    padding-right: .3em;
+    /* debug */
+    border: 3px solid aquamarine;
+}
+
+.textHolder {
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    justify-items: center;
+    align-self: center;
+    justify-self: center;
+    width: 100%;
+    /* stlying */
+    padding: .5em;
+    /* debug */
+    border: 1px solid gold;
+}
+
+.textFont{
+    font-size: 1rem;
+}
+
+.allTextHolder{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    justify-items: center;
+    align-self: center;
+    justify-self: center;
+    width: 100%;
+    /* stlying */
+    
+    /* debug */
+    border: 1px solid pink;
+}
+
+.aTextHolder{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    justify-items: center;
+    align-self: center;
+    justify-self: center;
+    width: 100%;
+    /* stlying */
+    
+    /* debug */
+    border: 1px solid rgb(0, 0, 0);
+}

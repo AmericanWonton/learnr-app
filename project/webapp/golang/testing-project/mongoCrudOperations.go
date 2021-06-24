@@ -38,6 +38,7 @@ const ADDLEARNRURL string = "http://localhost:4000/addLearnR"
 const READLEARNRURL string = "http://localhost:4000/getLearnR"
 const UPDATELEARNRURL string = "http://localhost:4000/updateLearnR"
 const DELETELEARNRURL string = "http://localhost:4000/deleteLearnR"
+const GETSPECIALLEARNR string = "http://localhost:4000/specialLearnRGive"
 
 //LearnRInfo
 const ADDLEARNRINFOURL string = "http://localhost:4000/addLearnrInfo"
@@ -1590,4 +1591,94 @@ func callDeleteLearnRInform(theid int) (bool, string) {
 	}
 
 	return goodAdd, message
+}
+
+/* SPECIAL CRUD OPERTAIONS.
+These are opertaions a little out of the norm or for one-off functions */
+
+/* This takes in criteria from User on 'mainpage' to get a unique set of LearnRs for display */
+func getSpecialLearnRs() ([]Learnr, bool, string) {
+	goodAdd, message := true, ""
+	theLearnRReturned := []Learnr{}
+
+	/* DEBUG: For now, just get ALL of the learnrs, sort them into date order,
+	then pass them in. Note that we have 'CaseSearch' in the JSON struct; it determines
+	what we will be searching for with Mongo CRUD. 0 means you search with THAT
+	criteria. The first Case Search is 'getall', it supersedes all */
+	//Declare JSON to send
+	type TheSpecialCases struct {
+		CaseSearch       []int  `json:"CaseSearch"`
+		OrganizationName string `json:"OrganizationName"`
+		Tag              string `json:"Tag"`
+		LearnRName       string `json:"LearnRName"`
+		EntryAmountFrom  int    `json:"EntryAmountFrom"`
+		EntryAmountTo    int    `json:"EntryAmountTo"`
+	}
+	/* debug value for getting all these cases*/
+	theSpecialCases := TheSpecialCases{
+		CaseSearch:       []int{0, 1, 1, 1},
+		OrganizationName: "",
+		Tag:              "",
+		LearnRName:       "",
+		EntryAmountFrom:  0,
+		EntryAmountTo:    0,
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	/* 2. Marshal test case to JSON expect */
+	theJSONMessage, err := json.Marshal(theSpecialCases)
+	if err != nil {
+		fmt.Println(err)
+		logWriter(err.Error())
+		goodAdd, message = false, err.Error()
+	}
+	/* 3. Create Post to JSON */
+	payload := strings.NewReader(string(theJSONMessage))
+	req, err := http.NewRequest("POST", GETSPECIALLEARNR, payload)
+	if err != nil {
+		theErr := "There was an error posting getting special LearnRs: " + err.Error()
+		fmt.Println(theErr)
+		logWriter(theErr)
+		goodAdd, message = false, theErr
+	}
+	req.Header.Add("Content-Type", "application/json")
+	/* 4. Get response from Post */
+	resp, err := http.DefaultClient.Do(req.WithContext(ctx))
+	if resp.StatusCode >= 300 || resp.StatusCode <= 199 {
+		theErr := "Failed response from getspecialLearnrs: " + strconv.Itoa(resp.StatusCode)
+		logWriter(theErr)
+		goodAdd, message = false, theErr
+	} else if err != nil {
+		theErr := "Failed response from getspecialLearnrs: " + strconv.Itoa(resp.StatusCode) + " " + err.Error()
+		logWriter(theErr)
+		goodAdd, message = false, theErr
+	}
+	//Declare message we expect to see returned
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		theErr := "There was an error reading response from getSpecialLearnrs " + err.Error()
+		logWriter(theErr)
+		goodAdd, message = false, theErr
+	}
+	type ReturnMessage struct {
+		TheErr          []string `json:"TheErr"`
+		ResultMsg       []string `json:"ResultMsg"`
+		SuccOrFail      int      `json:"SuccOrFail"`
+		ReturnedLearnrs []Learnr `json:"ReturnedLearnrs"`
+	}
+	var returnedMessage ReturnMessage
+	json.Unmarshal(body, &returnedMessage)
+	/* 5. Evaluate response in returnedMessage */
+	if returnedMessage.SuccOrFail != 0 {
+		theErr := ""
+		for n := 0; n < len(returnedMessage.TheErr); n++ {
+			theErr = theErr + returnedMessage.TheErr[n]
+		}
+		goodAdd, message = false, theErr
+	} else {
+		goodAdd, message, theLearnRReturned = true, "Got our Special Learnrs successfully", returnedMessage.ReturnedLearnrs
+	}
+
+	return theLearnRReturned, goodAdd, message
 }

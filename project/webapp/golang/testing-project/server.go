@@ -32,6 +32,8 @@ func handleRequests() {
 	myRouter.HandleFunc("/createLearnR", createLearnR).Methods("POST")               //Create a LearnR
 	myRouter.HandleFunc("/canLogin", canLogin).Methods("POST")                       //Check User Login
 	myRouter.HandleFunc("/createUser", createUser).Methods("POST")                   //Create User
+	//Used for Learnr functions
+	myRouter.HandleFunc("/giveAllLearnrDisplay", giveAllLearnrDisplay).Methods("GET") //Get Learnrs for display
 	//Serve our static files
 	myRouter.Handle("/", http.FileServer(http.Dir("./static")))
 	myRouter.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
