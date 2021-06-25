@@ -124,50 +124,65 @@ func initialLearnRStart(w http.ResponseWriter, r *http.Request) {
 }
 
 func learnRSession(workerID int, userSessionChan <-chan UserSession, userSessCloseChan chan<- UserSession) {
-	sessDone := false //Does not end session until done
 	for a := range userSessionChan {
 		//Get this UserSession off the channel and into a good variable
 		theUserSession := a
 		//Start sending texts on this session
 		for l := 0; l < len(theUserSession.TheLearnR.LearnRInforms); l++ {
-			//Add this User Session to our map
-			UserSessionActiveMap[theUserSession.LocalSessID] = theUserSession
-			theTimeNow := time.Now()
-			goodSend, resultMessages := sendText(l, theUserSession.PersonPhoneNum, theUserSession.TheLearnR.PhoneNums[0],
-				theUserSession.TheLearnR.LearnRInforms[l].TheInfo)
-			if !goodSend {
-				//Failed to send text; log this in session and elsewhere
-				theUserSession.TheSession.DateUpdated = theTimeNow.Format("2006-01-02 15:04:05")
-				//Collect message
-				message := ""
-				for j := 0; j < len(resultMessages); j++ {
-					message = message + resultMessages[j] + " "
-				}
-				logWriter(message)
-				theUserSession.LogInfo = append(theUserSession.LogInfo, message)
-				//Update our UserSession Map
+			//Do this only if the 'Ongoing' variable in the LearnRSession is true
+			if theUserSession.TheSession.Ongoing {
+				//Add this User Session to our map
 				UserSessionActiveMap[theUserSession.LocalSessID] = theUserSession
-			} else {
-				//Text successfully sent; log this and put in session info
-				theUserSession.TheSession.TextsSent = append(theUserSession.TheSession.TextsSent)
-				theUserSession.TheSession.DateUpdated = theTimeNow.Format("2006-01-02 15:04:05")
-				//Collect message
-				message := ""
-				for j := 0; j < len(resultMessages); j++ {
-					message = message + resultMessages[j] + " "
+				theTimeNow := time.Now()
+				goodSend, resultMessages := sendText(l, theUserSession.PersonPhoneNum, theUserSession.TheLearnR.PhoneNums[0],
+					theUserSession.TheLearnR.LearnRInforms[l].TheInfo)
+				if !goodSend {
+					//Failed to send text; log this in session and elsewhere
+					theUserSession.TheSession.DateUpdated = theTimeNow.Format("2006-01-02 15:04:05")
+					//Collect message
+					message := ""
+					for j := 0; j < len(resultMessages); j++ {
+						message = message + resultMessages[j] + " "
+					}
+					logWriter(message)
+					theUserSession.LogInfo = append(theUserSession.LogInfo, message)
+					//Update our UserSession Map
+					UserSessionActiveMap[theUserSession.LocalSessID] = theUserSession
+				} else {
+					//Text successfully sent; log this and put in session info
+					theUserSession.TheSession.TextsSent = append(theUserSession.TheSession.TextsSent)
+					theUserSession.TheSession.DateUpdated = theTimeNow.Format("2006-01-02 15:04:05")
+					//Collect message
+					message := ""
+					for j := 0; j < len(resultMessages); j++ {
+						message = message + resultMessages[j] + " "
+					}
+					logWriter(message)
+					theUserSession.LogInfo = append(theUserSession.LogInfo, message)
+					//Update our UserSession Map
+					UserSessionActiveMap[theUserSession.LocalSessID] = theUserSession
 				}
-				logWriter(message)
-				theUserSession.LogInfo = append(theUserSession.LogInfo, message)
-				//Update our UserSession Map
-				UserSessionActiveMap[theUserSession.LocalSessID] = theUserSession
-			}
-			//Account for time delays of the next LearnRInforms
-			if theUserSession.TheLearnR.LearnRInforms[l].ShouldWait {
-				time.Sleep(time.Second * time.Duration(theUserSession.TheLearnR.LearnRInforms[l].WaitTime))
+				//Account for time delays of the next LearnRInforms
+				if theUserSession.TheLearnR.LearnRInforms[l].ShouldWait {
+					time.Sleep(time.Second * time.Duration(theUserSession.TheLearnR.LearnRInforms[l].WaitTime))
+				}
 			}
 		}
 		/* Done sending all texts for this LearnR. We can put this on the UserSessClose Chan and
 		begin sending the results to User/CRUD DB */
+		//Update Session
+		theTimeNow := time.Now()
+		theUserSession.TheSession.Ongoing = false //Stop the session from continuing
+		theUserSession.TheSession.DateUpdated = theTimeNow.Format("2006-01-02 15:04:05")
+		//Add session information to session DB
+		fmt.Printf("DEBUG: Adding learnrSession to learnRSession DB\n")
+		//Update the LearnRInfo for this LearnR with our updated Session added to it
+		fmt.Printf("DEBUG: Adding our leanrrSession to our LearnRInform and updating it")
+		//Removing Map placement of this UserSession
+		delete(UserSessionActiveMap, theUserSession.LocalSessID)
+		//Add this to our Results Chan
+		userSessCloseChan <- a
+		fmt.Printf("We are now done texting this User\n")
 	}
 }
 
@@ -195,7 +210,7 @@ func sendText(textOrder int, toNumString string, fromNumString string, textBody 
 	goodSend, resultMessages := true, []string{}
 	msgData := url.Values{}
 	msgData.Set("To", "+"+toNumString)
-	msgData.Set("From", ""+fromNumString)
+	msgData.Set("From", "+"+fromNumString)
 	msgData.Set("Body", textBody)
 	msgDataReader := *strings.NewReader(msgData.Encode())
 

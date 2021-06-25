@@ -8,6 +8,7 @@ import (
 	"math/rand"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -46,12 +47,19 @@ func init() {
 func main() {
 	rand.Seed(time.Now().UTC().UnixNano()) //Randomly Seed
 
-	defer close(learnSessChannel) //Close the channel when needed
-	defer close(learnSessResultChannel)
+	defer close(learnSessChannel)       //Close the channel when needed
+	defer close(learnSessResultChannel) //Close this channel when needed
 	//Mongo Connect
 	mongoClient = connectDB()
 	defer mongoClient.Disconnect(theContext) //Disconnect in 10 seconds if you can't connect
-
+	//Log results of our channel jobs being completed
+	for a := 0; a <= len(learnSessResultChannel); a++ {
+		aUserSess := <-learnSessResultChannel
+		aMessage := "We are done with this learnRSess: " + strconv.Itoa(aUserSess.TheSession.ID) + " for this LearnR: \n" +
+			aUserSess.TheSession.LearnRName + "\n"
+		logWriter(aMessage)
+		fmt.Println(aMessage)
+	}
 	//Handle our incoming web requests
 	handleRequests()
 }
