@@ -1,10 +1,15 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"math/rand"
 	"net/http"
+	"net/url"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -15,15 +20,22 @@ var urlStr string = "https://api.twilio.com/2010-04-01/Accounts/" + accountSID +
 var coolquote string = "Hello it's joe from you on Twilio. You can check out my resume at http://josephkeller.me/. Reply with STOP, CANCEL, or QUIT to quit this."
 
 type UserSession struct {
+	LocalSessID    int           `json:"LocalSessID"`
 	TheUser        User          `json:"TheUser"`
 	TheLearnR      Learnr        `json:"TheLearnR"`
+	TheLearnRInfo  LearnrInfo    `json:"TheLearnRInfo"`
 	PersonName     string        `json:"PersonName"`
 	PersonPhoneNum string        `json:"PersonPhoneNum"`
 	TheSession     LearnRSession `json:"TheSession"`
+	LogInfo        []string      `json:"LogInfo"`
 }
 
 //Channel for Go-Routines
 var learnSessChannel chan UserSession
+var learnSessResultChannel chan UserSession
+
+/* A map of our active sessions */
+var UserSessionActiveMap map[int]UserSession
 
 /* Called from our webpage to initiate a learnr request to another person */
 func initialLearnRStart(w http.ResponseWriter, r *http.Request) {
@@ -44,10 +56,11 @@ func initialLearnRStart(w http.ResponseWriter, r *http.Request) {
 		logWriter(err.Error())
 	}
 	type OurJSON struct {
-		TheUser        User   `json:"TheUser"`
-		TheLearnR      Learnr `json:"TheLearnR"`
-		PersonName     string `json:"PersonName"`
-		PersonPhoneNum string `json:"PersonPhoneNum"`
+		TheUser        User       `json:"TheUser"`
+		TheLearnR      Learnr     `json:"TheLearnR"`
+		TheLearnRInfo  LearnrInfo `json:"TheLearnRInfo"`
+		PersonName     string     `json:"PersonName"`
+		PersonPhoneNum string     `json:"PersonPhoneNum"`
 	}
 	//Marshal it into our type
 	var theJSON OurJSON
@@ -88,13 +101,145 @@ func initialLearnRStart(w http.ResponseWriter, r *http.Request) {
 				errIs := "Error formatting JSON for return in createUser: " + err.Error()
 				logWriter(errIs)
 			}
-			fmt.Fprint(w, string(theJSONMessage))
-			/* Session Added. Begin Go routine to start texting them */
-
+			theInt, theErr := fmt.Fprint(w, string(theJSONMessage))
+			if theErr != nil {
+				logWriter("Error writing back to User in UserSession Addition: " + theErr.Error() + " " + strconv.Itoa(theInt))
+			}
+			/* Session Added. Begin Go routine to start texting them.
+			Create User Session to add onto Channel */
+			newUserSession := UserSession{
+				LocalSessID:    getRandomID(),
+				TheUser:        theJSON.TheUser,
+				TheLearnR:      theJSON.TheLearnR,
+				TheLearnRInfo:  theJSON.TheLearnRInfo,
+				PersonName:     theJSON.PersonName,
+				PersonPhoneNum: theJSON.PersonPhoneNum,
+				TheSession:     newLearnRSession,
+				LogInfo:        []string{},
+			}
+			learnSessChannel <- newUserSession
+			go learnRSession(getRandomID(), learnSessChannel, learnSessResultChannel)
 		}
 	}
 }
 
-func learnRSession(userSessChannel chan UserSession) {
+func learnRSession(workerID int, userSessionChan <-chan UserSession, userSessCloseChan chan<- UserSession) {
 	sessDone := false //Does not end session until done
+	for a := range userSessionChan {
+		//Get this UserSession off the channel and into a good variable
+		theUserSession := a
+		//Start sending texts on this session
+		for l := 0; l < len(theUserSession.TheLearnR.LearnRInforms); l++ {
+			//Add this User Session to our map
+			UserSessionActiveMap[theUserSession.LocalSessID] = theUserSession
+			theTimeNow := time.Now()
+			goodSend, resultMessages := sendText(l, theUserSession.PersonPhoneNum, theUserSession.TheLearnR.PhoneNums[0],
+				theUserSession.TheLearnR.LearnRInforms[l].TheInfo)
+			if !goodSend {
+				//Failed to send text; log this in session and elsewhere
+				theUserSession.TheSession.DateUpdated = theTimeNow.Format("2006-01-02 15:04:05")
+				//Collect message
+				message := ""
+				for j := 0; j < len(resultMessages); j++ {
+					message = message + resultMessages[j] + " "
+				}
+				logWriter(message)
+				theUserSession.LogInfo = append(theUserSession.LogInfo, message)
+				//Update our UserSession Map
+				UserSessionActiveMap[theUserSession.LocalSessID] = theUserSession
+			} else {
+				//Text successfully sent; log this and put in session info
+				theUserSession.TheSession.TextsSent = append(theUserSession.TheSession.TextsSent)
+				theUserSession.TheSession.DateUpdated = theTimeNow.Format("2006-01-02 15:04:05")
+				//Collect message
+				message := ""
+				for j := 0; j < len(resultMessages); j++ {
+					message = message + resultMessages[j] + " "
+				}
+				logWriter(message)
+				theUserSession.LogInfo = append(theUserSession.LogInfo, message)
+				//Update our UserSession Map
+				UserSessionActiveMap[theUserSession.LocalSessID] = theUserSession
+			}
+			//Account for time delays of the next LearnRInforms
+			if theUserSession.TheLearnR.LearnRInforms[l].ShouldWait {
+				time.Sleep(time.Second * time.Duration(theUserSession.TheLearnR.LearnRInforms[l].WaitTime))
+			}
+		}
+		/* Done sending all texts for this LearnR. We can put this on the UserSessClose Chan and
+		begin sending the results to User/CRUD DB */
+	}
+}
+
+func getRandomID() int {
+	finalID := 0 //The final, unique ID to return to the food/user
+	randInt := 0 //The random integer added onto ID
+
+	randIntString := "" //The integer built through a string...
+	min, max := 0, 9    //The min and Max value for our randInt
+
+	for i := 0; i < 12; i++ {
+		randInt = rand.Intn(max-min) + min
+		randIntString = randIntString + strconv.Itoa(randInt)
+	}
+
+	finalID, err := strconv.Atoi(randIntString)
+	if err != nil {
+		fmt.Printf("%v\n", err.Error())
+	}
+
+	return finalID
+}
+
+func sendText(textOrder int, toNumString string, fromNumString string, textBody string) (bool, []string) {
+	goodSend, resultMessages := true, []string{}
+	msgData := url.Values{}
+	msgData.Set("To", "+"+toNumString)
+	msgData.Set("From", ""+fromNumString)
+	msgData.Set("Body", textBody)
+	msgDataReader := *strings.NewReader(msgData.Encode())
+
+	client := &http.Client{}
+	req, _ := http.NewRequest("POST", urlStr, &msgDataReader)
+	req.SetBasicAuth(accountSID, authToken)
+	req.Header.Add("Accept", "application/json")
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+
+	//Get that request
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	//Define the response we expect to recieve
+	type TwilioGetBack struct {
+		Code     int    `json:"code"`
+		Message  string `json:"message"`
+		MoreInfo string `json:"more_info"`
+		Status   int    `json:"status"`
+	}
+
+	resp, theErr := client.Do(req.WithContext(ctx))
+	if (resp.StatusCode >= 200 && resp.StatusCode < 300) && theErr == nil {
+		theMessage := ""
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			theErr := "There was an error reading a response for Twilio: " + err.Error()
+			fmt.Println(theErr)
+			goodSend = false
+			resultMessages = append(resultMessages, theErr)
+		}
+		var returnedMessage TwilioGetBack
+		json.Unmarshal(body, &returnedMessage)
+		theMessage = "Successful message sent"
+		resultMessages = append(resultMessages, theMessage)
+	} else {
+		theErr := "Bad response code recieved after sending text: " + strconv.Itoa(resp.StatusCode) + "\nError: " + theErr.Error()
+		fmt.Println(theErr)
+		goodSend = false
+		resultMessages = append(resultMessages, theErr)
+	}
+
+	//Close this response, just in case
+	resp.Body.Close()
+
+	return goodSend, resultMessages
 }

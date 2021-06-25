@@ -20,3 +20,7 @@ project/text-api-microservice-app/golang/testing-project/security
 project/text-api-microservice-app/golang/testing-project/logging
 project/text-api-microservice-app/golang/testing-project/security/text-microservice-keypair.pem
 project/text-api-microservice-app/golang/testing-project/security/installallbinary
+
+
+#texting credentials
+project/text-api-microservice-app/golang/testing-project/texting.go

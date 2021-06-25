@@ -36,6 +36,7 @@ func logWriter(logMessage string) {
 
 //Initial functions to run
 func init() {
+	UserSessionActiveMap = make(map[int]UserSession) //Make Map not crazy
 	//Initialize Mongo Creds
 	getCredsMongo()
 	//Initialize our bad phrases
@@ -45,6 +46,8 @@ func init() {
 func main() {
 	rand.Seed(time.Now().UTC().UnixNano()) //Randomly Seed
 
+	defer close(learnSessChannel) //Close the channel when needed
+	defer close(learnSessResultChannel)
 	//Mongo Connect
 	mongoClient = connectDB()
 	defer mongoClient.Disconnect(theContext) //Disconnect in 10 seconds if you can't connect
