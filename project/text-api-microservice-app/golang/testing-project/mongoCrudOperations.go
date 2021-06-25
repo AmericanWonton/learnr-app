@@ -16,6 +16,10 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
+//Get User
+//User
+const READUSERURL string = "http://localhost:4000/getUser"
+
 //ID Random
 const GETRANDOMID string = "http://localhost:4000/randomIDCreationAPI"
 
@@ -253,4 +257,74 @@ func randomAPICall() (bool, string, int) {
 	}
 
 	return goodGet, message, finalInt
+}
+
+/* Calls our CRUD Service to Get our User */
+func callGetUser(userID int) (User, bool, string) {
+	goodAdd, message := true, ""
+
+	/* 1. Create Context */
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	/* 2. Marshal test case to JSON expect */
+	type UserIDUser struct {
+		TheUserID int `json:"TheUserID"`
+	}
+	theID := UserIDUser{TheUserID: userID}
+	theJSONMessage, err := json.Marshal(theID)
+	if err != nil {
+		fmt.Println(err)
+		logWriter(err.Error())
+		log.Fatal(err)
+		goodAdd, message = false, err.Error()
+	}
+	/* 3. Create Post to JSON */
+	payload := strings.NewReader(string(theJSONMessage))
+	req, err := http.NewRequest("POST", READUSERURL, payload)
+	if err != nil {
+		theErr := "We had an error with this request: %v\n" + err.Error()
+		fmt.Println(theErr)
+		goodAdd, message = false, theErr
+	}
+	req.Header.Add("Content-Type", "application/json")
+	/* 4. Get response from Post */
+	resp, err := http.DefaultClient.Do(req.WithContext(ctx))
+	//defer resp.Body.Close()
+	if resp.StatusCode >= 300 || resp.StatusCode <= 199 {
+		theErr := "We had an error with this response: " + strconv.Itoa(resp.StatusCode)
+		goodAdd, message = false, theErr
+		resp.Body.Close()
+		logWriter(theErr)
+	} else if err != nil {
+		theErr := "We had an error with this response: " + strconv.Itoa(resp.StatusCode)
+		goodAdd, message = false, theErr
+		resp.Body.Close()
+		logWriter(theErr)
+	}
+	//Declare message we expect to see returned
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		theErr := "There was an error reading response from UserGet " + err.Error()
+		goodAdd, message = false, theErr
+	}
+	type ReturnMessage struct {
+		TheErr       []string `json:"TheErr"`
+		ResultMsg    []string `json:"ResultMsg"`
+		SuccOrFail   int      `json:"SuccOrFail"`
+		ReturnedUser User     `json:"ReturnedUser"`
+	}
+	var returnedMessage ReturnMessage
+	json.Unmarshal(body, &returnedMessage)
+	/* 5. Evaluate response in returnedMessage */
+	if returnedMessage.SuccOrFail != 0 {
+		theErr := ""
+		for n := 0; n < len(returnedMessage.TheErr); n++ {
+			theErr = theErr + returnedMessage.TheErr[n]
+		}
+		goodAdd, message = false, theErr
+	} else {
+		goodAdd, message = true, "User successfully got"
+	}
+
+	return returnedMessage.ReturnedUser, goodAdd, message
 }

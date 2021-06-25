@@ -35,6 +35,7 @@ func setup() {
 	fmt.Printf("Setting up test values...\n")
 	/* Start by connecting to Mongo client */
 	getCredsMongo() //Get mongo creds
+	createLearnRTextSession()
 }
 
 //This is shutdown values/actions for testing

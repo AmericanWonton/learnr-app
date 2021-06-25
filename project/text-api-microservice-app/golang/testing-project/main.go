@@ -38,6 +38,7 @@ func logWriter(logMessage string) {
 //Initial functions to run
 func init() {
 	UserSessionActiveMap = make(map[int]UserSession) //Make Map not crazy
+	UserSessPhoneMap = make(map[string]int)
 	//Initialize Mongo Creds
 	getCredsMongo()
 	//Initialize our bad phrases
