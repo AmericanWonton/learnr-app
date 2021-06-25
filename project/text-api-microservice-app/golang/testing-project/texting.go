@@ -13,11 +13,13 @@ import (
 	"time"
 )
 
+/* DEBUG ping values */
+var INITIALLEARNRSEND string = "http://localhost:3000/initialLearnRStart"
+
 /* Credentials for Twilio...THESE NEED TO BE READ IN AT SOME POINT */
 var accountSID string = "ACceed35250b686bf863fe15fc117d7ac0" //THIS NEEDS TO GET READ IN AT SOME POINT
 var authToken string = "2e89ceb29103e5078e2cb5b2cda435db"    //THIS ALSO NEEDS TO GET READ IN
 var urlStr string = "https://api.twilio.com/2010-04-01/Accounts/" + accountSID + "/Messages.json"
-var coolquote string = "Hello it's joe from you on Twilio. You can check out my resume at http://josephkeller.me/. Reply with STOP, CANCEL, or QUIT to quit this."
 
 //Used to record active sessions with our LearnRs
 type UserSession struct {
@@ -46,6 +48,16 @@ var UserSessPhoneMap map[string]int
 
 /* Called from our webpage to initiate a learnr request to another person */
 func initialLearnRStart(w http.ResponseWriter, r *http.Request) {
+	/* Test Flusher stuff */
+	flusher, ok := w.(http.Flusher)
+	if !ok {
+		http.Error(w, "Server does not support Flusher!",
+			http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "text/event-stream")
+	w.Header().Set("Cache-Control", "no-cache")
+	w.Header().Set("Connection", "keep-alive")
 	//Declare Ajax return statements to be sent back
 	type SuccessMSG struct {
 		Message    string `json:"Message"`
@@ -73,6 +85,8 @@ func initialLearnRStart(w http.ResponseWriter, r *http.Request) {
 	//Marshal it into our type
 	var theJSON OurJSON
 	json.Unmarshal(bs, &theJSON)
+
+	fmt.Printf("Made it to our JSON.\n")
 
 	/* Create Session for this LearnR to this person*/
 	//Get Random ID
@@ -103,16 +117,20 @@ func initialLearnRStart(w http.ResponseWriter, r *http.Request) {
 			logWriter(theErr)
 		} else {
 			/* Send the response back to Ajax */
-			theJSONMessage, err := json.Marshal(theSuccMessage)
-			//Send the response back
-			if err != nil {
-				errIs := "Error formatting JSON for return in createUser: " + err.Error()
-				logWriter(errIs)
-			}
-			theInt, theErr := fmt.Fprint(w, string(theJSONMessage))
-			if theErr != nil {
-				logWriter("Error writing back to User in UserSession Addition: " + theErr.Error() + " " + strconv.Itoa(theInt))
-			}
+			go func() {
+				theJSONMessage, err := json.Marshal(theSuccMessage)
+				//Send the response back
+				if err != nil {
+					errIs := "Error formatting JSON for return in createUser: " + err.Error()
+					logWriter(errIs)
+				}
+				theInt, theErr := fmt.Fprint(w, string(theJSONMessage))
+				if theErr != nil {
+					logWriter("Error writing back to User in UserSession Addition: " + theErr.Error() + " " + strconv.Itoa(theInt))
+				}
+				flusher.Flush()
+			}()
+			fmt.Printf("Made it to our beginning UserSess creation\n")
 			/* Session Added. Begin Go routine to start texting them.
 			Create User Session to add onto Channel */
 			newUserSession := UserSession{
@@ -128,13 +146,20 @@ func initialLearnRStart(w http.ResponseWriter, r *http.Request) {
 				TheSession:         newLearnRSession,
 				LogInfo:            []string{},
 			}
-			learnSessChannel <- newUserSession
-			go learnRSession(getRandomID(), learnSessChannel, learnSessResultChannel)
+			doLearnRSession(newUserSession)
+			return
+			/*
+
+			 */
 		}
 	}
 }
 
-func learnRSession(workerID int, userSessionChan <-chan UserSession, userSessCloseChan chan<- UserSession) {
+func doLearnRSession(aSession UserSession) {
+	learnSessChannel <- aSession
+}
+
+func learnRSession(userSessionChan <-chan UserSession, userSessCloseChan chan<- UserSession) {
 	for a := range userSessionChan {
 		//Get this UserSession off the channel and into a good variable
 		theUserSession := a
