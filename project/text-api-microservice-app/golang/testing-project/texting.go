@@ -539,6 +539,7 @@ func textWebhook(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(msg)
 		} else {
 			//Found active User Session; determine what needs to be done with it
+			actOnTextSent(theUserSess, theReturnText)
 		}
 	}
 }

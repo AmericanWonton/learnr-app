@@ -3,3 +3,12 @@ https://stackoverflow.com/questions/23729790/how-can-i-do-test-setup-using-the-t
 
 Good method for creating Mux routers for testing:
 https://www.thepolyglotdeveloper.com/2017/02/unit-testing-golang-application-includes-http/
+
+
+To connect to AWS:
+
+In security: 
+
+scp -i crud-microserv-key.pem installallbinary ubuntu@ec2-13-58-114-112.us-east-2.compute.amazonaws.com:
+
+ssh -i crud-microserv-key.pem ubuntu@ec2-13-58-114-112.us-east-2.compute.amazonaws.com
