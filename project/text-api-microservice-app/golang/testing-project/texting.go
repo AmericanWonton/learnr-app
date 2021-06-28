@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"math/rand"
 	"net/http"
@@ -21,7 +22,7 @@ var INITIALLEARNRSEND string = "http://localhost:3000/initialLearnRStart"
 /* Credentials for Twilio...THESE NEED TO BE READ IN AT SOME POINT */
 var accountSID string
 var authToken string
-var urlStr string = "https://api.twilio.com/2010-04-01/Accounts/" + accountSID + "/Messages.json"
+var urlStr string
 
 //Used to record active sessions with our LearnRs
 type UserSession struct {
@@ -69,6 +70,7 @@ func getTwilioCreds() {
 
 	accountSID = text[0]
 	authToken = text[1]
+	urlStr = "https://api.twilio.com/2010-04-01/Accounts/" + accountSID + "/Messages.json"
 }
 
 /* Called from our webpage to initiate a learnr request to another person */
@@ -359,7 +361,6 @@ func learnRSession(userSessionChan <-chan UserSession, userSessCloseChan chan<- 
 }
 
 func conductLearnRSession(theLearnRUserSess UserSession) {
-	fmt.Printf("DEBUG: Running through this learnRSession: %v\n", theLearnRUserSess.TheLearnR.Name)
 	//Add this User Session to our map of phone numbers
 	UserSessPhoneMap[theLearnRUserSess.PersonPhoneNum] = theLearnRUserSess.LocalSessID
 	/* First send the introduction Texts to this User; we will give them a
@@ -371,10 +372,8 @@ func conductLearnRSession(theLearnRUserSess UserSession) {
 	introMessage := "Hello " + theLearnRUserSess.PersonName + ", " + theLearnRUserSess.TheUserName + " wanted to help educate you on " +
 		"something important to them."
 	theTimeNow := time.Now()
-	fmt.Printf("DEBUG: Starting with first text\n")
 	goodSend, resultMessages := sendText(-3, theLearnRUserSess.PersonPhoneNum, theLearnRUserSess.TheLearnR.PhoneNums[0],
 		introMessage)
-	fmt.Printf("DEBUG: ending with first text\n")
 	if !goodSend || !UserSessionActiveMap[theLearnRUserSess.LocalSessID].Active {
 		//Intro text failed...LearnR may not be active
 		continueLearnR = false
@@ -516,56 +515,88 @@ func conductLearnRSession(theLearnRUserSess UserSession) {
 
 func sendText(textOrder int, toNumString string, fromNumString string, textBody string) (bool, []string) {
 	goodSend, resultMessages := true, []string{}
+
 	msgData := url.Values{}
 	msgData.Set("To", "+"+toNumString)
 	msgData.Set("From", "+"+fromNumString)
 	msgData.Set("Body", textBody)
 	msgDataReader := *strings.NewReader(msgData.Encode())
 
-	fmt.Printf("DEBUG: Here is our msgDataReader: %v\n", msgDataReader)
-
-	req, err := http.NewRequest("POST", urlStr, &msgDataReader)
-	if err != nil {
-		fmt.Printf("Error making newRequest: %v\n", err.Error())
-	}
-	fmt.Printf("DEBUG: Here is our account SID: %v\nAnd here is our AuthToken: %v\n", accountSID, authToken)
+	client := &http.Client{}
+	req, _ := http.NewRequest("POST", urlStr, &msgDataReader)
 	req.SetBasicAuth(accountSID, authToken)
 	req.Header.Add("Accept", "application/json")
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
-	fmt.Printf("DEBUG: Starting the request here\n")
 
-	type TwilioGetBack struct {
-		Code     int    `json:"Code"`
-		Message  string `json:"Message"`
-		MoreInfo string `json:"MoreInfo"`
-		Status   int    `json:"Status"`
-	}
 	//Get that request
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	resp, theErr := http.DefaultClient.Do(req.WithContext(ctx))
-	if (resp.StatusCode >= 200 && resp.StatusCode < 300) && theErr == nil {
-		theMessage := ""
+	//Define the response we expect to recieve
+	/*
+		type TwilioGetBack struct {
+			Code     int    `json:"code"`
+			Message  string `json:"message"`
+			MoreInfo string `json:"more_info"`
+			Status   int    `json:"status"`
+		}
+	*/
+	type TwilioResponse struct {
+		Sid                 string `json:"sid"`
+		DateCreated         string `json:"date created"`
+		DateUpdated         string `json:"date updated"`
+		DateSent            string `json:"date sent"`
+		AccountSid          string `json:"account sid"`
+		To                  string `json:"to"`
+		From                string `json:"from"`
+		MessagingServiceSid string `json:"messaging service sid"`
+		Body                string `json:"body"`
+		Status              string `json:"status"`
+		NumSegments         string `json:"num segments"`
+		NumMedia            string `json:"num media"`
+		Direction           string `json:"direction"`
+		APIVersion          string `json:"api version"`
+		Price               string `json:"price"`
+		PriceUnit           string `json:"price unit"`
+		ErrorCode           string `json:"error code"`
+		ErrorMessage        string `json:"error message"`
+		URI                 string `json:"uri"`
+		SubresourceUris     struct {
+			Media string `json:"media"`
+		} `json:"subresource uris"`
+	}
+	resp, theErr := client.Do(req.WithContext(ctx))
+	if resp.StatusCode >= 200 && resp.StatusCode < 300 {
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
 			theErr := "There was an error reading a response for Twilio: " + err.Error()
 			fmt.Println(theErr)
+		}
+		var returnedMessage TwilioResponse
+		json.Unmarshal(body, &returnedMessage)
+		//Check for correct response obtained
+		if strings.Contains(strings.ToLower(returnedMessage.Body), "Sent from") {
+			//Successful text
+			message := "Good text response obtained"
+			resultMessages = append(resultMessages, message)
+		} else {
+			//Not successful response
 			goodSend = false
+			theErr := "Could not obtain the correct body response: " + returnedMessage.Body
 			resultMessages = append(resultMessages, theErr)
 		}
-		var returnedMessage TwilioGetBack
-		json.Unmarshal(body, &returnedMessage)
-		theMessage = "Successful message sent"
-		resultMessages = append(resultMessages, theMessage)
 	} else {
-		theErr := "Bad response code recieved after sending text: " + strconv.Itoa(resp.StatusCode) + "\nError: " + theErr.Error()
-		fmt.Println(theErr)
+		fmt.Println(resp.Status)
+		b, err := io.ReadAll(resp.Body)
+		if err != nil {
+			fmt.Printf("There's an error reading the response: %v\n", err.Error())
+		} else {
+			fmt.Printf("Here is the response: %v\n", string(b))
+		}
 		goodSend = false
-		resultMessages = append(resultMessages, theErr)
+		resultMessages = append(resultMessages, theErr.Error())
 	}
 
-	fmt.Printf("DEBUG: Got to the response here\n")
 	//Close this response, just in case
 	resp.Body.Close()
 
