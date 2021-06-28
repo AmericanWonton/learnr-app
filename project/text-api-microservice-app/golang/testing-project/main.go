@@ -42,6 +42,8 @@ func init() {
 	getCredsMongo()
 	//Initialize our bad phrases
 	getbadWords()
+	//Initialize our Twilio Cresd
+	getTwilioCreds()
 }
 
 func main() {

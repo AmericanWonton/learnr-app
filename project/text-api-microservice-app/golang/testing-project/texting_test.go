@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/http/httputil"
 	"strconv"
 	"strings"
 	"testing"
@@ -60,7 +61,6 @@ func TestSendLearnR(t *testing.T) {
 		ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 		defer cancel()
 		/* 2. Marshal test case to JSON expect */
-		fmt.Printf("DEBUG: Made it  to marshalling\n")
 		theJSONMessage, err := json.Marshal(test.JSONSend)
 		if err != nil {
 			t.Fatal("Error marshalling JSON: " + err.Error())
@@ -73,7 +73,6 @@ func TestSendLearnR(t *testing.T) {
 		if err != nil {
 			t.Fatal(err.Error())
 		}
-		fmt.Printf("DEBUG: Made it to req headerer\n")
 		req.Header.Add("Content-Type", "application/json")
 		/* 4. Get response from Post */
 		resp, err := http.DefaultClient.Do(req.WithContext(ctx))
@@ -83,25 +82,35 @@ func TestSendLearnR(t *testing.T) {
 		} else if err != nil {
 			t.Fatal("Had an error creating response: " + err.Error())
 		}
+
+		//Read the WHOLE response
+		b, newerr := httputil.DumpResponse(resp, true)
+		if newerr != nil {
+			fmt.Printf("DEBUG: Big error\n")
+		}
+		fmt.Printf("Here is our whole response read: %v\n\n", string(b))
 		//Declare message we expect to see returned
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
 			theErr := "There was an error reading response from initialLearnRSend " + err.Error()
 			t.Fatal(theErr)
 		}
+		resp.Body.Close()
 		type SuccessMSG struct {
 			Message    string `json:"Message"`
 			SuccessNum int    `json:"SuccessNum"`
 		}
+		fmt.Printf("DEBUG: made it to reutnredmessage. Here is returned message: %v\n", string(body))
 		var returnedMessage SuccessMSG
 		json.Unmarshal(body, &returnedMessage)
-		fmt.Printf("DEBUG: made it to reutnredmessage\n")
+
+		fmt.Printf("DEBUG: Here is our full returnmessage: %v\n", returnedMessage)
 		/* 5. Evaluate response in returnedMessage for testing */
 		if test.ExpectedNum != returnedMessage.SuccessNum {
 			t.Fatal("Wrong num recieved on testcase " + strconv.Itoa(testNum) +
 				" :" + strconv.Itoa(returnedMessage.SuccessNum) + " Expected: " + strconv.Itoa(test.ExpectedNum))
 		}
-		/* Maybe we can test the strings at some point... */
+
 		testNum = testNum + 1 //Increment this number for testing
 	}
 }

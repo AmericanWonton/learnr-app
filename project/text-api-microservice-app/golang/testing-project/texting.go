@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -8,6 +9,7 @@ import (
 	"math/rand"
 	"net/http"
 	"net/url"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -17,8 +19,8 @@ import (
 var INITIALLEARNRSEND string = "http://localhost:3000/initialLearnRStart"
 
 /* Credentials for Twilio...THESE NEED TO BE READ IN AT SOME POINT */
-var accountSID string = "ACceed35250b686bf863fe15fc117d7ac0" //THIS NEEDS TO GET READ IN AT SOME POINT
-var authToken string = "2e89ceb29103e5078e2cb5b2cda435db"    //THIS ALSO NEEDS TO GET READ IN
+var accountSID string
+var authToken string
 var urlStr string = "https://api.twilio.com/2010-04-01/Accounts/" + accountSID + "/Messages.json"
 
 //Used to record active sessions with our LearnRs
@@ -46,8 +48,35 @@ var UserSessionActiveMap map[int]UserSession
 /* A Map of phone numbers that LINK us to those active sessions, (on the random session id) */
 var UserSessPhoneMap map[string]int
 
+/* Get our creds for twilio */
+func getTwilioCreds() {
+	file, err := os.Open("security/twiliocreds.txt")
+
+	if err != nil {
+		fmt.Printf("DEBUG: Trouble opening bad word text file: %v\n", err.Error())
+	}
+
+	scanner := bufio.NewScanner(file)
+
+	scanner.Split(bufio.ScanLines)
+	var text []string
+
+	for scanner.Scan() {
+		text = append(text, scanner.Text())
+	}
+
+	file.Close()
+
+	accountSID = text[0]
+	authToken = text[1]
+}
+
 /* Called from our webpage to initiate a learnr request to another person */
 func initialLearnRStart(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/event-stream")
+	w.Header().Set("Cache-Control", "no-cache")
+	w.Header().Set("Connection", "keep-alive")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	/* Test Flusher stuff */
 	flusher, ok := w.(http.Flusher)
 	if !ok {
@@ -55,9 +84,7 @@ func initialLearnRStart(w http.ResponseWriter, r *http.Request) {
 			http.StatusInternalServerError)
 		return
 	}
-	w.Header().Set("Content-Type", "text/event-stream")
-	w.Header().Set("Cache-Control", "no-cache")
-	w.Header().Set("Connection", "keep-alive")
+
 	//Declare Ajax return statements to be sent back
 	type SuccessMSG struct {
 		Message    string `json:"Message"`
@@ -85,8 +112,6 @@ func initialLearnRStart(w http.ResponseWriter, r *http.Request) {
 	//Marshal it into our type
 	var theJSON OurJSON
 	json.Unmarshal(bs, &theJSON)
-
-	fmt.Printf("Made it to our JSON.\n")
 
 	/* Create Session for this LearnR to this person*/
 	//Get Random ID
@@ -116,21 +141,6 @@ func initialLearnRStart(w http.ResponseWriter, r *http.Request) {
 			theSuccMessage.Message = theErr
 			logWriter(theErr)
 		} else {
-			/* Send the response back to Ajax */
-			go func() {
-				theJSONMessage, err := json.Marshal(theSuccMessage)
-				//Send the response back
-				if err != nil {
-					errIs := "Error formatting JSON for return in createUser: " + err.Error()
-					logWriter(errIs)
-				}
-				theInt, theErr := fmt.Fprint(w, string(theJSONMessage))
-				if theErr != nil {
-					logWriter("Error writing back to User in UserSession Addition: " + theErr.Error() + " " + strconv.Itoa(theInt))
-				}
-				flusher.Flush()
-			}()
-			fmt.Printf("Made it to our beginning UserSess creation\n")
 			/* Session Added. Begin Go routine to start texting them.
 			Create User Session to add onto Channel */
 			newUserSession := UserSession{
@@ -146,21 +156,49 @@ func initialLearnRStart(w http.ResponseWriter, r *http.Request) {
 				TheSession:         newLearnRSession,
 				LogInfo:            []string{},
 			}
-			doLearnRSession(newUserSession)
-			return
-			/*
-
-			 */
+			//go learnRSession(learnSessChannel, learnSessResultChannel)
+			/* Send the response back to Ajax */
+			theJSONMessage, err := json.Marshal(theSuccMessage)
+			//Send the response back
+			if err != nil {
+				errIs := "Error formatting JSON for return in initialLearnRStart: " + err.Error()
+				logWriter(errIs)
+				panic(errIs)
+			}
+			theInt, theErr := fmt.Fprint(w, string(theJSONMessage))
+			if theErr != nil {
+				logWriter("Error writing back to initialLearnRStart: " + theErr.Error() + " " + strconv.Itoa(theInt))
+				panic("Error writing back to initialLearnRStart: " + theErr.Error() + " " + strconv.Itoa(theInt))
+			}
+			flusher.Flush()
+			go conductLearnRSession(newUserSession)
 		}
 	}
 }
 
-func doLearnRSession(aSession UserSession) {
-	learnSessChannel <- aSession
+func buttFunc(theSession UserSession) {
+	learnSessChannel = make(chan UserSession, 3)
+	learnSessResultChannel = make(chan UserSession, 3)
+	fmt.Printf("DEBUG: Adding to Channel...\n")
+	learnSessChannel <- theSession
+	go learnRSession(learnSessChannel, learnSessResultChannel)
+
+	//Log results of our channel jobs being completed
+	for a := 0; a <= len(learnSessResultChannel); a++ {
+		aUserSess := <-learnSessResultChannel
+		aMessage := "We are done with this learnRSess: " + strconv.Itoa(aUserSess.TheSession.ID) + " for this LearnR: \n" +
+			aUserSess.TheSession.LearnRName + "\n"
+		logWriter(aMessage)
+		fmt.Println(aMessage)
+	}
+	defer close(learnSessChannel)       //Close the channel when needed
+	defer close(learnSessResultChannel) //Close this channel when needed
 }
 
 func learnRSession(userSessionChan <-chan UserSession, userSessCloseChan chan<- UserSession) {
+	fmt.Printf("DEBUG: Hey, we've started up learnRSession\n")
 	for a := range userSessionChan {
+		fmt.Printf("DEBUG: Running through this learnRSession: %v\n", a.TheLearnR.Name)
 		//Get this UserSession off the channel and into a good variable
 		theUserSession := a
 		//Add this User Session to our map of phone numbers
@@ -320,24 +358,160 @@ func learnRSession(userSessionChan <-chan UserSession, userSessCloseChan chan<- 
 	}
 }
 
-func getRandomID() int {
-	finalID := 0 //The final, unique ID to return to the food/user
-	randInt := 0 //The random integer added onto ID
-
-	randIntString := "" //The integer built through a string...
-	min, max := 0, 9    //The min and Max value for our randInt
-
-	for i := 0; i < 12; i++ {
-		randInt = rand.Intn(max-min) + min
-		randIntString = randIntString + strconv.Itoa(randInt)
+func conductLearnRSession(theLearnRUserSess UserSession) {
+	fmt.Printf("DEBUG: Running through this learnRSession: %v\n", theLearnRUserSess.TheLearnR.Name)
+	//Add this User Session to our map of phone numbers
+	UserSessPhoneMap[theLearnRUserSess.PersonPhoneNum] = theLearnRUserSess.LocalSessID
+	/* First send the introduction Texts to this User; we will give them a
+	160 second break period in order to type STOP; if they do not, our LearnR continues, until
+	they enter STOP at any time */
+	continueLearnR := true                                                  //This will determine if we can send the rest of our texts
+	UserSessionActiveMap[theLearnRUserSess.LocalSessID] = theLearnRUserSess //Add this User Session to our map
+	//Send the Introduction Text
+	introMessage := "Hello " + theLearnRUserSess.PersonName + ", " + theLearnRUserSess.TheUserName + " wanted to help educate you on " +
+		"something important to them."
+	theTimeNow := time.Now()
+	fmt.Printf("DEBUG: Starting with first text\n")
+	goodSend, resultMessages := sendText(-3, theLearnRUserSess.PersonPhoneNum, theLearnRUserSess.TheLearnR.PhoneNums[0],
+		introMessage)
+	fmt.Printf("DEBUG: ending with first text\n")
+	if !goodSend || !UserSessionActiveMap[theLearnRUserSess.LocalSessID].Active {
+		//Intro text failed...LearnR may not be active
+		continueLearnR = false
+		theLearnRUserSess.TheSession.DateUpdated = theTimeNow.Format("2006-01-02 15:04:05")
+		//Collect message
+		message := ""
+		for j := 0; j < len(resultMessages); j++ {
+			message = message + resultMessages[j] + " "
+		}
+		logWriter(message)
+		theLearnRUserSess.LogInfo = append(theLearnRUserSess.LogInfo, message)
+		//Update our UserSession Map
+		UserSessionActiveMap[theLearnRUserSess.LocalSessID] = theLearnRUserSess
+	} else {
+		//Send the second text with our Users message
+		time.Sleep(time.Second * 10) //Small wait
+		introMessage = "\"" + theLearnRUserSess.IntroductionSaying + "\""
+		goodSend, resultMessages := sendText(-2, theLearnRUserSess.PersonPhoneNum, theLearnRUserSess.TheLearnR.PhoneNums[0],
+			introMessage)
+		if !goodSend || !UserSessionActiveMap[theLearnRUserSess.LocalSessID].Active {
+			//Intro text failed...LearnR may not be active
+			continueLearnR = false
+			theLearnRUserSess.TheSession.DateUpdated = theTimeNow.Format("2006-01-02 15:04:05")
+			//Collect message
+			message := ""
+			for j := 0; j < len(resultMessages); j++ {
+				message = message + resultMessages[j] + " "
+			}
+			logWriter(message)
+			theLearnRUserSess.LogInfo = append(theLearnRUserSess.LogInfo, message)
+			//Update our UserSession Map
+			UserSessionActiveMap[theLearnRUserSess.LocalSessID] = theLearnRUserSess
+		} else {
+			//Send final message asking User to confirm/deny
+			//Send the second text with our Users message
+			time.Sleep(time.Second * 10) //Small wait
+			introMessage = "At their request, we'll begin sending a LearnR to help them explain.\n\n" +
+				"If you'd like to stop, please text STOP back to this number at any time."
+			goodSend, resultMessages := sendText(-1, theLearnRUserSess.PersonPhoneNum, theLearnRUserSess.TheLearnR.PhoneNums[0],
+				introMessage)
+			if !goodSend || !UserSessionActiveMap[theLearnRUserSess.LocalSessID].Active {
+				//Intro text failed...LearnR may not be active
+				continueLearnR = false
+				theLearnRUserSess.TheSession.DateUpdated = theTimeNow.Format("2006-01-02 15:04:05")
+				//Collect message
+				message := ""
+				for j := 0; j < len(resultMessages); j++ {
+					message = message + resultMessages[j] + " "
+				}
+				logWriter(message)
+				theLearnRUserSess.LogInfo = append(theLearnRUserSess.LogInfo, message)
+				//Update our UserSession Map
+				UserSessionActiveMap[theLearnRUserSess.LocalSessID] = theLearnRUserSess
+			}
+		}
 	}
-
-	finalID, err := strconv.Atoi(randIntString)
-	if err != nil {
-		fmt.Printf("%v\n", err.Error())
+	time.Sleep(time.Second * 10) //Small wait
+	/* Hopefully we've sent our first three texts successfully, (continueLearnR == true).
+	If not, log the failure remove this Session/Phone Map recording and update our DB*/
+	if !continueLearnR || !UserSessionActiveMap[theLearnRUserSess.LocalSessID].Active {
+		//Failed sending messages...ending session
+		theMessage := "LearnR Session ending; did not have success sending texts or User terminated session..."
+		fmt.Println(theMessage)
+		logWriter(theMessage)
+		theLearnRUserSess.Active = false
+		UserSessionActiveMap[theLearnRUserSess.LocalSessID] = theLearnRUserSess
+		theTimeNow = time.Now()
+		theLearnRUserSess.TheSession.Ongoing = false //Stop the session from continuing
+		theLearnRUserSess.TheSession.DateUpdated = theTimeNow.Format("2006-01-02 15:04:05")
+		//Add session information to session DB
+		fmt.Printf("DEBUG: Adding learnrSession to learnRSession DB\n")
+		//Update the LearnRInfo for this LearnR with our updated Session added to it
+		fmt.Printf("DEBUG: Adding our leanrrSession to our LearnRInform and updating it")
+		//Removing Map placement of this UserSession
+		delete(UserSessionActiveMap, theLearnRUserSess.LocalSessID)
+		//Removing Phone Num from active UserSession
+		delete(UserSessPhoneMap, theLearnRUserSess.PersonPhoneNum)
+		fmt.Printf("DEBUG: We are now done texting this User\n")
+	} else {
+		//First three messages sent, getting ready to send the rest of the messages...
+		//Start sending texts on this session
+		for l := 0; l < len(theLearnRUserSess.TheLearnR.LearnRInforms); l++ {
+			//Do this only if the 'Ongoing' variable in the LearnRSession is true
+			if theLearnRUserSess.TheSession.Ongoing && UserSessionActiveMap[theLearnRUserSess.LocalSessID].Active {
+				theTimeNow := time.Now()
+				goodSend, resultMessages := sendText(l, theLearnRUserSess.PersonPhoneNum, theLearnRUserSess.TheLearnR.PhoneNums[0],
+					theLearnRUserSess.TheLearnR.LearnRInforms[l].TheInfo)
+				if !goodSend {
+					//Failed to send text; log this in session and elsewhere
+					theLearnRUserSess.TheSession.DateUpdated = theTimeNow.Format("2006-01-02 15:04:05")
+					//Collect message
+					message := ""
+					for j := 0; j < len(resultMessages); j++ {
+						message = message + resultMessages[j] + " "
+					}
+					logWriter(message)
+					theLearnRUserSess.LogInfo = append(theLearnRUserSess.LogInfo, message)
+					//Update our UserSession Map
+					UserSessionActiveMap[theLearnRUserSess.LocalSessID] = theLearnRUserSess
+				} else {
+					//Text successfully sent; log this and put in session info
+					theLearnRUserSess.TheSession.TextsSent = append(theLearnRUserSess.TheSession.TextsSent, theLearnRUserSess.TheLearnR.LearnRInforms[l])
+					theLearnRUserSess.TheSession.DateUpdated = theTimeNow.Format("2006-01-02 15:04:05")
+					//Collect message
+					message := ""
+					for j := 0; j < len(resultMessages); j++ {
+						message = message + resultMessages[j] + " "
+					}
+					logWriter(message)
+					theLearnRUserSess.LogInfo = append(theLearnRUserSess.LogInfo, message)
+					//Update our UserSession Map
+					UserSessionActiveMap[theLearnRUserSess.LocalSessID] = theLearnRUserSess
+				}
+				//Account for time delays of the next LearnRInforms
+				if theLearnRUserSess.TheLearnR.LearnRInforms[l].ShouldWait {
+					time.Sleep(time.Second * time.Duration(theLearnRUserSess.TheLearnR.LearnRInforms[l].WaitTime))
+				}
+			}
+		}
+		/* Done sending all texts for this LearnR. We can put this on the UserSessClose Chan and
+		begin sending the results to User/CRUD DB */
+		//Update Session
+		theLearnRUserSess.Active = false
+		UserSessionActiveMap[theLearnRUserSess.LocalSessID] = theLearnRUserSess
+		theTimeNow = time.Now()
+		theLearnRUserSess.TheSession.Ongoing = false //Stop the session from continuing
+		theLearnRUserSess.TheSession.DateUpdated = theTimeNow.Format("2006-01-02 15:04:05")
+		//Add session information to session DB
+		fmt.Printf("DEBUG: Adding learnrSession to learnRSession DB\n")
+		//Update the LearnRInfo for this LearnR with our updated Session added to it
+		fmt.Printf("DEBUG: Adding our leanrrSession to our LearnRInform and updating it")
+		//Removing Map placement of this UserSession
+		delete(UserSessionActiveMap, theLearnRUserSess.LocalSessID)
+		//Removing Phone Num from active UserSession
+		delete(UserSessPhoneMap, theLearnRUserSess.PersonPhoneNum)
+		fmt.Printf("We are now done texting this User\n")
 	}
-
-	return finalID
 }
 
 func sendText(textOrder int, toNumString string, fromNumString string, textBody string) (bool, []string) {
@@ -348,25 +522,29 @@ func sendText(textOrder int, toNumString string, fromNumString string, textBody 
 	msgData.Set("Body", textBody)
 	msgDataReader := *strings.NewReader(msgData.Encode())
 
-	client := &http.Client{}
-	req, _ := http.NewRequest("POST", urlStr, &msgDataReader)
+	fmt.Printf("DEBUG: Here is our msgDataReader: %v\n", msgDataReader)
+
+	req, err := http.NewRequest("POST", urlStr, &msgDataReader)
+	if err != nil {
+		fmt.Printf("Error making newRequest: %v\n", err.Error())
+	}
+	fmt.Printf("DEBUG: Here is our account SID: %v\nAnd here is our AuthToken: %v\n", accountSID, authToken)
 	req.SetBasicAuth(accountSID, authToken)
 	req.Header.Add("Accept", "application/json")
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	fmt.Printf("DEBUG: Starting the request here\n")
 
+	type TwilioGetBack struct {
+		Code     int    `json:"Code"`
+		Message  string `json:"Message"`
+		MoreInfo string `json:"MoreInfo"`
+		Status   int    `json:"Status"`
+	}
 	//Get that request
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	//Define the response we expect to recieve
-	type TwilioGetBack struct {
-		Code     int    `json:"code"`
-		Message  string `json:"message"`
-		MoreInfo string `json:"more_info"`
-		Status   int    `json:"status"`
-	}
-
-	resp, theErr := client.Do(req.WithContext(ctx))
+	resp, theErr := http.DefaultClient.Do(req.WithContext(ctx))
 	if (resp.StatusCode >= 200 && resp.StatusCode < 300) && theErr == nil {
 		theMessage := ""
 		body, err := ioutil.ReadAll(resp.Body)
@@ -387,8 +565,29 @@ func sendText(textOrder int, toNumString string, fromNumString string, textBody 
 		resultMessages = append(resultMessages, theErr)
 	}
 
+	fmt.Printf("DEBUG: Got to the response here\n")
 	//Close this response, just in case
 	resp.Body.Close()
 
 	return goodSend, resultMessages
+}
+
+func getRandomID() int {
+	finalID := 0 //The final, unique ID to return to the food/user
+	randInt := 0 //The random integer added onto ID
+
+	randIntString := "" //The integer built through a string...
+	min, max := 0, 9    //The min and Max value for our randInt
+
+	for i := 0; i < 12; i++ {
+		randInt = rand.Intn(max-min) + min
+		randIntString = randIntString + strconv.Itoa(randInt)
+	}
+
+	finalID, err := strconv.Atoi(randIntString)
+	if err != nil {
+		fmt.Printf("%v\n", err.Error())
+	}
+
+	return finalID
 }

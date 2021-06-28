@@ -24,3 +24,4 @@ project/text-api-microservice-app/golang/testing-project/security/installallbina
 
 #texting credentials
 project/text-api-microservice-app/golang/testing-project/texting.go
+project/text-api-microservice-app/golang/testing-project/security/twiliocreds.txt
