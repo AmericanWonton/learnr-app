@@ -1,3 +1,5 @@
+bitbucket.org/ckvist/twilio v0.0.0-20170512072134-13c593a1721b h1:EgVTZyg+IROzDLG86gbfoLk4k6nwypmTHmjXDgYMzD4=
+bitbucket.org/ckvist/twilio v0.0.0-20170512072134-13c593a1721b/go.mod h1:tZckALWIGoGfdoe/aKzxBL5qViz4qXogqZx1UViXWME=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/aws/aws-sdk-go v1.34.28 h1:sscPpn/Ns3i0F4HPEWAVcwdIRaZZCuL7llJ2/60yPIk=
 github.com/aws/aws-sdk-go v1.34.28/go.mod h1:H7NKnBqNVzoTJpGfLrQkkD+ytBA93eiDYi/+8rV9s48=

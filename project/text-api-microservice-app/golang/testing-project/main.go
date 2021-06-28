@@ -38,12 +38,15 @@ func logWriter(logMessage string) {
 func init() {
 	UserSessionActiveMap = make(map[int]UserSession) //Make Map not crazy
 	UserSessPhoneMap = make(map[string]int)
+	StopText = make(map[string]string)
 	//Initialize Mongo Creds
 	getCredsMongo()
 	//Initialize our bad phrases
 	getbadWords()
 	//Initialize our Twilio Cresd
 	getTwilioCreds()
+	//Get our stop text values
+	fillStopText()
 }
 
 func main() {
@@ -127,4 +130,13 @@ func getbadWords() {
 	file.Close()
 
 	slurs = text
+}
+
+/* fill our stop map */
+func fillStopText() {
+	StopText["stop"] = "stop"
+	StopText["stp"] = "stp"
+	StopText["stahp"] = "stahp"
+	StopText["starhp"] = "starhp"
+	StopText["STOP"] = "STOP"
 }

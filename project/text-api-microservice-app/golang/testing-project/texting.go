@@ -17,8 +17,33 @@ import (
 	"time"
 )
 
+//Response Text from what our Users sent
+type ResponseText struct {
+	NumMedia            string `json:"NumMedia"`
+	FromCountry         string `json:"FromCountry"`
+	SmsStatus           string `json:"SmsStatus"`
+	ApiVersion          string `json:"ApiVersion"`
+	Body                string `json:"Body"`
+	To                  string `json:"To"`
+	ToCity              string `json:"ToCity"`
+	FromCity            string `json:"FromCity"`
+	AccountSid          string `json:"AccountSid"`
+	ToState             string `json:"ToState"`
+	From                string `json:"From"`
+	MessagingServiceSid string `json:"MessagingServiceSid"`
+	SmsSid              string `json:"SmsSid"`
+	MessageSid          string `json:"MessageSid"`
+	FromState           string `json:"FromState"`
+	ToZip               string `json:"ToZip"`
+	ToCountry           string `json:"ToCountry"`
+	FromZip             string `json:"FromZip"`
+	NumSegments         string `json:"NumSegments"`
+}
+
 //Here is our waitgroup
 var wg sync.WaitGroup
+
+const ALLOTTEDLEARNRTIME = 900
 
 /* DEBUG ping values */
 var INITIALLEARNRSEND string = "http://localhost:3000/initialLearnRStart"
@@ -31,6 +56,8 @@ var urlStr string
 //Used to record active sessions with our LearnRs
 type UserSession struct {
 	Active             bool          `json:"Active"`
+	StartTime          time.Time     `json:"StartTime"`
+	EndTime            time.Time     `json:"EndTime"`
 	LocalSessID        int           `json:"LocalSessID"`
 	IntroductionSaying string        `json:"IntroductionSaying"`
 	TheUserName        string        `json:"TheUserName"`
@@ -52,6 +79,9 @@ var UserSessionActiveMap map[int]UserSession
 
 /* A Map of phone numbers that LINK us to those active sessions, (on the random session id) */
 var UserSessPhoneMap map[string]int
+
+/* A map of all the keywords for Users telling us to stop texting them */
+var StopText map[string]string
 
 /* Get our creds for twilio */
 func getTwilioCreds() {
@@ -145,6 +175,8 @@ func initialLearnRStart(w http.ResponseWriter, r *http.Request) {
 		Create User Session to add onto Channel */
 		newUserSession := UserSession{
 			Active:             true,
+			StartTime:          time.Now(),
+			EndTime:            time.Time{},
 			LocalSessID:        getRandomID(),
 			IntroductionSaying: theJSON.Introduction,
 			TheUserName:        theJSON.TheUser.UserName,
@@ -176,6 +208,8 @@ func initialLearnRStart(w http.ResponseWriter, r *http.Request) {
 }
 
 func conductLearnRSession(theLearnRUserSess UserSession) {
+	/* Start the timer for this LearnRSession */
+	theLearnRUserSess.StartTime = time.Now()
 	//Add this User Session to our map of phone numbers
 	UserSessPhoneMap[theLearnRUserSess.PersonPhoneNum] = theLearnRUserSess.LocalSessID
 	/* First send the introduction Texts to this User; we will give them a
@@ -254,6 +288,7 @@ func conductLearnRSession(theLearnRUserSess UserSession) {
 		fmt.Println(theMessage)
 		logWriter(theMessage)
 		theLearnRUserSess.Active = false
+		theLearnRUserSess.EndTime = time.Now()
 		UserSessionActiveMap[theLearnRUserSess.LocalSessID] = theLearnRUserSess
 		theTimeNow = time.Now()
 		theLearnRUserSess.TheSession.Ongoing = false //Stop the session from continuing
@@ -310,16 +345,28 @@ func conductLearnRSession(theLearnRUserSess UserSession) {
 				if theLearnRUserSess.TheLearnR.LearnRInforms[l].ShouldWait {
 					time.Sleep(time.Second * time.Duration(theLearnRUserSess.TheLearnR.LearnRInforms[l].WaitTime))
 				}
+				//Check to see if this LearnR has been going on for too long...
+				timeDuration := time.Since(theLearnRUserSess.StartTime)
+				if timeDuration >= ALLOTTEDLEARNRTIME {
+					//LearnR has been going on for too long...killing this session
+					theMessage := "Session for this LearnR,(" + theLearnRUserSess.TheLearnR.Name + ") has been going on for too long,(" +
+						strconv.Itoa(int(timeDuration)) + "). Killing User Session: " + strconv.Itoa(theLearnRUserSess.LocalSessID)
+					theLearnRUserSess.LogInfo = append(theLearnRUserSess.LogInfo, theMessage)
+					theLearnRUserSess.EndTime = time.Now()
+					logWriter(theMessage)
+					break
+				}
 			}
 		}
 		/* Done sending all texts for this LearnR. We can put this on the UserSessClose Chan and
 		begin sending the results to User/CRUD DB */
+		theLearnRUserSess.EndTime = time.Now()
 		//Update Session
 		theLearnRUserSess.Active = false
-		UserSessionActiveMap[theLearnRUserSess.LocalSessID] = theLearnRUserSess
-		theTimeNow = time.Now()
 		theLearnRUserSess.TheSession.Ongoing = false //Stop the session from continuing
 		theLearnRUserSess.TheSession.DateUpdated = theTimeNow.Format("2006-01-02 15:04:05")
+		UserSessionActiveMap[theLearnRUserSess.LocalSessID] = theLearnRUserSess
+		theTimeNow = time.Now()
 		//Add session information to session DB
 		wg.Add(1)
 		go fastAddLearnRSession(theLearnRUserSess.TheSession)
@@ -445,4 +492,130 @@ func getRandomID() int {
 	}
 
 	return finalID
+}
+
+//Listens to all webhooks and determines next actions based on what is sent from form
+func textWebhook(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm() //Parses our form first
+
+	theReturnText := ResponseText{
+		NumMedia:            r.FormValue("NumMedia"),
+		FromCountry:         r.FormValue("FromCountry"),
+		SmsStatus:           r.FormValue("SmsStatus"),
+		ApiVersion:          r.FormValue("ApiVersion"),
+		Body:                r.FormValue("Body"),
+		To:                  r.FormValue("To"),
+		ToCity:              r.FormValue("ToCity"),
+		FromCity:            r.FormValue("FromCity"),
+		AccountSid:          r.FormValue("AccountSid"),
+		ToState:             r.FormValue("ToState"),
+		From:                r.FormValue("From"),
+		MessagingServiceSid: r.FormValue("MessagingServiceSid"),
+		SmsSid:              r.FormValue("SmsSid"),
+		MessageSid:          r.FormValue("MessageSid"),
+		FromState:           r.FormValue("FromState"),
+		ToZip:               r.FormValue("ToZip"),
+		ToCountry:           r.FormValue("ToCountry"),
+		FromZip:             r.FormValue("FromZip"),
+		NumSegments:         r.FormValue("NumSegments"),
+	}
+
+	/* Evaluate response;
+	1. Check to see if the number this came from is in our map of session numbers
+	2. Look up this number in our map and see if the session is still active,(or not over session time)
+	3. Determine if this number has texted a keyword to stop the session
+	*/
+	okayPhone, userSessID := phoneSessionMapOk(theReturnText.From)
+	if !okayPhone {
+		err := "Phone number, (" + theReturnText.From + "), not found in session"
+		logWriter(err)
+		fmt.Println(err)
+	} else {
+		//Phone number exists, see if session is there and active
+		okayuserSess, theUserSess := getSessionMapOk(userSessID)
+		if !okayuserSess {
+			msg := "Could not find an active User Session"
+			logWriter(msg)
+			fmt.Println(msg)
+		} else {
+			//Found active User Session; determine what needs to be done with it
+		}
+	}
+}
+
+//Gets our userSession ID from a phone number that texted the webhook
+func phoneSessionMapOk(theNumber string) (bool, int) {
+	if theSessNum, ok := UserSessPhoneMap[theNumber]; ok {
+		return ok, theSessNum
+	} else {
+		return ok, theSessNum
+	}
+}
+
+//Get a User Session from a sessionID
+func getSessionMapOk(theSessID int) (bool, UserSession) {
+	if theUserSess, ok := UserSessionActiveMap[theSessID]; ok {
+		//Determine if this UserSess is still active and not past it's time limit
+		goodSess := true
+		duration := time.Since(theUserSess.StartTime).Seconds()
+		if (int(duration) >= ALLOTTEDLEARNRTIME) || (!UserSessionActiveMap[theSessID].Active) {
+			goodSess = false
+		}
+
+		if !goodSess {
+			return goodSess, theUserSess
+		} else {
+			return ok, theUserSess
+		}
+	} else {
+		return ok, theUserSess
+	}
+}
+
+//Determine the text sent and act accordingly
+func actOnTextSent(theUserSession UserSession, theUserResponse ResponseText) {
+	theTimeNow := time.Now()
+	//Determine if the text is STOP or stop adjacent
+	if isStop, ok := StopText[theUserResponse.From]; ok {
+		//It's a stop word, stop the session
+		//Session update
+		theUserSession.TheSession.Ongoing = false
+		theUserSession.TheSession.UserResponses = append(theUserSession.TheSession.UserResponses, isStop)
+		theUserSession.TheSession.DateUpdated = theTimeNow.Format("2006-01-02 15:04:05")
+		logInfo := "The User wants to stop session. Time: " + theUserSession.TheSession.DateUpdated + "\n" +
+			"User response: " + isStop
+		logWriter(logInfo)
+		//userSession update
+		theUserSession.Active = false
+		theUserSession.EndTime = time.Now()
+		theUserSession.LogInfo = append(theUserSession.LogInfo, logInfo)
+		theUserSession.TheLearnRInfo.AllSessions = append(theUserSession.TheLearnRInfo.AllSessions,
+			theUserSession.TheSession)
+		//LearnRInfo Update
+		theUserSession.TheLearnRInfo.DateUpdated = theTimeNow.Format("2006-01-02 15:04:05")
+		//Update the map
+		UserSessionActiveMap[theUserSession.LocalSessID] = theUserSession
+		//Add session information to session DB
+		wg.Add(1)
+		go fastAddLearnRSession(theUserSession.TheSession)
+		//Add LearnRInfo to DB
+		wg.Add(1)
+		go fastUpdateLearnRInform(theUserSession.TheLearnRInfo)
+		//Remove from our maps
+		delete(UserSessionActiveMap, theUserSession.LocalSessID)
+		//Removing Phone Num from active UserSession
+		delete(UserSessPhoneMap, theUserSession.PersonPhoneNum)
+		wg.Wait() //Need to make sure we can exit this function properly
+	} else {
+		//Not a stop; add to UserRSession
+		//Session Update
+		theUserSession.TheSession.UserResponses = append(theUserSession.TheSession.UserResponses, isStop)
+		theUserSession.TheSession.DateUpdated = theTimeNow.Format("2006-01-02 15:04:05")
+		//User Session Update
+		logInfo := "User responsded with the following text: " + theUserResponse.Body + "\nTime: " + theUserSession.TheSession.DateUpdated
+		theUserSession.LogInfo = append(theUserSession.LogInfo, logInfo)
+		logWriter(logInfo)
+		//Update the map
+		UserSessionActiveMap[theUserSession.LocalSessID] = theUserSession
+	}
 }
