@@ -30,6 +30,7 @@ func setup() {
 	fmt.Printf("Setting up test values...\n")
 	/* Start by connecting to Mongo client */
 	getCredsMongo() //Get mongo creds
+	createLearnRTextSession()
 }
 
 //This is shutdown values/actions for testing
@@ -81,3 +82,54 @@ func TestHTTPRequest(t *testing.T) {
 		t.Fatal("Status Code not okay: " + theErr.Error())
 	}
 }
+
+//This pings our AWS service to check it it's up
+/*
+func TestServerPing(t *testing.T) {
+	type SendJSON struct {
+		TestNum int `json:"TestNum"`
+	}
+	sendJSON := SendJSON{TestNum: 0}
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	theJSONMessage, err := json.Marshal(sendJSON)
+	if err != nil {
+		fmt.Println(err)
+		logWriter(err.Error())
+		log.Fatal(err)
+	}
+
+	payload := strings.NewReader(string(theJSONMessage))
+	req, err := http.NewRequest("POST", TESTPINGURL, payload)
+	if err != nil {
+		log.Fatal(err)
+	}
+	//req.Header.Add("Content-Type", "text/plain")
+	req.Header.Add("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req.WithContext(ctx))
+	if resp.StatusCode >= 300 || resp.StatusCode <= 199 {
+		theRespCode := strconv.Itoa(resp.StatusCode)
+		t.Fatal("We have the wrong response code: " + theRespCode)
+	} else if err != nil {
+		t.Fatal("Had an error creating response: " + err.Error())
+	}
+	//Declare message we expect to see returned
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		theErr := "There was an error reading response from testLocalPing " + err.Error()
+		t.Fatal(theErr)
+	}
+	type SuccessMSG struct {
+		Message    string `json:"Message"`
+		SuccessNum int    `json:"SuccessNum"`
+	}
+	var returnedMessage SuccessMSG
+	json.Unmarshal(body, &returnedMessage)
+
+	if returnedMessage.SuccessNum != 0 {
+		t.Fatal("Wrong reponse gotten from testLocalPing: " + returnedMessage.Message +
+			" SuccessNum = " + strconv.Itoa(returnedMessage.SuccessNum))
+	}
+}
+*/

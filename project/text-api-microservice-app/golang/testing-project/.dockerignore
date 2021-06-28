@@ -3,10 +3,8 @@ test-data/test.data
 test-data
 
 #ignore local test files
-learnr_test.go
-learnr2_test.go
+texting_test.go
 main_test.go
-user_test.go
 
 #ignore notes
 notes.txt
