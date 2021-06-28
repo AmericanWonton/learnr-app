@@ -25,6 +25,7 @@ const READLEARNRURL string = "http://localhost:4000/getLearnR"
 
 //LearnRInfoGet
 const READLEARNRINFOURL string = "http://localhost:4000/getLearnrInfo"
+const UPDATELEARNRINFOURL string = "http://localhost:4000/updateLearnrInfo"
 
 //ID Random
 const GETRANDOMID string = "http://localhost:4000/randomIDCreationAPI"
@@ -148,6 +149,7 @@ func connectDB() *mongo.Client {
 	return theClient
 }
 
+/* Calls our MongoDB Microservice to add a learnrsession to our DB */
 func callAddLearnRSession(newLearnRSession LearnRSession) (bool, string) {
 	goodAdd, message := true, ""
 
@@ -207,6 +209,97 @@ func callAddLearnRSession(newLearnRSession LearnRSession) (bool, string) {
 	}
 
 	return goodAdd, message
+}
+
+/* An intended go routine service that calls and manages logging for callAddLearnRSession */
+func fastAddLearnRSession(newLearnRSession LearnRSession) {
+	goodAdd, theMessage := callAddLearnRSession(newLearnRSession)
+	if !goodAdd {
+		errMsg := "Could not add this learnRSession: " + strconv.Itoa(newLearnRSession.ID) + "\n" + theMessage
+		logWriter(errMsg)
+	} else {
+		message := "Added this LearnRSession to the DB: " + strconv.Itoa(newLearnRSession.ID)
+		logWriter(message)
+	}
+
+	wg.Done()
+}
+
+/* Calls our CRUD API service to update our LearnRInfo */
+func callUpdateLearnrInfo(updatedLearnRInfo LearnrInfo) (bool, string) {
+	goodAdd, message := true, ""
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	/* 2. Marshal test case to JSON expect */
+	theJSONMessage, err := json.Marshal(updatedLearnRInfo)
+	if err != nil {
+		fmt.Println(err)
+		logWriter(err.Error())
+		goodAdd, message = false, err.Error()
+	}
+	/* 3. Create Post to JSON */
+	payload := strings.NewReader(string(theJSONMessage))
+	req, err := http.NewRequest("POST", UPDATELEARNRINFOURL, payload)
+	if err != nil {
+		theErr := "There was an error posting Updated LearnrInfo: " + err.Error()
+		fmt.Println(theErr)
+		logWriter(theErr)
+		goodAdd, message = false, theErr
+	}
+	req.Header.Add("Content-Type", "application/json")
+	/* 4. Get response from Post */
+	resp, err := http.DefaultClient.Do(req.WithContext(ctx))
+	if resp.StatusCode >= 300 || resp.StatusCode <= 199 {
+		theErr := "Failed response from updateLearnRInfo: " + strconv.Itoa(resp.StatusCode)
+		logWriter(theErr)
+		goodAdd, message = false, theErr
+	} else if err != nil {
+		theErr := "Failed response from updatedLearnrInfo: " + strconv.Itoa(resp.StatusCode) + " " + err.Error()
+		logWriter(theErr)
+		goodAdd, message = false, theErr
+	}
+	//Declare message we expect to see returned
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		theErr := "There was an error reading response from learnrInfoUpdate " + err.Error()
+		logWriter(theErr)
+		goodAdd, message = false, theErr
+	}
+	type ReturnMessage struct {
+		TheErr     []string `json:"TheErr"`
+		ResultMsg  []string `json:"ResultMsg"`
+		SuccOrFail int      `json:"SuccOrFail"`
+	}
+	var returnedMessage ReturnMessage
+	json.Unmarshal(body, &returnedMessage)
+	/* 5. Evaluate response in returnedMessage */
+	if returnedMessage.SuccOrFail != 0 {
+		theErr := ""
+		for n := 0; n < len(returnedMessage.TheErr); n++ {
+			theErr = theErr + returnedMessage.TheErr[n]
+		}
+		goodAdd, message = false, theErr
+	} else {
+		goodAdd, message = true, "LearnrInfo successfully updated"
+	}
+
+	return goodAdd, message
+}
+
+/* A fast GoRoutine Service to get our LearnRInfo and update it with the new Session */
+func fastUpdateLearnRInform(newLearnRInfo LearnrInfo) {
+	goodAdd, theMessage := callUpdateLearnrInfo(newLearnRInfo)
+
+	if !goodAdd {
+		errMsg := "Could not add this learnRSession: " + strconv.Itoa(newLearnRInfo.ID) + "\n" + theMessage
+		logWriter(errMsg)
+	} else {
+		message := "Updated this LearnRInfo in the DB: " + strconv.Itoa(newLearnRInfo.ID)
+		logWriter(message)
+	}
+
+	wg.Done()
 }
 
 /* Gets a random API after calling our random API */
