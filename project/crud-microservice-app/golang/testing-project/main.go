@@ -55,5 +55,4 @@ func getCredsMongo() {
 	}
 
 	mongoURI = os.Getenv("MONGO_URL")
-	fmt.Printf("DEBUG: Here is our Mongo URL:%v\n", mongoURI)
 }

@@ -29,7 +29,6 @@ func TestMain(m *testing.M) {
 func setup() {
 	fmt.Printf("Setting up test values...\n")
 	/* Start by connecting to Mongo client */
-	getCredsMongo() //Get mongo creds
 	createLearnRTextSession()
 }
 
