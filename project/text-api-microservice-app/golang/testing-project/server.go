@@ -19,6 +19,7 @@ func handleRequests() {
 	fmt.Printf("DEBUG: Running on port 3000...\n")
 	//Web request/Text Request handling
 	myRouter.HandleFunc("/initialLearnRStart", initialLearnRStart).Methods("POST") //Handle incoming learnr initiations
+	myRouter.HandleFunc("/textWebhook", textWebhook).Methods("POST")               //Handle incoming webhook texts from Users
 	//Test Ping to our Server
 	myRouter.HandleFunc("/testLocalPing", testLocalPing).Methods("POST")
 	log.Fatal(http.ListenAndServe(":3000", myRouter))

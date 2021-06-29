@@ -268,7 +268,7 @@ func conductLearnRSession(theLearnRUserSess UserSession) {
 			}
 		}
 	}
-	time.Sleep(time.Second * 10) //Small wait
+	time.Sleep(time.Second * 120) //Small wait
 	/* Hopefully we've sent our first three texts successfully, (continueLearnR == true).
 	If not, log the failure remove this Session/Phone Map recording and update our DB*/
 	if !continueLearnR || !UserSessionActiveMap[theLearnRUserSess.LocalSessID].Active {
@@ -302,6 +302,7 @@ func conductLearnRSession(theLearnRUserSess UserSession) {
 			//Do this only if the 'Ongoing' variable in the LearnRSession is true
 			if theLearnRUserSess.TheSession.Ongoing && UserSessionActiveMap[theLearnRUserSess.LocalSessID].Active {
 				theTimeNow := time.Now()
+				fmt.Printf("Sending this LearnR Text now...%v\n", theLearnRUserSess.TheLearnR.LearnRInforms[l])
 				goodSend, resultMessages := sendText(l, theLearnRUserSess.PersonPhoneNum, theLearnRUserSess.TheLearnR.PhoneNums[0],
 					theLearnRUserSess.TheLearnR.LearnRInforms[l].TheInfo)
 				if !goodSend {
@@ -335,13 +336,14 @@ func conductLearnRSession(theLearnRUserSess UserSession) {
 					time.Sleep(time.Second * time.Duration(theLearnRUserSess.TheLearnR.LearnRInforms[l].WaitTime))
 				}
 				//Check to see if this LearnR has been going on for too long...
-				timeDuration := time.Since(theLearnRUserSess.StartTime)
+				timeDuration := time.Since(theLearnRUserSess.StartTime).Seconds()
 				if timeDuration >= ALLOTTEDLEARNRTIME {
 					//LearnR has been going on for too long...killing this session
 					theMessage := "Session for this LearnR,(" + theLearnRUserSess.TheLearnR.Name + ") has been going on for too long,(" +
 						strconv.Itoa(int(timeDuration)) + "). Killing User Session: " + strconv.Itoa(theLearnRUserSess.LocalSessID)
 					theLearnRUserSess.LogInfo = append(theLearnRUserSess.LogInfo, theMessage)
 					theLearnRUserSess.EndTime = time.Now()
+					fmt.Println(theMessage)
 					logWriter(theMessage)
 					break
 				}
@@ -370,6 +372,8 @@ func conductLearnRSession(theLearnRUserSess UserSession) {
 		//Removing Phone Num from active UserSession
 		delete(UserSessPhoneMap, theLearnRUserSess.PersonPhoneNum)
 		wg.Wait() //Need to make sure we can exit this function properly
+		//Print success
+		fmt.Printf("This LearnR Session has now ended: %v for this LearnR: %v\n", theLearnRUserSess.LocalSessID, theLearnRUserSess.TheLearnR.Name)
 	}
 }
 
