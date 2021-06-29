@@ -14,23 +14,23 @@ import (
 
 //Get User
 //User
-const READUSERURL string = "http://localhost:4000/getUser"
+var READUSERURL string = mongoCrudURL + "/getUser"
 
 //LearnRGet
-const READLEARNRURL string = "http://localhost:4000/getLearnR"
+var READLEARNRURL string = mongoCrudURL + "/getLearnR"
 
 //LearnRInfoGet
-const READLEARNRINFOURL string = "http://localhost:4000/getLearnrInfo"
-const UPDATELEARNRINFOURL string = "http://localhost:4000/updateLearnrInfo"
+var READLEARNRINFOURL string = mongoCrudURL + "/getLearnrInfo"
+var UPDATELEARNRINFOURL string = mongoCrudURL + "/updateLearnrInfo"
 
 //ID Random
-const GETRANDOMID string = "http://localhost:4000/randomIDCreationAPI"
+var GETRANDOMID string = mongoCrudURL + "/randomIDCreationAPI"
 
 //LearnRSession
-const ADDLEARNRSESSIONSURL string = "http://localhost:4000/addLearnRSession"
-const READLEARNRSESSIONSURL string = "http://localhost:4000/getLearnRSession"
-const UPDATELEARNRSESSIONSURL string = "http://localhost:4000/updateLearnRSession"
-const DELETELEARNRSESSIONSURL string = "http://localhost:4000/deleteLearnRSession"
+var ADDLEARNRSESSIONSURL string = mongoCrudURL + "/addLearnRSession"
+var READLEARNRSESSIONSURL string = mongoCrudURL + "/getLearnRSession"
+var UPDATELEARNRSESSIONSURL string = mongoCrudURL + "/updateLearnRSession"
+var DELETELEARNRSESSIONSURL string = mongoCrudURL + "/deleteLearnRSession"
 
 /* Variable definitions for User/Learnr */
 type User struct {

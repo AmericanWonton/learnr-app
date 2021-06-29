@@ -11,6 +11,27 @@ import (
 	"testing"
 )
 
+var mongoCrudURL string
+var textAPIURL string
+
+/* Gets Creds for our Server APIS */
+func getServerCreds() {
+	//Check to see if ENV Creds are available first
+	_, ok := os.LookupEnv("CRUD_URL")
+	if !ok {
+		message := "This ENV Variable is not present: " + "CRUD_URL"
+		panic(message)
+	}
+	_, ok2 := os.LookupEnv("TEXT_API")
+	if !ok2 {
+		message := "This ENV Variable is not present: " + "TEXT_API"
+		panic(message)
+	}
+
+	mongoCrudURL = os.Getenv("CRUD_URL")
+	textAPIURL = os.Getenv("TEXT_API")
+}
+
 func TestMain(m *testing.M) {
 	//Build stuff for beginning of tests
 	log.Println("Starting stuff in TestMain")
@@ -28,6 +49,7 @@ func TestMain(m *testing.M) {
 //This is setup values declared for testing
 func setup() {
 	fmt.Printf("Setting up test values...\n")
+	getServerCreds() //Get our server creds
 	/* Start by connecting to Mongo client */
 	createLearnRTextSession()
 }

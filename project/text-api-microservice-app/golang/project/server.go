@@ -14,7 +14,7 @@ import (
 var mongoCrudURL string
 var textAPIURL string
 
-const TESTPINGURL string = "http://13.59.100.23/testLocalPing"
+var TESTPINGURL string = mongoCrudURL + "/testLocalPing"
 
 //Handles all requests coming in
 func handleRequests() {

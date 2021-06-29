@@ -45,7 +45,7 @@ var wg sync.WaitGroup
 const ALLOTTEDLEARNRTIME = 900
 
 /* DEBUG ping values */
-var INITIALLEARNRSEND string = "http://localhost:3000/initialLearnRStart"
+var INITIALLEARNRSEND string = textAPIURL + "/initialLearnRStart"
 
 /* Credentials for Twilio...THESE NEED TO BE READ IN AT SOME POINT */
 var accountSID string
