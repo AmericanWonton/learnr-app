@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -70,10 +69,6 @@ type UserSession struct {
 	LogInfo            []string      `json:"LogInfo"`
 }
 
-//Channel for Go-Routines
-var learnSessChannel chan UserSession
-var learnSessResultChannel chan UserSession
-
 /* A map of our active sessions */
 var UserSessionActiveMap map[int]UserSession
 
@@ -85,25 +80,20 @@ var StopText map[string]string
 
 /* Get our creds for twilio */
 func getTwilioCreds() {
-	file, err := os.Open("security/twiliocreds.txt")
-
-	if err != nil {
-		fmt.Printf("DEBUG: Trouble opening bad word text file: %v\n", err.Error())
+	//Check to see if ENV Creds are available first
+	_, ok := os.LookupEnv("TWILIO_ACCNTID")
+	if !ok {
+		message := "This ENV Variable is not present: " + "TWILIO_ACCNTID"
+		panic(message)
+	}
+	_, ok2 := os.LookupEnv("TWILIO_AUTHTOKEN")
+	if !ok2 {
+		message := "This ENV Variable is not present: " + "TWILIO_AUTHTOKEN"
+		panic(message)
 	}
 
-	scanner := bufio.NewScanner(file)
-
-	scanner.Split(bufio.ScanLines)
-	var text []string
-
-	for scanner.Scan() {
-		text = append(text, scanner.Text())
-	}
-
-	file.Close()
-
-	accountSID = text[0]
-	authToken = text[1]
+	accountSID = os.Getenv("TWILIO_ACCNTID")
+	authToken = os.Getenv("TWILIO_AUTHTOKEN")
 	urlStr = "https://api.twilio.com/2010-04-01/Accounts/" + accountSID + "/Messages.json"
 }
 
@@ -188,7 +178,6 @@ func initialLearnRStart(w http.ResponseWriter, r *http.Request) {
 			TheSession:         newLearnRSession,
 			LogInfo:            []string{},
 		}
-		//go learnRSession(learnSessChannel, learnSessResultChannel)
 		/* Send the response back to Ajax */
 		theJSONMessage, err := json.Marshal(theSuccMessage)
 		//Send the response back

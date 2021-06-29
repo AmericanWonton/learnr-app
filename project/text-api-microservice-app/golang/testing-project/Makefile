@@ -8,6 +8,10 @@ gobuild:
 	GOOS=linux GOARCH=amd64 go build -o testtextproj
 dockerbuild:
 	docker build -t testtextproj .
+dockertag:
+	docker tag testtextproj americanwonton/testtextproj
+dockerpush:
+	docker push americanwonton/testtextproj
 dockerbuildandpush:
 	docker build -t testtextproj .
 	docker tag testtextproj americanwonton/testtextproj
