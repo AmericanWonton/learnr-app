@@ -26,3 +26,5 @@ project/text-api-microservice-app/golang/testing-project/security/installallbina
 project/text-api-microservice-app/golang/testing-project/security/twiliocreds.txt
 project/crud-microservice-app/golang/testing-project/security/crud-microserv-key.pem
 project/crud-microservice-app/golang/testing-project/security/env.list
+project/text-api-microservice-app/golang/project/logging
+project/text-api-microservice-app/golang/project/security

@@ -3,9 +3,13 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 )
+
+var mongoCrudURL string
+var textAPIURL string
 
 //Handles all requests coming in
 func handleRequests() {
@@ -38,4 +42,22 @@ func handleRequests() {
 	myRouter.Handle("/", http.FileServer(http.Dir("./static")))
 	myRouter.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
 	log.Fatal(http.ListenAndServe(":8080", myRouter))
+}
+
+//Loads in the initial text API and MongoCrud URLS
+func loadInMicroServiceURL() {
+	//Check to see if ENV Creds are available first
+	_, ok := os.LookupEnv("CRUD_URL")
+	if !ok {
+		message := "This ENV Variable is not present: " + "CRUD_URL"
+		panic(message)
+	}
+	_, ok2 := os.LookupEnv("TEXT_API")
+	if !ok2 {
+		message := "This ENV Variable is not present: " + "TEXT_API"
+		panic(message)
+	}
+
+	mongoCrudURL = os.Getenv("CRUD_URL")
+	textAPIURL = os.Getenv("TEXT_API")
 }
