@@ -24,6 +24,8 @@ var funcMap = template.FuncMap{
 
 //initial functions when starting the app
 func init() {
+	//Get Environment Variables
+	loadInMicroServiceURL()
 	usernameMap = make(map[string]bool) //Clear all Usernames when loading so no problems are caused
 	//Initialize our web page templates
 	template1 = template.Must(template.New("").Funcs(funcMap).ParseGlob("./static/templates/*"))

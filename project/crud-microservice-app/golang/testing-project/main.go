@@ -11,6 +11,8 @@ import (
 
 //initial functions when starting the app
 func init() {
+	//Get Environment variables
+	loadInMicroServiceURL()
 	//Initialize Mongo Creds
 	getCredsMongo()
 }

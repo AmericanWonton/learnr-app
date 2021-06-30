@@ -3,3 +3,7 @@ notes.txt
 
 #ignore the Makefile
 Makefile
+
+#ignore the startup
+startup
+startup/startupCronCrud.sh

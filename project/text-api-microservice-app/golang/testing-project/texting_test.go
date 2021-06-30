@@ -53,7 +53,8 @@ func createLearnRTextSession() {
 	})
 }
 
-func TestSendLearnR(t *testing.T) {
+/* Runs a test to send a learnR to our locally running API,(and locally running DB API) */
+func TestSendLearnRLocal(t *testing.T) {
 	testNum := 0 //Used for incrementing
 	for _, test := range learnrTestSendResults {
 		/* start listener */
@@ -113,4 +114,9 @@ func TestSendLearnR(t *testing.T) {
 
 		testNum = testNum + 1 //Increment this number for testing
 	}
+}
+
+/* Runs a test to send a learnR to our API running on our Server */
+func TestSendLearnRServer(t *testing.T) {
+
 }
