@@ -517,6 +517,30 @@ body, html {
     /* debug */
 }
 
+.learnRnameDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    width: 100%;
+    /* styling */
+    border: 1px solid black;
+    /* debug */
+}
+
+.sendLearnRDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    width: 100%;
+    /* styling */
+    border: 1px solid purple;
+    /* debug */
+}
+
 .infolearnrHolder{
     /* flexbox styling */
     display: flex;
@@ -569,6 +593,27 @@ body, html {
 
     /* debug styling */
     border: 1px solid seagreen;
+}
+
+.sendLearnRButtonDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    justify-items: center;
+    align-self: center;
+    justify-self: center;
+    width: 100%;
+    /* styling */
+    
+    /* debug */
+    border: 2px solid black;
+}
+
+.seeOptionsButton{
+    font-size: 1rem;
+    width: 100%;
 }
 
 .interiorBigInfoDiv {

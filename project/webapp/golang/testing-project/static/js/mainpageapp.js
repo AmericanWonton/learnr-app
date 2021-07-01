@@ -5,136 +5,139 @@ var displayedTexts = [];
 /* This takes the learnr array we've created and begins to list it on our page.
 Divs will be created, being added into 'learnrHolderDiv'*/
 function addlearnRVisuals(learnrArray){
-    console.log("DEBUG: Getting learnr Visuals added.");
+    
+    /* Loop through our array to create divs/other properties */
+    for (var n = 0; n < learnrArray.length; n++) {
+        visualCreator(n, learnrArray);
+    }
+}
+
+function visualCreator(intCurrently, learnrArray){
+    var theInt = Number(intCurrently);
     //Get our variables we need declared
     var learnrHolderDiv = document.getElementById("learnrHolderDiv");
 
-    /* Loop through our array to create divs/other properties */
-    for (var n = 0; n < learnrArray.length; n++) {
-        //Create general div to hold learnr. Parent ==> learnrHolderDiv
-        var resultLearnrHolder = document.createElement("div");
-        resultLearnrHolder.setAttribute("id", "resultLearnrHolder" + n.toString());
-        resultLearnrHolder.setAttribute("class", "resultLearnrHolder");
-        resultLearnrHolder.setAttribute("name", "resultLearnrHolder" + n.toString());
+    //Create general div to hold learnr. Parent ==> learnrHolderDiv
+    var resultLearnrHolder = document.createElement("div");
+    resultLearnrHolder.setAttribute("id", "resultLearnrHolder" + theInt.toString());
+    resultLearnrHolder.setAttribute("class", "resultLearnrHolder");
+    resultLearnrHolder.setAttribute("name", "resultLearnrHolder" + theInt.toString());
 
-        //Create Div to hold information on the LearnR. Parent ==> resultLearnrHolder
-        var infolearnrHolder = document.createElement("div");
-        infolearnrHolder.setAttribute("id", "infolearnrHolder" + n.toString());
-        infolearnrHolder.setAttribute("class", "infolearnrHolder");
-        infolearnrHolder.setAttribute("name", "infolearnrHolder" + n.toString());
+    //Create Div to hold information on the LearnR. Parent ==> resultLearnrHolder
+    var infolearnrHolder = document.createElement("div");
+    infolearnrHolder.setAttribute("id", "infolearnrHolder" + theInt.toString());
+    infolearnrHolder.setAttribute("class", "infolearnrHolder");
+    infolearnrHolder.setAttribute("name", "infolearnrHolder" + theInt.toString());
 
-        //Create Div to hold Name information for LearnR. Parent ==> infolearnrHolder
-        var nameHolder = document.createElement("div");
-        nameHolder.setAttribute("id", "nameHolder" + n.toString());
-        nameHolder.setAttribute("class", "aInfoDiv");
-        nameHolder.setAttribute("name", "nameHolder" + n.toString());
-        //Create P to go inside Div for Name. Parent ==> nameHolder
-        var pName = document.createElement("p");
-        pName.setAttribute("id", "pName" + n.toString());
-        pName.setAttribute("class", "learnRField");
-        pName.setAttribute("name", "pName" + n.toString());
-        pName.innerHTML = "Name: " + learnrArray[n].Name;
-        //Attach this to div
-        nameHolder.appendChild(pName);
+    //Create Div to hold Name information for LearnR. Parent ==> infolearnrHolder
+    var nameHolder = document.createElement("div");
+    nameHolder.setAttribute("id", "nameHolder" + theInt.toString());
+    nameHolder.setAttribute("class", "aInfoDiv");
+    nameHolder.setAttribute("name", "nameHolder" + theInt.toString());
+    //Create P to go inside Div for Name. Parent ==> nameHolder
+    var pName = document.createElement("p");
+    pName.setAttribute("id", "pName" + theInt.toString());
+    pName.setAttribute("class", "learnRField");
+    pName.setAttribute("name", "pName" + theInt.toString());
+    pName.innerHTML = "Name: " + learnrArray[theInt].Name;
+    //Attach this to div
+    nameHolder.appendChild(pName);
 
 
-        //Create Div to hold Description information for LearnR. Parent ==> infolearnrHolder
-        var descriptionHolder = document.createElement("div");
-        descriptionHolder.setAttribute("id", "descriptionHolder" + n.toString());
-        descriptionHolder.setAttribute("class", "aInfoDiv");
-        descriptionHolder.setAttribute("name", "descriptionHolder" + n.toString());
-        //Create P to go inside Div for Description. Parent ==> descriptionHolder
-        var theString = ""; //Used to put into inner HTML
-        //Get value for description
-        for (var j = 0; j < learnrArray[n].Description.length; j++){
-            theString = theString + learnrArray[n].Description[j];
-        }
-        var pDescription = document.createElement("p");
-        pDescription.setAttribute("id", "pDescription" + n.toString());
-        pDescription.setAttribute("class", "learnRField");
-        pDescription.setAttribute("name", "pDescription" + n.toString());
-        pDescription.innerHTML = "Description: " + theString;
-        //Attach value to div
-        descriptionHolder.appendChild(pDescription);
-        
-        /* Add first two elements to 'infolearnrHolder' */
-        infolearnrHolder.appendChild(nameHolder);
-        infolearnrHolder.appendChild(descriptionHolder);
-
-        /* Create text display to add to infolearnrHolder. ==> infolearnrHolder */
-        var textDecisionHolder = document.createElement("div");
-        textDecisionHolder.setAttribute("id", "textDecisionHolder" + n.toString());
-        textDecisionHolder.setAttribute("class", "aBigInfoDiv");
-        textDecisionHolder.setAttribute("name", "textDecisionHolder" + n.toString());
-
-        //Make div to hold all texts for this LearnR,(will start as hidden). Parent ==> textDecisionHolder
-        var allTextHolder = document.createElement("div");
-        allTextHolder.setAttribute("id", "allTextHolder" + n.toString());
-        allTextHolder.setAttribute("class", "aBigInfoDiv");
-        allTextHolder.setAttribute("name", "allTextHolder" + n.toString());
-        //Initially set to hidden; will be unhidden with 'textDropDownDiv'
-        allTextHolder.style.display = "none";
-
-        //Got texts, add allTextHolder to textDecisionHolder
-        textDecisionHolder.appendChild(allTextHolder);
-
-        //Loop thorough texts to add text divs/texts to the allTextHolder
-        for (var k = 0; k < learnrArray[n].LearnRInforms.length; k++) {
-            //Create Div to hold text. Parent ==> allTextHolder
-            var aTextHolder = document.createElement("div");
-            aTextHolder.setAttribute("id", "aTextHolder" + n.toString() + k.toString());
-            aTextHolder.setAttribute("class", "textHolder");
-            aTextHolder.setAttribute("name", "aTextHolder" + n.toString() + k.toString());
-
-            //Create P with text in it. Parent ==> aTextHolder
-            var aText = document.createElement("p");
-            aText.setAttribute("id", "aText" + n.toString() + k.toString());
-            aText.setAttribute("class", "textFont");
-            aText.setAttribute("name", "aText" + n.toString() + k.toString());
-            aText.innerHTML = learnrArray[n].LearnRInforms[k].TheInfo;
-            
-            //Add text to div
-            aTextHolder.appendChild(aText);
-            //Add to allTextHolder
-            allTextHolder.appendChild(aTextHolder);
-        }
-
-        //Add div for drop down. Parent ==> textDecisionHolder
-        var textDropDownDiv = document.createElement("button");
-        textDropDownDiv.setAttribute("id", "textDropDownDiv" + n.toString());
-        textDropDownDiv.setAttribute("class", "interiorBigInfoDiv");
-        textDropDownDiv.setAttribute("name", "textDropDownDiv" + n.toString());
-        //textDropDownDiv.style.backgroundImage = 'url(static/images/svg/downarrow.svg)'; //Set image
-        textDropDownDiv.innerHTML = "Click to see texts";
-        //Add event listener for this button
-        var whatAllText = "allTextHolder" + n.toString(); //The name of the ID we will be changing
-        textDropDownDiv.addEventListener('click', function(){
-            var theAllText = document.getElementById(whatAllText);
-            if (document.getElementById(theAllText).style.display === "none"){
-                //textDropDownDiv.style.backgroundImage = 'url(static/images/svg/uparrow.svg)'; //Set Image
-                document.getElementById(theAllText).style.display = "flex";
-                //console.log("DEBUG: Showing this 'allTExtHolder': " + allTextHolder.getAttribute("id"));
-            } else {
-                //textDropDownDiv.style.backgroundImage = 'url(static/images/svg/downarrow.svg)'; //Set Image
-                document.getElementById(theAllText).style.display = "none";
-                //console.log("DEBUG: Hiding this 'allTExtHolder': " + allTextHolder.getAttribute("id"));
-            }
-        });
-        //Add this button to div first
-        textDecisionHolder.appendChild(textDropDownDiv);
-
-        /* textDecisionHolder assembled, add it to infolearnrHolder */
-        infolearnrHolder.appendChild(textDecisionHolder);
-
-        /* All infolearnrHolder parts assembled. Add it to 'resultLearnrHolder' */
-        resultLearnrHolder.appendChild(infolearnrHolder);
-
-        /* All elements have been added to the learnr. Add to learnrHolderDiv */
-        learnrHolderDiv.appendChild(resultLearnrHolder);
-
-        /* DEBUG PRINTING */
-        
+    //Create Div to hold Description information for LearnR. Parent ==> infolearnrHolder
+    var descriptionHolder = document.createElement("div");
+    descriptionHolder.setAttribute("id", "descriptionHolder" + theInt.toString());
+    descriptionHolder.setAttribute("class", "aInfoDiv");
+    descriptionHolder.setAttribute("name", "descriptionHolder" + theInt.toString());
+    //Create P to go inside Div for Description. Parent ==> descriptionHolder
+    var theString = ""; //Used to put into inner HTML
+    //Get value for description
+    for (var j = 0; j < learnrArray[theInt].Description.length; j++){
+        theString = theString + learnrArray[theInt].Description[j];
     }
+    var pDescription = document.createElement("p");
+    pDescription.setAttribute("id", "pDescription" + theInt.toString());
+    pDescription.setAttribute("class", "learnRField");
+    pDescription.setAttribute("name", "pDescription" + theInt.toString());
+    pDescription.innerHTML = "Description: " + theString;
+    //Attach value to div
+    descriptionHolder.appendChild(pDescription);
+    
+    /* Add first two elements to 'infolearnrHolder' */
+    infolearnrHolder.appendChild(nameHolder);
+    infolearnrHolder.appendChild(descriptionHolder);
+
+    /* Create text display to add to infolearnrHolder. ==> infolearnrHolder */
+    var textDecisionHolder = document.createElement("div");
+    textDecisionHolder.setAttribute("id", "textDecisionHolder" + theInt.toString());
+    textDecisionHolder.setAttribute("class", "aBigInfoDiv");
+    textDecisionHolder.setAttribute("name", "textDecisionHolder" + theInt.toString());
+
+    //Make div to hold all texts for this LearnR,(will start as hidden). Parent ==> textDecisionHolder
+    var allTextHolder = document.createElement("div");
+    allTextHolder.setAttribute("id", "allTextHolder" + theInt.toString());
+    allTextHolder.setAttribute("class", "aBigInfoDiv");
+    allTextHolder.setAttribute("name", "allTextHolder" + theInt.toString());
+    //Initially set to hidden; will be unhidden with 'textDropDownDiv'
+    allTextHolder.style.display = "none";
+
+    //Got texts, add allTextHolder to textDecisionHolder
+    textDecisionHolder.appendChild(allTextHolder);
+
+    //Loop thorough texts to add text divs/texts to the allTextHolder
+    for (var k = 0; k < learnrArray[theInt].LearnRInforms.length; k++) {
+        //Create Div to hold text. Parent ==> allTextHolder
+        var aTextHolder = document.createElement("div");
+        aTextHolder.setAttribute("id", "aTextHolder" + theInt.toString() + k.toString());
+        aTextHolder.setAttribute("class", "textHolder");
+        aTextHolder.setAttribute("name", "aTextHolder" + theInt.toString() + k.toString());
+
+        //Create P with text in it. Parent ==> aTextHolder
+        var aText = document.createElement("p");
+        aText.setAttribute("id", "aText" + theInt.toString() + k.toString());
+        aText.setAttribute("class", "textFont");
+        aText.setAttribute("name", "aText" + theInt.toString() + k.toString());
+        aText.innerHTML = learnrArray[theInt].LearnRInforms[k].TheInfo;
+        
+        //Add text to div
+        aTextHolder.appendChild(aText);
+        //Add to allTextHolder
+        allTextHolder.appendChild(aTextHolder);
+    }
+
+    //Add div for drop down. Parent ==> textDecisionHolder
+    var textDropDownDiv = document.createElement("button");
+    textDropDownDiv.setAttribute("id", "textDropDownDiv" + theInt.toString());
+    textDropDownDiv.setAttribute("class", "interiorBigInfoDiv");
+    textDropDownDiv.setAttribute("name", "textDropDownDiv" + theInt.toString());
+    //textDropDownDiv.style.backgroundImage = 'url(static/images/svg/downarrow.svg)'; //Set image
+    textDropDownDiv.innerHTML = "Click to see texts";
+    
+    //Add this button to div first
+    textDecisionHolder.appendChild(textDropDownDiv); 
+
+    /* textDecisionHolder assembled, add it to infolearnrHolder */
+    infolearnrHolder.appendChild(textDecisionHolder);
+
+    /* All infolearnrHolder parts assembled. Add it to 'resultLearnrHolder' */
+    resultLearnrHolder.appendChild(infolearnrHolder);
+
+    /* All elements have been added to the learnr. Add to learnrHolderDiv */
+    learnrHolderDiv.appendChild(resultLearnrHolder);
+
+    //Add event listener for this button
+    textDropDownDiv.addEventListener('click', function(){ 
+        if (allTextHolder.style.display === "none"){
+            //textDropDownDiv.style.backgroundImage = 'url(static/images/svg/uparrow.svg)'; //Set Image
+            allTextHolder.style.display = "flex";
+            //console.log("DEBUG: Showing this 'allTExtHolder': " + allTextHolder.getAttribute("id"));
+        } else {
+            //textDropDownDiv.style.backgroundImage = 'url(static/images/svg/downarrow.svg)'; //Set Image
+            allTextHolder.style.display = "none";
+            //console.log("DEBUG: Hiding this 'allTExtHolder': " + allTextHolder.getAttribute("id"));
+        }
+    });
+    /* DEBUG PRINTING */
 }
 
 //Set a custom delimiter for templates
