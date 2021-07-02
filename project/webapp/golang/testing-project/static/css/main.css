@@ -633,6 +633,25 @@ body, html {
     border: 3px solid aquamarine;
 }
 
+.fieldsideDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    justify-content: center;
+    align-content: center;
+    width: 40%;
+    /* DEBUG */
+}
+
+.fieldP {
+    font-size: 1rem;
+    text-align: center;
+}
+
+.fieldInput {
+    
+}
+
 .textHolder {
     /* flexbox styling */
     display: flex;

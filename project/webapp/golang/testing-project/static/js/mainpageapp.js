@@ -73,6 +73,94 @@ function visualCreator(intCurrently, learnrArray){
     textDecisionHolder.setAttribute("class", "aBigInfoDiv");
     textDecisionHolder.setAttribute("name", "textDecisionHolder" + theInt.toString());
 
+    //Create a Div to send this LearnR for the User
+    var userLearnRSender = document.createElement("div");
+    userLearnRSender.setAttribute("id", "userLearnRSender" + theInt.toString());
+    userLearnRSender.setAttribute("class", "aBigInfoDiv");
+    userLearnRSender.setAttribute("name", "userLearnRSender" + theInt.toString());
+    //Initially set to hidden; will be unhidden with 'textDropDownDiv'
+    userLearnRSender.style.display = "none";
+
+    //Add the inputs for the userLearnRSender div
+    //Send User Name
+    var theFieldDiv = document.createElement("div");
+    theFieldDiv.setAttribute("id", "theFieldDiv" + theInt.toString() + "1");
+    theFieldDiv.setAttribute("class", "aBigInfoDiv");
+    theFieldDiv.setAttribute("name", "theFieldDiv" + theInt.toString() + "1");
+    //The Desc
+    var fieldsideDiv = document.createElement("div");
+    fieldsideDiv.setAttribute("id", "fieldsideDiv" + theInt.toString() + "1");
+    fieldsideDiv.setAttribute("class", "fieldsideDiv");
+    fieldsideDiv.setAttribute("name", "fieldsideDiv" + theInt.toString() + "1");
+    var fieldsideDescP = document.createElement("p");
+    fieldsideDescP.setAttribute("id", "fieldsideDescP" + theInt.toString() + "1");
+    fieldsideDescP.setAttribute("class", "fieldP");
+    fieldsideDescP.setAttribute("name", "fieldsideDescP" + theInt.toString() + "1");
+    fieldsideDescP.innerHTML = "Enter the name of the person you want to send this to...";
+    //Append the values
+    fieldsideDiv.appendChild(fieldsideDescP);
+    theFieldDiv.appendChild(fieldsideDiv);
+    //The Input
+    var fieldsideDiv = document.createElement("div");
+    fieldsideDiv.setAttribute("id", "fieldsideDiv" + theInt.toString() + "2");
+    fieldsideDiv.setAttribute("class", "fieldsideDiv");
+    fieldsideDiv.setAttribute("name", "fieldsideDiv" + theInt.toString() + "2");
+    var fieldinputPersonName = document.createElement("input");
+    fieldinputPersonName.setAttribute("id", "fieldinputPersonName" + theInt.toString() + "2");
+    fieldinputPersonName.setAttribute("class", "fieldInput");
+    fieldinputPersonName.setAttribute("name", "fieldinputPersonName" + theInt.toString() + "2");
+    fieldinputPersonName.setAttribute("type", "text");
+    fieldinputPersonName.setAttribute("placeholder", "What is this person's name?");
+    //Append the values
+    fieldsideDiv.appendChild(fieldinputPersonName);
+    theFieldDiv.appendChild(fieldsideDiv);
+
+    //Attach this field
+    userLearnRSender.appendChild(theFieldDiv);
+
+    //Send User PhoneNumber
+    var theFieldDiv = document.createElement("div");
+    theFieldDiv.setAttribute("id", "theFieldDiv" + theInt.toString() + "2");
+    theFieldDiv.setAttribute("class", "aBigInfoDiv");
+    theFieldDiv.setAttribute("name", "theFieldDiv" + theInt.toString() + "2");
+    //The Desc
+    var fieldsideDiv = document.createElement("div");
+    fieldsideDiv.setAttribute("id", "fieldsideDiv" + theInt.toString() + "2");
+    fieldsideDiv.setAttribute("class", "fieldsideDiv");
+    fieldsideDiv.setAttribute("name", "fieldsideDiv" + theInt.toString() + "2");
+    var fieldsideDescP = document.createElement("p");
+    fieldsideDescP.setAttribute("id", "fieldsideDescP" + theInt.toString() + "2");
+    fieldsideDescP.setAttribute("class", "fieldP");
+    fieldsideDescP.setAttribute("name", "fieldsideDescP" + theInt.toString() + "2");
+    fieldsideDescP.innerHTML = "Enter the phone number of this person like so, (area code in front, no hyphens): '13783434567'"
+    //Append the values
+    fieldsideDiv.appendChild(fieldsideDescP);
+    theFieldDiv.appendChild(fieldsideDiv);
+    //The Input
+    var fieldsideDiv = document.createElement("div");
+    fieldsideDiv.setAttribute("id", "fieldsideDiv" + theInt.toString() + "3");
+    fieldsideDiv.setAttribute("class", "fieldsideDiv");
+    fieldsideDiv.setAttribute("name", "fieldsideDiv" + theInt.toString() + "3");
+    var fieldinputPersonPN = document.createElement("input");
+    fieldinputPersonPN.setAttribute("id", "fieldinputPersonPN" + theInt.toString() + "3");
+    fieldinputPersonPN.setAttribute("class", "fieldInput");
+    fieldinputPersonPN.setAttribute("name", "fieldinputPersonPN" + theInt.toString() + "3");
+    fieldinputPersonPN.setAttribute("type", "text");
+    fieldinputPersonPN.setAttribute("placeholder", "E.g. 13459780123");
+    //Append the values
+    fieldsideDiv.appendChild(fieldinputPersonPN);
+    theFieldDiv.appendChild(fieldsideDiv);
+
+    //Attach this field
+    userLearnRSender.appendChild(theFieldDiv);
+
+
+
+
+
+    //Add the userLearnRSender to this hidden div
+    textDecisionHolder.appendChild(userLearnRSender);
+
     //Make div to hold all texts for this LearnR,(will start as hidden). Parent ==> textDecisionHolder
     var allTextHolder = document.createElement("div");
     allTextHolder.setAttribute("id", "allTextHolder" + theInt.toString());
@@ -130,10 +218,12 @@ function visualCreator(intCurrently, learnrArray){
         if (allTextHolder.style.display === "none"){
             //textDropDownDiv.style.backgroundImage = 'url(static/images/svg/uparrow.svg)'; //Set Image
             allTextHolder.style.display = "flex";
+            userLearnRSender.style.display = "flex";
             //console.log("DEBUG: Showing this 'allTExtHolder': " + allTextHolder.getAttribute("id"));
         } else {
             //textDropDownDiv.style.backgroundImage = 'url(static/images/svg/downarrow.svg)'; //Set Image
             allTextHolder.style.display = "none";
+            userLearnRSender.style.display = "none";
             //console.log("DEBUG: Hiding this 'allTExtHolder': " + allTextHolder.getAttribute("id"));
         }
     });
