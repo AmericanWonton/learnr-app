@@ -649,7 +649,22 @@ body, html {
 }
 
 .fieldInput {
+
+}
+
+.fieldTextAreaInput {
     
+}
+
+.sendButton{
+    font-size: 1rem;
+    width: 10em;
+    height: 10em;
+}
+
+.resultInput{
+    text-align: center;
+    font-size: 1rem;
 }
 
 .textHolder {
