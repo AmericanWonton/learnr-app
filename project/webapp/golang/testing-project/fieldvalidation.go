@@ -593,3 +593,67 @@ func isAdmin(aUser User) int {
 
 	return isAdmin
 }
+
+/* Calls to our Text API to see if the LearnR has started sending */
+func canSendLearnR(w http.ResponseWriter, r *http.Request) {
+	//Declare Ajax return statements to be sent back
+	type SuccessMSG struct {
+		Message    string `json:"Message"`
+		SuccessNum int    `json:"SuccessNum"`
+	}
+	theSuccMessage := SuccessMSG{
+		Message:    "LearnR sent successfully",
+		SuccessNum: 0,
+	}
+
+	//Declare struct we are expecting
+	type OurJSON struct {
+		TheUser        User       `json:"TheUser"`
+		TheLearnR      Learnr     `json:"TheLearnR"`
+		TheLearnRInfo  LearnrInfo `json:"TheLearnRInfo"`
+		PersonName     string     `json:"PersonName"`
+		PersonPhoneNum string     `json:"PersonPhoneNum"`
+		Introduction   string     `json:"Introduction"`
+	}
+	//Get the byte slice from the request
+	bs, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		fmt.Println(err)
+		logWriter(err.Error())
+	}
+
+	//Marshal it into our type
+	var ourJSON OurJSON
+	json.Unmarshal(bs, &ourJSON)
+
+	/* Get the LearnRInfo assossiated with this LearnR */
+	goodGet, result, theLearnRInfo := callReadLearnrInfo(ourJSON.TheLearnR.InfoID)
+	if !goodGet {
+		theErr := "Could not get proper LearnR information! " + result
+		logWriter(theErr)
+		fmt.Println(theErr)
+		theSuccMessage.Message = theErr
+		theSuccMessage.SuccessNum = 1
+	} else {
+		ourJSON.TheLearnRInfo = theLearnRInfo //Add LearnRInfo to JSON
+		/* Check to see that our other values aren't nulled; this will cause a bad session if they are so... */
+		if !(ourJSON.TheUser.UserID >= 1) || !(len(ourJSON.PersonName) >= 1) || !(len(ourJSON.PersonPhoneNum) >= 1 && len(ourJSON.PersonPhoneNum) <= 11) ||
+			!(len(ourJSON.Introduction) >= 1) || !(ourJSON.TheLearnR.ID >= 1) {
+			theErr := "Invalid values entered for this LearnR. Sending failed!"
+			logWriter(theErr)
+			fmt.Println(theErr)
+			theSuccMessage.Message = theErr
+			theSuccMessage.SuccessNum = 1
+		} else {
+			//Good check, go see if LearnR can be sent/started
+		}
+	}
+	/* Send the response back to Ajax */
+	theJSONMessage, err := json.Marshal(theSuccMessage)
+	//Send the response back
+	if err != nil {
+		errIs := "Error formatting JSON for return in createUser: " + err.Error()
+		logWriter(errIs)
+	}
+	fmt.Fprint(w, string(theJSONMessage))
+}

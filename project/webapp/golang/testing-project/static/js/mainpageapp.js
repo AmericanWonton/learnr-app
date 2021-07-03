@@ -196,23 +196,55 @@ function visualCreator(intCurrently, learnrArray){
     theFieldDiv.setAttribute("id", "theFieldDiv" + theInt.toString() + "4");
     theFieldDiv.setAttribute("class", "aBigInfoDiv");
     theFieldDiv.setAttribute("name", "theFieldDiv" + theInt.toString() + "4");
+    //Add Result P
     var sendLearnRResult = document.createElement("p");
-    sendLearnRResult.setAttribute("id", "sendLearnRResult" + theInt.toString() + "4");
+    sendLearnRResult.setAttribute("id", "sendLearnRResult" + theInt.toString() + "5");
     sendLearnRResult.setAttribute("class", "resultInput");
-    sendLearnRResult.setAttribute("name", "sendLearnRResult" + theInt.toString() + "4");
+    sendLearnRResult.setAttribute("name", "sendLearnRResult" + theInt.toString() + "5");
+    //Append Result P
     theFieldDiv.appendChild(sendLearnRResult);
-
+    //Add Button
     var sendLearnRButton = document.createElement("button");
-    sendLearnRButton.setAttribute("id", "sendLearnRButton" + theInt.toString() + "4");
+    sendLearnRButton.setAttribute("id", "sendLearnRButton" + theInt.toString() + "5");
     sendLearnRButton.setAttribute("class", "sendButton");
-    sendLearnRButton.setAttribute("name", "sendLearnRButton" + theInt.toString() + "4");
-
-
+    sendLearnRButton.setAttribute("name", "sendLearnRButton" + theInt.toString() + "5");
+    sendLearnRButton.innerHTML = "Send LearnR";
+    sendLearnRButton.addEventListener('click', function(){
+        var OurJSON = {
+            TheUser: TheUser,
+            TheLearnR: learnrArray[theInt],
+            TheLearnRInfo: {},
+            PersonName: String(fieldinputPersonName.value),
+            PersonPhoneNum: String(fieldinputPersonPN.value),
+            Introduction: String(fieldinputIntroduction.value)
+        };
+        //Send Ajax
+        var jsonString = JSON.stringify(OurJSON); //Stringify Data
+        //Send Request to change page
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/canSendLearnR', true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.addEventListener('readystatechange', function(){
+            if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200){
+                var item = xhr.responseText;
+                var ReturnData = JSON.parse(item);
+                if (ReturnData.SuccessNum == 0){
+                    /* Successful LearnR Send start. Update our result, delay, then reload page */
+                    sendLearnRButton.disabled = true; //Disable Button for no further sends
+                    sendLearnRResult.innerHTML = ReturnData.Message; //Set success message
+                    setTimeout(() => { navigateHeader(3); }, 5000); //Delay 5, then reload page
+                } else {
+                    /* Sending text to User unsuccessful. Inform User */
+                    sendLearnRButton.disabled = true;
+                    sendLearnRResult.innerHTML = "Failed to send LearnR! " + ReturnData.Message;
+                    setTimeout(() => { sendLearnRButton.disabled = false; }, 5000); //Delay 5, then un-disable button
+                }
+            }
+        });
+        xhr.send(jsonString);
+    });
+    //Append Button
     theFieldDiv.appendChild(sendLearnRButton);
-
-    
-
-
 
     //Attach this field
     userLearnRSender.appendChild(theFieldDiv);
