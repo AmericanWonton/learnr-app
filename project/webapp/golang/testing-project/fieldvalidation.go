@@ -639,6 +639,11 @@ func canSendLearnR(w http.ResponseWriter, r *http.Request) {
 		/* Check to see that our other values aren't nulled; this will cause a bad session if they are so... */
 		if !(ourJSON.TheUser.UserID >= 1) || !(len(ourJSON.PersonName) >= 1) || !(len(ourJSON.PersonPhoneNum) >= 1 && len(ourJSON.PersonPhoneNum) <= 11) ||
 			!(len(ourJSON.Introduction) >= 1) || !(ourJSON.TheLearnR.ID >= 1) {
+			fmt.Printf("DEBUG: %v\n", ourJSON.TheUser.UserID)
+			fmt.Printf("DEBUG: %v\n", ourJSON.PersonName)
+			fmt.Printf("DEBUG: %v\n", ourJSON.PersonPhoneNum)
+			fmt.Printf("DEBUG: %v\n", ourJSON.Introduction)
+			fmt.Printf("DEBUG: %v\n", ourJSON.TheLearnR.ID)
 			theErr := "Invalid values entered for this LearnR. Sending failed!"
 			logWriter(theErr)
 			fmt.Println(theErr)
@@ -646,6 +651,62 @@ func canSendLearnR(w http.ResponseWriter, r *http.Request) {
 			theSuccMessage.SuccessNum = 1
 		} else {
 			//Good check, go see if LearnR can be sent/started
+			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+			defer cancel()
+			/* 2. Marshal test case to JSON expect */
+			theJSONMessage, err := json.Marshal(ourJSON)
+			if err != nil {
+				theErr := "Could not marshal JSON: " + err.Error()
+				logWriter(theErr)
+				fmt.Println(theErr)
+				theSuccMessage.Message = theErr
+				theSuccMessage.SuccessNum = 1
+			}
+			/* 3. Create Post to JSON */
+			payload := strings.NewReader(string(theJSONMessage))
+			req, err := http.NewRequest("POST", textAPIURL+"/initialLearnRStart", payload)
+			if err != nil {
+				theErr := "Error making request to Text API: " + err.Error()
+				logWriter(theErr)
+				fmt.Println(theErr)
+				theSuccMessage.Message = theErr
+				theSuccMessage.SuccessNum = 1
+			}
+			req.Header.Add("Content-Type", "application/json")
+			/* 4. Get response from Post */
+			resp, err := http.DefaultClient.Do(req.WithContext(ctx))
+			if resp.StatusCode >= 300 || resp.StatusCode <= 199 {
+				theErr := "Failed response from initialLearnRStart: " + strconv.Itoa(resp.StatusCode)
+				logWriter(theErr)
+				theSuccMessage.Message = theErr
+				theSuccMessage.SuccessNum = 1
+			} else if err != nil {
+				theErr := "Failed response from initialLearnRStart: " + strconv.Itoa(resp.StatusCode) + " " + err.Error()
+				logWriter(theErr)
+				theSuccMessage.Message = theErr
+				theSuccMessage.SuccessNum = 1
+			}
+			//Declare message we expect to see returned
+			body, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				theErr := "There was an error reading response from initialLearnRStart " + err.Error()
+				logWriter(theErr)
+				theSuccMessage.Message = theErr
+				theSuccMessage.SuccessNum = 1
+			}
+			type TheSuccessMsg struct {
+				Message    string `json:"Message"`
+				SuccessNum int    `json:"SuccessNum"`
+			}
+			var returnedMessage TheSuccessMsg
+			json.Unmarshal(body, &returnedMessage)
+			/* 5. Evaluate response in returnedMessage */
+			if returnedMessage.SuccessNum != 0 {
+				theSuccMessage.SuccessNum = 1
+				theSuccMessage.Message = "Failed to start convo with User!"
+			} else {
+				theSuccMessage.Message = "Text convo started with " + ourJSON.PersonName
+			}
 		}
 	}
 	/* Send the response back to Ajax */
