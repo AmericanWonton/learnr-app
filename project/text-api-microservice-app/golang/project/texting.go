@@ -110,7 +110,6 @@ func initialLearnRStart(w http.ResponseWriter, r *http.Request) {
 			http.StatusInternalServerError)
 		return
 	}
-
 	//Declare Ajax return statements to be sent back
 	type SuccessMSG struct {
 		Message    string `json:"Message"`
@@ -241,6 +240,7 @@ func conductLearnRSession(theLearnRUserSess UserSession) {
 				message = message + resultMessages[j] + " "
 			}
 			logWriter(message)
+			fmt.Println(message)
 			theLearnRUserSess.LogInfo = append(theLearnRUserSess.LogInfo, message)
 			//Update our UserSession Map
 			UserSessionActiveMap[theLearnRUserSess.LocalSessID] = theLearnRUserSess
@@ -438,17 +438,8 @@ func sendText(textOrder int, toNumString string, fromNumString string, textBody 
 		}
 		var returnedMessage TwilioResponse
 		json.Unmarshal(body, &returnedMessage)
-		//Check for correct response obtained
-		if strings.Contains(strings.ToLower(returnedMessage.Body), strings.ToLower("Sent from")) {
-			//Successful text
-			message := "Good text response obtained"
-			resultMessages = append(resultMessages, message)
-		} else {
-			//Not successful response
-			goodSend = false
-			theErr := "Could not obtain the correct body response: " + returnedMessage.Body
-			resultMessages = append(resultMessages, theErr)
-		}
+		themessage := "Good response gotten: " + returnedMessage.Body
+		resultMessages = append(resultMessages, themessage)
 	} else {
 		fmt.Println(resp.Status)
 		b, err := io.ReadAll(resp.Body)

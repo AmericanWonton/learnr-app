@@ -73,6 +73,192 @@ function visualCreator(intCurrently, learnrArray){
     textDecisionHolder.setAttribute("class", "aBigInfoDiv");
     textDecisionHolder.setAttribute("name", "textDecisionHolder" + theInt.toString());
 
+    //Create a Div to send this LearnR for the User
+    var userLearnRSender = document.createElement("div");
+    userLearnRSender.setAttribute("id", "userLearnRSender" + theInt.toString());
+    userLearnRSender.setAttribute("class", "aBigInfoDiv");
+    userLearnRSender.setAttribute("name", "userLearnRSender" + theInt.toString());
+    //Initially set to hidden; will be unhidden with 'textDropDownDiv'
+    userLearnRSender.style.display = "none";
+
+    //Add the inputs for the userLearnRSender div
+    //Send User Name
+    var theFieldDiv = document.createElement("div");
+    theFieldDiv.setAttribute("id", "theFieldDiv" + theInt.toString() + "1");
+    theFieldDiv.setAttribute("class", "aBigInfoDiv");
+    theFieldDiv.setAttribute("name", "theFieldDiv" + theInt.toString() + "1");
+    //The Desc
+    var fieldsideDiv = document.createElement("div");
+    fieldsideDiv.setAttribute("id", "fieldsideDiv" + theInt.toString() + "1");
+    fieldsideDiv.setAttribute("class", "fieldsideDiv");
+    fieldsideDiv.setAttribute("name", "fieldsideDiv" + theInt.toString() + "1");
+    var fieldsideDescP = document.createElement("p");
+    fieldsideDescP.setAttribute("id", "fieldsideDescP" + theInt.toString() + "1");
+    fieldsideDescP.setAttribute("class", "fieldP");
+    fieldsideDescP.setAttribute("name", "fieldsideDescP" + theInt.toString() + "1");
+    fieldsideDescP.innerHTML = "Enter the name of the person you want to send this to...";
+    //Append the values
+    fieldsideDiv.appendChild(fieldsideDescP);
+    theFieldDiv.appendChild(fieldsideDiv);
+    //The Input
+    var fieldsideDiv = document.createElement("div");
+    fieldsideDiv.setAttribute("id", "fieldsideDiv" + theInt.toString() + "2");
+    fieldsideDiv.setAttribute("class", "fieldsideDiv");
+    fieldsideDiv.setAttribute("name", "fieldsideDiv" + theInt.toString() + "2");
+    var fieldinputPersonName = document.createElement("input");
+    fieldinputPersonName.setAttribute("id", "fieldinputPersonName" + theInt.toString() + "2");
+    fieldinputPersonName.setAttribute("class", "fieldInput");
+    fieldinputPersonName.setAttribute("name", "fieldinputPersonName" + theInt.toString() + "2");
+    fieldinputPersonName.setAttribute("type", "text");
+    fieldinputPersonName.setAttribute("maxlength", "20");
+    fieldinputPersonName.setAttribute("placeholder", "What is this person's name?");
+    //Append the values
+    fieldsideDiv.appendChild(fieldinputPersonName);
+    theFieldDiv.appendChild(fieldsideDiv);
+
+    //Attach this field
+    userLearnRSender.appendChild(theFieldDiv);
+
+    //Send User PhoneNumber
+    var theFieldDiv = document.createElement("div");
+    theFieldDiv.setAttribute("id", "theFieldDiv" + theInt.toString() + "2");
+    theFieldDiv.setAttribute("class", "aBigInfoDiv");
+    theFieldDiv.setAttribute("name", "theFieldDiv" + theInt.toString() + "2");
+    //The Desc
+    var fieldsideDiv = document.createElement("div");
+    fieldsideDiv.setAttribute("id", "fieldsideDiv" + theInt.toString() + "2");
+    fieldsideDiv.setAttribute("class", "fieldsideDiv");
+    fieldsideDiv.setAttribute("name", "fieldsideDiv" + theInt.toString() + "2");
+    var fieldsideDescP = document.createElement("p");
+    fieldsideDescP.setAttribute("id", "fieldsideDescP" + theInt.toString() + "2");
+    fieldsideDescP.setAttribute("class", "fieldP");
+    fieldsideDescP.setAttribute("name", "fieldsideDescP" + theInt.toString() + "2");
+    fieldsideDescP.innerHTML = "Enter the phone number of this person, like so, (area code in front, no hyphens): '13783434567'"
+    //Append the values
+    fieldsideDiv.appendChild(fieldsideDescP);
+    theFieldDiv.appendChild(fieldsideDiv);
+    //The Input
+    var fieldsideDiv = document.createElement("div");
+    fieldsideDiv.setAttribute("id", "fieldsideDiv" + theInt.toString() + "3");
+    fieldsideDiv.setAttribute("class", "fieldsideDiv");
+    fieldsideDiv.setAttribute("name", "fieldsideDiv" + theInt.toString() + "3");
+    var fieldinputPersonPN = document.createElement("input");
+    fieldinputPersonPN.setAttribute("id", "fieldinputPersonPN" + theInt.toString() + "3");
+    fieldinputPersonPN.setAttribute("class", "fieldInput");
+    fieldinputPersonPN.setAttribute("name", "fieldinputPersonPN" + theInt.toString() + "3");
+    fieldinputPersonPN.setAttribute("type", "text");
+    fieldinputPersonPN.setAttribute("maxlength", "11");
+    fieldinputPersonPN.setAttribute("minlength", "11");
+    fieldinputPersonPN.setAttribute("placeholder", "E.g. 13459780123");
+    //Append the values
+    fieldsideDiv.appendChild(fieldinputPersonPN);
+    theFieldDiv.appendChild(fieldsideDiv);
+
+    //Attach this field
+    userLearnRSender.appendChild(theFieldDiv);
+
+    //Send Introduction for User
+    var theFieldDiv = document.createElement("div");
+    theFieldDiv.setAttribute("id", "theFieldDiv" + theInt.toString() + "4");
+    theFieldDiv.setAttribute("class", "aBigInfoDiv");
+    theFieldDiv.setAttribute("name", "theFieldDiv" + theInt.toString() + "4");
+    //The Desc
+    var fieldsideDiv = document.createElement("div");
+    fieldsideDiv.setAttribute("id", "fieldsideDiv" + theInt.toString() + "4");
+    fieldsideDiv.setAttribute("class", "fieldsideDiv");
+    fieldsideDiv.setAttribute("name", "fieldsideDiv" + theInt.toString() + "4");
+    var fieldsideDescP = document.createElement("p");
+    fieldsideDescP.setAttribute("id", "fieldsideDescP" + theInt.toString() + "4");
+    fieldsideDescP.setAttribute("class", "fieldP");
+    fieldsideDescP.setAttribute("name", "fieldsideDescP" + theInt.toString() + "4");
+    fieldsideDescP.innerHTML = "What would you like to say to this person? Remember to be kind, it's the best way to be persuasive!"
+    //Append the values
+    fieldsideDiv.appendChild(fieldsideDescP);
+    theFieldDiv.appendChild(fieldsideDiv);
+    //The Input
+    var fieldsideDiv = document.createElement("div");
+    fieldsideDiv.setAttribute("id", "fieldsideDiv" + theInt.toString() + "5");
+    fieldsideDiv.setAttribute("class", "fieldsideDiv");
+    fieldsideDiv.setAttribute("name", "fieldsideDiv" + theInt.toString() + "5");
+    var fieldinputIntroduction = document.createElement("textarea");
+    fieldinputIntroduction.setAttribute("id", "fieldinputIntroduction" + theInt.toString() + "5");
+    fieldinputIntroduction.setAttribute("class", "fieldTextAreaInput");
+    fieldinputIntroduction.setAttribute("name", "fieldinputIntroduction" + theInt.toString() + "5");
+    fieldinputIntroduction.setAttribute("maxlength", "120");
+    fieldinputIntroduction.setAttribute("minlength", "1");
+    fieldinputIntroduction.setAttribute("placeholder", "What would you like to say to this person to let them know what they're reading?");
+    //Append the values
+    fieldsideDiv.appendChild(fieldinputIntroduction);
+    theFieldDiv.appendChild(fieldsideDiv);
+
+    //Attach this field
+    userLearnRSender.appendChild(theFieldDiv);
+
+    //Send LearnRButton
+    var theFieldDiv = document.createElement("div");
+    theFieldDiv.setAttribute("id", "theFieldDiv" + theInt.toString() + "5");
+    theFieldDiv.setAttribute("class", "aBigInfoDiv");
+    theFieldDiv.setAttribute("name", "theFieldDiv" + theInt.toString() + "5");
+    //Add Result P
+    var sendLearnRResult = document.createElement("p");
+    sendLearnRResult.setAttribute("id", "sendLearnRResult" + theInt.toString() + "6");
+    sendLearnRResult.setAttribute("class", "resultInput");
+    sendLearnRResult.setAttribute("name", "sendLearnRResult" + theInt.toString() + "6");
+    //Append Result P
+    theFieldDiv.appendChild(sendLearnRResult);
+    //Add Button
+    var sendLearnRButton = document.createElement("button");
+    sendLearnRButton.setAttribute("id", "sendLearnRButton" + theInt.toString() + "7");
+    sendLearnRButton.setAttribute("class", "sendButton");
+    sendLearnRButton.setAttribute("name", "sendLearnRButton" + theInt.toString() + "7");
+    sendLearnRButton.innerHTML = "Send LearnR";
+    sendLearnRButton.addEventListener('click', function(){
+        var OurJSON = {
+            TheUser: TheUser,
+            TheLearnR: learnrArray[theInt],
+            TheLearnRInfo: {},
+            PersonName: String(fieldinputPersonName.value),
+            PersonPhoneNum: String(fieldinputPersonPN.value),
+            Introduction: String(fieldinputIntroduction.value)
+        };
+        //Send Ajax
+        var jsonString = JSON.stringify(OurJSON); //Stringify Data
+        //Send Request to change page
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/canSendLearnR', true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.addEventListener('readystatechange', function(){
+            if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200){
+                var item = xhr.responseText;
+                var ReturnData = JSON.parse(item);
+                if (ReturnData.SuccessNum == 0){
+                    /* Successful LearnR Send start. Update our result, delay, then reload page */
+                    sendLearnRButton.disabled = true; //Disable Button for no further sends
+                    sendLearnRResult.innerHTML = ReturnData.Message; //Set success message
+                    setTimeout(() => { navigateHeader(3); }, 5000); //Delay 5, then reload page
+                } else {
+                    /* Sending text to User unsuccessful. Inform User */
+                    sendLearnRButton.disabled = true;
+                    sendLearnRResult.innerHTML = "Failed to send LearnR! " + ReturnData.Message;
+                    setTimeout(() => { sendLearnRButton.disabled = false; }, 5000); //Delay 5, then un-disable button
+                }
+            }
+        });
+        xhr.send(jsonString);
+    });
+    //Append Button
+    theFieldDiv.appendChild(sendLearnRButton);
+
+    //Attach this field
+    userLearnRSender.appendChild(theFieldDiv);
+
+
+
+
+
+    //Add the userLearnRSender to this hidden div
+    textDecisionHolder.appendChild(userLearnRSender);
+
     //Make div to hold all texts for this LearnR,(will start as hidden). Parent ==> textDecisionHolder
     var allTextHolder = document.createElement("div");
     allTextHolder.setAttribute("id", "allTextHolder" + theInt.toString());
@@ -130,10 +316,12 @@ function visualCreator(intCurrently, learnrArray){
         if (allTextHolder.style.display === "none"){
             //textDropDownDiv.style.backgroundImage = 'url(static/images/svg/uparrow.svg)'; //Set Image
             allTextHolder.style.display = "flex";
+            userLearnRSender.style.display = "flex";
             //console.log("DEBUG: Showing this 'allTExtHolder': " + allTextHolder.getAttribute("id"));
         } else {
             //textDropDownDiv.style.backgroundImage = 'url(static/images/svg/downarrow.svg)'; //Set Image
             allTextHolder.style.display = "none";
+            userLearnRSender.style.display = "none";
             //console.log("DEBUG: Hiding this 'allTExtHolder': " + allTextHolder.getAttribute("id"));
         }
     });

@@ -438,17 +438,8 @@ func sendText(textOrder int, toNumString string, fromNumString string, textBody 
 		}
 		var returnedMessage TwilioResponse
 		json.Unmarshal(body, &returnedMessage)
-		//Check for correct response obtained
-		if strings.Contains(strings.ToLower(returnedMessage.Body), strings.ToLower("Sent from")) {
-			//Successful text
-			message := "Good text response obtained"
-			resultMessages = append(resultMessages, message)
-		} else {
-			//Not successful response
-			goodSend = false
-			theErr := "Could not obtain the correct body response: " + returnedMessage.Body
-			resultMessages = append(resultMessages, theErr)
-		}
+		themessage := "Good response gotten: " + returnedMessage.Body
+		resultMessages = append(resultMessages, themessage)
 	} else {
 		fmt.Println(resp.Status)
 		b, err := io.ReadAll(resp.Body)
