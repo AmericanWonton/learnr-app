@@ -110,7 +110,6 @@ func initialLearnRStart(w http.ResponseWriter, r *http.Request) {
 			http.StatusInternalServerError)
 		return
 	}
-
 	//Declare Ajax return statements to be sent back
 	type SuccessMSG struct {
 		Message    string `json:"Message"`

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -61,4 +62,5 @@ func loadInMicroServiceURL() {
 
 	mongoCrudURL = os.Getenv("CRUD_URL")
 	textAPIURL = os.Getenv("TEXT_API")
+	fmt.Printf("DEBUG: Here is our Crud: %v\nHere is our TextAPI: %v\n", mongoCrudURL, textAPIURL)
 }

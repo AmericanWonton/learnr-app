@@ -5,3 +5,11 @@ In security:
 scp -i text-microservice-keypair.pem installallbinary ubuntu@ec2-13-59-100-23.us-east-2.compute.amazonaws.com:
 
 ssh -i text-microservice-keypair.pem ubuntu@ec2-13-59-100-23.us-east-2.compute.amazonaws.com
+
+
+Run docker file Prod: docker run -it --env-file ./env.list -it  -p 80:3000 americanwonton/prodtextproj
+
+
+To get latest vesrion:
+
+sudo docker pull americanwonton/prodtextproj:latest

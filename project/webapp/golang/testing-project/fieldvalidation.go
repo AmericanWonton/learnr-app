@@ -663,8 +663,11 @@ func canSendLearnR(w http.ResponseWriter, r *http.Request) {
 				theSuccMessage.SuccessNum = 1
 			}
 			/* 3. Create Post to JSON */
+			pingLocation := textAPIURL + "/initialLearnRStart"
+			fmt.Printf("DEBUG: Make a request to: %v\n", pingLocation)
+			logWriter(string(theJSONMessage)) //Debug
 			payload := strings.NewReader(string(theJSONMessage))
-			req, err := http.NewRequest("POST", "http://localhost:3000"+"/initialLearnRStart", payload)
+			req, err := http.NewRequest("POST", pingLocation, payload)
 			if err != nil {
 				theErr := "Error making request to Text API: " + err.Error()
 				logWriter(theErr)
