@@ -50,7 +50,6 @@ func init() {
 func main() {
 	rand.Seed(time.Now().UTC().UnixNano()) //Randomly Seed
 
-	fmt.Printf("DEBUG: Here is our location: %v\n", INITIALLEARNRSEND)
 	//Handle our incoming web requests
 	handleRequests()
 }
