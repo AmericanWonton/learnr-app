@@ -26,6 +26,7 @@ func handleRequests() {
 	myRouter.HandleFunc("/textWebhook", textWebhook).Methods("POST")               //Handle incoming webhook texts from Users
 	//Test Ping to our Server
 	myRouter.HandleFunc("/testLocalPing", testLocalPing).Methods("POST")
+	myRouter.HandleFunc("/httpTakerFunc", httpTakerFunc).Methods("POST")
 	log.Fatal(http.ListenAndServe(":3000", myRouter))
 }
 
@@ -81,4 +82,6 @@ func loadInMicroServiceURL() {
 
 	mongoCrudURL = os.Getenv("CRUD_URL")
 	textAPIURL = os.Getenv("TEXT_API")
+
+	fmt.Printf("DEBUG: Here is mongo: %v\n and here is text: %v\n", mongoCrudURL, textAPIURL)
 }

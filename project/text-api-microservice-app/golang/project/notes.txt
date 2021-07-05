@@ -8,15 +8,18 @@ ssh -i text-microservice-keypair.pem ubuntu@ec2-13-59-100-23.us-east-2.compute.a
 
 
 To run in docker:
-docker run -it --env-file ./env.list -d -p 80:3000 americanwonton/testtextproj
+docker run -it --env-file ./env.list -d -p 80:3000 americanwonton/prodtextproj
+
+To Run in interactive terminal in docker:
+docker run -it --env-file ./env.list -it -p 80:3000 americanwonton/prodtextproj
 
 Useful docker commands are in our make file. Here's a few extra:
-docker run -d -p 80:3000 -v photo-images:/static/images/pictures americanwonton/testtextproj
-docker run -it -p 80:3000 -v photo-images:/static/images/pictures americanwonton/testtextproj
-docker run -it -p 80:3000 -v big-photo:/amazonimages/ americanwonton/testtextproj
-docker run -it -p 80:3000 americanwonton/testtextproj
-docker run -d -p 80:3000 americanwonton/testtextproj
-docker pull americanwonton/testtextproj:latest
+docker run -d -p 80:3000 -v photo-images:/static/images/pictures americanwonton/prodtextproj
+docker run -it -p 80:3000 -v photo-images:/static/images/pictures americanwonton/prodtextproj
+docker run -it -p 80:3000 -v big-photo:/amazonimages/ americanwonton/prodtextproj
+docker run -it -p 80:3000 americanwonton/prodtextproj
+docker run -d -p 80:3000 americanwonton/prodtextproj
+docker pull americanwonton/prodtextproj:latest
 sudo docker login --username americanwonton --password peanutdoggydoo111
 How to Explore a Docker Filesystem:
 https://www.baeldung.com/ops/docker-container-filesystem

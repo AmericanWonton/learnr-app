@@ -651,7 +651,7 @@ func canSendLearnR(w http.ResponseWriter, r *http.Request) {
 			theSuccMessage.SuccessNum = 1
 		} else {
 			//Good check, go see if LearnR can be sent/started
-			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+			ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 			defer cancel()
 			/* 2. Marshal test case to JSON expect */
 			theJSONMessage, err := json.Marshal(ourJSON)
@@ -664,7 +664,6 @@ func canSendLearnR(w http.ResponseWriter, r *http.Request) {
 			}
 			/* 3. Create Post to JSON */
 			pingLocation := textAPIURL + "/initialLearnRStart"
-			fmt.Printf("DEBUG: Make a request to: %v\n", pingLocation)
 			logWriter(string(theJSONMessage)) //Debug
 			payload := strings.NewReader(string(theJSONMessage))
 			req, err := http.NewRequest("POST", pingLocation, payload)
@@ -676,6 +675,7 @@ func canSendLearnR(w http.ResponseWriter, r *http.Request) {
 				theSuccMessage.SuccessNum = 1
 			}
 			req.Header.Add("Content-Type", "application/json")
+			defer req.Body.Close()
 			/* 4. Get response from Post */
 			resp, err := http.DefaultClient.Do(req.WithContext(ctx))
 			if resp.StatusCode >= 300 || resp.StatusCode <= 199 {
@@ -689,6 +689,7 @@ func canSendLearnR(w http.ResponseWriter, r *http.Request) {
 				theSuccMessage.Message = theErr
 				theSuccMessage.SuccessNum = 1
 			}
+			defer resp.Body.Close()
 			//Declare message we expect to see returned
 			body, err := ioutil.ReadAll(resp.Body)
 			if err != nil {
