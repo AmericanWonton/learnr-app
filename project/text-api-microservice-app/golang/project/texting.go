@@ -45,7 +45,6 @@ var wg sync.WaitGroup
 const ALLOTTEDLEARNRTIME = 900
 
 /* DEBUG ping values */
-var INITIALLEARNRSEND string = textAPIURL + "/initialLearnRStart"
 
 /* Credentials for Twilio...THESE NEED TO BE READ IN AT SOME POINT */
 var accountSID string
@@ -103,6 +102,7 @@ func initialLearnRStart(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Cache-Control", "no-cache")
 	w.Header().Set("Connection", "keep-alive")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
+	fmt.Printf("DEBUG: Got to beginning of the function\n")
 	/* Test Flusher stuff */
 	flusher, ok := w.(http.Flusher)
 	if !ok {
@@ -137,7 +137,7 @@ func initialLearnRStart(w http.ResponseWriter, r *http.Request) {
 	//Marshal it into our type
 	var theJSON OurJSON
 	json.Unmarshal(bs, &theJSON)
-
+	fmt.Printf("Got to beginning of the taker...\n")
 	/* Create Session for this LearnR to this person*/
 	//Get Random ID
 	theTimeNow := time.Now()
@@ -177,21 +177,28 @@ func initialLearnRStart(w http.ResponseWriter, r *http.Request) {
 			TheSession:         newLearnRSession,
 			LogInfo:            []string{},
 		}
-		/* Send the response back to Ajax */
-		theJSONMessage, err := json.Marshal(theSuccMessage)
-		//Send the response back
-		if err != nil {
-			errIs := "Error formatting JSON for return in initialLearnRStart: " + err.Error()
-			logWriter(errIs)
-			panic(errIs)
-		}
-		theInt, theErr := fmt.Fprint(w, string(theJSONMessage))
-		if theErr != nil {
-			logWriter("Error writing back to initialLearnRStart: " + theErr.Error() + " " + strconv.Itoa(theInt))
-			panic("Error writing back to initialLearnRStart: " + theErr.Error() + " " + strconv.Itoa(theInt))
-		}
-		flusher.Flush()
+		fmt.Printf("DEBUG: Here is good ID we got from Mongo Call: %v\n", newUserSession.TheSession.ID)
+		time.Sleep(time.Second * 2)
+		go func() {
+			/* Send the response back to Ajax */
+			theJSONMessage, err := json.Marshal(theSuccMessage)
+			//Send the response back
+			if err != nil {
+				errIs := "Error formatting JSON for return in initialLearnRStart: " + err.Error()
+				logWriter(errIs)
+				panic(errIs)
+			}
+			theInt, theErr := fmt.Fprint(w, string(theJSONMessage))
+			if theErr != nil {
+				logWriter("Error writing back to initialLearnRStart: " + theErr.Error() + " " + strconv.Itoa(theInt))
+				panic("Error writing back to initialLearnRStart: " + theErr.Error() + " " + strconv.Itoa(theInt))
+			}
+			flusher.Flush()
+			fmt.Printf("DEBUG: We flushed\n")
+		}()
+		time.Sleep(time.Second * 2)
 		go conductLearnRSession(newUserSession)
+		fmt.Printf("DEBUG: Reached the end of this funciton\n")
 	}
 }
 
@@ -602,5 +609,74 @@ func actOnTextSent(theUserSession UserSession, theUserResponse ResponseText) {
 		logWriter(logInfo)
 		//Update the map
 		UserSessionActiveMap[theUserSession.LocalSessID] = theUserSession
+	}
+}
+
+/* TEST FUNCTIONS */
+func httpTakerFunc(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/event-stream")
+	w.Header().Set("Cache-Control", "no-cache")
+	w.Header().Set("Connection", "keep-alive")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	fmt.Printf("DEBUG: Got to beginning of the function\n")
+	/* Test Flusher stuff */
+	flusher, ok := w.(http.Flusher)
+	if !ok {
+		http.Error(w, "Server does not support Flusher!",
+			http.StatusInternalServerError)
+		return
+	}
+	//Declare Ajax return statements to be sent back
+	type SuccessMSG struct {
+		Message    string `json:"Message"`
+		SuccessNum int    `json:"SuccessNum"`
+	}
+	theSuccMessage := SuccessMSG{
+		Message:    "LearnRBegun successfully",
+		SuccessNum: 0,
+	}
+
+	fmt.Printf("Got to beginning of the taker...\n")
+	//Get the byte slice from the request
+	bs, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		fmt.Println(err)
+	}
+	type OurJSON struct {
+		StringVal string `json:"StringVal"`
+	}
+	//Marshal it into our type
+	var theJSON OurJSON
+	json.Unmarshal(bs, &theJSON)
+
+	/* Send the response back to Ajax */
+	go func() {
+		fmt.Printf("DEBUG: Got to go func\n")
+		theJSONMessage, err := json.Marshal(theSuccMessage)
+		//Send the response back
+		if err != nil {
+			errIs := "Error formatting JSON for return in testFunc: " + err.Error()
+			panic(errIs)
+		}
+		theInt, theErr := fmt.Fprint(w, string(theJSONMessage))
+		if theErr != nil {
+			panic("Error writing back to initialLearnRStart: " + theErr.Error() + " " + strconv.Itoa(theInt))
+		}
+		flusher.Flush()
+		fmt.Printf("DEBUG: We flushed \n")
+	}()
+	time.Sleep(time.Second * 1)
+	go specialGoRoutine()
+	fmt.Printf("Done with this function\n")
+}
+
+func specialGoRoutine() {
+	fmt.Printf("Hey uhhhh, welcome to the random num generator...\n")
+	for l := 0; l < 4; l++ {
+		time.Sleep(time.Second * 5)
+		rand.Seed(time.Now().UnixNano())
+		min := 10
+		max := 30
+		fmt.Println(rand.Intn(max-min+1) + min)
 	}
 }

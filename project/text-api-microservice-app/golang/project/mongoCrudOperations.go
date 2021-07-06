@@ -12,26 +12,6 @@ import (
 	"time"
 )
 
-//Get User
-//User
-var READUSERURL string = mongoCrudURL + "/getUser"
-
-//LearnRGet
-var READLEARNRURL string = mongoCrudURL + "/getLearnR"
-
-//LearnRInfoGet
-var READLEARNRINFOURL string = mongoCrudURL + "/getLearnrInfo"
-var UPDATELEARNRINFOURL string = mongoCrudURL + "/updateLearnrInfo"
-
-//ID Random
-var GETRANDOMID string = mongoCrudURL + "/randomIDCreationAPI"
-
-//LearnRSession
-var ADDLEARNRSESSIONSURL string = mongoCrudURL + "/addLearnRSession"
-var READLEARNRSESSIONSURL string = mongoCrudURL + "/getLearnRSession"
-var UPDATELEARNRSESSIONSURL string = mongoCrudURL + "/updateLearnRSession"
-var DELETELEARNRSESSIONSURL string = mongoCrudURL + "/deleteLearnRSession"
-
 /* Variable definitions for User/Learnr */
 type User struct {
 	UserName    string   `json:"UserName"`
@@ -130,7 +110,7 @@ func callAddLearnRSession(newLearnRSession LearnRSession) (bool, string) {
 	}
 	/* 3. Create Post to JSON */
 	payload := strings.NewReader(string(theJSONMessage))
-	req, err := http.NewRequest("POST", ADDLEARNRSESSIONSURL, payload)
+	req, err := http.NewRequest("POST", mongoCrudURL+"/addLearnRSession", payload)
 	if err != nil {
 		theErr := "There was an error posting LearnrSession: " + err.Error()
 		fmt.Println(theErr)
@@ -206,7 +186,7 @@ func callUpdateLearnrInfo(updatedLearnRInfo LearnrInfo) (bool, string) {
 	}
 	/* 3. Create Post to JSON */
 	payload := strings.NewReader(string(theJSONMessage))
-	req, err := http.NewRequest("POST", UPDATELEARNRINFOURL, payload)
+	req, err := http.NewRequest("POST", mongoCrudURL+"/updateLearnrInfo", payload)
 	if err != nil {
 		theErr := "There was an error posting Updated LearnrInfo: " + err.Error()
 		fmt.Println(theErr)
@@ -275,12 +255,14 @@ func randomAPICall() (bool, string, int) {
 	//Create a context for timing out
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	req, err := http.NewRequest("GET", GETRANDOMID, nil)
+	fmt.Printf("DEBUG: Making a request to here...%v\n", mongoCrudURL+"/randomIDCreationAPI")
+	req, err := http.NewRequest("GET", mongoCrudURL+"/randomIDCreationAPI", nil)
 	if err != nil {
 		theErr := "There was an error getting Usernames in loadUsernames: " + err.Error()
 		logWriter(theErr)
 		goodGet, message = false, theErr
 	}
+	defer req.Body.Close()
 
 	resp, err := http.DefaultClient.Do(req.WithContext(ctx))
 
@@ -345,7 +327,7 @@ func callGetUser(userID int) (User, bool, string) {
 	}
 	/* 3. Create Post to JSON */
 	payload := strings.NewReader(string(theJSONMessage))
-	req, err := http.NewRequest("POST", READUSERURL, payload)
+	req, err := http.NewRequest("POST", mongoCrudURL+"/getUser", payload)
 	if err != nil {
 		theErr := "We had an error with this request: %v\n" + err.Error()
 		fmt.Println(theErr)
@@ -415,7 +397,7 @@ func callReadLearnR(theid int) (bool, string, Learnr) {
 	}
 	/* 3. Create Post to JSON */
 	payload := strings.NewReader(string(theJSONMessage))
-	req, err := http.NewRequest("POST", READLEARNRURL, payload)
+	req, err := http.NewRequest("POST", mongoCrudURL+"/getLearnR", payload)
 	if err != nil {
 		theErr := "We had an error with this request: %v\n" + err.Error()
 		fmt.Println(theErr)
@@ -485,7 +467,7 @@ func callReadLearnrInfo(theid int) (bool, string, LearnrInfo) {
 	}
 	/* 3. Create Post to JSON */
 	payload := strings.NewReader(string(theJSONMessage))
-	req, err := http.NewRequest("POST", READLEARNRINFOURL, payload)
+	req, err := http.NewRequest("POST", mongoCrudURL+"/getLearnrInfo", payload)
 	if err != nil {
 		theErr := "We had an error with this request: %v\n" + err.Error()
 		fmt.Println(theErr)
