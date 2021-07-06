@@ -251,12 +251,23 @@ func fastUpdateLearnRInform(newLearnRInfo LearnrInfo) {
 /* Gets a random API after calling our random API */
 func randomAPICall() (bool, string, int) {
 	goodGet, message, finalInt := true, "", 0
-	//Call our crudOperations Microservice in order to get our Usernames
+	/* Keeping this in here until we can figure out how to do GET properly... */
+	type LoginData struct {
+		Username string `json:"Username"`
+		Password string `json:"Password"`
+	}
+	theID := LoginData{Username: "tESTUsername", Password: "TestPassword"}
+	theJSONMessage, err := json.Marshal(theID)
+	if err != nil {
+		fmt.Println(err)
+		logWriter(err.Error())
+		log.Fatal(err)
+	}
 	//Create a context for timing out
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	fmt.Printf("DEBUG: Making a request to here...%v\n", mongoCrudURL+"/randomIDCreationAPI")
-	req, err := http.NewRequest("GET", mongoCrudURL+"/randomIDCreationAPI", nil)
+	payload := strings.NewReader(string(theJSONMessage)) //Debug
+	req, err := http.NewRequest("POST", mongoCrudURL+"/randomIDCreationAPI", payload)
 	if err != nil {
 		theErr := "There was an error getting Usernames in loadUsernames: " + err.Error()
 		logWriter(theErr)
@@ -514,4 +525,57 @@ func callReadLearnrInfo(theid int) (bool, string, LearnrInfo) {
 	}
 
 	return goodAdd, message, returnedMessage.ReturnedLearnRInfo
+}
+
+/* Test Calls */
+func testPingCrud() {
+	fmt.Printf("DEBUG: We are calling the testPing in Crud API first\n")
+	//Call our crudOperations Microservice in order to get our Usernames
+	//Create a context for timing out
+	type LoginData struct {
+		Username string `json:"Username"`
+		Password string `json:"Password"`
+	}
+	theID := LoginData{Username: "tESTUsername", Password: "TestPassword"}
+	theJSONMessage, err := json.Marshal(theID)
+	if err != nil {
+		fmt.Println(err)
+		logWriter(err.Error())
+		log.Fatal(err)
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	fmt.Printf("DEBUG: Making a request to here...%v\n", mongoCrudURL+"/testPing")
+	payload := strings.NewReader(string(theJSONMessage))
+	req, err := http.NewRequest("POST", mongoCrudURL+"/randomIDCreationAPI", payload)
+	if err != nil {
+		theErr := "There was an error getting Usernames in loadUsernames: " + err.Error()
+		logWriter(theErr)
+	}
+	defer req.Body.Close()
+
+	resp, err := http.DefaultClient.Do(req.WithContext(ctx))
+
+	if resp.StatusCode >= 300 || resp.StatusCode <= 199 {
+	} else if err != nil {
+		theErr := "Had an error getting good random ID: " + err.Error()
+		logWriter(theErr)
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		theErr := "There was an error getting a response for Usernames in loadUsernames: " + err.Error()
+		logWriter(theErr)
+	}
+	type ReturnMessage struct {
+		TheErr          []string        `json:"TheErr"`
+		ResultMsg       []string        `json:"ResultMsg"`
+		SuccOrFail      int             `json:"SuccOrFail"`
+		ReturnedUserMap map[string]bool `json:"ReturnedUserMap"`
+	}
+	var returnedMessage ReturnMessage
+	json.Unmarshal(body, &returnedMessage)
+
+	fmt.Printf("DEBUG: Here is our returned Message succ: %v\n", returnedMessage.SuccOrFail)
 }

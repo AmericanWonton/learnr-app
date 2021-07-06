@@ -50,6 +50,7 @@ func init() {
 func main() {
 	rand.Seed(time.Now().UTC().UnixNano()) //Randomly Seed
 
+	fmt.Printf("DEBUG: In the textAPI Microservice Pt 2\n")
 	//Handle our incoming web requests
 	handleRequests()
 }

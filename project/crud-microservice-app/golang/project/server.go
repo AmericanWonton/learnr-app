@@ -1,12 +1,20 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
+	"strings"
 
 	"github.com/gorilla/mux"
+	"gopkg.in/mgo.v2/bson"
 )
+
+var mongoCrudURL string
+var textAPIURL string
 
 //Handles all requests coming in
 func handleRequests() {
@@ -26,10 +34,94 @@ func handleRequests() {
 	myRouter.HandleFunc("/updateLearnOrg", updateLearnOrg).Methods("POST") //Update a LearnROrg
 	myRouter.HandleFunc("/getLearnOrg", getLearnOrg).Methods("POST")       //Get LearnROrg
 	//Serve our validation APIs
-	myRouter.HandleFunc("/giveAllUsernames", giveAllUsernames).Methods("GET")       //Get all our Usernames
-	myRouter.HandleFunc("/giveAllLearnROrg", giveAllLearnROrg).Methods("GET")       //Get all our LearnROrg Names
-	myRouter.HandleFunc("/randomIDCreationAPI", randomIDCreationAPI).Methods("GET") //Get a random ID
-	myRouter.HandleFunc("/userLogin", userLogin).Methods("POST")                    //Get a random ID
+	myRouter.HandleFunc("/giveAllUsernames", giveAllUsernames).Methods("GET")        //Get all our Usernames
+	myRouter.HandleFunc("/giveAllLearnROrg", giveAllLearnROrg).Methods("GET")        //Get all our LearnROrg Names
+	myRouter.HandleFunc("/randomIDCreationAPI", randomIDCreationAPI).Methods("POST") //Get a random ID
+	myRouter.HandleFunc("/userLogin", userLogin).Methods("POST")                     //Check if User can login
+	//Serve our test ping
+	myRouter.HandleFunc("/testPing", testPing).Methods("POST") //Get a random ID
 	//Serve our static files
 	log.Fatal(http.ListenAndServe(":4000", myRouter))
+}
+
+//Loads in the initial text API and MongoCrud URLS
+func loadInMicroServiceURL() {
+	//Check to see if ENV Creds are available first
+	_, ok := os.LookupEnv("CRUD_URL")
+	if !ok {
+		message := "This ENV Variable is not present: " + "CRUD_URL"
+		panic(message)
+	}
+	_, ok2 := os.LookupEnv("TEXT_API")
+	if !ok2 {
+		message := "This ENV Variable is not present: " + "TEXT_API"
+		panic(message)
+	}
+
+	mongoCrudURL = os.Getenv("CRUD_URL")
+	textAPIURL = os.Getenv("TEXT_API")
+
+	fmt.Printf("DEBUG: Here is mongo: %v\n and here is text: %v\n", mongoCrudURL, textAPIURL)
+}
+
+func testPing(w http.ResponseWriter, req *http.Request) {
+	//Declare data to return
+	type ReturnMessage struct {
+		TheErr          []string        `json:"TheErr"`
+		ResultMsg       []string        `json:"ResultMsg"`
+		SuccOrFail      int             `json:"SuccOrFail"`
+		ReturnedUserMap map[string]bool `json:"ReturnedUserMap"`
+	}
+	theReturnMessage := ReturnMessage{}
+	theReturnMessage.SuccOrFail = 0 //Initially set to success
+	theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, "You've got a successful response")
+
+	fmt.Printf("DEBUG: Successful ping to testPing\n")
+
+	//Collect JSON from Postman or wherever
+	//Get the byte slice from the request body ajax
+	bs, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		fmt.Println(err)
+		logWriter(err.Error())
+	}
+
+	type LoginData struct {
+		Username string `json:"Username"`
+		Password string `json:"Password"`
+	}
+
+	//Marshal the user data into our type
+	var dataForLogin LoginData
+	json.Unmarshal(bs, &dataForLogin)
+
+	fmt.Printf("DEBUG: Here is our Username: %v and our Password: %v\n", dataForLogin.Username, dataForLogin.Password)
+
+	/* Test get User */
+	/* User collection */
+	userCollection := mongoClient.Database("learnR").Collection("users") //Here's our collection
+	var testAUser User
+	theErr := userCollection.FindOne(theContext, bson.M{"userid": 228778447811}).Decode(&testAUser)
+	if theErr != nil {
+		if strings.Contains(theErr.Error(), "no documents in result") {
+			fmt.Printf("DEBUG: We didn't find this User in the search...\n")
+		} else {
+			theErr := "There is another error getting random ID: " + err.Error()
+			fmt.Println(theErr)
+			logWriter(theErr)
+			theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
+			theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
+			log.Fatal(theErr)
+		}
+	}
+
+	/* Return the marshaled response */
+	//Send the response back
+	theJSONMessage, err := json.Marshal(theReturnMessage)
+	//Send the response back
+	if err != nil {
+		errIs := "Error formatting JSON for return in randomIDCreationAPI: " + err.Error()
+		logWriter(errIs)
+	}
+	fmt.Fprint(w, string(theJSONMessage))
 }

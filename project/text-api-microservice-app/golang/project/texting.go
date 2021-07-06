@@ -177,8 +177,7 @@ func initialLearnRStart(w http.ResponseWriter, r *http.Request) {
 			TheSession:         newLearnRSession,
 			LogInfo:            []string{},
 		}
-		fmt.Printf("DEBUG: Here is good ID we got from Mongo Call: %v\n", newUserSession.TheSession.ID)
-		time.Sleep(time.Second * 2)
+		time.Sleep(time.Second * 1) //DEBUG
 		go func() {
 			/* Send the response back to Ajax */
 			theJSONMessage, err := json.Marshal(theSuccMessage)
@@ -456,7 +455,12 @@ func sendText(textOrder int, toNumString string, fromNumString string, textBody 
 			fmt.Printf("Here is the response: %v\n", string(b))
 		}
 		goodSend = false
-		resultMessages = append(resultMessages, theErr.Error())
+		//Check to see if theErr is nil
+		if theErr == nil {
+			resultMessages = append(resultMessages, "The error returned from response is nil...")
+		} else {
+			resultMessages = append(resultMessages, theErr.Error())
+		}
 	}
 
 	//Close this response, just in case
