@@ -62,7 +62,7 @@ func connectDB() *mongo.Client {
 		fmt.Printf("Errored getting mongo client: %v\n", err)
 		log.Fatal(err)
 	}
-	theContext, _ := context.WithTimeout(context.Background(), 30*time.Second)
+	theContext, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	err = theClient.Connect(theContext)
 	if err != nil {
 		fmt.Printf("Errored getting mongo client context: %v\n", err)
@@ -1192,7 +1192,24 @@ func userLogin(w http.ResponseWriter, req *http.Request) {
 }
 
 //This should give a random id value to both food groups
-func randomIDCreationAPI(w http.ResponseWriter, req *http.Request) {
+func randomIDCreationAPI(w http.ResponseWriter, r *http.Request) {
+	//Collect JSON from Postman or wherever
+	//Get the byte slice from the request body ajax
+	bs, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		fmt.Println(err)
+		logWriter(err.Error())
+	}
+
+	type LoginData struct {
+		Username string `json:"Username"`
+		Password string `json:"Password"`
+	}
+
+	//Marshal the user data into our type
+	var dataForLogin LoginData
+	json.Unmarshal(bs, &dataForLogin)
+
 	type ReturnMessage struct {
 		TheErr     []string `json:"TheErr"`
 		ResultMsg  []string `json:"ResultMsg"`
@@ -1235,6 +1252,7 @@ func randomIDCreationAPI(w http.ResponseWriter, req *http.Request) {
 				canExit[0] = true
 			} else {
 				theErr := "There is another error getting random ID: " + err.Error()
+				fmt.Println(theErr)
 				logWriter(theErr)
 				theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
 				theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
@@ -1251,6 +1269,7 @@ func randomIDCreationAPI(w http.ResponseWriter, req *http.Request) {
 				canExit[0] = true
 			} else {
 				theErr := "There is another error getting random ID: " + err.Error()
+				fmt.Println(theErr)
 				logWriter(theErr)
 				theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
 				theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
@@ -1269,13 +1288,13 @@ func randomIDCreationAPI(w http.ResponseWriter, req *http.Request) {
 			foundID = false
 		}
 	}
-
 	/* Return the marshaled response */
 	//Send the response back
 	theJSONMessage, err := json.Marshal(theReturnMessage)
 	//Send the response back
 	if err != nil {
 		errIs := "Error formatting JSON for return in randomIDCreationAPI: " + err.Error()
+		fmt.Println(errIs)
 		logWriter(errIs)
 	}
 	fmt.Fprint(w, string(theJSONMessage))

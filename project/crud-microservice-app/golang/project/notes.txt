@@ -27,7 +27,7 @@ NOTE ON ABOVE: We have alpine on this dockerfile, so we need to go to the Alpine
 docker exec -it af253110d1d2 /bin/sh
 
 To run in docker:
-docker run -it --env-file ./env.list -d -p 80:3000 americanwonton/prodcrudproj
+docker run -it --env-file ./env.list -d -p 80:4000 americanwonton/prodcrudproj
 
 Run Interactive Terminal:
-docker run -it --env-file ./env.list -it -p 80:3000 americanwonton/prodcrudproj
+docker run -it --env-file ./env.list -it -p 80:4000 americanwonton/prodcrudproj
