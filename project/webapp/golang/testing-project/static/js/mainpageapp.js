@@ -217,6 +217,10 @@ function visualCreator(intCurrently, learnrArray){
     sendLearnRButton.innerHTML = "Send LearnR";
     sendLearnRButton.disabled = true; //Initially set as disabled
     sendLearnRButton.addEventListener('click', function(){
+        submitDisablers[0] = true;
+        submitDisablers[1] = true;
+        submitDisablers[2] = true;
+        sendLearnRButton.disabled = true; //Disable Button for no further sends
         var OurJSON = {
             TheUser: TheUser,
             TheLearnR: learnrArray[theInt],
@@ -225,6 +229,8 @@ function visualCreator(intCurrently, learnrArray){
             PersonPhoneNum: String(fieldinputPersonPN.value.toString()),
             Introduction: String(fieldinputIntroduction.value)
         };
+        /* Start Loading Bar */
+        sendLearnRResult.innerHTML = "Sending LearnR, please wait..."
         //Send Ajax
         var jsonString = JSON.stringify(OurJSON); //Stringify Data
         //Send Request to change page
@@ -237,6 +243,9 @@ function visualCreator(intCurrently, learnrArray){
                 var ReturnData = JSON.parse(item);
                 if (ReturnData.SuccessNum == 0){
                     /* Successful LearnR Send start. Update our result, delay, then reload page */
+                    submitDisablers[0] = true;
+                    submitDisablers[1] = true;
+                    submitDisablers[2] = true;
                     sendLearnRButton.disabled = true; //Disable Button for no further sends
                     sendLearnRResult.innerHTML = ReturnData.Message; //Set success message
                     setTimeout(() => { navigateHeader(3); }, 5000); //Delay 5, then reload page
@@ -244,7 +253,13 @@ function visualCreator(intCurrently, learnrArray){
                     /* Sending text to User unsuccessful. Inform User */
                     sendLearnRButton.disabled = true;
                     sendLearnRResult.innerHTML = "Failed to send LearnR! " + ReturnData.Message;
-                    setTimeout(() => { sendLearnRButton.disabled = false; }, 5000); //Delay 5, then un-disable button
+                    setTimeout(() => { sendButtonFix(); }, 5000); //Delay 5, then un-disable button
+                }
+                function sendButtonFix(){
+                    sendLearnRButton.disabled = false;
+                    submitDisablers[0] = false;
+                    submitDisablers[1] = false;
+                    submitDisablers[2] = false;
                 }
             }
         });
