@@ -166,6 +166,7 @@ func fastAddLearnRSession(newLearnRSession LearnRSession) {
 		fmt.Println(errMsg)
 	} else {
 		message := "Added this LearnRSession to the DB: " + strconv.Itoa(newLearnRSession.ID)
+		fmt.Println(message)
 		logWriter(message)
 	}
 
@@ -239,11 +240,12 @@ func fastUpdateLearnRInform(newLearnRInfo LearnrInfo) {
 	goodAdd, theMessage := callUpdateLearnrInfo(newLearnRInfo)
 
 	if !goodAdd {
-		errMsg := "Could not add this learnRSession: " + strconv.Itoa(newLearnRInfo.ID) + "\n" + theMessage
+		errMsg := "Could not update this LearnRInform: " + strconv.Itoa(newLearnRInfo.ID) + "\n" + theMessage
 		logWriter(errMsg)
 		fmt.Println(errMsg)
 	} else {
 		message := "Updated this LearnRInfo in the DB: " + strconv.Itoa(newLearnRInfo.ID)
+		fmt.Println(message)
 		logWriter(message)
 	}
 
