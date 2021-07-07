@@ -626,93 +626,118 @@ func canSendLearnR(w http.ResponseWriter, r *http.Request) {
 	var ourJSON OurJSON
 	json.Unmarshal(bs, &ourJSON)
 
-	/* Get the LearnRInfo assossiated with this LearnR */
-	goodGet, result, theLearnRInfo := callReadLearnrInfo(ourJSON.TheLearnR.InfoID)
-	if !goodGet {
-		theErr := "Could not get proper LearnR information! " + result
-		logWriter(theErr)
-		fmt.Println(theErr)
-		theSuccMessage.Message = theErr
+	/* Perform initial checks to see if the phone numbers, person name, and introduction are good */
+	goodInitialCheck := true
+	if (len(ourJSON.Introduction) < 1) || (len(ourJSON.Introduction) > 120) {
+		goodInitialCheck = false
+	}
+	if (len(ourJSON.PersonName) < 1) || (len(ourJSON.PersonName) > 20) {
+		goodInitialCheck = false
+	}
+	if (len(ourJSON.PersonPhoneNum) < 1) || (len(ourJSON.PersonPhoneNum) > 11) {
+		goodInitialCheck = false
+	}
+	if (strings.Contains(ourJSON.PersonPhoneNum, "-")) || (strings.Contains(ourJSON.PersonPhoneNum, "+")) ||
+		(strings.Contains(ourJSON.PersonPhoneNum, " ")) || (strings.Contains(ourJSON.PersonPhoneNum, ".")) ||
+		(strings.Contains(ourJSON.PersonPhoneNum, ",")) {
+		goodInitialCheck = false
+	}
+
+	if !goodInitialCheck {
+		fmt.Printf("User has the wrong field: Intro: %v\nPersonName: %v\nPersonPhoneNum: %v\n", ourJSON.Introduction,
+			ourJSON.PersonName, ourJSON.PersonPhoneNum)
 		theSuccMessage.SuccessNum = 1
+		theSuccMessage.Message = "Incorrect fields! Please look again"
 	} else {
-		ourJSON.TheLearnRInfo = theLearnRInfo //Add LearnRInfo to JSON
-		/* Check to see that our other values aren't nulled; this will cause a bad session if they are so... */
-		if !(ourJSON.TheUser.UserID >= 1) || !(len(ourJSON.PersonName) >= 1) || !(len(ourJSON.PersonPhoneNum) >= 1 && len(ourJSON.PersonPhoneNum) <= 11) ||
-			!(len(ourJSON.Introduction) >= 1) || !(ourJSON.TheLearnR.ID >= 1) {
-			fmt.Printf("DEBUG: %v\n", ourJSON.TheUser.UserID)
-			fmt.Printf("DEBUG: %v\n", ourJSON.PersonName)
-			fmt.Printf("DEBUG: %v\n", ourJSON.PersonPhoneNum)
-			fmt.Printf("DEBUG: %v\n", ourJSON.Introduction)
-			fmt.Printf("DEBUG: %v\n", ourJSON.TheLearnR.ID)
-			theErr := "Invalid values entered for this LearnR. Sending failed!"
+		/* Get the LearnRInfo assossiated with this LearnR */
+		goodGet, result, theLearnRInfo := callReadLearnrInfo(ourJSON.TheLearnR.InfoID)
+		if !goodGet {
+			theErr := "Could not get proper LearnR information! " + result
 			logWriter(theErr)
 			fmt.Println(theErr)
 			theSuccMessage.Message = theErr
 			theSuccMessage.SuccessNum = 1
 		} else {
-			//Good check, go see if LearnR can be sent/started
-			ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-			defer cancel()
-			/* 2. Marshal test case to JSON expect */
-			theJSONMessage, err := json.Marshal(ourJSON)
-			if err != nil {
-				theErr := "Could not marshal JSON: " + err.Error()
+			ourJSON.TheLearnRInfo = theLearnRInfo //Add LearnRInfo to JSON
+			/* Check to see that our other values aren't nulled; this will cause a bad session if they are so... */
+			if !(ourJSON.TheUser.UserID >= 1) || !(len(ourJSON.PersonName) >= 1) || !(len(ourJSON.PersonPhoneNum) >= 1 && len(ourJSON.PersonPhoneNum) <= 11) ||
+				!(len(ourJSON.Introduction) >= 1) || !(ourJSON.TheLearnR.ID >= 1) {
+				fmt.Printf("DEBUG: %v\n", ourJSON.TheUser.UserID)
+				fmt.Printf("DEBUG: %v\n", ourJSON.PersonName)
+				fmt.Printf("DEBUG: %v\n", ourJSON.PersonPhoneNum)
+				fmt.Printf("DEBUG: %v\n", ourJSON.Introduction)
+				fmt.Printf("DEBUG: %v\n", ourJSON.TheLearnR.ID)
+				theErr := "Invalid values entered for this LearnR. Sending failed!"
 				logWriter(theErr)
 				fmt.Println(theErr)
 				theSuccMessage.Message = theErr
 				theSuccMessage.SuccessNum = 1
-			}
-			/* 3. Create Post to JSON */
-			pingLocation := textAPIURL + "/initialLearnRStart"
-			logWriter(string(theJSONMessage)) //Debug
-			payload := strings.NewReader(string(theJSONMessage))
-			req, err := http.NewRequest("POST", pingLocation, payload)
-			if err != nil {
-				theErr := "Error making request to Text API: " + err.Error()
-				logWriter(theErr)
-				fmt.Println(theErr)
-				theSuccMessage.Message = theErr
-				theSuccMessage.SuccessNum = 1
-			}
-			req.Header.Add("Content-Type", "application/json")
-			defer req.Body.Close()
-			/* 4. Get response from Post */
-			resp, err := http.DefaultClient.Do(req.WithContext(ctx))
-			if resp.StatusCode >= 300 || resp.StatusCode <= 199 {
-				theErr := "Failed response from initialLearnRStart: " + strconv.Itoa(resp.StatusCode)
-				logWriter(theErr)
-				theSuccMessage.Message = theErr
-				theSuccMessage.SuccessNum = 1
-			} else if err != nil {
-				theErr := "Failed response from initialLearnRStart: " + strconv.Itoa(resp.StatusCode) + " " + err.Error()
-				logWriter(theErr)
-				theSuccMessage.Message = theErr
-				theSuccMessage.SuccessNum = 1
-			}
-			defer resp.Body.Close()
-			//Declare message we expect to see returned
-			body, err := ioutil.ReadAll(resp.Body)
-			if err != nil {
-				theErr := "There was an error reading response from initialLearnRStart " + err.Error()
-				logWriter(theErr)
-				theSuccMessage.Message = theErr
-				theSuccMessage.SuccessNum = 1
-			}
-			type TheSuccessMsg struct {
-				Message    string `json:"Message"`
-				SuccessNum int    `json:"SuccessNum"`
-			}
-			var returnedMessage TheSuccessMsg
-			json.Unmarshal(body, &returnedMessage)
-			/* 5. Evaluate response in returnedMessage */
-			if returnedMessage.SuccessNum != 0 {
-				theSuccMessage.SuccessNum = 1
-				theSuccMessage.Message = "Failed to start convo with User!"
 			} else {
-				theSuccMessage.Message = "Text convo started with " + ourJSON.PersonName
+				//Good check, go see if LearnR can be sent/started
+				ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+				defer cancel()
+				/* 2. Marshal test case to JSON expect */
+				theJSONMessage, err := json.Marshal(ourJSON)
+				if err != nil {
+					theErr := "Could not marshal JSON: " + err.Error()
+					logWriter(theErr)
+					fmt.Println(theErr)
+					theSuccMessage.Message = theErr
+					theSuccMessage.SuccessNum = 1
+				}
+				/* 3. Create Post to JSON */
+				pingLocation := textAPIURL + "/initialLearnRStart"
+				logWriter(string(theJSONMessage)) //Debug
+				payload := strings.NewReader(string(theJSONMessage))
+				req, err := http.NewRequest("POST", pingLocation, payload)
+				if err != nil {
+					theErr := "Error making request to Text API: " + err.Error()
+					logWriter(theErr)
+					fmt.Println(theErr)
+					theSuccMessage.Message = theErr
+					theSuccMessage.SuccessNum = 1
+				}
+				req.Header.Add("Content-Type", "application/json")
+				defer req.Body.Close()
+				/* 4. Get response from Post */
+				resp, err := http.DefaultClient.Do(req.WithContext(ctx))
+				if resp.StatusCode >= 300 || resp.StatusCode <= 199 {
+					theErr := "Failed response from initialLearnRStart: " + strconv.Itoa(resp.StatusCode)
+					logWriter(theErr)
+					theSuccMessage.Message = theErr
+					theSuccMessage.SuccessNum = 1
+				} else if err != nil {
+					theErr := "Failed response from initialLearnRStart: " + strconv.Itoa(resp.StatusCode) + " " + err.Error()
+					logWriter(theErr)
+					theSuccMessage.Message = theErr
+					theSuccMessage.SuccessNum = 1
+				}
+				defer resp.Body.Close()
+				//Declare message we expect to see returned
+				body, err := ioutil.ReadAll(resp.Body)
+				if err != nil {
+					theErr := "There was an error reading response from initialLearnRStart " + err.Error()
+					logWriter(theErr)
+					theSuccMessage.Message = theErr
+					theSuccMessage.SuccessNum = 1
+				}
+				type TheSuccessMsg struct {
+					Message    string `json:"Message"`
+					SuccessNum int    `json:"SuccessNum"`
+				}
+				var returnedMessage TheSuccessMsg
+				json.Unmarshal(body, &returnedMessage)
+				/* 5. Evaluate response in returnedMessage */
+				if returnedMessage.SuccessNum != 0 {
+					theSuccMessage.SuccessNum = 1
+					theSuccMessage.Message = "Failed to start convo with User!"
+				} else {
+					theSuccMessage.Message = "Text convo started with " + ourJSON.PersonName
+				}
 			}
 		}
 	}
+
 	/* Send the response back to Ajax */
 	theJSONMessage, err := json.Marshal(theSuccMessage)
 	//Send the response back
