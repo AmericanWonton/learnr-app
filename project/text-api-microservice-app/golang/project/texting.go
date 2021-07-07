@@ -293,11 +293,12 @@ func conductLearnRSession(theLearnRUserSess UserSession) {
 		theLearnRUserSess.TheLearnRInfo.DateUpdated = theTimeNow.Format("2006-01-02 15:04:05")
 		wg.Add(1)
 		go fastUpdateLearnRInform(theLearnRUserSess.TheLearnRInfo)
+		wg.Wait()
 		//Removing Map placement of this UserSession
 		delete(UserSessionActiveMap, theLearnRUserSess.LocalSessID)
 		//Removing Phone Num from active UserSession
 		delete(UserSessPhoneMap, theLearnRUserSess.PersonPhoneNum)
-		wg.Wait()
+		fmt.Printf("This LearnR Session has been ended: %v for this LearnR: %v\n", theLearnRUserSess.LocalSessID, theLearnRUserSess.TheLearnR.Name)
 	} else {
 		//First three messages sent, getting ready to send the rest of the messages...
 		//Start sending texts on this session
@@ -370,11 +371,11 @@ func conductLearnRSession(theLearnRUserSess UserSession) {
 		theLearnRUserSess.TheLearnRInfo.DateUpdated = theTimeNow.Format("2006-01-02 15:04:05")
 		wg.Add(1)
 		go fastUpdateLearnRInform(theLearnRUserSess.TheLearnRInfo)
+		wg.Wait() //Need to make sure we can exit this function properly
 		//Removing Map placement of this UserSession
 		delete(UserSessionActiveMap, theLearnRUserSess.LocalSessID)
 		//Removing Phone Num from active UserSession
 		delete(UserSessPhoneMap, theLearnRUserSess.PersonPhoneNum)
-		wg.Wait() //Need to make sure we can exit this function properly
 		//Print success
 		fmt.Printf("This LearnR Session has now ended: %v for this LearnR: %v\n", theLearnRUserSess.LocalSessID, theLearnRUserSess.TheLearnR.Name)
 	}
