@@ -37,6 +37,7 @@ type ResponseText struct {
 	ToCountry           string `json:"ToCountry"`
 	FromZip             string `json:"FromZip"`
 	NumSegments         string `json:"NumSegments"`
+	OptOutType          string `json:"OptOutType"`
 }
 
 //Here is our waitgroup
@@ -102,7 +103,6 @@ func initialLearnRStart(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Cache-Control", "no-cache")
 	w.Header().Set("Connection", "keep-alive")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	fmt.Printf("DEBUG: Got to beginning of the function\n")
 	/* Test Flusher stuff */
 	flusher, ok := w.(http.Flusher)
 	if !ok {
@@ -137,7 +137,6 @@ func initialLearnRStart(w http.ResponseWriter, r *http.Request) {
 	//Marshal it into our type
 	var theJSON OurJSON
 	json.Unmarshal(bs, &theJSON)
-	fmt.Printf("Got to beginning of the taker...\n")
 	/* Create Session for this LearnR to this person*/
 	//Get Random ID
 	theTimeNow := time.Now()
@@ -193,11 +192,9 @@ func initialLearnRStart(w http.ResponseWriter, r *http.Request) {
 				panic("Error writing back to initialLearnRStart: " + theErr.Error() + " " + strconv.Itoa(theInt))
 			}
 			flusher.Flush()
-			fmt.Printf("DEBUG: We flushed\n")
 		}()
-		time.Sleep(time.Second * 2)
+		time.Sleep(time.Second * 2) //Debug
 		go conductLearnRSession(newUserSession)
-		fmt.Printf("DEBUG: Reached the end of this funciton\n")
 	}
 }
 
@@ -455,6 +452,47 @@ func sendText(textOrder int, toNumString string, fromNumString string, textBody 
 			fmt.Printf("Here is the response: %v\n", string(b))
 		}
 		goodSend = false
+		//Check to see if we have a 'black listed' number; end session if we can find it in our array
+		type TwilioErrResponse struct {
+			Code     int    `json:"code"`
+			Message  string `json:"message"`
+			MoreInfo string `json:"more_info"`
+			Status   int    `json:"status"`
+		}
+		var twilErrorResponse TwilioErrResponse
+		json.Unmarshal(b, &twilErrorResponse)
+		if strings.Contains(strings.ToLower(twilErrorResponse.Message), strings.ToLower("blacklist")) {
+			blacklistErr := "This number is on the 'blacklist' rule: " + toNumString + "...Stopping session for number"
+			resultMessages = append(resultMessages, blacklistErr)
+			fmt.Println(blacklistErr)
+			/* stopping phone session for this number */
+			fromTextedNum := strings.ReplaceAll(toNumString, "+", "")
+			goodPhoneGet, userSessID := phoneSessionMapOk(fromTextedNum)
+			if !goodPhoneGet {
+				err := "Phone number, (" + toNumString + "), not found in session"
+				logWriter(err)
+				fmt.Println(err)
+				fmt.Printf("DEBUG: Here is our map: %v\n and here is our user sess map: %v\n", UserSessPhoneMap, UserSessionActiveMap)
+				resultMessages = append(resultMessages, err)
+			} else {
+				//Phone Session still active; need to cancel it
+				okayuserSess, theUserSess := getSessionMapOk(userSessID)
+				if !okayuserSess {
+					msg := "Could not find an active User Session"
+					logWriter(msg)
+					fmt.Println(msg)
+					resultMessages = append(resultMessages, msg)
+				} else {
+					//Found active User Session; determine what needs to be done with it
+					responseNone := ResponseText{
+						From: toNumString,
+						Body: "STOP",
+					}
+					actOnTextSent(theUserSess, responseNone)
+				}
+			}
+		}
+
 		//Check to see if theErr is nil
 		if theErr == nil {
 			resultMessages = append(resultMessages, "The error returned from response is nil...")
@@ -513,6 +551,7 @@ func textWebhook(w http.ResponseWriter, r *http.Request) {
 		ToCountry:           r.FormValue("ToCountry"),
 		FromZip:             r.FormValue("FromZip"),
 		NumSegments:         r.FormValue("NumSegments"),
+		OptOutType:          r.FormValue("OptOutType"),
 	}
 
 	/* Evaluate response;
@@ -520,7 +559,8 @@ func textWebhook(w http.ResponseWriter, r *http.Request) {
 	2. Look up this number in our map and see if the session is still active,(or not over session time)
 	3. Determine if this number has texted a keyword to stop the session
 	*/
-	okayPhone, userSessID := phoneSessionMapOk(theReturnText.From)
+	fromTextedNum := strings.ReplaceAll(theReturnText.From, "+", "")
+	okayPhone, userSessID := phoneSessionMapOk(fromTextedNum)
 	if !okayPhone {
 		err := "Phone number, (" + theReturnText.From + "), not found in session"
 		logWriter(err)
@@ -541,7 +581,9 @@ func textWebhook(w http.ResponseWriter, r *http.Request) {
 
 //Gets our userSession ID from a phone number that texted the webhook
 func phoneSessionMapOk(theNumber string) (bool, int) {
-	if theSessNum, ok := UserSessPhoneMap[theNumber]; ok {
+	fmt.Printf("DEBUG: Here is what our UserSessPhoneMap looks like...%v\n", UserSessPhoneMap)
+	fromTextedNum := strings.ReplaceAll(theNumber, "+", "") //Get rid of plus just in case
+	if theSessNum, ok := UserSessPhoneMap[fromTextedNum]; ok {
 		return ok, theSessNum
 	} else {
 		return ok, theSessNum
@@ -571,46 +613,54 @@ func getSessionMapOk(theSessID int) (bool, UserSession) {
 //Determine the text sent and act accordingly
 func actOnTextSent(theUserSession UserSession, theUserResponse ResponseText) {
 	theTimeNow := time.Now()
+	//Set Body to stop if the userresponse contains the twilio 'OptOutType' as STOP
+	if strings.Contains(strings.ToLower(theUserResponse.OptOutType), strings.ToLower("stop")) {
+		theUserResponse.Body = "stop"
+	}
 	//Determine if the text is STOP or stop adjacent
-	if isStop, ok := StopText[theUserResponse.From]; ok {
+	if val, ok := StopText[theUserResponse.Body]; ok {
 		//It's a stop word, stop the session
 		//Session update
 		theUserSession.TheSession.Ongoing = false
-		theUserSession.TheSession.UserResponses = append(theUserSession.TheSession.UserResponses, isStop)
+		theUserSession.TheSession.UserResponses = append(theUserSession.TheSession.UserResponses, val)
 		theUserSession.TheSession.DateUpdated = theTimeNow.Format("2006-01-02 15:04:05")
 		logInfo := "The User wants to stop session. Time: " + theUserSession.TheSession.DateUpdated + "\n" +
-			"User response: " + isStop
+			"User response: " + val
 		logWriter(logInfo)
+		fmt.Println(logInfo)
 		//userSession update
 		theUserSession.Active = false
 		theUserSession.EndTime = time.Now()
 		theUserSession.LogInfo = append(theUserSession.LogInfo, logInfo)
-		theUserSession.TheLearnRInfo.AllSessions = append(theUserSession.TheLearnRInfo.AllSessions,
-			theUserSession.TheSession)
+		/*
+			theUserSession.TheLearnRInfo.AllSessions = append(theUserSession.TheLearnRInfo.AllSessions,
+				theUserSession.TheSession)
+		*/
 		//LearnRInfo Update
 		theUserSession.TheLearnRInfo.DateUpdated = theTimeNow.Format("2006-01-02 15:04:05")
 		//Update the map
 		UserSessionActiveMap[theUserSession.LocalSessID] = theUserSession
 		//Add session information to session DB
-		wg.Add(1)
-		go fastAddLearnRSession(theUserSession.TheSession)
+		//wg.Add(1)
+		//go fastAddLearnRSession(theUserSession.TheSession)
 		//Add LearnRInfo to DB
-		wg.Add(1)
-		go fastUpdateLearnRInform(theUserSession.TheLearnRInfo)
+		//wg.Add(1)
+		//go fastUpdateLearnRInform(theUserSession.TheLearnRInfo)
 		//Remove from our maps
-		delete(UserSessionActiveMap, theUserSession.LocalSessID)
+		//delete(UserSessionActiveMap, theUserSession.LocalSessID)
 		//Removing Phone Num from active UserSession
-		delete(UserSessPhoneMap, theUserSession.PersonPhoneNum)
-		wg.Wait() //Need to make sure we can exit this function properly
+		//delete(UserSessPhoneMap, theUserSession.PersonPhoneNum)
+		//wg.Wait() //Need to make sure we can exit this function properly
 	} else {
 		//Not a stop; add to UserRSession
 		//Session Update
-		theUserSession.TheSession.UserResponses = append(theUserSession.TheSession.UserResponses, isStop)
+		theUserSession.TheSession.UserResponses = append(theUserSession.TheSession.UserResponses, val)
 		theUserSession.TheSession.DateUpdated = theTimeNow.Format("2006-01-02 15:04:05")
 		//User Session Update
 		logInfo := "User responsded with the following text: " + theUserResponse.Body + "\nTime: " + theUserSession.TheSession.DateUpdated
 		theUserSession.LogInfo = append(theUserSession.LogInfo, logInfo)
 		logWriter(logInfo)
+		fmt.Println(logInfo)
 		//Update the map
 		UserSessionActiveMap[theUserSession.LocalSessID] = theUserSession
 	}
