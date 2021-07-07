@@ -211,6 +211,7 @@ function visualCreator(intCurrently, learnrArray){
     sendLearnRButton.setAttribute("class", "sendButton");
     sendLearnRButton.setAttribute("name", "sendLearnRButton" + theInt.toString() + "7");
     sendLearnRButton.innerHTML = "Send LearnR";
+    sendLearnRButton.disabled = true; //Initially set as disabled
     sendLearnRButton.addEventListener('click', function(){
         var OurJSON = {
             TheUser: TheUser,
@@ -255,6 +256,13 @@ function visualCreator(intCurrently, learnrArray){
     //Phone Number
     fieldinputPersonPN.addEventListener('input', function(){
         var theText = fieldinputPersonPN.value.toString();
+        //Another check to see if numbers are too long
+        var theText = fieldinputPersonPN.value.toString();
+        if (theText.length > 11 || theText.length < 1) {
+            sendLearnRButton.disabled = true;
+        } else {
+            sendLearnRButton.disabled = false;
+        }
         //Check for illegal characters
         if (theText.includes("-") || theText.includes("+") || theText.includes(" ") || theText.includes(".") || theText.includes(",")) {
             console.log("Removing bad character.");
@@ -265,18 +273,23 @@ function visualCreator(intCurrently, learnrArray){
             theText = theText.replace(',', '');
             fieldinputPersonPN.value = Number(theText);
         }
-        //Another check to see if numbers are too long
-        var theText = fieldinputPersonPN.value.toString();
-        if (theText.length > 11 || theText.length < 1) {
-            sendLearnRButton.disabled = true;
-        } else {
-            sendLearnRButton.disabled = false;
-        }
     });
     //Person Name
-    fieldinputPersonName.addEventListener
+    fieldinputPersonName.addEventListener('input', function(){
+        if (fieldinputPersonName.value.length >= 1 && fieldinputPersonName.value.length <= 20){
+            sendLearnRButton.disabled = false;
+        } else {
+            sendLearnRButton.disabled = true;
+        }
+    });
     //Person Introduction
-
+    fieldinputIntroduction.addEventListener('input', function(){
+        if (fieldinputIntroduction.value.length >= 1 && fieldinputIntroduction.value.length <= 120){
+            sendLearnRButton.disabled = false;
+        } else {
+            sendLearnRButton.disabled = true;
+        }
+    });
 
 
     //Add the userLearnRSender to this hidden div
