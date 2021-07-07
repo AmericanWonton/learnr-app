@@ -56,9 +56,33 @@
 
         {{/* LearnR section */}}
         <div class="mainContentDiv" id="mainContentDiv">
+            <!-- Holds the search bar to look for learnrs in -->
             <div class="searchFieldDiv">
-
+                <!-- Title -->
+                <div class="searchbarTitle">
+                    <p class="titleTextP">Search For Your LearnR!</p>
+                </div>
+                <!-- Search Bar -->
+                <div class="searchBarDiv">
+                    <!-- LearnR Name -->
+                    <div class="inputHolder">
+                        <input type="text" class="searchInput" name="learnrName" placeholder="LearnRName" id="learnRNameInput"/>
+                    </div>
+                    <!-- LearnR Tag -->
+                    <div class="inputHolder">
+                        <input type="text" class="searchInput" name="leanrnrTag" placeholder="LearnRTag" id="learnRTagInput"/>
+                    </div>
+                    <!-- Submit Button -->
+                    <div class="inputHolder">
+                        <button class="actionDivButton" onclick="learnRSearch()">Search 4 LearnRs</button>
+                    </div>
+                    <!-- Result Div -->
+                    <div class="inputHolder">
+                        <p class="resultThing" id="resultThing"></p>
+                    </div>
+                </div>
             </div>
+            <!-- Holds all our LearnRs loaded in -->
             <div class="learnrHolderDiv" id="learnrHolderDiv" ng-show='caseData'>
                 
             </div>

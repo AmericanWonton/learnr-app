@@ -11,6 +11,7 @@ function addlearnRVisuals(learnrArray){
     }
 }
 
+/* This creates our divs and other learnR stuf for users to see. Called from addlearnRVisuals */
 function visualCreator(intCurrently, learnrArray){
     /* Create an array of bools for our button; this will determine if we can keep it disabled
     or not. 'True' means disabled for phone num, introduction, then person name */
@@ -449,4 +450,40 @@ app.controller('myCtrl', function($scope, $timeout) {
 window.addEventListener('DOMContentLoaded', function(){
     
 });
+
+//Used to control the search for LearnRs
+function learnRSearch(){
+    var learnRNameInput = document.getElementById("learnRNameInput");
+    var learnRTagInput = document.getElementById("learnRTagInput");
+    var resultThing = document.getElementById("resultThing");
+
+    var SearchJSON = {
+        TheNameInput: String(learnRNameInput.value),
+        TheTagInput: String(learnRTagInput.value)
+    };
+
+    //Send Ajax
+    var jsonString = JSON.stringify(SearchJSON); //Stringify Data
+    //Send Request to change page
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/searchLearnRs', true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.addEventListener('readystatechange', function(){
+        if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200){
+            var item = xhr.responseText;
+            var ReturnData = JSON.parse(item);
+            if (ReturnData.SuccessNum == 0){
+                /* Successful LearnR Search. Adding to front page*/
+                
+                setTimeout(() => { navigateHeader(3); }, 5000); //Delay 5, then reload page
+            } else {
+                /* Sending text to User unsuccessful. Inform User */
+                resultThing.innerHTML = "Error finding those LearnRs! " + ReturnData.Message;
+                learnRNameInput.value = "";
+                learnRTagInput.value = "";
+            }
+        }
+    });
+    xhr.send(jsonString);
+}
 

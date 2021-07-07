@@ -38,6 +38,7 @@ func handleRequests() {
 	myRouter.HandleFunc("/canLogin", canLogin).Methods("POST")                       //Check User Login
 	myRouter.HandleFunc("/createUser", createUser).Methods("POST")                   //Create User
 	myRouter.HandleFunc("/canSendLearnR", canSendLearnR).Methods("POST")             //Send LearnR
+	myRouter.HandleFunc("/searchLearnRs", searchLearnRs).Methods("POST")             //Send LearnR
 	//Used for Learnr functions
 	myRouter.HandleFunc("/giveAllLearnrDisplay", giveAllLearnrDisplay).Methods("GET") //Get Learnrs for display
 	//Serve our static files

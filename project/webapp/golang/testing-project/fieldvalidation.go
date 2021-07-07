@@ -747,3 +747,8 @@ func canSendLearnR(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Fprint(w, string(theJSONMessage))
 }
+
+/* Calls our CRUD API to narrow our search down */
+func searchLearnRs(w http.ResponseWriter, r *http.Request) {
+
+}

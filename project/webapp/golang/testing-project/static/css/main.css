@@ -476,6 +476,71 @@ body, html {
     color: black;
 }
 
+/* MainPage Styling */
+.searchFieldDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    width: 100%;
+    /* styling */
+    padding: .3em;
+    border: 2px solid black;
+}
+
+.searchbarTitle{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    /* styling */
+    padding: .3em;
+    border: 2px solid black;
+}
+
+.titleTextP{
+    font-size: 3rem;
+    text-align: center;
+}
+
+.searchBarDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    /* styling */
+    padding: .1em;
+    border: 1px solid black;
+}
+
+.inputHolder{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    width: 45%;
+    /* styling */
+
+    /* debug */
+}
+
+.searchInput{
+
+}
+
+.resultThing{
+    font-size: 2rem;
+    text-align: center;
+}
+
 /* LearnR Div Holder styling */
 .learnrHolderDiv{
     /* flexbox styling */
