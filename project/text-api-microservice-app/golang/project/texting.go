@@ -491,6 +491,37 @@ func sendText(textOrder int, toNumString string, fromNumString string, textBody 
 					actOnTextSent(theUserSess, responseNone)
 				}
 			}
+		} else if strings.Contains(strings.ToLower(twilErrorResponse.Message), strings.ToLower("not a valid")) {
+			//Not a valid phone number...ending session
+			notPhoneErr := "This number, " + toNumString + " is not a valid phone number. Stopping session for number"
+			resultMessages = append(resultMessages, notPhoneErr)
+			fmt.Println(notPhoneErr)
+			/* stopping phone session for this number */
+			fromTextedNum := strings.ReplaceAll(toNumString, "+", "")
+			goodPhoneGet, userSessID := phoneSessionMapOk(fromTextedNum)
+			if !goodPhoneGet {
+				err := "Phone number, (" + toNumString + "), not found in session"
+				logWriter(err)
+				fmt.Println(err)
+				fmt.Printf("DEBUG: Here is our map: %v\n and here is our user sess map: %v\n", UserSessPhoneMap, UserSessionActiveMap)
+				resultMessages = append(resultMessages, err)
+			} else {
+				//Phone Session still active; need to cancel it
+				okayuserSess, theUserSess := getSessionMapOk(userSessID)
+				if !okayuserSess {
+					msg := "Could not find an active User Session"
+					logWriter(msg)
+					fmt.Println(msg)
+					resultMessages = append(resultMessages, msg)
+				} else {
+					//Found active User Session; determine what needs to be done with it
+					responseNone := ResponseText{
+						From: toNumString,
+						Body: "STOP",
+					}
+					actOnTextSent(theUserSess, responseNone)
+				}
+			}
 		}
 
 		//Check to see if theErr is nil
@@ -621,36 +652,11 @@ func actOnTextSent(theUserSession UserSession, theUserResponse ResponseText) {
 	if val, ok := StopText[theUserResponse.Body]; ok {
 		//It's a stop word, stop the session
 		//Session update
-		theUserSession.TheSession.Ongoing = false
-		theUserSession.TheSession.UserResponses = append(theUserSession.TheSession.UserResponses, val)
-		theUserSession.TheSession.DateUpdated = theTimeNow.Format("2006-01-02 15:04:05")
-		logInfo := "The User wants to stop session. Time: " + theUserSession.TheSession.DateUpdated + "\n" +
-			"User response: " + val
-		logWriter(logInfo)
-		fmt.Println(logInfo)
-		//userSession update
 		theUserSession.Active = false
+		theUserSession.TheSession.Ongoing = false
 		theUserSession.EndTime = time.Now()
-		theUserSession.LogInfo = append(theUserSession.LogInfo, logInfo)
-		/*
-			theUserSession.TheLearnRInfo.AllSessions = append(theUserSession.TheLearnRInfo.AllSessions,
-				theUserSession.TheSession)
-		*/
-		//LearnRInfo Update
-		theUserSession.TheLearnRInfo.DateUpdated = theTimeNow.Format("2006-01-02 15:04:05")
-		//Update the map
+		theUserSession.TheSession.DateUpdated = theTimeNow.Format("2006-01-02 15:04:05")
 		UserSessionActiveMap[theUserSession.LocalSessID] = theUserSession
-		//Add session information to session DB
-		//wg.Add(1)
-		//go fastAddLearnRSession(theUserSession.TheSession)
-		//Add LearnRInfo to DB
-		//wg.Add(1)
-		//go fastUpdateLearnRInform(theUserSession.TheLearnRInfo)
-		//Remove from our maps
-		//delete(UserSessionActiveMap, theUserSession.LocalSessID)
-		//Removing Phone Num from active UserSession
-		//delete(UserSessPhoneMap, theUserSession.PersonPhoneNum)
-		//wg.Wait() //Need to make sure we can exit this function properly
 	} else {
 		//Not a stop; add to UserRSession
 		//Session Update
