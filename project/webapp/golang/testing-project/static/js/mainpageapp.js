@@ -12,6 +12,10 @@ function addlearnRVisuals(learnrArray){
 }
 
 function visualCreator(intCurrently, learnrArray){
+    /* Create an array of bools for our button; this will determine if we can keep it disabled
+    or not. 'True' means disabled for phone num, introduction, then person name */
+    var submitDisablers = [true, true, true];
+
     var theInt = Number(intCurrently);
     //Get our variables we need declared
     var learnrHolderDiv = document.getElementById("learnrHolderDiv");
@@ -259,9 +263,15 @@ function visualCreator(intCurrently, learnrArray){
         //Another check to see if numbers are too long
         var theText = fieldinputPersonPN.value.toString();
         if (theText.length > 11 || theText.length < 1) {
+            submitDisablers[0] = true;
             sendLearnRButton.disabled = true;
         } else {
-            sendLearnRButton.disabled = false;
+            submitDisablers[0] = false;
+            if (submitDisablers[1] == false && submitDisablers[2] == false){
+                sendLearnRButton.disabled = false;
+            } else {
+                sendLearnRButton.disabled = true;
+            }
         }
         //Check for illegal characters
         if (theText.includes("-") || theText.includes("+") || theText.includes(" ") || theText.includes(".") || theText.includes(",")) {
@@ -277,16 +287,28 @@ function visualCreator(intCurrently, learnrArray){
     //Person Name
     fieldinputPersonName.addEventListener('input', function(){
         if (fieldinputPersonName.value.length >= 1 && fieldinputPersonName.value.length <= 20){
-            sendLearnRButton.disabled = false;
+            submitDisablers[1] = false;
+            if (submitDisablers[0] == false && submitDisablers[2] == false){
+                sendLearnRButton.disabled = false;
+            } else {
+                sendLearnRButton.disabled = true;
+            }
         } else {
+            submitDisablers[1] = true;
             sendLearnRButton.disabled = true;
         }
     });
     //Person Introduction
     fieldinputIntroduction.addEventListener('input', function(){
         if (fieldinputIntroduction.value.length >= 1 && fieldinputIntroduction.value.length <= 120){
-            sendLearnRButton.disabled = false;
+            submitDisablers[2] = false;
+            if (submitDisablers[0] == false && submitDisablers[1] == false){
+                sendLearnRButton.disabled = false;
+            } else {
+                sendLearnRButton.disabled = true;
+            }
         } else {
+            submitDisablers[2] = true;
             sendLearnRButton.disabled = true;
         }
     });
@@ -358,9 +380,10 @@ function visualCreator(intCurrently, learnrArray){
             //textDropDownDiv.style.backgroundImage = 'url(static/images/svg/downarrow.svg)'; //Set Image
             allTextHolder.style.display = "none";
             userLearnRSender.style.display = "none";
-            //console.log("DEBUG: Hiding this 'allTExtHolder': " + allTextHolder.getAttribute("id"));
         }
     });
+
+    
     /* DEBUG PRINTING */
 }
 
