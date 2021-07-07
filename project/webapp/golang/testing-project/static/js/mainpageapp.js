@@ -5,7 +5,6 @@ var displayedTexts = [];
 /* This takes the learnr array we've created and begins to list it on our page.
 Divs will be created, being added into 'learnrHolderDiv'*/
 function addlearnRVisuals(learnrArray){
-    
     /* Loop through our array to create divs/other properties */
     for (var n = 0; n < learnrArray.length; n++) {
         visualCreator(n, learnrArray);
@@ -146,7 +145,7 @@ function visualCreator(intCurrently, learnrArray){
     fieldinputPersonPN.setAttribute("id", "fieldinputPersonPN" + theInt.toString() + "3");
     fieldinputPersonPN.setAttribute("class", "fieldInput");
     fieldinputPersonPN.setAttribute("name", "fieldinputPersonPN" + theInt.toString() + "3");
-    fieldinputPersonPN.setAttribute("type", "text");
+    fieldinputPersonPN.setAttribute("type", "number");
     fieldinputPersonPN.setAttribute("maxlength", "11");
     fieldinputPersonPN.setAttribute("minlength", "11");
     fieldinputPersonPN.setAttribute("placeholder", "E.g. 13459780123");
@@ -218,7 +217,7 @@ function visualCreator(intCurrently, learnrArray){
             TheLearnR: learnrArray[theInt],
             TheLearnRInfo: {},
             PersonName: String(fieldinputPersonName.value),
-            PersonPhoneNum: String(fieldinputPersonPN.value),
+            PersonPhoneNum: String(fieldinputPersonPN.value.toString()),
             Introduction: String(fieldinputIntroduction.value)
         };
         //Send Ajax
@@ -252,7 +251,31 @@ function visualCreator(intCurrently, learnrArray){
     //Attach this field
     userLearnRSender.appendChild(theFieldDiv);
 
-
+    /* Add event listeners that will disable our button above if they have the wrong in put */
+    //Phone Number
+    fieldinputPersonPN.addEventListener('input', function(){
+        var theText = fieldinputPersonPN.value.toString();
+        //Check for illegal characters
+        if (theText.includes("-") || theText.includes("+") || theText.includes(" ") || theText.includes(".") || theText.includes(",")) {
+            console.log("Removing bad character.");
+            theText = theText.replace('-', '');
+            theText = theText.replace('+', '');
+            theText = theText.replace(' ', '');
+            theText = theText.replace('.', '');
+            theText = theText.replace(',', '');
+            fieldinputPersonPN.value = Number(theText);
+        }
+        //Another check to see if numbers are too long
+        var theText = fieldinputPersonPN.value.toString();
+        if (theText.length > 11 || theText.length < 1) {
+            sendLearnRButton.disabled = true;
+        } else {
+            sendLearnRButton.disabled = false;
+        }
+    });
+    //Person Name
+    fieldinputPersonName.addEventListener
+    //Person Introduction
 
 
 
