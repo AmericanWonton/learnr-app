@@ -5,7 +5,6 @@ var displayedTexts = [];
 /* This takes the learnr array we've created and begins to list it on our page.
 Divs will be created, being added into 'learnrHolderDiv'*/
 function addlearnRVisuals(learnrArray){
-    
     /* Loop through our array to create divs/other properties */
     for (var n = 0; n < learnrArray.length; n++) {
         visualCreator(n, learnrArray);
@@ -13,6 +12,10 @@ function addlearnRVisuals(learnrArray){
 }
 
 function visualCreator(intCurrently, learnrArray){
+    /* Create an array of bools for our button; this will determine if we can keep it disabled
+    or not. 'True' means disabled for phone num, introduction, then person name */
+    var submitDisablers = [true, true, true];
+
     var theInt = Number(intCurrently);
     //Get our variables we need declared
     var learnrHolderDiv = document.getElementById("learnrHolderDiv");
@@ -146,7 +149,7 @@ function visualCreator(intCurrently, learnrArray){
     fieldinputPersonPN.setAttribute("id", "fieldinputPersonPN" + theInt.toString() + "3");
     fieldinputPersonPN.setAttribute("class", "fieldInput");
     fieldinputPersonPN.setAttribute("name", "fieldinputPersonPN" + theInt.toString() + "3");
-    fieldinputPersonPN.setAttribute("type", "text");
+    fieldinputPersonPN.setAttribute("type", "number");
     fieldinputPersonPN.setAttribute("maxlength", "11");
     fieldinputPersonPN.setAttribute("minlength", "11");
     fieldinputPersonPN.setAttribute("placeholder", "E.g. 13459780123");
@@ -212,13 +215,14 @@ function visualCreator(intCurrently, learnrArray){
     sendLearnRButton.setAttribute("class", "sendButton");
     sendLearnRButton.setAttribute("name", "sendLearnRButton" + theInt.toString() + "7");
     sendLearnRButton.innerHTML = "Send LearnR";
+    sendLearnRButton.disabled = true; //Initially set as disabled
     sendLearnRButton.addEventListener('click', function(){
         var OurJSON = {
             TheUser: TheUser,
             TheLearnR: learnrArray[theInt],
             TheLearnRInfo: {},
             PersonName: String(fieldinputPersonName.value),
-            PersonPhoneNum: String(fieldinputPersonPN.value),
+            PersonPhoneNum: String(fieldinputPersonPN.value.toString()),
             Introduction: String(fieldinputIntroduction.value)
         };
         //Send Ajax
@@ -252,8 +256,62 @@ function visualCreator(intCurrently, learnrArray){
     //Attach this field
     userLearnRSender.appendChild(theFieldDiv);
 
-
-
+    /* Add event listeners that will disable our button above if they have the wrong in put */
+    //Phone Number
+    fieldinputPersonPN.addEventListener('input', function(){
+        var theText = fieldinputPersonPN.value.toString();
+        //Another check to see if numbers are too long
+        var theText = fieldinputPersonPN.value.toString();
+        if (theText.length > 11 || theText.length < 1) {
+            submitDisablers[0] = true;
+            sendLearnRButton.disabled = true;
+        } else {
+            submitDisablers[0] = false;
+            if (submitDisablers[1] == false && submitDisablers[2] == false){
+                sendLearnRButton.disabled = false;
+            } else {
+                sendLearnRButton.disabled = true;
+            }
+        }
+        //Check for illegal characters
+        if (theText.includes("-") || theText.includes("+") || theText.includes(" ") || theText.includes(".") || theText.includes(",")) {
+            console.log("Removing bad character.");
+            theText = theText.replace('-', '');
+            theText = theText.replace('+', '');
+            theText = theText.replace(' ', '');
+            theText = theText.replace('.', '');
+            theText = theText.replace(',', '');
+            fieldinputPersonPN.value = Number(theText);
+        }
+    });
+    //Person Name
+    fieldinputPersonName.addEventListener('input', function(){
+        if (fieldinputPersonName.value.length >= 1 && fieldinputPersonName.value.length <= 20){
+            submitDisablers[1] = false;
+            if (submitDisablers[0] == false && submitDisablers[2] == false){
+                sendLearnRButton.disabled = false;
+            } else {
+                sendLearnRButton.disabled = true;
+            }
+        } else {
+            submitDisablers[1] = true;
+            sendLearnRButton.disabled = true;
+        }
+    });
+    //Person Introduction
+    fieldinputIntroduction.addEventListener('input', function(){
+        if (fieldinputIntroduction.value.length >= 1 && fieldinputIntroduction.value.length <= 120){
+            submitDisablers[2] = false;
+            if (submitDisablers[0] == false && submitDisablers[1] == false){
+                sendLearnRButton.disabled = false;
+            } else {
+                sendLearnRButton.disabled = true;
+            }
+        } else {
+            submitDisablers[2] = true;
+            sendLearnRButton.disabled = true;
+        }
+    });
 
 
     //Add the userLearnRSender to this hidden div
@@ -322,9 +380,10 @@ function visualCreator(intCurrently, learnrArray){
             //textDropDownDiv.style.backgroundImage = 'url(static/images/svg/downarrow.svg)'; //Set Image
             allTextHolder.style.display = "none";
             userLearnRSender.style.display = "none";
-            //console.log("DEBUG: Hiding this 'allTExtHolder': " + allTextHolder.getAttribute("id"));
         }
     });
+
+    
     /* DEBUG PRINTING */
 }
 
