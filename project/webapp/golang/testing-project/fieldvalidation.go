@@ -750,5 +750,38 @@ func canSendLearnR(w http.ResponseWriter, r *http.Request) {
 
 /* Calls our CRUD API to narrow our search down */
 func searchLearnRs(w http.ResponseWriter, r *http.Request) {
+	//Declare Ajax return statements to be sent back
+	type SuccessMSG struct {
+		Message    string `json:"Message"`
+		SuccessNum int    `json:"SuccessNum"`
+	}
+	theSuccMessage := SuccessMSG{
+		Message:    "LearnR sent successfully",
+		SuccessNum: 0,
+	}
 
+	//Declare struct we are expecting
+	type SearchJSON struct {
+		TheNameInput string `json:"TheNameInput"`
+		TheTagInput  string `json:"TheTagInput"`
+	}
+	//Get the byte slice from the request
+	bs, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		fmt.Println(err)
+		logWriter(err.Error())
+	}
+
+	//Marshal it into our type
+	var searchJSON SearchJSON
+	json.Unmarshal(bs, &searchJSON)
+
+	/* Send the response back to Ajax */
+	theJSONMessage, err := json.Marshal(theSuccMessage)
+	//Send the response back
+	if err != nil {
+		errIs := "Error formatting JSON for return in createUser: " + err.Error()
+		logWriter(errIs)
+	}
+	fmt.Fprint(w, string(theJSONMessage))
 }

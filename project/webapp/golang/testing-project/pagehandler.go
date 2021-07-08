@@ -71,7 +71,7 @@ func mainpage(w http.ResponseWriter, r *http.Request) {
 	//Erase the learnrs loaded
 	displayLearnrs = nil
 	aUser := getUser(w, r)
-	theLearnRs, goodGet, message := getSpecialLearnRs()
+	theLearnRs, goodGet, message := getSpecialLearnRs([]int{0, 1, 1, 1}, "", "", 0, 0)
 	if !goodGet {
 		logWriter("Issue getting Learnrs for this page: " + message)
 		http.Redirect(w, r, "/", http.StatusSeeOther)

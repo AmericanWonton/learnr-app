@@ -1597,7 +1597,8 @@ func callDeleteLearnRInform(theid int) (bool, string) {
 These are opertaions a little out of the norm or for one-off functions */
 
 /* This takes in criteria from User on 'mainpage' to get a unique set of LearnRs for display */
-func getSpecialLearnRs() ([]Learnr, bool, string) {
+func getSpecialLearnRs(theCases []int, theTag string, learnrName string, entryFrom int,
+	entryTo int) ([]Learnr, bool, string) {
 	goodAdd, message := true, ""
 	theLearnRReturned := []Learnr{}
 
@@ -1616,12 +1617,12 @@ func getSpecialLearnRs() ([]Learnr, bool, string) {
 	}
 	/* debug value for getting all these cases*/
 	theSpecialCases := TheSpecialCases{
-		CaseSearch:       []int{0, 1, 1, 1},
+		CaseSearch:       theCases,
 		OrganizationName: "",
-		Tag:              "",
-		LearnRName:       "",
-		EntryAmountFrom:  0,
-		EntryAmountTo:    0,
+		Tag:              theTag,
+		LearnRName:       learnrName,
+		EntryAmountFrom:  entryFrom,
+		EntryAmountTo:    entryTo,
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)

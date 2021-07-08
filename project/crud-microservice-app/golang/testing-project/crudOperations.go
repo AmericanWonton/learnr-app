@@ -1214,6 +1214,13 @@ func specialLearnRGive(w http.ResponseWriter, req *http.Request) {
 		if theitem.CaseSearch[0] == 0 {
 			//Do nothing, just get all Learnrs
 		}
+		if theitem.CaseSearch[1] == 1 {
+			bson.M{
+				"tags": bson.M{
+					"$eq": theitem.Tag, // check if bool field has value of 'false'
+				},
+			}
+		}
 		/*DEBUG: Add cases later for more criteria */
 		/* Run the mongo query after fixed filter/findoptions */
 		find, err := collection.Find(theContext, theFilter, findOptions)
