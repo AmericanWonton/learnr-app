@@ -1217,7 +1217,7 @@ func specialLearnRGive(w http.ResponseWriter, req *http.Request) {
 		if theitem.CaseSearch[1] == 1 {
 			bson.M{
 				"tags": bson.M{
-					"$eq": theitem.Tag, // check if bool field has value of 'false'
+					"$eq": theitem.Tag,
 				},
 			}
 		}
