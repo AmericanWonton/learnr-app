@@ -11,6 +11,18 @@ function addlearnRVisuals(learnrArray){
     }
 }
 
+/* This is called whenever User searches for a specific learnr;
+we delete all the learnrs on a page and populate it with what
+their search returns. */
+function rePopulateLearnRs(learnrArray){
+    //Get our variables we need declared
+    var learnrHolderDiv = document.getElementById("learnrHolderDiv");
+    //Delete all variables within
+    learnrHolderDiv.innerHTML = "";
+    addlearnRVisuals(learnrArray); //Repopulate with the new learnrs
+}
+
+/* This creates our divs and other learnR stuf for users to see. Called from addlearnRVisuals */
 function visualCreator(intCurrently, learnrArray){
     /* Create an array of bools for our button; this will determine if we can keep it disabled
     or not. 'True' means disabled for phone num, introduction, then person name */
@@ -449,4 +461,66 @@ app.controller('myCtrl', function($scope, $timeout) {
 window.addEventListener('DOMContentLoaded', function(){
     
 });
+
+//Used to control the search for LearnRs
+function learnRSearch(){
+    var learnRNameInput = document.getElementById("learnRNameInput");
+    var learnRTagInput = document.getElementById("learnRTagInput");
+    var resultThing = document.getElementById("resultThing");
+
+    
+    var SearchJSON = {
+        TheNameInput: String(learnRNameInput.value),
+        TheTagInput: String(learnRTagInput.value)
+    };
+
+    resultThing.innerHTML = "Sorry, still working on this feature..."; //Debug print
+    
+   /*
+    var TheSpecialCases = {
+        CaseSearch: [0,1,1,1],
+        OrganizationName: String(""),
+        Tag: String(learnRTagInput.value),
+        LearnRName: String(learnRNameInput.value),
+        EntryAmountFrom: Number(0),
+        EntryAmountTo: Number(0)
+    };
+
+    if (String(learnRTagInput.value).length > 0){
+        TheSpecialCases.CaseSearch[1] = 0;
+    }
+    if (String(learnRNameInput.value).length > 0){
+        TheSpecialCases.CaseSearch[2] = 0;
+    }
+    */
+
+    //console.log("DEBUG: Here is special cases: " + TheSpecialCases);
+    //Send Ajax
+    //var jsonString = JSON.stringify(SearchJSON); //Stringify Data
+    //Send Request to change page
+    /*
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/searchLearnRs', true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.addEventListener('readystatechange', function(){
+        if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200){
+            var item = xhr.responseText;
+            var ReturnData = JSON.parse(item);
+            if (ReturnData.SuccessNum == 0){
+                
+                learnRNameInput.value = "";
+                learnRTagInput.value = "";
+                //Repopulate learnrs
+                rePopulateLearnRs(ReturnData.ReturnLearnRs);
+            } else {
+                
+                resultThing.innerHTML = "Error finding those LearnRs! " + ReturnData.Message;
+                learnRNameInput.value = "";
+                learnRTagInput.value = "";
+            }
+        }
+    });
+    xhr.send(jsonString);
+    */
+}
 

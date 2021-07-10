@@ -1597,7 +1597,8 @@ func callDeleteLearnRInform(theid int) (bool, string) {
 These are opertaions a little out of the norm or for one-off functions */
 
 /* This takes in criteria from User on 'mainpage' to get a unique set of LearnRs for display */
-func getSpecialLearnRs() ([]Learnr, bool, string) {
+func getSpecialLearnRs(theCases []int, theTag string, learnrName string, entryFrom int,
+	entryTo int) ([]Learnr, bool, string) {
 	goodAdd, message := true, ""
 	theLearnRReturned := []Learnr{}
 
@@ -1616,15 +1617,15 @@ func getSpecialLearnRs() ([]Learnr, bool, string) {
 	}
 	/* debug value for getting all these cases*/
 	theSpecialCases := TheSpecialCases{
-		CaseSearch:       []int{0, 1, 1, 1},
+		CaseSearch:       theCases,
 		OrganizationName: "",
-		Tag:              "",
-		LearnRName:       "",
-		EntryAmountFrom:  0,
-		EntryAmountTo:    0,
+		Tag:              theTag,
+		LearnRName:       learnrName,
+		EntryAmountFrom:  entryFrom,
+		EntryAmountTo:    entryTo,
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 	/* 2. Marshal test case to JSON expect */
 	theJSONMessage, err := json.Marshal(theSpecialCases)
@@ -1636,6 +1637,9 @@ func getSpecialLearnRs() ([]Learnr, bool, string) {
 	/* 3. Create Post to JSON */
 	payload := strings.NewReader(string(theJSONMessage))
 	req, err := http.NewRequest("POST", GETSPECIALLEARNR, payload)
+	if err == nil {
+		fmt.Printf("DEBUG: Err is nil\n")
+	}
 	if err != nil {
 		theErr := "There was an error posting getting special LearnRs: " + err.Error()
 		fmt.Println(theErr)
@@ -1645,15 +1649,20 @@ func getSpecialLearnRs() ([]Learnr, bool, string) {
 	req.Header.Add("Content-Type", "application/json")
 	/* 4. Get response from Post */
 	resp, err := http.DefaultClient.Do(req.WithContext(ctx))
-	if resp.StatusCode >= 300 || resp.StatusCode <= 199 {
-		theErr := "Failed response from getspecialLearnrs: " + strconv.Itoa(resp.StatusCode)
-		logWriter(theErr)
-		goodAdd, message = false, theErr
-	} else if err != nil {
+	if err == nil {
+		fmt.Printf("DEBUG: Err is nil in response\n")
+	}
+	if err != nil {
 		theErr := "Failed response from getspecialLearnrs: " + strconv.Itoa(resp.StatusCode) + " " + err.Error()
 		logWriter(theErr)
 		goodAdd, message = false, theErr
+	} else if resp.StatusCode >= 300 || resp.StatusCode <= 199 {
+		theErr := "Failed response from getspecialLearnrs: " + strconv.Itoa(resp.StatusCode)
+		logWriter(theErr)
+		goodAdd, message = false, theErr
 	}
+	req.Body.Close()
+	fmt.Printf("DEBUG: We got here in getSpecialLearnrs\n")
 	//Declare message we expect to see returned
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
@@ -1669,6 +1678,7 @@ func getSpecialLearnRs() ([]Learnr, bool, string) {
 	}
 	var returnedMessage ReturnMessage
 	json.Unmarshal(body, &returnedMessage)
+	resp.Body.Close()
 	/* 5. Evaluate response in returnedMessage */
 	if returnedMessage.SuccOrFail != 0 {
 		theErr := ""

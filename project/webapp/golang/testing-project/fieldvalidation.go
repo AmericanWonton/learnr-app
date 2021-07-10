@@ -747,3 +747,64 @@ func canSendLearnR(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Fprint(w, string(theJSONMessage))
 }
+
+/* Calls our CRUD API to narrow our search down */
+func searchLearnRs(w http.ResponseWriter, r *http.Request) {
+	//Declare Ajax return statements to be sent back
+	type SuccessMSG struct {
+		Message       string   `json:"Message"`
+		SuccessNum    int      `json:"SuccessNum"`
+		ReturnLearnRs []Learnr `json:"ReturnLearnRs"`
+	}
+	theSuccMessage := SuccessMSG{
+		Message:       "LearnR got successfully",
+		SuccessNum:    0,
+		ReturnLearnRs: []Learnr{},
+	}
+
+	//Declare struct we are expecting
+	type SearchJSON struct {
+		TheNameInput string `json:"TheNameInput"`
+		TheTagInput  string `json:"TheTagInput"`
+	}
+	//Get the byte slice from the request
+	bs, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		fmt.Println(err)
+		logWriter(err.Error())
+	}
+
+	//Marshal it into our type
+	var searchJSON SearchJSON
+	json.Unmarshal(bs, &searchJSON)
+
+	/* Build the neccessary special cases to pass into 'getSpecialLearnRs'.
+	If both fields are blank, just get everything */
+	theCases := []int{0, 1, 1, 1}
+
+	if len(searchJSON.TheNameInput) > 0 {
+		theCases[1] = 0 //Search with Tag
+	}
+	if len(searchJSON.TheTagInput) > 0 {
+		theCases[2] = 0 //Search with LearnR Name
+	}
+
+	newLearnRs, goodGet, message := getSpecialLearnRs(theCases, searchJSON.TheTagInput, searchJSON.TheNameInput, 0, 0)
+
+	if !goodGet {
+		fmt.Println("Bad LearnR search: " + message)
+		theSuccMessage.SuccessNum = 1
+		theSuccMessage.Message = "Bad LearnR search: " + message
+	} else {
+		theSuccMessage.ReturnLearnRs = newLearnRs
+	}
+
+	/* Send the response back to Ajax */
+	theJSONMessage, err := json.Marshal(theSuccMessage)
+	//Send the response back
+	if err != nil {
+		errIs := "Error formatting JSON for return in createUser: " + err.Error()
+		logWriter(errIs)
+	}
+	fmt.Fprint(w, string(theJSONMessage))
+}
