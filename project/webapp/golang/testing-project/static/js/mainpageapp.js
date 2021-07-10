@@ -11,6 +11,17 @@ function addlearnRVisuals(learnrArray){
     }
 }
 
+/* This is called whenever User searches for a specific learnr;
+we delete all the learnrs on a page and populate it with what
+their search returns. */
+function rePopulateLearnRs(learnrArray){
+    //Get our variables we need declared
+    var learnrHolderDiv = document.getElementById("learnrHolderDiv");
+    //Delete all variables within
+    learnrHolderDiv.innerHTML = "";
+    addlearnRVisuals(learnrArray); //Repopulate with the new learnrs
+}
+
 /* This creates our divs and other learnR stuf for users to see. Called from addlearnRVisuals */
 function visualCreator(intCurrently, learnrArray){
     /* Create an array of bools for our button; this will determine if we can keep it disabled
@@ -474,8 +485,10 @@ function learnRSearch(){
             var ReturnData = JSON.parse(item);
             if (ReturnData.SuccessNum == 0){
                 /* Successful LearnR Search. Adding to front page*/
-                
-                setTimeout(() => { navigateHeader(3); }, 5000); //Delay 5, then reload page
+                learnRNameInput.value = "";
+                learnRTagInput.value = "";
+                //Repopulate learnrs
+                rePopulateLearnRs(ReturnData.ReturnLearnRs);
             } else {
                 /* Sending text to User unsuccessful. Inform User */
                 resultThing.innerHTML = "Error finding those LearnRs! " + ReturnData.Message;
