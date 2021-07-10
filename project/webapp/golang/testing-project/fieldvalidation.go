@@ -781,12 +781,14 @@ func searchLearnRs(w http.ResponseWriter, r *http.Request) {
 	/* Build the neccessary special cases to pass into 'getSpecialLearnRs'.
 	If both fields are blank, just get everything */
 	theCases := []int{0, 1, 1, 1}
+
 	if len(searchJSON.TheNameInput) > 0 {
 		theCases[1] = 0 //Search with Tag
 	}
 	if len(searchJSON.TheTagInput) > 0 {
 		theCases[2] = 0 //Search with LearnR Name
 	}
+
 	newLearnRs, goodGet, message := getSpecialLearnRs(theCases, searchJSON.TheTagInput, searchJSON.TheNameInput, 0, 0)
 
 	if !goodGet {

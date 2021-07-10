@@ -468,14 +468,37 @@ function learnRSearch(){
     var learnRTagInput = document.getElementById("learnRTagInput");
     var resultThing = document.getElementById("resultThing");
 
+    
     var SearchJSON = {
         TheNameInput: String(learnRNameInput.value),
         TheTagInput: String(learnRTagInput.value)
     };
 
+    resultThing.innerHTML = "Sorry, still working on this feature..."; //Debug print
+    
+   /*
+    var TheSpecialCases = {
+        CaseSearch: [0,1,1,1],
+        OrganizationName: String(""),
+        Tag: String(learnRTagInput.value),
+        LearnRName: String(learnRNameInput.value),
+        EntryAmountFrom: Number(0),
+        EntryAmountTo: Number(0)
+    };
+
+    if (String(learnRTagInput.value).length > 0){
+        TheSpecialCases.CaseSearch[1] = 0;
+    }
+    if (String(learnRNameInput.value).length > 0){
+        TheSpecialCases.CaseSearch[2] = 0;
+    }
+    */
+
+    //console.log("DEBUG: Here is special cases: " + TheSpecialCases);
     //Send Ajax
-    var jsonString = JSON.stringify(SearchJSON); //Stringify Data
+    //var jsonString = JSON.stringify(SearchJSON); //Stringify Data
     //Send Request to change page
+    /*
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '/searchLearnRs', true);
     xhr.setRequestHeader("Content-Type", "application/json");
@@ -484,13 +507,13 @@ function learnRSearch(){
             var item = xhr.responseText;
             var ReturnData = JSON.parse(item);
             if (ReturnData.SuccessNum == 0){
-                /* Successful LearnR Search. Adding to front page*/
+                
                 learnRNameInput.value = "";
                 learnRTagInput.value = "";
                 //Repopulate learnrs
                 rePopulateLearnRs(ReturnData.ReturnLearnRs);
             } else {
-                /* Sending text to User unsuccessful. Inform User */
+                
                 resultThing.innerHTML = "Error finding those LearnRs! " + ReturnData.Message;
                 learnRNameInput.value = "";
                 learnRTagInput.value = "";
@@ -498,5 +521,6 @@ function learnRSearch(){
         }
     });
     xhr.send(jsonString);
+    */
 }
 

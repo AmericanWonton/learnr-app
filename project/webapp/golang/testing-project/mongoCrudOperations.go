@@ -1625,7 +1625,7 @@ func getSpecialLearnRs(theCases []int, theTag string, learnrName string, entryFr
 		EntryAmountTo:    entryTo,
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 	/* 2. Marshal test case to JSON expect */
 	theJSONMessage, err := json.Marshal(theSpecialCases)
@@ -1637,6 +1637,9 @@ func getSpecialLearnRs(theCases []int, theTag string, learnrName string, entryFr
 	/* 3. Create Post to JSON */
 	payload := strings.NewReader(string(theJSONMessage))
 	req, err := http.NewRequest("POST", GETSPECIALLEARNR, payload)
+	if err == nil {
+		fmt.Printf("DEBUG: Err is nil\n")
+	}
 	if err != nil {
 		theErr := "There was an error posting getting special LearnRs: " + err.Error()
 		fmt.Println(theErr)
@@ -1646,15 +1649,20 @@ func getSpecialLearnRs(theCases []int, theTag string, learnrName string, entryFr
 	req.Header.Add("Content-Type", "application/json")
 	/* 4. Get response from Post */
 	resp, err := http.DefaultClient.Do(req.WithContext(ctx))
-	if resp.StatusCode >= 300 || resp.StatusCode <= 199 {
-		theErr := "Failed response from getspecialLearnrs: " + strconv.Itoa(resp.StatusCode)
-		logWriter(theErr)
-		goodAdd, message = false, theErr
-	} else if err != nil {
+	if err == nil {
+		fmt.Printf("DEBUG: Err is nil in response\n")
+	}
+	if err != nil {
 		theErr := "Failed response from getspecialLearnrs: " + strconv.Itoa(resp.StatusCode) + " " + err.Error()
 		logWriter(theErr)
 		goodAdd, message = false, theErr
+	} else if resp.StatusCode >= 300 || resp.StatusCode <= 199 {
+		theErr := "Failed response from getspecialLearnrs: " + strconv.Itoa(resp.StatusCode)
+		logWriter(theErr)
+		goodAdd, message = false, theErr
 	}
+	req.Body.Close()
+	fmt.Printf("DEBUG: We got here in getSpecialLearnrs\n")
 	//Declare message we expect to see returned
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
@@ -1670,6 +1678,7 @@ func getSpecialLearnRs(theCases []int, theTag string, learnrName string, entryFr
 	}
 	var returnedMessage ReturnMessage
 	json.Unmarshal(body, &returnedMessage)
+	resp.Body.Close()
 	/* 5. Evaluate response in returnedMessage */
 	if returnedMessage.SuccOrFail != 0 {
 		theErr := ""
