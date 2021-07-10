@@ -26,7 +26,9 @@ var funcMap = template.FuncMap{
 func init() {
 	//Get Environment Variables
 	loadInMicroServiceURL()
-	usernameMap = make(map[string]bool) //Clear all Usernames when loading so no problems are caused
+	usernameMap = make(map[string]bool)      //Clear all Usernames when loading so no problems are caused
+	learnOrgMapNames = make(map[string]bool) //Clear all Org Names when loading so no problems are caused
+	learnrMap = make(map[string]bool)        //Clear all Learnr Names when loading so no problems are caused
 	//Initialize our web page templates
 	template1 = template.Must(template.New("").Funcs(funcMap).ParseGlob("./static/templates/*"))
 	//Initialize Mongo Creds
@@ -56,10 +58,6 @@ func logWriter(logMessage string) {
 func main() {
 	fmt.Printf("DEBUG: Hello, we are in func main\n") //Debug statement
 	rand.Seed(time.Now().UTC().UnixNano())            //Randomly Seed
-
-	//Mongo Connect
-	mongoClient = connectDB()
-	defer mongoClient.Disconnect(theContext) //Disconnect in 10 seconds if you can't connect
 
 	//Handle our incoming web requests
 	handleRequests()
