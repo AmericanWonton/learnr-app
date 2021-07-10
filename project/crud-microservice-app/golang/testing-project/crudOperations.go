@@ -12,6 +12,7 @@ import (
 	"strings"
 	"time"
 
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
@@ -1206,7 +1207,8 @@ func specialLearnRGive(w http.ResponseWriter, req *http.Request) {
 	if canCrud {
 		/* Begin building crud operation based on our criteria */
 		collection := mongoClient.Database("learnR").Collection("learnr") //Here's our collection
-		theFilter := bson.M{}
+		var fullConditions bson.M
+		fullConditions = make(bson.M)
 		findOptions := options.Find()
 		theFind := 0 //A counter to track how many Learnrs we find
 
@@ -1214,16 +1216,19 @@ func specialLearnRGive(w http.ResponseWriter, req *http.Request) {
 		if theitem.CaseSearch[0] == 0 {
 			//Do nothing, just get all Learnrs
 		}
-		if theitem.CaseSearch[1] == 1 {
-			bson.M{
-				"tags": bson.M{
-					"$eq": theitem.Tag,
-				},
-			}
+		//Add tags into our search
+		if theitem.CaseSearch[1] == 0 {
+			fullConditions["tags"] = "cool"
+		}
+		//Add a Name into our search
+		if theitem.CaseSearch[2] == 0 {
+			fullConditions["name"] = bson.M{"$regex": primitive.Regex{
+				Pattern: "[" + theitem.LearnRName + "]",
+			}}
 		}
 		/*DEBUG: Add cases later for more criteria */
 		/* Run the mongo query after fixed filter/findoptions */
-		find, err := collection.Find(theContext, theFilter, findOptions)
+		find, err := collection.Find(theContext, fullConditions, findOptions)
 		if find.Err() != nil || err != nil {
 			if strings.Contains(err.Error(), "no documents in result") {
 				returnedErr := "No documents returned; may be that there are no Learnrs yet or search was bad..."

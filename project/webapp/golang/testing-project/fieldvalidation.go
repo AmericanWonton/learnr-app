@@ -776,6 +776,9 @@ func searchLearnRs(w http.ResponseWriter, r *http.Request) {
 	var searchJSON SearchJSON
 	json.Unmarshal(bs, &searchJSON)
 
+	/* Build the neccessary special cases to pass into 'getSpecialLearnRs'.
+	If both fields are blank, just get everything */
+
 	/* Send the response back to Ajax */
 	theJSONMessage, err := json.Marshal(theSuccMessage)
 	//Send the response back
