@@ -15,10 +15,10 @@ import (
 )
 
 /* Used for API Calls */
-const GETRANDOMID string = "http://localhost:4000/randomIDCreationAPI"
-const ADDUSERURL string = "http://localhost:4000/addUser"
-const ADDLEARNRORGURL string = "http://localhost:4000/addLearnOrg"
-const GETUSERLOGIN string = "http://localhost:4000/userLogin"
+var GETRANDOMID string = mongoCrudURL + "/randomIDCreationAPI"
+var ADDUSERURL string = mongoCrudURL + "/addUser"
+var ADDLEARNRORGURL string = mongoCrudURL + "/addLearnOrg"
+var GETUSERLOGIN string = mongoCrudURL + "/userLogin"
 
 /* DEFINED SLURS */
 var slurs []string = []string{}
