@@ -752,12 +752,14 @@ func canSendLearnR(w http.ResponseWriter, r *http.Request) {
 func searchLearnRs(w http.ResponseWriter, r *http.Request) {
 	//Declare Ajax return statements to be sent back
 	type SuccessMSG struct {
-		Message    string `json:"Message"`
-		SuccessNum int    `json:"SuccessNum"`
+		Message       string   `json:"Message"`
+		SuccessNum    int      `json:"SuccessNum"`
+		ReturnLearnRs []Learnr `json:"ReturnLearnRs"`
 	}
 	theSuccMessage := SuccessMSG{
-		Message:    "LearnR sent successfully",
-		SuccessNum: 0,
+		Message:       "LearnR got successfully",
+		SuccessNum:    0,
+		ReturnLearnRs: []Learnr{},
 	}
 
 	//Declare struct we are expecting
@@ -778,6 +780,22 @@ func searchLearnRs(w http.ResponseWriter, r *http.Request) {
 
 	/* Build the neccessary special cases to pass into 'getSpecialLearnRs'.
 	If both fields are blank, just get everything */
+	theCases := []int{0, 1, 1, 1}
+	if len(searchJSON.TheNameInput) > 0 {
+		theCases[1] = 0 //Search with Tag
+	}
+	if len(searchJSON.TheTagInput) > 0 {
+		theCases[2] = 0 //Search with LearnR Name
+	}
+	newLearnRs, goodGet, message := getSpecialLearnRs(theCases, searchJSON.TheTagInput, searchJSON.TheNameInput, 0, 0)
+
+	if !goodGet {
+		fmt.Println("Bad LearnR search: " + message)
+		theSuccMessage.SuccessNum = 1
+		theSuccMessage.Message = "Bad LearnR search: " + message
+	} else {
+		theSuccMessage.ReturnLearnRs = newLearnRs
+	}
 
 	/* Send the response back to Ajax */
 	theJSONMessage, err := json.Marshal(theSuccMessage)
