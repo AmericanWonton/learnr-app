@@ -13,3 +13,6 @@ notes.txt
 
 #ignore the Makefile
 Makefile
+
+#Ignore Security parts
+WebServer-KeyPair.pem

@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"gopkg.in/mgo.v2/bson"
@@ -521,11 +522,13 @@ func specialLearnRGive(w http.ResponseWriter, req *http.Request) {
 	var theitem TheSpecialCases
 	json.Unmarshal(bs, &theitem)
 
+	fmt.Printf("DEBUG: Here is our item: %v\n", theitem)
+
 	//Do CRUD operations if allowed
 	if canCrud {
 		/* Begin building crud operation based on our criteria */
 		collection := mongoClient.Database("learnR").Collection("learnr") //Here's our collection
-		theFilter := bson.M{}
+		fullConditions := bson.M{}
 		findOptions := options.Find()
 		theFind := 0 //A counter to track how many Learnrs we find
 
@@ -533,10 +536,23 @@ func specialLearnRGive(w http.ResponseWriter, req *http.Request) {
 		if theitem.CaseSearch[0] == 0 {
 			//Do nothing, just get all Learnrs
 		}
+		//Add tags into our search
+		if theitem.CaseSearch[1] == 0 {
+			fullConditions["tags"] = "cool"
+		}
+		//Add a Name into our search
+		if theitem.CaseSearch[2] == 0 {
+			fullConditions["name"] = bson.M{"$regex": primitive.Regex{
+				Pattern: "[" + theitem.LearnRName + "]",
+			}}
+		}
+
 		/*DEBUG: Add cases later for more criteria */
 		/* Run the mongo query after fixed filter/findoptions */
-		find, err := collection.Find(theContext, theFilter, findOptions)
-		if find.Err() != nil || err != nil {
+		find, err := collection.Find(theContext, fullConditions, findOptions)
+		if err != nil {
+			panic("Error getting this query...: " + err.Error())
+		} else if find.Err() != nil || err != nil {
 			if strings.Contains(err.Error(), "no documents in result") {
 				returnedErr := "No documents returned; may be that there are no Learnrs yet or search was bad..."
 				fmt.Println(returnedErr)
@@ -605,12 +621,13 @@ func specialLearnRGive(w http.ResponseWriter, req *http.Request) {
 		//Error, return an error back and log it
 		returnedErr := "Had an issue getting special Learnrs"
 		logWriter(returnedErr)
+		fmt.Println(returnedErr)
 		theReturnMessage.SuccOrFail = 1
 		theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
 		theReturnMessage.TheErr = append(theReturnMessage.TheErr, returnedErr)
 		theReturnMessage.ReturnedLearnrs = []Learnr{}
 	}
-
+	//fmt.Printf("DEBUG: Here is what we are going to send back: %v\n", theReturnMessage.ReturnedLearnrs)
 	//Format the JSON map for returning our results
 	theJSONMessage, err := json.Marshal(theReturnMessage)
 	//Send the response back

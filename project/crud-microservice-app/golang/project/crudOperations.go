@@ -853,6 +853,7 @@ func getLearnOrg(w http.ResponseWriter, req *http.Request) {
 		returnedErr := "For " + stringUserID +
 			", No LearnOrg was returned. Learnorg was also not accepted: " + stringUserID
 		logWriter(returnedErr)
+		println(returnedErr)
 		theReturnMessage.SuccOrFail = 1
 		theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
 		theReturnMessage.TheErr = append(theReturnMessage.TheErr, returnedErr)
@@ -867,6 +868,80 @@ func getLearnOrg(w http.ResponseWriter, req *http.Request) {
 		logWriter(errIs)
 	}
 	fmt.Fprint(w, string(theJSONMessage))
+}
+
+//This is a simple local call to getLearnOrg
+func getLearnOrgSimple(theID int) (bool, string, LearnrOrg) {
+	var theLearnROrgReturn LearnrOrg
+	goodGet, message := true, ""
+
+	/* Find the Learnorg with the given LearnorgID */
+	learnorgCollection := mongoClient.Database("learnR").Collection("learnorg") //Here's our collection
+	theFilter := bson.M{
+		"orgid": bson.M{
+			"$eq": theID, // check if bool field has value of 'false'
+		},
+	}
+	findOptions := options.Find()
+	findLearnOrg, err := learnorgCollection.Find(theContext, theFilter, findOptions)
+	theFind := 0 //A counter to track how many users we find
+	if findLearnOrg.Err() != nil || err != nil {
+		if strings.Contains(err.Error(), "no documents in result") {
+			stringUserID := strconv.Itoa(theID)
+			returnedErr := "For " + stringUserID + ", no Learnorg was returned: " + err.Error()
+			fmt.Println(returnedErr)
+			logWriter(returnedErr)
+			goodGet, message = true, returnedErr
+		} else {
+			stringUserID := strconv.Itoa(theID)
+			returnedErr := "For " + stringUserID + ", there was a Mongo Error: " + err.Error()
+			fmt.Println(returnedErr)
+			logWriter(returnedErr)
+			goodGet, message = false, returnedErr
+		}
+	} else {
+		//Found Learnorg, decode to return
+		for findLearnOrg.Next(theContext) {
+			stringUserID := strconv.Itoa(theID)
+			err := findLearnOrg.Decode(&theLearnROrgReturn)
+			if err != nil {
+				returnedErr := "For " + stringUserID +
+					", there was an error decoding document from Mongo: " + err.Error()
+				fmt.Println(returnedErr)
+				logWriter(returnedErr)
+				goodGet, message = false, returnedErr
+			} else if len(theLearnROrgReturn.Name) <= 1 {
+				returnedErr := "For " + stringUserID +
+					", there was an no document from Mongo: " + err.Error()
+				fmt.Println(returnedErr)
+				logWriter(returnedErr)
+				goodGet, message = false, returnedErr
+			} else {
+				//Successful decode, do nothing
+			}
+			theFind = theFind + 1
+		}
+		findLearnOrg.Close(theContext)
+	}
+
+	if theFind <= 0 {
+		//Error, return an error back and log it
+		stringUserID := strconv.Itoa(theID)
+		returnedErr := "For " + stringUserID +
+			", No LearnOrg was returned."
+		logWriter(returnedErr)
+		goodGet, message = false, returnedErr
+	} else {
+		//Success, log the success and return User
+		stringUserID := strconv.Itoa(theID)
+		returnedErr := "For " + stringUserID +
+			", Learnorg should be successfully decoded."
+		//fmt.Println(returnedErr)
+		logWriter(returnedErr)
+		goodGet, message = true, returnedErr
+	}
+
+	return goodGet, message, theLearnROrgReturn
 }
 
 //This gets all the LearnOrgs the User is Admin of
@@ -907,78 +982,22 @@ func getLearnOrgAdminOf(w http.ResponseWriter, req *http.Request) {
 	if canCrud && len(theitem.TheIDS) > 0 {
 		/* Call our 'getLearnROrg' function for everyID this User is Admin of, (unless the ID is 0) */
 		for j := 0; j < len(theitem.TheIDS); j++ {
-			goodIDGet := true
-			type LearnOrgID struct {
-				TheLearnOrgID int `json:"TheLearnOrgID"`
-			}
-			theID := LearnOrgID{TheLearnOrgID: theitem.TheIDS[j]}
-			theJSONMessage, err := json.Marshal(theID)
-			if err != nil {
-				fmt.Println(err)
-				logWriter(err.Error())
-				log.Fatal(err)
-				goodIDGet = false
-			}
-			payload := strings.NewReader(string(theJSONMessage))
-			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-			defer cancel()
-			req, err := http.NewRequest("POST", "http://localhost:4000/getLearnOrg", payload)
-			if err != nil {
-				theErr := "There was an error getting LearnROrgs in loadLearnROrgs: " + err.Error()
+			goodGet, theMessage, aLearnOrg := getLearnOrgSimple(theitem.TheIDS[j])
+			if !goodGet || aLearnOrg.OrgID == 0 {
+				theErr := "Had an issue getting an ID for this Admin User and the LearnR Org: " + theMessage + " " +
+					strconv.Itoa(aLearnOrg.OrgID)
 				logWriter(theErr)
 				fmt.Println(theErr)
-				goodIDGet = false
-			}
-			req.Header.Add("Content-Type", "application/json")
-			resp, err := http.DefaultClient.Do(req.WithContext(ctx))
-
-			if resp.StatusCode >= 300 || resp.StatusCode <= 199 {
-				theErr := "There was an error reaching out to loadLearnROrg API: " + strconv.Itoa(resp.StatusCode)
-				fmt.Println(theErr)
-				logWriter(theErr)
-				goodIDGet = false
-			} else if err != nil {
-				theErr := "Error from response to loadLearnROrg: " + err.Error()
-				fmt.Println(theErr)
-				logWriter(theErr)
-				goodIDGet = false
-			}
-			defer resp.Body.Close()
-
-			body, err := ioutil.ReadAll(resp.Body)
-			if err != nil {
-				theErr := "There was an error getting a response for LearnROrgs in loadLearnROrgs: " + err.Error()
-				logWriter(theErr)
-				fmt.Println(theErr)
-				goodIDGet = false
-			}
-
-			//Marshal the response into a type we can read
-			type ReturnMessage struct {
-				TheErr           []string  `json:"TheErr"`
-				ResultMsg        []string  `json:"ResultMsg"`
-				SuccOrFail       int       `json:"SuccOrFail"`
-				ReturnedLearnOrg LearnrOrg `json:"ReturnedLearnOrg"`
-			}
-			var returnedMessage ReturnMessage
-			json.Unmarshal(body, &returnedMessage)
-
-			//Evaluate if we can add this learnOrg to our map of returned LearnOrgs for this Admin User
-			if !goodIDGet || returnedMessage.SuccOrFail != 0 || returnedMessage.ReturnedLearnOrg.OrgID == 0 {
-				theErr := "Had an issue getting an ID for this Admin User and the LearnR Org: "
-				for k := 0; k < len(returnedMessage.TheErr); k++ {
-					theErr = theErr + returnedMessage.TheErr[k]
-				}
-				logWriter(theErr)
 			} else {
 				//Good ID, add it to return
-				theReturnMessage.ReturnedLearnOrgs = append(theReturnMessage.ReturnedLearnOrgs, returnedMessage.ReturnedLearnOrg)
+				theReturnMessage.ReturnedLearnOrgs = append(theReturnMessage.ReturnedLearnOrgs, aLearnOrg)
 			}
 		}
 	} else {
 		//Error, return an error back and log it
 		returnedErr := "Can crud was not true or we had an error parsing IDs"
 		logWriter(returnedErr)
+		fmt.Println(returnedErr)
 		theReturnMessage.SuccOrFail = 1
 		theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
 		theReturnMessage.TheErr = append(theReturnMessage.TheErr, returnedErr)
@@ -1390,23 +1409,6 @@ func userLogin(w http.ResponseWriter, req *http.Request) {
 
 //This should give a random id value to both food groups
 func randomIDCreationAPI(w http.ResponseWriter, r *http.Request) {
-	//Collect JSON from Postman or wherever
-	//Get the byte slice from the request body ajax
-	bs, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		fmt.Println(err)
-		logWriter(err.Error())
-	}
-
-	type LoginData struct {
-		Username string `json:"Username"`
-		Password string `json:"Password"`
-	}
-
-	//Marshal the user data into our type
-	var dataForLogin LoginData
-	json.Unmarshal(bs, &dataForLogin)
-
 	type ReturnMessage struct {
 		TheErr     []string `json:"TheErr"`
 		ResultMsg  []string `json:"ResultMsg"`

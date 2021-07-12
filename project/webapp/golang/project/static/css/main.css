@@ -309,7 +309,6 @@ body, html {
 }
 
 .navigationHolderDiv{
-    /* Flexbox setup */
     display: flex;
     flex-wrap: wrap;
     align-content: center;
@@ -372,4 +371,415 @@ body, html {
     background-color: rgb(129, 28, 42);
     /* DEBUG */
     /* border: 1px solid black; */
+}
+
+
+/* LearnR Page Styling */
+.resultHolderInformDiv{
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+.resultHolderTagDiv{
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+.multiInputHolderDiv{
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    width: 100%;
+}
+
+
+.addLearnRDiv{
+    /* flex-box display */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.resultTagDiv{
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    height: 5vh;
+    width: 5vw;
+    /* styling */
+    margin-left: .2em;
+    margin-right: .2em;
+    padding-left: .2em;
+    padding-right: .2em;
+    border: 1px solid black;
+    background-color: grey;
+}
+
+.resultTagDiv:hover{
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    height: 5.5vh;
+    width: 5.5vw;
+    /* styling */
+    margin-left: .2em;
+    margin-right: .2em;
+    padding-left: .2em;
+    padding-right: .2em;
+    border: 1px solid black;
+    background-color: grey;
+    /* change cursor */
+    cursor: pointer;
+}
+
+.resultTagP{
+    font-size: 1rem;
+    color: black;
+}
+
+.resultLearnrInformDiv{
+    display: block;
+    /* styling */
+    margin-left: .2em;
+    margin-right: .2em;
+    padding-left: .2em;
+    padding-right: .2em;
+    border: 1px solid black;
+    background-color: grey;
+}
+
+.resultLearnrInformDiv:hover{
+    display: block;
+    /* styling */
+    margin-left: .2em;
+    margin-right: .2em;
+    padding-left: .2em;
+    padding-right: .2em;
+    border: 1px solid black;
+    background-color: grey;
+    cursor: pointer;
+}
+
+.resultInformP{
+    font-size: 1rem;
+    color: black;
+}
+
+/* MainPage Styling */
+.searchFieldDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    width: 100%;
+    /* styling */
+    padding: .3em;
+    border: 2px solid black;
+}
+
+.searchbarTitle{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    /* styling */
+    padding: .3em;
+    border: 2px solid black;
+}
+
+.titleTextP{
+    font-size: 3rem;
+    text-align: center;
+}
+
+.searchBarDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    /* styling */
+    padding: .1em;
+    border: 1px solid black;
+}
+
+.inputHolder{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    width: 45%;
+    /* styling */
+
+    /* debug */
+}
+
+.searchInput{
+
+}
+
+.resultThing{
+    font-size: 2rem;
+    text-align: center;
+}
+
+/* LearnR Div Holder styling */
+.learnrHolderDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    width: 100%;
+    /* styling */
+    padding: .3em;
+    /* styling */
+    border: 1px solid red;
+}
+
+.descriptionHolder{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    width: 100%;
+    /* styling */
+    padding: .2em;
+    /* styling */
+    border: 1px solid rgb(18, 145, 184);
+}
+
+.resultLearnrHolder{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    width: 100%;
+    /* styling */
+    padding: .3em;
+    margin: .2em;
+    border: 1px solid black;
+    /* debug */
+}
+
+.learnRnameDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    width: 100%;
+    /* styling */
+    border: 1px solid black;
+    /* debug */
+}
+
+.sendLearnRDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    width: 100%;
+    /* styling */
+    border: 1px solid purple;
+    /* debug */
+}
+
+.infolearnrHolder{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    justify-items: center;
+    align-self: center;
+    justify-self: center;
+    width: 100%;
+    /* styling */
+
+    /* debug */
+    border: 1px solid brown;
+    
+}
+
+.aInfoDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    justify-items: center;
+    align-self: center;
+    justify-self: center;
+    width: 45%;
+    /* styling */
+
+    /* debug */
+    border: 1px solid purple;
+}
+
+.learnRField{
+    font-size: 1rem;
+    color: black;
+}
+
+.aBigInfoDiv {
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    justify-items: center;
+    align-self: center;
+    justify-self: center;
+    width: 100%;
+    /* styling */
+
+    /* debug styling */
+    border: 1px solid seagreen;
+}
+
+.sendLearnRButtonDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    justify-items: center;
+    align-self: center;
+    justify-self: center;
+    width: 100%;
+    /* styling */
+    
+    /* debug */
+    border: 2px solid black;
+}
+
+.seeOptionsButton{
+    font-size: 1rem;
+    width: 100%;
+}
+
+.interiorBigInfoDiv {
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    justify-items: center;
+    align-self: center;
+    justify-self: center;
+    width: 100%;
+    /* styling */
+    padding-left: .3em;
+    padding-right: .3em;
+    /* debug */
+    border: 3px solid aquamarine;
+}
+
+.fieldsideDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    justify-content: center;
+    align-content: center;
+    width: 40%;
+    /* DEBUG */
+}
+
+.fieldP {
+    font-size: 1rem;
+    text-align: center;
+}
+
+.fieldInput {
+
+}
+
+.fieldTextAreaInput {
+    
+}
+
+.sendButton{
+    font-size: 1rem;
+    width: 10em;
+    height: 10em;
+}
+
+.resultInput{
+    text-align: center;
+    font-size: 1rem;
+}
+
+.textHolder {
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    justify-items: center;
+    align-self: center;
+    justify-self: center;
+    width: 100%;
+    /* stlying */
+    padding: .5em;
+    /* debug */
+    border: 1px solid gold;
+}
+
+.textFont{
+    font-size: 1rem;
+}
+
+.allTextHolder{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    justify-items: center;
+    align-self: center;
+    justify-self: center;
+    width: 100%;
+    /* stlying */
+    
+    /* debug */
+    border: 1px solid pink;
+}
+
+.aTextHolder{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    justify-items: center;
+    align-self: center;
+    justify-self: center;
+    width: 100%;
+    /* stlying */
+    
+    /* debug */
+    border: 1px solid rgb(0, 0, 0);
 }

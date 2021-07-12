@@ -2,12 +2,17 @@ package main
 
 import (
 	"bufio"
+	"context"
 	b64 "encoding/base64"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"math/rand"
+	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"text/template"
 	"time"
@@ -22,17 +27,28 @@ var funcMap = template.FuncMap{
 	"isAdmin":   isAdmin,         //Check to see if a User is an admin
 }
 
+/* Used for test calls to our MongoDB Microservice */
+var TESTMONGOPOST string
+var TESTMONGOGET string
+
 //initial functions when starting the app
 func init() {
 	//Get Environment Variables
 	loadInMicroServiceURL()
-	usernameMap = make(map[string]bool) //Clear all Usernames when loading so no problems are caused
+	defineAPIVariables()                     //Define variables in feildvalidation.go
+	defineCrudVariables()                    //Define variables for mongoCrudOperations.go
+	definePageHandlerVariables()             //Define varialbes for pagehandler.go
+	usernameMap = make(map[string]bool)      //Clear all Usernames when loading so no problems are caused
+	learnOrgMapNames = make(map[string]bool) //Clear all Org Names when loading so no problems are caused
+	learnrMap = make(map[string]bool)        //Clear all Learnr Names when loading so no problems are caused
 	//Initialize our web page templates
 	template1 = template.Must(template.New("").Funcs(funcMap).ParseGlob("./static/templates/*"))
 	//Initialize Mongo Creds
 	getCredsMongo()
 	//Initialize our bad phrases
 	getbadWords()
+	//Ping Test Crud Mongo
+	//testPingMongoCRUD()
 }
 
 func logWriter(logMessage string) {
@@ -56,10 +72,6 @@ func logWriter(logMessage string) {
 func main() {
 	fmt.Printf("DEBUG: Hello, we are in func main\n") //Debug statement
 	rand.Seed(time.Now().UTC().UnixNano())            //Randomly Seed
-
-	//Mongo Connect
-	mongoClient = connectDB()
-	defer mongoClient.Disconnect(theContext) //Disconnect in 10 seconds if you can't connect
 
 	//Handle our incoming web requests
 	handleRequests()
@@ -114,4 +126,92 @@ func makeMongoString(theUsername string, thePword string, theDB string, mongoStr
 	//fmt.Printf("DEBUG: Here's our decoded string: %v\n", finishedMongoString)
 
 	return finishedMongoString
+}
+
+/* This pings our Mongo with a post and get to see if everything is up and reachable */
+func testPingMongoCRUD() {
+	//Set our enviornment variables
+	TESTMONGOPOST = mongoCrudURL + "/testPingPost"
+	TESTMONGOGET = mongoCrudURL + "/testPingGet"
+	fmt.Printf("Making a ping to GET for MongoCrud: %v\n", TESTMONGOGET)
+	//Start with Get
+	//Call our crudOperations Microservice in order to get our Usernames
+	//Create a context for timing out
+	resp, err := http.Get(TESTMONGOGET)
+	if err != nil {
+		theErr := "Could not get successful response from mongo get"
+		fmt.Println(theErr)
+	}
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		theErr := "There was an error getting a response for MongoCRUD: " + err.Error()
+		fmt.Println(theErr)
+		logWriter(theErr)
+	} else {
+		defer resp.Body.Close()
+	}
+
+	//Marshal the response into a type we can read
+	type ReturnMessage struct {
+		TheErr     []string `json:"TheErr"`
+		ResultMsg  []string `json:"ResultMsg"`
+		SuccOrFail int      `json:"SuccOrFail"`
+		RandomID   int      `json:"RandomID"`
+	}
+	var returnedMessage ReturnMessage
+	json.Unmarshal(body, &returnedMessage)
+
+	fmt.Printf("DEBUG: Here is response from Get to MongoCRUD: %v\n", returnedMessage)
+
+	//Do Post as well
+	type LoginData struct {
+		Username string `json:"Username"`
+		Password string `json:"Password"`
+	}
+	testLogin := LoginData{Username: "MrUserName", Password: "MrPassword"}
+	ctx2, cancel2 := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel2()
+	/* 2. Marshal test case to JSON expect */
+	theJSONMessage, err := json.Marshal(testLogin)
+	if err != nil {
+		fmt.Println(err)
+		logWriter(err.Error())
+	}
+	/* 3. Create Post to JSON */
+	payload := strings.NewReader(string(theJSONMessage))
+	req2, err := http.NewRequest("POST", TESTMONGOPOST, payload)
+	if err != nil {
+		theErr := "There was an error posting User: " + err.Error()
+		fmt.Println(theErr)
+		logWriter(theErr)
+	}
+	req2.Header.Add("Content-Type", "application/json")
+	/* 4. Get response from Post */
+	resp2, err := http.DefaultClient.Do(req2.WithContext(ctx2))
+	if err != nil {
+		theErr := "Failed response from addUser: " + strconv.Itoa(resp.StatusCode) + " " + err.Error()
+		logWriter(theErr)
+	} else if resp.StatusCode >= 300 || resp.StatusCode <= 199 {
+		theErr := "Failed response from addUser: " + strconv.Itoa(resp.StatusCode)
+		logWriter(theErr)
+	}
+	defer resp2.Body.Close()
+	defer req2.Body.Close()
+	//Declare message we expect to see returned
+	body2, err := ioutil.ReadAll(resp2.Body)
+	if err != nil {
+		theErr := "There was an error reading response from UserCreate " + err.Error()
+		logWriter(theErr)
+	}
+	type ReturnMessage2 struct {
+		TheErr          []string        `json:"TheErr"`
+		ResultMsg       []string        `json:"ResultMsg"`
+		SuccOrFail      int             `json:"SuccOrFail"`
+		ReturnedUserMap map[string]bool `json:"ReturnedUserMap"`
+	}
+	var returnedMessage2 ReturnMessage2
+	json.Unmarshal(body2, &returnedMessage2)
+
+	fmt.Printf("DEBUG: Here is the response from CRUD URL Post: %v\n", returnedMessage2)
 }
