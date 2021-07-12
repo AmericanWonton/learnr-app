@@ -24,37 +24,73 @@ var mongoURI string //Connection string loaded
 /* DEFINE URL FOR CALLS */
 
 //User
-var READUSERURL string = mongoCrudURL + "/getUser"
+var READUSERURL string
 
 //LearnROrg
-var READLEARNRORGURL string = mongoCrudURL + "/getLearnOrg"
-var UPDATELEARNRORGURL string = mongoCrudURL + "/updateLearnOrg"
-var DELETELEARNRORGURL string = mongoCrudURL + "/deleteLearnOrg"
+var READLEARNRORGURL string
+var UPDATELEARNRORGURL string
+var DELETELEARNRORGURL string
 
 //LearnR
-var ADDLEARNRURL string = mongoCrudURL + "/addLearnR"
-var READLEARNRURL string = mongoCrudURL + "/getLearnR"
-var UPDATELEARNRURL string = mongoCrudURL + "/updateLearnR"
-var DELETELEARNRURL string = mongoCrudURL + "/deleteLearnR"
-var GETSPECIALLEARNR string = mongoCrudURL + "/specialLearnRGive"
+var ADDLEARNRURL string
+var READLEARNRURL string
+var UPDATELEARNRURL string
+var DELETELEARNRURL string
+var GETSPECIALLEARNR string
 
 //LearnRInfo
-var ADDLEARNRINFOURL string = mongoCrudURL + "/addLearnrInfo"
-var READLEARNRINFOURL string = mongoCrudURL + "/getLearnrInfo"
-var UPDATELEARNRINFOURL string = mongoCrudURL + "/updateLearnrInfo"
-var DELETELEARNRINFOURL string = mongoCrudURL + "/deleteLearnrInfo"
+var ADDLEARNRINFOURL string
+var READLEARNRINFOURL string
+var UPDATELEARNRINFOURL string
+var DELETELEARNRINFOURL string
 
 //LearnRSession
-var ADDLEARNRSESSIONSURL string = mongoCrudURL + "/addLearnRSession"
-var READLEARNRSESSIONSURL string = mongoCrudURL + "/getLearnRSession"
-var UPDATELEARNRSESSIONSURL string = mongoCrudURL + "/updateLearnRSession"
-var DELETELEARNRSESSIONSURL string = mongoCrudURL + "/deleteLearnRSession"
+var ADDLEARNRSESSIONSURL string
+var READLEARNRSESSIONSURL string
+var UPDATELEARNRSESSIONSURL string
+var DELETELEARNRSESSIONSURL string
 
 //LearnRInform
-var ADDLEARNRINFORMURL string = mongoCrudURL + "/addLearnRInforms"
-var READLEARNRINFORMURL string = mongoCrudURL + "/getLearnRInforms"
-var UPDATELEARNRINFORMURL string = mongoCrudURL + "/updateLearnRInforms"
-var DELETELEARNRINFORMURL string = mongoCrudURL + "/deleteLearnRInforms"
+var ADDLEARNRINFORMURL string
+var READLEARNRINFORMURL string
+var UPDATELEARNRINFORMURL string
+var DELETELEARNRINFORMURL string
+
+//Define variables for Microservice
+func defineCrudVariables() {
+	//User
+	READUSERURL = mongoCrudURL + "/getUser"
+
+	//LearnROrg
+	READLEARNRORGURL = mongoCrudURL + "/getLearnOrg"
+	UPDATELEARNRORGURL = mongoCrudURL + "/updateLearnOrg"
+	DELETELEARNRORGURL = mongoCrudURL + "/deleteLearnOrg"
+
+	//LearnR
+	ADDLEARNRURL = mongoCrudURL + "/addLearnR"
+	READLEARNRURL = mongoCrudURL + "/getLearnR"
+	UPDATELEARNRURL = mongoCrudURL + "/updateLearnR"
+	DELETELEARNRURL = mongoCrudURL + "/deleteLearnR"
+	GETSPECIALLEARNR = mongoCrudURL + "/specialLearnRGive"
+
+	//LearnRInfo
+	ADDLEARNRINFOURL = mongoCrudURL + "/addLearnrInfo"
+	READLEARNRINFOURL = mongoCrudURL + "/getLearnrInfo"
+	UPDATELEARNRINFOURL = mongoCrudURL + "/updateLearnrInfo"
+	DELETELEARNRINFOURL = mongoCrudURL + "/deleteLearnrInfo"
+
+	//LearnRSession
+	ADDLEARNRSESSIONSURL = mongoCrudURL + "/addLearnRSession"
+	READLEARNRSESSIONSURL = mongoCrudURL + "/getLearnRSession"
+	UPDATELEARNRSESSIONSURL = mongoCrudURL + "/updateLearnRSession"
+	DELETELEARNRSESSIONSURL = mongoCrudURL + "/deleteLearnRSession"
+
+	//LearnRInform
+	ADDLEARNRINFORMURL = mongoCrudURL + "/addLearnRInforms"
+	READLEARNRINFORMURL = mongoCrudURL + "/getLearnRInforms"
+	UPDATELEARNRINFORMURL = mongoCrudURL + "/updateLearnRInforms"
+	DELETELEARNRINFORMURL = mongoCrudURL + "/deleteLearnRInforms"
+}
 
 /* App/Data type declarations for our application */
 // Desc: This person uses our app

@@ -15,11 +15,11 @@ import (
 )
 
 /* Used for API Calls */
-var GETRANDOMID string = mongoCrudURL + "/randomIDCreationAPI"
-var ADDUSERURL string = mongoCrudURL + "/addUser"
-var ADDLEARNRORGURL string = mongoCrudURL + "/addLearnOrg"
-var GETUSERLOGIN string = mongoCrudURL + "/userLogin"
-var UPDATEURL string = mongoCrudURL + "/updateUser"
+var GETRANDOMID string
+var ADDUSERURL string
+var ADDLEARNRORGURL string
+var GETUSERLOGIN string
+var UPDATEURL string
 
 /* Used for LearnR/LearnR Org creation */
 var allLearnROrgNames []string
@@ -33,6 +33,13 @@ var learnrMap map[string]bool
 var slurs []string = []string{}
 
 //Set environment variables
+func defineAPIVariables() {
+	GETRANDOMID = mongoCrudURL + "/randomIDCreationAPI"
+	ADDUSERURL = mongoCrudURL + "/addUser"
+	ADDLEARNRORGURL = mongoCrudURL + "/addLearnOrg"
+	GETUSERLOGIN = mongoCrudURL + "/userLogin"
+	UPDATEURL = mongoCrudURL + "/updateUser"
+}
 
 //This gets the slur words we check against in our username and
 //text messages

@@ -59,8 +59,8 @@ func handleRequests() {
 	myRouter.HandleFunc("/giveAllUsernames", giveAllUsernames).Methods("GET") //Get all our Usernames
 	myRouter.HandleFunc("/giveAllLearnROrg", giveAllLearnROrg).Methods("GET") //Get all our LearnROrg Names
 	myRouter.HandleFunc("/giveAllLearnr", giveAllLearnr).Methods("GET")
-	myRouter.HandleFunc("/randomIDCreationAPI", randomIDCreationAPI).Methods("POST") //Get a random ID
-	myRouter.HandleFunc("/userLogin", userLogin).Methods("POST")                     //Check if User can login
+	myRouter.HandleFunc("/randomIDCreationAPI", randomIDCreationAPI).Methods("GET") //Get a random ID
+	myRouter.HandleFunc("/userLogin", userLogin).Methods("POST")                    //Check if User can login
 	//Serve our test ping
 	myRouter.HandleFunc("/testPingPost", testPingPost).Methods("POST") //Get a random ID
 	myRouter.HandleFunc("/testPingGet", testPingGet).Methods("GET")    //Get a random ID

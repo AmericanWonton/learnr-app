@@ -19,10 +19,10 @@ var usernameMap map[string]bool
 /* Used for displaying Learners */
 var displayLearnrs []Learnr
 
-var GETALLUSERNAMESURL string = mongoCrudURL + "/giveAllUsernames"
-var GETALLLEARNRORGURL string = mongoCrudURL + "/giveAllLearnROrg"
-var GETALLLEARNORGUSERADMIN string = mongoCrudURL + "/getLearnOrgAdminOf"
-var GETALLLEARNRURL string = mongoCrudURL + "/giveAllLearnr"
+var GETALLUSERNAMESURL string
+var GETALLLEARNRORGURL string
+var GETALLLEARNORGUSERADMIN string
+var GETALLLEARNRURL string
 
 //ViewData
 type UserViewData struct {
@@ -43,6 +43,14 @@ type UserViewData struct {
 	DateCreated      string      `json:"DateCreated"`      //Date this User was created
 	DateUpdated      string      `json:"DateUpdated"`      //Date this User was updated
 	MessageDisplay   int         `json:"MessageDisplay"`   //This is IF we need a message displayed
+}
+
+//Define pagehandler variables to Crud Microservice
+func definePageHandlerVariables() {
+	GETALLUSERNAMESURL = mongoCrudURL + "/giveAllUsernames"
+	GETALLLEARNRORGURL = mongoCrudURL + "/giveAllLearnROrg"
+	GETALLLEARNORGUSERADMIN = mongoCrudURL + "/getLearnOrgAdminOf"
+	GETALLLEARNRURL = mongoCrudURL + "/giveAllLearnr"
 }
 
 //Handles the Index requests; Ask User if they're legal here

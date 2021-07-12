@@ -35,6 +35,9 @@ var TESTMONGOGET string
 func init() {
 	//Get Environment Variables
 	loadInMicroServiceURL()
+	defineAPIVariables()                     //Define variables in feildvalidation.go
+	defineCrudVariables()                    //Define variables for mongoCrudOperations.go
+	definePageHandlerVariables()             //Define varialbes for pagehandler.go
 	usernameMap = make(map[string]bool)      //Clear all Usernames when loading so no problems are caused
 	learnOrgMapNames = make(map[string]bool) //Clear all Org Names when loading so no problems are caused
 	learnrMap = make(map[string]bool)        //Clear all Learnr Names when loading so no problems are caused
@@ -134,30 +137,15 @@ func testPingMongoCRUD() {
 	//Start with Get
 	//Call our crudOperations Microservice in order to get our Usernames
 	//Create a context for timing out
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	req, err := http.NewRequest("GET", TESTMONGOGET, nil)
-	if err != nil {
-		theErr := "There was an error for get to MongoCRUDURL: " + err.Error()
-		logWriter(theErr)
-	}
-
-	resp, err := http.DefaultClient.Do(req.WithContext(ctx))
-
-	if resp.StatusCode >= 300 || resp.StatusCode <= 199 {
-		fmt.Printf("Wrong resposne code gotten: %v\n", strconv.Itoa(resp.StatusCode))
-	} else if err != nil {
-		theErr := "Had an error getting good random ID: " + err.Error()
-		logWriter(theErr)
-		fmt.Println(theErr)
-	}
-	defer resp.Body.Close()
-	defer req.Body.Close()
+	resp, err := http.Get(TESTMONGOGET)
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		theErr := "There was an error getting a response for MongoCRUD: " + err.Error()
+		fmt.Println(theErr)
 		logWriter(theErr)
+	} else {
+		defer resp.Body.Close()
 	}
 
 	//Marshal the response into a type we can read
@@ -194,7 +182,7 @@ func testPingMongoCRUD() {
 		fmt.Println(theErr)
 		logWriter(theErr)
 	}
-	req.Header.Add("Content-Type", "application/json")
+	req2.Header.Add("Content-Type", "application/json")
 	/* 4. Get response from Post */
 	resp2, err := http.DefaultClient.Do(req2.WithContext(ctx2))
 	if err != nil {
