@@ -176,7 +176,6 @@ func initialLearnRStart(w http.ResponseWriter, r *http.Request) {
 			TheSession:         newLearnRSession,
 			LogInfo:            []string{},
 		}
-		time.Sleep(time.Second * 1) //DEBUG
 		go func() {
 			/* Send the response back to Ajax */
 			theJSONMessage, err := json.Marshal(theSuccMessage)
@@ -193,7 +192,6 @@ func initialLearnRStart(w http.ResponseWriter, r *http.Request) {
 			}
 			flusher.Flush()
 		}()
-		time.Sleep(time.Second * 2) //Debug
 		go conductLearnRSession(newUserSession)
 	}
 }
@@ -212,6 +210,7 @@ func conductLearnRSession(theLearnRUserSess UserSession) {
 	introMessage := "Hello " + theLearnRUserSess.PersonName + ", " + theLearnRUserSess.TheUserName + " wanted to help educate you on " +
 		"something important to them."
 	theTimeNow := time.Now()
+	fmt.Printf("DEBUG: About to send first text: %v\n")
 	goodSend, resultMessages := sendText(-3, theLearnRUserSess.PersonPhoneNum, theLearnRUserSess.TheLearnR.PhoneNums[0],
 		introMessage)
 	if !goodSend || !UserSessionActiveMap[theLearnRUserSess.LocalSessID].Active {
@@ -224,6 +223,7 @@ func conductLearnRSession(theLearnRUserSess UserSession) {
 			message = message + resultMessages[j] + " "
 		}
 		logWriter(message)
+		fmt.Println(message)
 		theLearnRUserSess.LogInfo = append(theLearnRUserSess.LogInfo, message)
 		//Update our UserSession Map
 		UserSessionActiveMap[theLearnRUserSess.LocalSessID] = theLearnRUserSess
@@ -231,6 +231,7 @@ func conductLearnRSession(theLearnRUserSess UserSession) {
 		//Send the second text with our Users message
 		time.Sleep(time.Second * 10) //Small wait
 		introMessage = "\"" + theLearnRUserSess.IntroductionSaying + "\""
+		fmt.Printf("DEBUG: About to send the second text...\n")
 		goodSend, resultMessages := sendText(-2, theLearnRUserSess.PersonPhoneNum, theLearnRUserSess.TheLearnR.PhoneNums[0],
 			introMessage)
 		if !goodSend || !UserSessionActiveMap[theLearnRUserSess.LocalSessID].Active {
@@ -265,6 +266,7 @@ func conductLearnRSession(theLearnRUserSess UserSession) {
 					message = message + resultMessages[j] + " "
 				}
 				logWriter(message)
+				fmt.Println(message)
 				theLearnRUserSess.LogInfo = append(theLearnRUserSess.LogInfo, message)
 				//Update our UserSession Map
 				UserSessionActiveMap[theLearnRUserSess.LocalSessID] = theLearnRUserSess
@@ -384,6 +386,8 @@ func conductLearnRSession(theLearnRUserSess UserSession) {
 func sendText(textOrder int, toNumString string, fromNumString string, textBody string) (bool, []string) {
 	goodSend, resultMessages := true, []string{}
 
+	fmt.Printf("DEBUG: We about to send a text: %v\n")
+
 	msgData := url.Values{}
 	msgData.Set("To", "+"+toNumString)
 	msgData.Set("From", "+"+fromNumString)
@@ -439,6 +443,7 @@ func sendText(textOrder int, toNumString string, fromNumString string, textBody 
 		if err != nil {
 			theErr := "There was an error reading a response for Twilio: " + err.Error()
 			fmt.Println(theErr)
+			logWriter(theErr)
 		}
 		var returnedMessage TwilioResponse
 		json.Unmarshal(body, &returnedMessage)

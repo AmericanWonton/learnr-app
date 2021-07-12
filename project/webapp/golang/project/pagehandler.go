@@ -86,7 +86,6 @@ func mainpage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	displayLearnrs = theLearnRs //Set Learnrs for display
-	fmt.Printf("DEBUG: Here are our learnRs: %v\n", theLearnRs)
 	//Redirect User if they are not logged in
 	if !alreadyLoggedIn(w, r) {
 		http.Redirect(w, r, "/", http.StatusSeeOther)

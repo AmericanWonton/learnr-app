@@ -546,8 +546,7 @@ func specialLearnRGive(w http.ResponseWriter, req *http.Request) {
 				Pattern: "[" + theitem.LearnRName + "]",
 			}}
 		}
-		fmt.Printf("DEBUG: Here is our full conditions: %v\n", fullConditions)
-		//fmt.Printf("DEBUG: Here is our fullConditions: %v\n", fullConditions)
+
 		/*DEBUG: Add cases later for more criteria */
 		/* Run the mongo query after fixed filter/findoptions */
 		find, err := collection.Find(theContext, fullConditions, findOptions)
@@ -628,8 +627,6 @@ func specialLearnRGive(w http.ResponseWriter, req *http.Request) {
 		theReturnMessage.TheErr = append(theReturnMessage.TheErr, returnedErr)
 		theReturnMessage.ReturnedLearnrs = []Learnr{}
 	}
-
-	fmt.Printf("DEBUG: Here are the learnrs we SHOULD be returning: %v\n", theReturnMessage.ReturnedLearnrs)
 	//fmt.Printf("DEBUG: Here is what we are going to send back: %v\n", theReturnMessage.ReturnedLearnrs)
 	//Format the JSON map for returning our results
 	theJSONMessage, err := json.Marshal(theReturnMessage)
