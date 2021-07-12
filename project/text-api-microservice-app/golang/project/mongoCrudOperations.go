@@ -255,23 +255,7 @@ func fastUpdateLearnRInform(newLearnRInfo LearnrInfo) {
 /* Gets a random API after calling our random API */
 func randomAPICall() (bool, string, int) {
 	goodGet, message, finalInt := true, "", 0
-	/* Keeping this in here until we can figure out how to do GET properly... */
-	type LoginData struct {
-		Username string `json:"Username"`
-		Password string `json:"Password"`
-	}
-	theID := LoginData{Username: "tESTUsername", Password: "TestPassword"}
-	theJSONMessage, err := json.Marshal(theID)
-	if err != nil {
-		fmt.Println(err)
-		logWriter(err.Error())
-		log.Fatal(err)
-	}
-	//Create a context for timing out
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	payload := strings.NewReader(string(theJSONMessage)) //Debug
-	req, err := http.NewRequest("POST", mongoCrudURL+"/randomIDCreationAPI", payload)
+	req, err := http.Get(mongoCrudURL + "/randomIDCreationAPI")
 	if err != nil {
 		theErr := "There was an error getting Usernames in loadUsernames: " + err.Error()
 		logWriter(theErr)
@@ -279,18 +263,7 @@ func randomAPICall() (bool, string, int) {
 	}
 	defer req.Body.Close()
 
-	resp, err := http.DefaultClient.Do(req.WithContext(ctx))
-
-	if resp.StatusCode >= 300 || resp.StatusCode <= 199 {
-		goodGet, message = false, "Wrong response code gotten; failed to create random ID: "+strconv.Itoa(resp.StatusCode)
-	} else if err != nil {
-		theErr := "Had an error getting good random ID: " + err.Error()
-		logWriter(theErr)
-		goodGet, message = false, theErr
-	}
-	defer resp.Body.Close()
-
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		theErr := "There was an error getting a response for Usernames in loadUsernames: " + err.Error()
 		logWriter(theErr)

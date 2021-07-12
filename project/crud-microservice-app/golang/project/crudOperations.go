@@ -1390,23 +1390,6 @@ func userLogin(w http.ResponseWriter, req *http.Request) {
 
 //This should give a random id value to both food groups
 func randomIDCreationAPI(w http.ResponseWriter, r *http.Request) {
-	//Collect JSON from Postman or wherever
-	//Get the byte slice from the request body ajax
-	bs, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		fmt.Println(err)
-		logWriter(err.Error())
-	}
-
-	type LoginData struct {
-		Username string `json:"Username"`
-		Password string `json:"Password"`
-	}
-
-	//Marshal the user data into our type
-	var dataForLogin LoginData
-	json.Unmarshal(bs, &dataForLogin)
-
 	type ReturnMessage struct {
 		TheErr     []string `json:"TheErr"`
 		ResultMsg  []string `json:"ResultMsg"`

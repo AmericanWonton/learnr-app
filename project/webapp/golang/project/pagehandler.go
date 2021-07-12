@@ -159,6 +159,7 @@ func learnr(w http.ResponseWriter, r *http.Request) {
 	learnrMap = loadLearnrs() //Get all our LearnR names for validation
 	aUser := getUser(w, r)
 	theAdminOrgs := loadLearnROrgArray(aUser)
+	fmt.Printf("DEBUG: Here are the admin orgs: %v\n", theAdminOrgs)
 	//Redirect User if they are not logged in
 	if !alreadyLoggedIn(w, r) {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
@@ -263,27 +264,12 @@ func loadLearnROrgs() map[string]bool {
 	mapOLearnOrgsToReturn := make(map[string]bool) //LearnROrg map to load our values into
 	//Call our crudOperations Microservice in order to get our Org Names
 	//Create a context for timing out
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	req, err := http.NewRequest("GET", GETALLLEARNRORGURL, nil)
+	resp, err := http.Get(GETALLLEARNRORGURL)
 	if err != nil {
 		theErr := "There was an error getting LearnROrgs in loadLearnROrgs: " + err.Error()
 		logWriter(theErr)
 		fmt.Println(theErr)
 	}
-
-	resp, err := http.DefaultClient.Do(req.WithContext(ctx))
-
-	if resp.StatusCode >= 300 || resp.StatusCode <= 199 {
-		theErr := "There was an error reaching out to loadLearnROrg API: " + strconv.Itoa(resp.StatusCode)
-		fmt.Println(theErr)
-		logWriter(theErr)
-	} else if err != nil {
-		theErr := "Error from response to loadLearnROrg: " + err.Error()
-		fmt.Println(theErr)
-		logWriter(theErr)
-	}
-	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
