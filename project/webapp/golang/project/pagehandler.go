@@ -219,27 +219,12 @@ func loadUsernames() map[string]bool {
 	mapOusernameToReturn := make(map[string]bool) //Username to load our values into
 	//Call our crudOperations Microservice in order to get our Usernames
 	//Create a context for timing out
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	req, err := http.NewRequest("GET", GETALLUSERNAMESURL, nil)
+	resp, err := http.Get(GETALLUSERNAMESURL)
 	if err != nil {
 		theErr := "There was an error getting Usernames in loadUsernames: " + err.Error()
 		logWriter(theErr)
 		fmt.Println(theErr)
 	}
-
-	resp, err := http.DefaultClient.Do(req.WithContext(ctx))
-
-	if resp.StatusCode >= 300 || resp.StatusCode <= 199 {
-		theErr := "There was an error reaching out to loadUsername API: " + strconv.Itoa(resp.StatusCode)
-		fmt.Println(theErr)
-		logWriter(theErr)
-	} else if err != nil {
-		theErr := "Error from response to loadUsernames: " + err.Error()
-		fmt.Println(theErr)
-		logWriter(theErr)
-	}
-	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
@@ -336,27 +321,12 @@ func loadLearnrs() map[string]bool {
 	mapOLearnrsToReturn := make(map[string]bool) //LearnROrg map to load our values into
 	//Call our crudOperations Microservice in order to get our Org Names
 	//Create a context for timing out
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	req, err := http.NewRequest("GET", GETALLLEARNRURL, nil)
+	resp, err := http.Get(GETALLLEARNRURL)
 	if err != nil {
 		theErr := "There was an error getting Learnrs in loadLearnR: " + err.Error()
 		logWriter(theErr)
 		fmt.Println(theErr)
 	}
-
-	resp, err := http.DefaultClient.Do(req.WithContext(ctx))
-
-	if resp.StatusCode >= 300 || resp.StatusCode <= 199 {
-		theErr := "There was an error reaching out to loadLearnr API: " + strconv.Itoa(resp.StatusCode)
-		fmt.Println(theErr)
-		logWriter(theErr)
-	} else if err != nil {
-		theErr := "Error from response to loadLearnr: " + err.Error()
-		fmt.Println(theErr)
-		logWriter(theErr)
-	}
-	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {

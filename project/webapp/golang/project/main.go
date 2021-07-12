@@ -138,6 +138,10 @@ func testPingMongoCRUD() {
 	//Call our crudOperations Microservice in order to get our Usernames
 	//Create a context for timing out
 	resp, err := http.Get(TESTMONGOGET)
+	if err != nil {
+		theErr := "Could not get successful response from mongo get"
+		fmt.Println(theErr)
+	}
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {

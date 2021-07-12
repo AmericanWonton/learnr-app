@@ -540,31 +540,21 @@ func randomAPICall() (bool, string, int) {
 	goodGet, message, finalInt := true, "", 0
 	//Call our crudOperations Microservice in order to get our Usernames
 	//Create a context for timing out
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	req, err := http.NewRequest("GET", GETRANDOMID, nil)
+	resp, err := http.Get(GETRANDOMID)
 	if err != nil {
 		theErr := "There was an error getting Usernames in loadUsernames: " + err.Error()
 		logWriter(theErr)
 		goodGet, message = false, theErr
 	}
 
-	resp, err := http.DefaultClient.Do(req.WithContext(ctx))
-
-	if resp.StatusCode >= 300 || resp.StatusCode <= 199 {
-		goodGet, message = false, "Wrong response code gotten; failed to create random ID: "+strconv.Itoa(resp.StatusCode)
-	} else if err != nil {
-		theErr := "Had an error getting good random ID: " + err.Error()
-		logWriter(theErr)
-		goodGet, message = false, theErr
-	}
-	defer resp.Body.Close()
-
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		theErr := "There was an error getting a response for Usernames in loadUsernames: " + err.Error()
+		theErr := "There was an error getting a response for randomAPI: " + err.Error()
+		fmt.Println(theErr)
 		logWriter(theErr)
 		goodGet, message = false, theErr
+	} else {
+		defer resp.Body.Close()
 	}
 
 	//Marshal the response into a type we can read
