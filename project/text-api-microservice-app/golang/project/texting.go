@@ -120,8 +120,6 @@ func initialLearnRStart(w http.ResponseWriter, r *http.Request) {
 		SuccessNum: 0,
 	}
 
-	fmt.Printf("DEBUG: Reached the text API...\n")
-
 	//Get the byte slice from the request
 	bs, err := ioutil.ReadAll(r.Body)
 	if err != nil {

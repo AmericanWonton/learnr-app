@@ -351,6 +351,7 @@ func loadLearnROrgArray(aUser User) []LearnrOrg {
 		TheIDS []int `json:"TheIDS"`
 	}
 	theID := TheAdminOrgs{TheIDS: aUser.AdminOrgs}
+	fmt.Printf("DEBUG: This is what we're sending off for LearnROrgs: %v\n", theID)
 	theJSONMessage, err := json.Marshal(theID)
 	if err != nil {
 		fmt.Println(err)
