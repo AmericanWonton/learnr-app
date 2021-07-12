@@ -32,6 +32,8 @@ var learnrMap map[string]bool
 /* DEFINED SLURS */
 var slurs []string = []string{}
 
+//Set environment variables
+
 //This gets the slur words we check against in our username and
 //text messages
 func getbadWords() {

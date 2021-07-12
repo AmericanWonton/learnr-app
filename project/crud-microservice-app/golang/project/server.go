@@ -62,7 +62,8 @@ func handleRequests() {
 	myRouter.HandleFunc("/randomIDCreationAPI", randomIDCreationAPI).Methods("POST") //Get a random ID
 	myRouter.HandleFunc("/userLogin", userLogin).Methods("POST")                     //Check if User can login
 	//Serve our test ping
-	myRouter.HandleFunc("/testPing", testPing).Methods("POST") //Get a random ID
+	myRouter.HandleFunc("/testPingPost", testPingPost).Methods("POST") //Get a random ID
+	myRouter.HandleFunc("/testPingGet", testPingGet).Methods("GET")    //Get a random ID
 	//Serve our static files
 	log.Fatal(http.ListenAndServe(":4000", myRouter))
 }
@@ -87,19 +88,19 @@ func loadInMicroServiceURL() {
 	fmt.Printf("DEBUG: Here is mongo: %v\n and here is text: %v\n", mongoCrudURL, textAPIURL)
 }
 
-func testPing(w http.ResponseWriter, req *http.Request) {
+func testPingPost(w http.ResponseWriter, req *http.Request) {
 	//Declare data to return
-	type ReturnMessage struct {
+	type ReturnMessage2 struct {
 		TheErr          []string        `json:"TheErr"`
 		ResultMsg       []string        `json:"ResultMsg"`
 		SuccOrFail      int             `json:"SuccOrFail"`
 		ReturnedUserMap map[string]bool `json:"ReturnedUserMap"`
 	}
-	theReturnMessage := ReturnMessage{}
+	theReturnMessage := ReturnMessage2{}
 	theReturnMessage.SuccOrFail = 0 //Initially set to success
 	theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, "You've got a successful response")
 
-	fmt.Printf("DEBUG: Successful ping to testPing\n")
+	fmt.Printf("DEBUG: Successful ping to testPingPost\n")
 
 	//Collect JSON from Postman or wherever
 	//Get the byte slice from the request body ajax
@@ -143,7 +144,31 @@ func testPing(w http.ResponseWriter, req *http.Request) {
 	theJSONMessage, err := json.Marshal(theReturnMessage)
 	//Send the response back
 	if err != nil {
-		errIs := "Error formatting JSON for return in randomIDCreationAPI: " + err.Error()
+		errIs := "Error formatting JSON for return in testPingPost: " + err.Error()
+		logWriter(errIs)
+	}
+	fmt.Fprint(w, string(theJSONMessage))
+}
+
+func testPingGet(w http.ResponseWriter, r *http.Request) {
+	type ReturnMessage struct {
+		TheErr          []string        `json:"TheErr"`
+		ResultMsg       []string        `json:"ResultMsg"`
+		SuccOrFail      int             `json:"SuccOrFail"`
+		ReturnedUserMap map[string]bool `json:"ReturnedUserMap"`
+	}
+	theReturnMessage := ReturnMessage{}
+	theReturnMessage.SuccOrFail = 0 //Initially set to success
+	theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, "You've got a successful response")
+
+	fmt.Printf("DEBUG: Successful ping to testPingGET\n")
+
+	/* Return the marshaled response */
+	//Send the response back
+	theJSONMessage, err := json.Marshal(theReturnMessage)
+	//Send the response back
+	if err != nil {
+		errIs := "Error formatting JSON for return in testPingGet: " + err.Error()
 		logWriter(errIs)
 	}
 	fmt.Fprint(w, string(theJSONMessage))

@@ -2,12 +2,17 @@ package main
 
 import (
 	"bufio"
+	"context"
 	b64 "encoding/base64"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"math/rand"
+	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"text/template"
 	"time"
@@ -22,6 +27,10 @@ var funcMap = template.FuncMap{
 	"isAdmin":   isAdmin,         //Check to see if a User is an admin
 }
 
+/* Used for test calls to our MongoDB Microservice */
+var TESTMONGOPOST string
+var TESTMONGOGET string
+
 //initial functions when starting the app
 func init() {
 	//Get Environment Variables
@@ -35,6 +44,8 @@ func init() {
 	getCredsMongo()
 	//Initialize our bad phrases
 	getbadWords()
+	//Ping Test Crud Mongo
+	testPingMongoCRUD()
 }
 
 func logWriter(logMessage string) {
@@ -112,4 +123,103 @@ func makeMongoString(theUsername string, thePword string, theDB string, mongoStr
 	//fmt.Printf("DEBUG: Here's our decoded string: %v\n", finishedMongoString)
 
 	return finishedMongoString
+}
+
+/* This pings our Mongo with a post and get to see if everything is up and reachable */
+func testPingMongoCRUD() {
+	//Set our enviornment variables
+	TESTMONGOPOST = mongoCrudURL + "/testPingPost"
+	TESTMONGOGET = mongoCrudURL + "/testPingGet"
+	fmt.Printf("Making a ping to GET for MongoCrud: %v\n", TESTMONGOGET)
+	//Start with Get
+	//Call our crudOperations Microservice in order to get our Usernames
+	//Create a context for timing out
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	req, err := http.NewRequest("GET", TESTMONGOGET, nil)
+	if err != nil {
+		theErr := "There was an error for get to MongoCRUDURL: " + err.Error()
+		logWriter(theErr)
+	}
+
+	resp, err := http.DefaultClient.Do(req.WithContext(ctx))
+
+	if resp.StatusCode >= 300 || resp.StatusCode <= 199 {
+		fmt.Printf("Wrong resposne code gotten: %v\n", strconv.Itoa(resp.StatusCode))
+	} else if err != nil {
+		theErr := "Had an error getting good random ID: " + err.Error()
+		logWriter(theErr)
+		fmt.Println(theErr)
+	}
+	defer resp.Body.Close()
+	defer req.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		theErr := "There was an error getting a response for MongoCRUD: " + err.Error()
+		logWriter(theErr)
+	}
+
+	//Marshal the response into a type we can read
+	type ReturnMessage struct {
+		TheErr     []string `json:"TheErr"`
+		ResultMsg  []string `json:"ResultMsg"`
+		SuccOrFail int      `json:"SuccOrFail"`
+		RandomID   int      `json:"RandomID"`
+	}
+	var returnedMessage ReturnMessage
+	json.Unmarshal(body, &returnedMessage)
+
+	fmt.Printf("DEBUG: Here is response from Get to MongoCRUD: %v\n", returnedMessage)
+
+	//Do Post as well
+	type LoginData struct {
+		Username string `json:"Username"`
+		Password string `json:"Password"`
+	}
+	testLogin := LoginData{Username: "MrUserName", Password: "MrPassword"}
+	ctx2, cancel2 := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel2()
+	/* 2. Marshal test case to JSON expect */
+	theJSONMessage, err := json.Marshal(testLogin)
+	if err != nil {
+		fmt.Println(err)
+		logWriter(err.Error())
+	}
+	/* 3. Create Post to JSON */
+	payload := strings.NewReader(string(theJSONMessage))
+	req2, err := http.NewRequest("POST", TESTMONGOPOST, payload)
+	if err != nil {
+		theErr := "There was an error posting User: " + err.Error()
+		fmt.Println(theErr)
+		logWriter(theErr)
+	}
+	req.Header.Add("Content-Type", "application/json")
+	/* 4. Get response from Post */
+	resp2, err := http.DefaultClient.Do(req2.WithContext(ctx2))
+	if err != nil {
+		theErr := "Failed response from addUser: " + strconv.Itoa(resp.StatusCode) + " " + err.Error()
+		logWriter(theErr)
+	} else if resp.StatusCode >= 300 || resp.StatusCode <= 199 {
+		theErr := "Failed response from addUser: " + strconv.Itoa(resp.StatusCode)
+		logWriter(theErr)
+	}
+	defer resp2.Body.Close()
+	defer req2.Body.Close()
+	//Declare message we expect to see returned
+	body2, err := ioutil.ReadAll(resp2.Body)
+	if err != nil {
+		theErr := "There was an error reading response from UserCreate " + err.Error()
+		logWriter(theErr)
+	}
+	type ReturnMessage2 struct {
+		TheErr          []string        `json:"TheErr"`
+		ResultMsg       []string        `json:"ResultMsg"`
+		SuccOrFail      int             `json:"SuccOrFail"`
+		ReturnedUserMap map[string]bool `json:"ReturnedUserMap"`
+	}
+	var returnedMessage2 ReturnMessage2
+	json.Unmarshal(body2, &returnedMessage2)
+
+	fmt.Printf("DEBUG: Here is the response from CRUD URL Post: %v\n", returnedMessage2)
 }
