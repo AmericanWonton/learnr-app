@@ -3,12 +3,12 @@ var TheUser = {
     Password: "",
     Firstname: "",
     Lastname: "",
-    PhoneNums: new Array(),
+    PhoneNums: [],
     UserID: 0,
-    Email: new Array(),
+    Email: [],
     Whoare: "",
-    AdminOrgs: new Array(),
-    OrgMember: new Array(),
+    AdminOrgs: [],
+    OrgMember: [],
     Banned: false,
     DateCreated: "",
     DateUpdated: ""
@@ -16,13 +16,61 @@ var TheUser = {
 
 var isBanned = false;
 
-function setUser(theUser){
-    TheUser = theUser;
+/* SET USER FUNC BEGINNING */
+function setUsername(username){
+    TheUser.Username = String(username);
+}
+
+function setPassword(password){
+    TheUser.Password = String(password);
+}
+
+function setFirstname(firstname){
+    TheUser.Firstname = String(firstname);
+}
+
+function setLastname(lastname){
+    TheUser.Lastname = String(lastname);
+}
+
+function setPhoneNums(phonenums){
+    TheUser.PhoneNums.push(phonenums);
+}
+
+function setUserID(userid){
+    TheUser.UserID = userid;
+}
+
+function setEmail(emails){
+    TheUser.Email.push(emails);
+}
+
+function setWhoAre(whoare){
+    TheUser.Whoare = whoare;
+}
+
+function setAdminOrgs(adorgs){
+    TheUser.AdminOrgs.push(adorgs);
+}
+
+function setOrgMember(themembersorg){
+    TheUser.OrgMember.push(themembersorg);
 }
 
 function setBanned(banned){
     isBanned = banned;
+    TheUser.Banned = banned;
 }
+
+function setDateCreated(datecreated){
+    TheUser.DateCreated = datecreated;
+}
+
+function setDateUpdated(dateupdated){
+    TheUser.DateUpdated = dateupdated;
+}
+
+/* SET USER FUNC ENDING */
 
 //Handles User clicking log out to delete their session
 function logOut(){

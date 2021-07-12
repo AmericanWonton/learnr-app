@@ -528,7 +528,7 @@ func specialLearnRGive(w http.ResponseWriter, req *http.Request) {
 	if canCrud {
 		/* Begin building crud operation based on our criteria */
 		collection := mongoClient.Database("learnR").Collection("learnr") //Here's our collection
-		var fullConditions bson.M = make(bson.M)
+		fullConditions := bson.M{}
 		findOptions := options.Find()
 		theFind := 0 //A counter to track how many Learnrs we find
 
@@ -546,6 +546,7 @@ func specialLearnRGive(w http.ResponseWriter, req *http.Request) {
 				Pattern: "[" + theitem.LearnRName + "]",
 			}}
 		}
+		fmt.Printf("DEBUG: Here is our full conditions: %v\n", fullConditions)
 		//fmt.Printf("DEBUG: Here is our fullConditions: %v\n", fullConditions)
 		/*DEBUG: Add cases later for more criteria */
 		/* Run the mongo query after fixed filter/findoptions */
@@ -621,12 +622,14 @@ func specialLearnRGive(w http.ResponseWriter, req *http.Request) {
 		//Error, return an error back and log it
 		returnedErr := "Had an issue getting special Learnrs"
 		logWriter(returnedErr)
+		fmt.Println(returnedErr)
 		theReturnMessage.SuccOrFail = 1
 		theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
 		theReturnMessage.TheErr = append(theReturnMessage.TheErr, returnedErr)
 		theReturnMessage.ReturnedLearnrs = []Learnr{}
 	}
 
+	fmt.Printf("DEBUG: Here are the learnrs we SHOULD be returning: %v\n", theReturnMessage.ReturnedLearnrs)
 	//fmt.Printf("DEBUG: Here is what we are going to send back: %v\n", theReturnMessage.ReturnedLearnrs)
 	//Format the JSON map for returning our results
 	theJSONMessage, err := json.Marshal(theReturnMessage)

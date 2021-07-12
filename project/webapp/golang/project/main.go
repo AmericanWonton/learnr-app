@@ -48,7 +48,7 @@ func init() {
 	//Initialize our bad phrases
 	getbadWords()
 	//Ping Test Crud Mongo
-	testPingMongoCRUD()
+	//testPingMongoCRUD()
 }
 
 func logWriter(logMessage string) {

@@ -119,8 +119,6 @@ func testPingPost(w http.ResponseWriter, req *http.Request) {
 	var dataForLogin LoginData
 	json.Unmarshal(bs, &dataForLogin)
 
-	fmt.Printf("DEBUG: Here is our Username: %v and our Password: %v\n", dataForLogin.Username, dataForLogin.Password)
-
 	/* Test get User */
 	/* User collection */
 	userCollection := mongoClient.Database("learnR").Collection("users") //Here's our collection

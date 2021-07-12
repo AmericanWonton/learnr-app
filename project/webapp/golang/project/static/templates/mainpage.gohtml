@@ -11,30 +11,81 @@
         {{template "fonts1"}}
         {{/* Here are our Media Query and stylesheets */}}
         {{template "media-queries"}}
+        {{/* AngularJS for certain functionality */}}
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-animate.js"></script>
         {{/* Here is our Javascript or additional code needed */}}
         <script src="static/js/pagehandling.js"></script>
         <script src="static/js/app.js"></script>
-        {{/* AngularJS for added email address */}}
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+        <script src="static/js/mainpageapp.js"></script>
     </head>
-    <body>
+    <body ng-app="mymainpageApp" ng-controller="myCtrl" id="theMainBody">
         {{/* Send data to javascript */}}
         {{$theUser := .TheUser}}
-        {{$theUsername := .Username}}
-        {{$theUserID := .UserID}}
         {{$messageDisplay := .MessageDisplay}}
-        {{$banned := .Banned}}
-
-        {{template "sendUser" $theUser}}
-        {{template "sendBanned" $banned}}
+        {{$thelearnrs := .OrganizedLearnRs}}
+        {{/* Need to loop through arrays because Javascript dosen't like what gets passed in */}}
+        {{/* Emails */}}
+        {{range $element := .TheUser.Email}}
+            {{template "setEmail" $element}}
+        {{end}}
+        {{/* Admin Orgs */}}
+        {{range $element := .TheUser.AdminOrgs}}
+            {{template "setAdminOrgs" $element}}
+        {{end}}
+        {{/* Org Member */}}
+        {{range $element := .TheUser.OrgMember}}
+            {{template "setOrgMember" $element}}
+        {{end}}
+        {{/* Phone Nums */}}
+        {{range $element := .TheUser.PhoneNums}}
+            {{template "setPhoneNums" $element}}
+        {{end}}
+        {{template "setUsername" .TheUser.UserName}}
+        {{template "setPassword" .TheUser.Password}}
+        {{template "setFirstname" .TheUser.Firstname}}
+        {{template "setLastname" .TheUser.Lastname}}
+        {{template "setUserID" .TheUser.UserID}}
+        {{template "setWhoAre" .TheUser.Whoare}}
+        {{template "sendBanned" .TheUser.Banned}}
+        {{template "setDateCreated" .TheUser.DateCreated}}
+        {{template "setDateUpdated" .TheUser.DateUpdated}}
 
         {{/* Here is our header */}}
         {{template "header_everywhere" $theUser}}
 
-        
-        {{/* Login section */}}
-        <div class="mainContentDiv">
-            
+        {{/* LearnR section */}}
+        <div class="mainContentDiv" id="mainContentDiv">
+            <!-- Holds the search bar to look for learnrs in -->
+            <div class="searchFieldDiv">
+                <!-- Title -->
+                <div class="searchbarTitle">
+                    <p class="titleTextP">Search For Your LearnR!</p>
+                </div>
+                <!-- Search Bar -->
+                <div class="searchBarDiv">
+                    <!-- LearnR Name -->
+                    <div class="inputHolder">
+                        <input type="text" class="searchInput" name="learnrName" placeholder="LearnRName" id="learnRNameInput"/>
+                    </div>
+                    <!-- LearnR Tag -->
+                    <div class="inputHolder">
+                        <input type="text" class="searchInput" name="leanrnrTag" placeholder="LearnRTag" id="learnRTagInput"/>
+                    </div>
+                    <!-- Submit Button -->
+                    <div class="inputHolder">
+                        <button class="actionDivButton" onclick="learnRSearch()">Search 4 LearnRs</button>
+                    </div>
+                    <!-- Result Div -->
+                    <div class="inputHolder">
+                        <p class="resultThing" id="resultThing"></p>
+                    </div>
+                </div>
+            </div>
+            <!-- Holds all our LearnRs loaded in -->
+            <div class="learnrHolderDiv" id="learnrHolderDiv" ng-show='caseData'>
+                
+            </div>
         </div>
         {{/* Here is our footer */}}
     </body>

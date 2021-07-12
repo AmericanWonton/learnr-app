@@ -13,6 +13,7 @@
         {{template "media-queries"}}
         {{/* Here is our Javascript or additional code needed */}}
         <script src="static/js/pagehandling.js"></script>
+        <script src="static/js/learnrorg.js"></script>
         <script src="static/js/app.js"></script>
         {{/* AngularJS for added email address */}}
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
@@ -20,21 +21,42 @@
     <body>
         {{/* Send data to javascript */}}
         {{$theUser := .TheUser}}
-        {{$theUsername := .Username}}
-        {{$theUserID := .UserID}}
         {{$messageDisplay := .MessageDisplay}}
-        {{$banned := .Banned}}
+        {{/* Need to loop through arrays because Javascript dosen't like what gets passed in */}}
+        {{/* Emails */}}
+        {{range $element := .TheUser.Email}}
+            {{template "setEmail" $element}}
+        {{end}}
+        {{/* Admin Orgs */}}
+        {{range $element := .TheUser.AdminOrgs}}
+            {{template "setAdminOrgs" $element}}
+        {{end}}
+        {{/* Org Member */}}
+        {{range $element := .TheUser.OrgMember}}
+            {{template "setOrgMember" $element}}
+        {{end}}
+        {{/* Phone Nums */}}
+        {{range $element := .TheUser.PhoneNums}}
+            {{template "setPhoneNums" $element}}
+        {{end}}
 
-        {{template "sendUser" $theUser}}
-        {{template "sendBanned" $banned}}
-        
+        {{template "setUsername" .TheUser.UserName}}
+        {{template "setPassword" .TheUser.Password}}
+        {{template "setFirstname" .TheUser.Firstname}}
+        {{template "setLastname" .TheUser.Lastname}}
+        {{template "setUserID" .TheUser.UserID}}
+        {{template "setWhoAre" .TheUser.Whoare}}
+        {{template "sendBanned" .TheUser.Banned}}
+        {{template "setDateCreated" .TheUser.DateCreated}}
+        {{template "setDateUpdated" .TheUser.DateUpdated}}
+
         {{/* Here is our header */}}
         {{template "header_everywhere" $theUser}}
 
         
         {{/* Main */}}
         <div class="mainContentDiv">
-            <p>In the Make Org Page</p>
+            {{template "makeorg"}}
         </div>
         {{/* Here is our footer */}}
     </body>
