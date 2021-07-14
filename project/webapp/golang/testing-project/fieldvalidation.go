@@ -32,6 +32,9 @@ var learnrMap map[string]bool
 /* DEFINED SLURS */
 var slurs []string = []string{}
 
+/* DEBUG LEARNR NUM */
+var debugLearnRNum string = "13862611637"
+
 //This gets the slur words we check against in our username and
 //text messages
 func getbadWords() {
@@ -421,7 +424,7 @@ func createLearnR(w http.ResponseWriter, r *http.Request) {
 			Name:          ourJSON.TheLearnr.Name,
 			Tags:          ourJSON.TheLearnr.Tags,
 			Description:   ourJSON.TheLearnr.Description,
-			PhoneNums:     []string{},
+			PhoneNums:     []string{debugLearnRNum},
 			LearnRInforms: ourJSON.TheLearnr.LearnRInforms,
 			Active:        true,
 			DateCreated:   theTimeNow.Format("2006-01-02 15:04:05"),
