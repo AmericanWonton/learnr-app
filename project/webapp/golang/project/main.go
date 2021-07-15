@@ -34,6 +34,7 @@ var TESTMONGOGET string
 //initial functions when starting the app
 func init() {
 	//Get Environment Variables
+	loadInEmailCreds()
 	loadInMicroServiceURL()
 	defineAPIVariables()                     //Define variables in feildvalidation.go
 	defineCrudVariables()                    //Define variables for mongoCrudOperations.go
@@ -49,6 +50,8 @@ func init() {
 	getbadWords()
 	//Ping Test Crud Mongo
 	//testPingMongoCRUD()
+	//Initialize Emails
+	OAuthGmailService()
 }
 
 func logWriter(logMessage string) {

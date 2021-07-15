@@ -14,6 +14,7 @@
         {{/* Here is our Javascript or additional code needed */}}
         <script src="static/js/pagehandling.js"></script>
         <script src="static/js/app.js"></script>
+        <script src="static/js/messageme.js"></script>
         {{/* AngularJS for added email address */}}
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
     </head>
@@ -55,7 +56,38 @@
         
         {{/* Main */}}
         <div class="mainContentDiv">
-            <p>In the Send Help Page</p>
+            <!-- Page Title -->
+            <div class="titleDiv">
+                <p class="titleP">
+                    Send Help
+                </p>
+            </div>
+            <!-- Main Email Div -->
+            <div class="sendHelpDiv">
+                <!-- Inform User -->
+                <div class="informDiv">
+                    <p class="informP">
+                        Need help creating a LearnR? Have questions you need answered? Want to send
+                        suggestions or praise? Send me an email and I'll
+                        get back as soon as I can!
+                    </p>
+                </div>
+                <!-- Inform Div -->
+                <div class="formDiv">
+                    <!-- Text field -->
+                    <div class="fieldHolderDiv">
+                        <textarea  class="mesMeTextArea" id="mesMeTextArea" name="mesMeTextArea" placeholder="What would you like to say?"></textarea>
+                    </div>
+                    <!-- Submit Button -->
+                    <div class="fieldHolderDiv">
+                        <button class="submitB" id="submitB" onclick="messageMe()">Submit</button>
+                    </div>
+                    <!-- Response -->
+                    <div class="fieldHolderDiv">
+                        <p class="informP" id="messageResponseP"></p>
+                    </div>
+                </div>
+            </div>
         </div>
         {{/* Here is our footer */}}
     </body>
