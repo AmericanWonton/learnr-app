@@ -783,3 +783,84 @@ body, html {
     /* debug */
     border: 1px solid rgb(0, 0, 0);
 }
+
+/* Styling for 'Learn More' Page */
+.mainContentMoreDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    justify-content: center;
+    width: 100%;
+    margin: 0em;
+    padding: 0em;
+    /* styling */
+    /* background-color: rgb(148, 148, 211); */
+    /* debug styling */
+    /* border: 1px solid black; */
+}
+
+.titleDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    justify-content: center;
+    width: 100%;
+    /* styling */
+    text-align: center;
+    margin-left: .5em;
+    margin-right: .5em;
+    margin-bottom: 1em;
+}
+
+.titleP{
+    text-align: center;
+    font-size: 4rem;
+    text-decoration: underline;
+}
+
+.textDiv{
+     /* flexbox styling */
+     display: flex;
+     flex-flow: wrap;
+     justify-content: center;
+     width: 100%;
+     /* styling */
+     margin-left: .5em;
+     margin-right: .5em;
+     margin-top: .5em;
+     margin-bottom: .5em;
+}
+
+.textP{
+    font-size: 1.5rem;
+    padding-bottom: 1em;
+    padding-top: 1em;
+    line-height: 2.0;
+}
+
+.listDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    justify-content: flex-start;
+    width: 100%;
+    /* styling */
+    padding-top: .5em;
+    padding-bottom: .5em;
+}
+
+.ulList{
+
+}
+
+.liList{
+    font-size: 1.3rem;
+    padding-top: .5em;
+    padding-bottom: .5em;
+}
+
+.boldText{
+    font-size: 1.3em;
+    text-decoration: underline;
+    font-weight: bold;
+}
