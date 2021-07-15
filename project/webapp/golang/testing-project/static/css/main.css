@@ -864,3 +864,61 @@ body, html {
     text-decoration: underline;
     font-weight: bold;
 }
+
+/* Send Help Page Styling */
+.sendHelpDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    justify-content: center;
+    align-content: center;
+    width: 100%;
+    /* styling */
+    
+    /* debug styling */
+}
+
+.informDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    justify-content: center;
+    align-content: center;
+    width: 100%;
+    /* styling */
+    text-align: center;
+    /* debug styling */
+}
+
+.informP{
+    font-size: 2rem;
+    text-align: center;
+}
+
+.formDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    justify-content: center;
+    align-content: center;
+    width: 100%;
+    /* styling */
+    border: 2px solid black;
+    /* debug styling */
+}
+
+.fieldHolderDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    justify-content: center;
+    align-content: center;
+    width: 100%;
+    /* styling */
+    border: 2px solid black;
+    /* debug styling */
+}
+
+.mesMeTextArea{
+    font-size: 1rem;
+}
