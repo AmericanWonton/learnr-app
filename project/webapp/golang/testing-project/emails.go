@@ -74,6 +74,8 @@ func loadInEmailCreds() {
 	theClientSecret = os.Getenv("EMAIL_CLIENTSECRET")
 	theAccessToken = os.Getenv("EMAIL_ACCESSTOKEN")
 	theRefreshToken = os.Getenv("EMAIL_REFRESHTOKEN")
+
+	fmt.Printf("He\n")
 }
 
 //Initialized at begininning of program
