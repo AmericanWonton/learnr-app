@@ -25,6 +25,7 @@ var funcMap = template.FuncMap{
 //initial functions when starting the app
 func init() {
 	//Get Environment Variables
+	loadInEmailCreds()
 	loadInMicroServiceURL()
 	usernameMap = make(map[string]bool)      //Clear all Usernames when loading so no problems are caused
 	learnOrgMapNames = make(map[string]bool) //Clear all Org Names when loading so no problems are caused
