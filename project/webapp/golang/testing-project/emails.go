@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"html/template"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"time"
@@ -69,13 +70,23 @@ func loadInEmailCreds() {
 		message := "This ENV Variable is not present: " + "EMAIL_REFRESHTOKEN"
 		panic(message)
 	}
+	_, ok5 := os.LookupEnv("MY_EMAIL")
+	if !ok5 {
+		message := "This ENV Variable is not present: " + "MY_EMAIL"
+		panic(message)
+	}
+	_, ok6 := os.LookupEnv("MY_PWORD")
+	if !ok6 {
+		message := "This ENV Variable is not present: " + "MY_PWORD"
+		panic(message)
+	}
 
 	theClientID = os.Getenv("EMAIL_CLIENTID")
 	theClientSecret = os.Getenv("EMAIL_CLIENTSECRET")
 	theAccessToken = os.Getenv("EMAIL_ACCESSTOKEN")
 	theRefreshToken = os.Getenv("EMAIL_REFRESHTOKEN")
-
-	fmt.Printf("He\n")
+	senderAddress = os.Getenv("MY_EMAIL")
+	senderPWord = os.Getenv("MY_PWORD")
 }
 
 //Initialized at begininning of program
@@ -161,6 +172,31 @@ func emailMe(w http.ResponseWriter, r *http.Request) {
 		theReturnMessage.SuccOrFail = 0
 		theReturnMessage.ResultMsg = "Message sent to me"
 		theReturnMessage.TheErr = ""
+		//Try to send Email to User
+		sendUserMessage := "Hello from LearnR! Thanks for reaching out, I am currently reading your message and will respond back soon."
+		/* Encode our image to include for email signature */
+		templateData := struct {
+			Username   string
+			TheMessage []string
+		}{
+			Username:   dataEmail.YourUser.UserName,
+			TheMessage: []string{sendUserMessage},
+		}
+		r := NewRequest([]string{dataEmail.YourUser.Email[0]}, "Thanks, just recieved your message", "Hello, World!")
+		err1 := r.ParseTemplate("./static/emailTemplates/messagerecieved.html", templateData)
+		if err1 != nil {
+			fmt.Printf("Could not parse the template: %v\n", err1.Error())
+			log.Fatal("Could not parse the template" + err1.Error())
+		}
+		_, goodSend := sendEmailTemplate(dataEmail.YourUser.Email[0], sendUserMessage, "Thanks for messaging us!", r)
+		if goodSend {
+			//Alter messsage
+			logWriter("Successfuly email sending")
+		} else {
+			errMsg := "Failure to send Email"
+			fmt.Println(errMsg)
+			logWriter(errMsg)
+		}
 	}
 	//Return JSON
 	theJSONMessage, err := json.Marshal(theReturnMessage)

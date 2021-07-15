@@ -36,6 +36,8 @@ func init() {
 	getCredsMongo()
 	//Initialize our bad phrases
 	getbadWords()
+	//Initialize Emails
+	OAuthGmailService()
 }
 
 func logWriter(logMessage string) {
