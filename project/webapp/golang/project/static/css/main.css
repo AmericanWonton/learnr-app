@@ -796,7 +796,7 @@ body, html {
     /* styling */
     /* background-color: rgb(148, 148, 211); */
     /* debug styling */
-    border: 1px solid black;
+    /* border: 1px solid black; */
 }
 
 .titleDiv{
@@ -815,6 +815,7 @@ body, html {
 .titleP{
     text-align: center;
     font-size: 4rem;
+    text-decoration: underline;
 }
 
 .textDiv{
@@ -824,7 +825,6 @@ body, html {
      justify-content: center;
      width: 100%;
      /* styling */
-     text-align: center;
      margin-left: .5em;
      margin-right: .5em;
      margin-top: .5em;
@@ -832,9 +832,10 @@ body, html {
 }
 
 .textP{
-    font-size: 1rem;
-    padding-bottom: .5em;
-    padding-top: .5em;
+    font-size: 1.5rem;
+    padding-bottom: 1em;
+    padding-top: 1em;
+    line-height: 2.0;
 }
 
 .listDiv{
@@ -853,7 +854,13 @@ body, html {
 }
 
 .liList{
-    font-size: 1rem;
+    font-size: 1.3rem;
     padding-top: .5em;
     padding-bottom: .5em;
+}
+
+.boldText{
+    font-size: 1.3em;
+    text-decoration: underline;
+    font-weight: bold;
 }
