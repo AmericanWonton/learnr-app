@@ -461,33 +461,19 @@ func TestLearnROrgRead(t *testing.T) {
 
 //Test for getting all LearnR Orgs
 func TestGetAllLearnROrgNames(t *testing.T) {
-	//Call our crudOperations Microservice in order to get our Usernames
-	//Create a context for timing out
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	req, err := http.NewRequest("GET", GETALLLEARNRORGURL, nil)
+	req, err := http.Get(GETALLLEARNRORGURL)
 	if err != nil {
 		theErr := "There was an error getting Usernames in loadUsernames: " + err.Error()
 		t.Fatal(theErr)
 	}
 
-	resp, err := http.DefaultClient.Do(req.WithContext(ctx))
-
-	if resp.StatusCode >= 300 || resp.StatusCode <= 199 {
-		theRespCode := strconv.Itoa(resp.StatusCode)
-		t.Fatal("We have the wrong response code: " + theRespCode)
-		return
-	} else if err != nil {
-		t.Fatal("Had an error creating response: " + err.Error())
-		return
-	}
-	defer resp.Body.Close()
-
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		theErr := "There was an error getting a response for Usernames in loadUsernames: " + err.Error()
 		t.Fatal(theErr)
 	}
+
+	defer req.Body.Close()
 
 	//Marshal the response into a type we can read
 	type ReturnMessage struct {

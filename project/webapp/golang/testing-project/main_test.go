@@ -10,10 +10,25 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
-	"strconv"
 	"testing"
 	"time"
 )
+
+//Declare struct we are expecting
+type SearchJSON struct {
+	TheNameInput string `json:"TheNameInput"`
+	TheTagInput  string `json:"TheTagInput"`
+}
+
+type LearnRSearchCrudCreate struct {
+	LearnRSearches      SearchJSON
+	ExpectedNum         int
+	ExpectedTruth       bool
+	ExpectedStringArray []string
+	ExpectedLearnRID    []int
+}
+
+var LearnRSearchCrudCreators []LearnRSearchCrudCreate
 
 func TestMain(m *testing.M) {
 	//Build stuff for beginning of tests
@@ -65,6 +80,8 @@ func setup() {
 	createLearnRInformReadCrud()
 	createLearnRInformUpdateCrud()
 	createLearnRInformDeleteCrud()
+	/* Add values for special LearnR Search */
+	createSpecialLearnRSearch()
 }
 
 //This is shutdown values/actions for testing
@@ -122,28 +139,13 @@ func TestHTTPRequest(t *testing.T) {
 //Get a random ID we can use for any struct
 func TestRandomID(t *testing.T) {
 	//Call our crudOperations Microservice in order to get our Usernames
-	//Create a context for timing out
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	req, err := http.NewRequest("GET", GETRANDOMID, nil)
+	req, err := http.Get(GETRANDOMID)
 	if err != nil {
 		theErr := "There was an error getting Usernames in loadUsernames: " + err.Error()
 		t.Fatal(theErr)
 	}
 
-	resp, err := http.DefaultClient.Do(req.WithContext(ctx))
-
-	if resp.StatusCode >= 300 || resp.StatusCode <= 199 {
-		theRespCode := strconv.Itoa(resp.StatusCode)
-		t.Fatal("We have the wrong response code: " + theRespCode)
-		return
-	} else if err != nil {
-		t.Fatal("Had an error creating response: " + err.Error())
-		return
-	}
-	defer resp.Body.Close()
-
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		theErr := "There was an error getting a response for Usernames in loadUsernames: " + err.Error()
 		t.Fatal(theErr)
@@ -159,6 +161,8 @@ func TestRandomID(t *testing.T) {
 	var returnedMessage ReturnMessage
 	json.Unmarshal(body, &returnedMessage)
 
+	defer req.Body.Close()
+
 	//Assign our map variable to the map varialbe and see if it's okay
 	if returnedMessage.SuccOrFail != 0 {
 		errString := ""
@@ -168,5 +172,74 @@ func TestRandomID(t *testing.T) {
 		t.Fatal("Had an error getting map: " + errString)
 	} else {
 		fmt.Printf("Here is our random ID: %v\n", returnedMessage.RandomID)
+	}
+}
+
+func createSpecialLearnRSearch() {
+	//Empty Search (GOOD)
+	LearnRSearchCrudCreators = append(LearnRSearchCrudCreators, LearnRSearchCrudCreate{
+		LearnRSearches:      SearchJSON{"", ""},
+		ExpectedNum:         0,
+		ExpectedTruth:       true,
+		ExpectedStringArray: []string{"Nice"},
+		ExpectedLearnRID:    []int{855367233056, 478483273602, 65286261652, 645741771884},
+	})
+	//Single Tag Search
+	LearnRSearchCrudCreators = append(LearnRSearchCrudCreators, LearnRSearchCrudCreate{
+		LearnRSearches:      SearchJSON{"", "Twitter"},
+		ExpectedNum:         0,
+		ExpectedTruth:       true,
+		ExpectedStringArray: []string{"Nice"},
+		ExpectedLearnRID:    []int{855367233056},
+	})
+	//Multiple Tag Search
+	LearnRSearchCrudCreators = append(LearnRSearchCrudCreators, LearnRSearchCrudCreate{
+		LearnRSearches:      SearchJSON{"", "Blue"},
+		ExpectedNum:         0,
+		ExpectedTruth:       true,
+		ExpectedStringArray: []string{"Nice"},
+		ExpectedLearnRID:    []int{855367233056, 645741771884},
+	})
+	//Multiple Name Search
+	LearnRSearchCrudCreators = append(LearnRSearchCrudCreators, LearnRSearchCrudCreate{
+		LearnRSearches:      SearchJSON{"the", ""},
+		ExpectedNum:         0,
+		ExpectedTruth:       true,
+		ExpectedStringArray: []string{"Nice"},
+		ExpectedLearnRID:    []int{65286261652, 645741771884},
+	})
+	//Single Name Search
+	LearnRSearchCrudCreators = append(LearnRSearchCrudCreators, LearnRSearchCrudCreate{
+		LearnRSearches:      SearchJSON{"Twitter", ""},
+		ExpectedNum:         0,
+		ExpectedTruth:       true,
+		ExpectedStringArray: []string{"Nice"},
+		ExpectedLearnRID:    []int{855367233056},
+	})
+	//Tag and Name Search
+	LearnRSearchCrudCreators = append(LearnRSearchCrudCreators, LearnRSearchCrudCreate{
+		LearnRSearches:      SearchJSON{"the", "special"},
+		ExpectedNum:         0,
+		ExpectedTruth:       true,
+		ExpectedStringArray: []string{"Nice"},
+		ExpectedLearnRID:    []int{65286261652, 645741771884},
+	})
+}
+
+/* Test Special LearnRSearch */
+func TestSpecialLearnRSearch(t *testing.T) {
+	testNum := 0 //Used for incrementing
+	for _, test := range LearnRSearchCrudCreators {
+		//Create JSON
+		/* 2. Marshal test case to JSON expect */
+		theJSONMessage, err := json.Marshal(test.LearnRSearches)
+		if err != nil {
+			fmt.Println(err)
+			logWriter(err.Error())
+			t.Fatal("Could not marshal correctly: " + err.Error())
+		}
+		/* Create Context */
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
 	}
 }
