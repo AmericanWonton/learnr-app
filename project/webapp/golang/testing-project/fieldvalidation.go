@@ -781,6 +781,8 @@ func searchLearnRs(w http.ResponseWriter, r *http.Request) {
 	var searchJSON SearchJSON
 	json.Unmarshal(bs, &searchJSON)
 
+	fmt.Printf("DEBUG: Here is our SearchJSON: %v\n", searchJSON)
+
 	/* Build the neccessary special cases to pass into 'getSpecialLearnRs'.
 	If both fields are blank, just get everything */
 	theCases := []int{0, 1, 1, 1}

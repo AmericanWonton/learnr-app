@@ -1638,7 +1638,7 @@ func getSpecialLearnRs(theCases []int, theTag string, learnrName string, entryFr
 	payload := strings.NewReader(string(theJSONMessage))
 	req, err := http.NewRequest("POST", GETSPECIALLEARNR, payload)
 	if err == nil {
-		fmt.Printf("DEBUG: Err is nil\n")
+		//fmt.Printf("DEBUG: Err is nil\n")
 	}
 	if err != nil {
 		theErr := "There was an error posting getting special LearnRs: " + err.Error()
@@ -1650,7 +1650,7 @@ func getSpecialLearnRs(theCases []int, theTag string, learnrName string, entryFr
 	/* 4. Get response from Post */
 	resp, err := http.DefaultClient.Do(req.WithContext(ctx))
 	if err == nil {
-		fmt.Printf("DEBUG: Err is nil in response\n")
+		//fmt.Printf("DEBUG: Err is nil in response\n")
 	}
 	if err != nil {
 		theErr := "Failed response from getspecialLearnrs: " + strconv.Itoa(resp.StatusCode) + " " + err.Error()
@@ -1662,7 +1662,7 @@ func getSpecialLearnRs(theCases []int, theTag string, learnrName string, entryFr
 		goodAdd, message = false, theErr
 	}
 	defer req.Body.Close()
-	fmt.Printf("DEBUG: We got here in getSpecialLearnrs\n")
+	//fmt.Printf("DEBUG: We got here in getSpecialLearnrs\n")
 	//Declare message we expect to see returned
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {

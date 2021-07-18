@@ -173,7 +173,7 @@ func TestRandomID(t *testing.T) {
 		}
 		t.Fatal("Had an error getting map: " + errString)
 	} else {
-		fmt.Printf("Here is our random ID: %v\n", returnedMessage.RandomID)
+		//fmt.Printf("Here is our random ID: %v\n", returnedMessage.RandomID)
 	}
 }
 
@@ -198,7 +198,7 @@ func createSpecialLearnRSearch() {
 	theMap = map[string]int{"855367233056": 855367233056}
 	//Single Tag Search
 	LearnRSearchCrudCreators = append(LearnRSearchCrudCreators, LearnRSearchCrudCreate{
-		LearnRSearches: TestSearchR{TheCases: []int{0, 0, 1, 1},
+		LearnRSearches: TestSearchR{TheCases: []int{0, 1, 0, 1},
 			TheTag:     "Twitter",
 			LearnRName: "",
 			EntryFrom:  0,
@@ -211,7 +211,7 @@ func createSpecialLearnRSearch() {
 	theMap = map[string]int{"855367233056": 855367233056, "645741771884": 645741771884}
 	//Multiple Tag Search
 	LearnRSearchCrudCreators = append(LearnRSearchCrudCreators, LearnRSearchCrudCreate{
-		LearnRSearches: TestSearchR{TheCases: []int{0, 0, 1, 1},
+		LearnRSearches: TestSearchR{TheCases: []int{0, 1, 0, 1},
 			TheTag:     "Blue",
 			LearnRName: "",
 			EntryFrom:  0,
@@ -224,7 +224,7 @@ func createSpecialLearnRSearch() {
 	//Multiple Name Search
 	theMap = map[string]int{"65286261652": 65286261652, "645741771884": 645741771884}
 	LearnRSearchCrudCreators = append(LearnRSearchCrudCreators, LearnRSearchCrudCreate{
-		LearnRSearches: TestSearchR{TheCases: []int{0, 1, 0, 1},
+		LearnRSearches: TestSearchR{TheCases: []int{0, 0, 1, 1},
 			TheTag:     "",
 			LearnRName: "the",
 			EntryFrom:  0,
@@ -237,7 +237,7 @@ func createSpecialLearnRSearch() {
 	//Single Name Search
 	theMap = map[string]int{"855367233056": 855367233056}
 	LearnRSearchCrudCreators = append(LearnRSearchCrudCreators, LearnRSearchCrudCreate{
-		LearnRSearches: TestSearchR{TheCases: []int{0, 1, 0, 1},
+		LearnRSearches: TestSearchR{TheCases: []int{0, 0, 1, 1},
 			TheTag:     "",
 			LearnRName: "Twitter",
 			EntryFrom:  0,

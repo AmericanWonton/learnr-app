@@ -602,6 +602,7 @@ func TestLearnRRead(t *testing.T) {
 }
 
 //Test for Getting special LearnR
+/*
 func TestSpecialLearnrGet(t *testing.T) {
 	testNum := 0 //Used for incrementing
 	for _, test := range learnRSpecialCrudResults {
@@ -614,6 +615,7 @@ func TestSpecialLearnrGet(t *testing.T) {
 		testNum = testNum + 1 //Increment this number for testing
 	}
 }
+*/
 
 //Test for Deleting LearnR
 func TestLearnRDelete(t *testing.T) {
