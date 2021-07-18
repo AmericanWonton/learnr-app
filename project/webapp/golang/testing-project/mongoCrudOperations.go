@@ -1661,7 +1661,7 @@ func getSpecialLearnRs(theCases []int, theTag string, learnrName string, entryFr
 		logWriter(theErr)
 		goodAdd, message = false, theErr
 	}
-	req.Body.Close()
+	defer req.Body.Close()
 	fmt.Printf("DEBUG: We got here in getSpecialLearnrs\n")
 	//Declare message we expect to see returned
 	body, err := ioutil.ReadAll(resp.Body)
@@ -1678,7 +1678,7 @@ func getSpecialLearnRs(theCases []int, theTag string, learnrName string, entryFr
 	}
 	var returnedMessage ReturnMessage
 	json.Unmarshal(body, &returnedMessage)
-	resp.Body.Close()
+	defer resp.Body.Close()
 	/* 5. Evaluate response in returnedMessage */
 	if returnedMessage.SuccOrFail != 0 {
 		theErr := ""

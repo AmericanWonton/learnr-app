@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -10,22 +9,25 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"strconv"
 	"testing"
-	"time"
 )
 
 //Declare struct we are expecting
-type SearchJSON struct {
-	TheNameInput string `json:"TheNameInput"`
-	TheTagInput  string `json:"TheTagInput"`
+type TestSearchR struct {
+	TheCases   []int  `json:"TheCases"`
+	TheTag     string `json:"TheTag"`
+	LearnRName string `json:"LearnRName"`
+	EntryFrom  int    `json:"EntryFrom"`
+	EntryTo    int    `json:"EntryTo"`
 }
 
 type LearnRSearchCrudCreate struct {
-	LearnRSearches      SearchJSON
+	LearnRSearches      TestSearchR
 	ExpectedNum         int
 	ExpectedTruth       bool
 	ExpectedStringArray []string
-	ExpectedLearnRID    []int
+	ExpectedLearnRID    map[string]int
 }
 
 var LearnRSearchCrudCreators []LearnRSearchCrudCreate
@@ -176,53 +178,87 @@ func TestRandomID(t *testing.T) {
 }
 
 func createSpecialLearnRSearch() {
+	var theMap map[string]int //Declare map for initialization later
 	//Empty Search (GOOD)
+	theMap = map[string]int{"855367233056": 855367233056,
+		"478483273602": 478483273602,
+		"65286261652":  65286261652,
+		"645741771884": 645741771884}
 	LearnRSearchCrudCreators = append(LearnRSearchCrudCreators, LearnRSearchCrudCreate{
-		LearnRSearches:      SearchJSON{"", ""},
+		LearnRSearches: TestSearchR{TheCases: []int{0, 1, 1, 1},
+			TheTag:     "",
+			LearnRName: "",
+			EntryFrom:  0,
+			EntryTo:    0},
 		ExpectedNum:         0,
 		ExpectedTruth:       true,
 		ExpectedStringArray: []string{"Nice"},
-		ExpectedLearnRID:    []int{855367233056, 478483273602, 65286261652, 645741771884},
+		ExpectedLearnRID:    theMap,
 	})
+	theMap = map[string]int{"855367233056": 855367233056}
 	//Single Tag Search
 	LearnRSearchCrudCreators = append(LearnRSearchCrudCreators, LearnRSearchCrudCreate{
-		LearnRSearches:      SearchJSON{"", "Twitter"},
+		LearnRSearches: TestSearchR{TheCases: []int{0, 0, 1, 1},
+			TheTag:     "Twitter",
+			LearnRName: "",
+			EntryFrom:  0,
+			EntryTo:    0},
 		ExpectedNum:         0,
 		ExpectedTruth:       true,
 		ExpectedStringArray: []string{"Nice"},
-		ExpectedLearnRID:    []int{855367233056},
+		ExpectedLearnRID:    theMap,
 	})
+	theMap = map[string]int{"855367233056": 855367233056, "645741771884": 645741771884}
 	//Multiple Tag Search
 	LearnRSearchCrudCreators = append(LearnRSearchCrudCreators, LearnRSearchCrudCreate{
-		LearnRSearches:      SearchJSON{"", "Blue"},
+		LearnRSearches: TestSearchR{TheCases: []int{0, 0, 1, 1},
+			TheTag:     "Blue",
+			LearnRName: "",
+			EntryFrom:  0,
+			EntryTo:    0},
 		ExpectedNum:         0,
 		ExpectedTruth:       true,
 		ExpectedStringArray: []string{"Nice"},
-		ExpectedLearnRID:    []int{855367233056, 645741771884},
+		ExpectedLearnRID:    theMap,
 	})
 	//Multiple Name Search
+	theMap = map[string]int{"65286261652": 65286261652, "645741771884": 645741771884}
 	LearnRSearchCrudCreators = append(LearnRSearchCrudCreators, LearnRSearchCrudCreate{
-		LearnRSearches:      SearchJSON{"the", ""},
+		LearnRSearches: TestSearchR{TheCases: []int{0, 1, 0, 1},
+			TheTag:     "",
+			LearnRName: "the",
+			EntryFrom:  0,
+			EntryTo:    0},
 		ExpectedNum:         0,
 		ExpectedTruth:       true,
 		ExpectedStringArray: []string{"Nice"},
-		ExpectedLearnRID:    []int{65286261652, 645741771884},
+		ExpectedLearnRID:    theMap,
 	})
 	//Single Name Search
+	theMap = map[string]int{"855367233056": 855367233056}
 	LearnRSearchCrudCreators = append(LearnRSearchCrudCreators, LearnRSearchCrudCreate{
-		LearnRSearches:      SearchJSON{"Twitter", ""},
+		LearnRSearches: TestSearchR{TheCases: []int{0, 1, 0, 1},
+			TheTag:     "",
+			LearnRName: "Twitter",
+			EntryFrom:  0,
+			EntryTo:    0},
 		ExpectedNum:         0,
 		ExpectedTruth:       true,
 		ExpectedStringArray: []string{"Nice"},
-		ExpectedLearnRID:    []int{855367233056},
+		ExpectedLearnRID:    theMap,
 	})
 	//Tag and Name Search
+	theMap = map[string]int{"65286261652": 65286261652, "645741771884": 645741771884}
 	LearnRSearchCrudCreators = append(LearnRSearchCrudCreators, LearnRSearchCrudCreate{
-		LearnRSearches:      SearchJSON{"the", "special"},
+		LearnRSearches: TestSearchR{TheCases: []int{0, 0, 0, 1},
+			TheTag:     "special",
+			LearnRName: "the",
+			EntryFrom:  0,
+			EntryTo:    0},
 		ExpectedNum:         0,
 		ExpectedTruth:       true,
 		ExpectedStringArray: []string{"Nice"},
-		ExpectedLearnRID:    []int{65286261652, 645741771884},
+		ExpectedLearnRID:    theMap,
 	})
 }
 
@@ -230,16 +266,26 @@ func createSpecialLearnRSearch() {
 func TestSpecialLearnRSearch(t *testing.T) {
 	testNum := 0 //Used for incrementing
 	for _, test := range LearnRSearchCrudCreators {
-		//Create JSON
-		/* 2. Marshal test case to JSON expect */
-		theJSONMessage, err := json.Marshal(test.LearnRSearches)
-		if err != nil {
-			fmt.Println(err)
-			logWriter(err.Error())
-			t.Fatal("Could not marshal correctly: " + err.Error())
+		//Go to special LearRs
+		arrayOLearnRs, goodGet, message := getSpecialLearnRs(test.LearnRSearches.TheCases,
+			test.LearnRSearches.TheTag, test.LearnRSearches.LearnRName,
+			test.LearnRSearches.EntryFrom, test.LearnRSearches.EntryTo)
+		if !goodGet {
+			t.Fatal("Error from getSpecialLearnRs: " + message)
 		}
-		/* Create Context */
-		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-		defer cancel()
+		//Check to see if returned Array matches test case size
+		if len(arrayOLearnRs) != len(test.ExpectedLearnRID) {
+			t.Fatal("Our array of LearnRs returned does not match our test case: " + strconv.Itoa(len(arrayOLearnRs)) +
+				"TestNum: " + strconv.Itoa(testNum))
+		}
+		for n := 0; n < len(arrayOLearnRs); n++ {
+			if _, ok := test.ExpectedLearnRID[strconv.Itoa(arrayOLearnRs[n].ID)]; ok {
+				//We have the ID we need
+			} else {
+				t.Fatal("The LearnRID is not found in our returned LearnRs: " + strconv.Itoa(arrayOLearnRs[n].ID) +
+					strconv.Itoa(testNum))
+			}
+		}
+		testNum = testNum + 1
 	}
 }
