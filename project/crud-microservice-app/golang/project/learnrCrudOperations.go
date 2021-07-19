@@ -528,6 +528,7 @@ func specialLearnRGive(w http.ResponseWriter, req *http.Request) {
 	if canCrud {
 		/* Begin building crud operation based on our criteria */
 		collection := mongoClient.Database("learnR").Collection("learnr") //Here's our collection
+		interfaceConditions := make([]interface{}, 0)                     //Used to carry our 'or' conditions
 		fullConditions := bson.M{}
 		findOptions := options.Find()
 		theFind := 0 //A counter to track how many Learnrs we find
@@ -536,18 +537,24 @@ func specialLearnRGive(w http.ResponseWriter, req *http.Request) {
 		if theitem.CaseSearch[0] == 0 {
 			//Do nothing, just get all Learnrs
 		}
-		//Add tags into our search
+		//Add Name into our search
 		if theitem.CaseSearch[1] == 0 {
-			fullConditions["tags"] = "cool"
+			nameSearch := bson.M{"name": bson.M{"$regex": primitive.Regex{Pattern: theitem.LearnRName + ".", Options: "im"}}}
+			interfaceConditions = append(interfaceConditions, nameSearch)
 		}
-		//Add a Name into our search
+		//Add a Tags into our search
 		if theitem.CaseSearch[2] == 0 {
-			fullConditions["name"] = bson.M{"$regex": primitive.Regex{
-				Pattern: "[" + theitem.LearnRName + "]",
-			}}
+			tagSearch := bson.M{"tags": bson.M{"$eq": theitem.Tag}}
+			interfaceConditions = append(interfaceConditions, tagSearch)
 		}
 
-		/*DEBUG: Add cases later for more criteria */
+		//Change 'fullCondidtions' if we're doing a name/tag/both search
+		if len(interfaceConditions) >= 1 {
+			fullConditions = bson.M{
+				"$or": interfaceConditions,
+			}
+		}
+
 		/* Run the mongo query after fixed filter/findoptions */
 		find, err := collection.Find(theContext, fullConditions, findOptions)
 		if err != nil {

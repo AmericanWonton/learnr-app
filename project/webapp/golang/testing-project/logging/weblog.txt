@@ -2,3 +2,23 @@
 2021/07/15 17:23:07 Error sending this message to the User: googleapi: Error 400: Recipient address required, invalidArgument
 2021/07/15 17:39:43 Email service is initialized
 2021/07/15 17:40:10 Successfuly email sending
+2021/07/18 14:19:24 Email service is initialized
+2021/07/18 14:19:29 This is a test message
+2021/07/18 14:32:06 Email service is initialized
+2021/07/18 14:32:11 This is a test message
+2021/07/18 14:32:41 Email service is initialized
+2021/07/18 14:32:46 This is a test message
+2021/07/18 14:34:41 Email service is initialized
+2021/07/18 14:37:18 Email service is initialized
+2021/07/18 14:41:38 Email service is initialized
+2021/07/18 14:42:47 Email service is initialized
+2021/07/18 14:44:31 Email service is initialized
+2021/07/18 14:44:49 Email service is initialized
+2021/07/18 15:02:07 Email service is initialized
+2021/07/18 15:02:13 This is a test message
+2021/07/18 15:02:40 Email service is initialized
+2021/07/18 15:06:51 Email service is initialized
+2021/07/18 15:09:30 Email service is initialized
+2021/07/18 15:09:36 Email service is initialized
+2021/07/18 15:09:42 This is a test message
+2021/07/18 15:20:37 Email service is initialized

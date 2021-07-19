@@ -418,7 +418,6 @@ func TestUserRead(t *testing.T) {
 
 //Test for getting all Usernames
 func TestGetAllUsernames(t *testing.T) {
-	mapOusernameToReturn := make(map[string]bool) //Username to load our values into
 	//Call our crudOperations Microservice in order to get our Usernames
 	//Create a context for timing out
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -465,8 +464,6 @@ func TestGetAllUsernames(t *testing.T) {
 		}
 		t.Fatal("Had an error getting map: " + errString)
 	} else {
-		mapOusernameToReturn = returnedMessage.ReturnedUserMap
-		fmt.Printf("Here is our map: %v\n", mapOusernameToReturn)
 	}
 }
 
