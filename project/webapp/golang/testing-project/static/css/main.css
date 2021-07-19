@@ -307,7 +307,7 @@ body, html {
 .actionDivButton{
     font-family: 'Uchen', serif, sans-serif;
     font-size: 1.5rem;
-    height: 2em;
+    height: 3em;
     width: 6em;
     text-align: center;
 }
@@ -389,7 +389,7 @@ body, html {
     justify-content: center;
     width: 100%;
     /* Styling */
-    background-color: rgb(129, 28, 42);
+    background-color: rgb(24, 168, 108);
     /* DEBUG */
     /* border: 1px solid black; */
 }
@@ -553,6 +553,17 @@ body, html {
 }
 
 /* MainPage Styling */
+.mainPageContentDiv{
+    /* flexbox styling */
+    display: block;
+    
+    width: 100%;
+    /* styling */
+    
+    /* debug styling */
+    border: 1px solid rgb(0, 0, 0); 
+}
+
 .searchFieldDiv{
     /* flexbox styling */
     display: flex;
@@ -561,8 +572,9 @@ body, html {
     justify-content: center;
     width: 100%;
     /* styling */
-    padding: .3em;
-    border: 2px solid black;
+    padding-bottom: .2em;
+    padding-top: .2em;
+    border: 1px solid black;
 }
 
 .searchbarTitle{
@@ -574,8 +586,9 @@ body, html {
     text-align: center;
     width: 100%;
     /* styling */
-    padding: .3em;
-    border: 2px solid black;
+    padding: .1em;
+    /* debug stling */
+    /* border: 2px solid black; */
 }
 
 .titleTextP{
@@ -596,13 +609,23 @@ body, html {
     border: 1px solid black;
 }
 
+.fieldPutDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
 .inputHolder{
     /* flexbox styling */
     display: flex;
     flex-wrap: wrap;
     align-content: center;
     justify-content: center;
-    width: 45%;
+    width: 100%;
     /* styling */
 
     /* debug */
@@ -613,8 +636,9 @@ body, html {
 }
 
 .resultThing{
-    font-size: 2rem;
+    font-size: 1rem;
     text-align: center;
+    font-family: 'Bebas Neue', cursive, sans-serif;
 }
 
 /* LearnR Div Holder styling */

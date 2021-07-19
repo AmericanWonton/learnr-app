@@ -56,7 +56,7 @@
         {{template "header_everywhere" $theUser}}
 
         {{/* LearnR section */}}
-        <div class="mainContentDiv" id="mainContentDiv">
+        <div class="mainPageContentDiv" id="mainContentDiv">
             <!-- Holds the search bar to look for learnrs in -->
             <div class="searchFieldDiv">
                 <!-- Title -->
@@ -65,26 +65,32 @@
                 </div>
                 <!-- Search Bar -->
                 <div class="searchBarDiv">
-                    <!-- LearnR Name -->
-                    <div class="inputHolder">
-                        <input type="text" class="searchInput" name="learnrName" placeholder="LearnRName" id="learnRNameInput"/>
+                    <!-- Search Feilds -->
+                    <div class="fieldPutDiv">
+                        <!-- LearnR Name -->
+                        <div class="inputHolder">
+                            <input type="text" class="searchInput" name="learnrName" placeholder="LearnRName" id="learnRNameInput"/>
+                        </div>
+                        <!-- LearnR Tag -->
+                        <div class="inputHolder">
+                            <input type="text" class="searchInput" name="leanrnrTag" placeholder="LearnRTag" id="learnRTagInput"/>
+                        </div>
                     </div>
-                    <!-- LearnR Tag -->
-                    <div class="inputHolder">
-                        <input type="text" class="searchInput" name="leanrnrTag" placeholder="LearnRTag" id="learnRTagInput"/>
-                    </div>
-                    <!-- Submit Button -->
-                    <div class="inputHolder">
-                        <button class="actionDivButton" onclick="learnRSearch()">Search 4 LearnRs</button>
-                    </div>
-                    <!-- Result Div -->
-                    <div class="inputHolder">
-                        <p class="resultThing" id="resultThing"></p>
+                    <!-- Submit and Result -->
+                    <div class="fieldPutDiv">
+                        <!-- Submit Button -->
+                        <div class="inputHolder">
+                            <button class="actionDivButton" onclick="learnRSearch()">Search 4 LearnRs</button>
+                        </div>
+                        <!-- Result Div -->
+                        <div class="inputHolder">
+                            <p class="resultThing" id="resultThing"></p>
+                        </div>
                     </div>
                 </div>
             </div>
             <!-- Holds all our LearnRs loaded in -->
-            <div class="learnrHolderDiv" id="learnrHolderDiv" ng-show='caseData'>
+            <div class="learnrHolderDiv" id="learnrHolderDiv">
                 
             </div>
         </div>
