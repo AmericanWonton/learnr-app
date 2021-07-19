@@ -586,7 +586,7 @@ body, html {
     text-align: center;
     width: 100%;
     /* styling */
-    padding: .1em;
+    background-color: rgb(177, 29, 111);
     /* debug stling */
     /* border: 2px solid black; */
 }
@@ -605,7 +605,7 @@ body, html {
     justify-content: center;
     width: 100%;
     /* styling */
-    padding: .1em;
+    background-color: rgb(177, 29, 111);
     border: 1px solid black;
 }
 
@@ -625,14 +625,17 @@ body, html {
     flex-wrap: wrap;
     align-content: center;
     justify-content: center;
-    width: 100%;
+    align-items: center;
+    justify-items: center;
+    width: 40%;
     /* styling */
 
     /* debug */
 }
 
 .searchInput{
-
+    width: 75%;
+    font-size: 1rem;
 }
 
 .resultThing{
@@ -651,7 +654,8 @@ body, html {
     width: 100%;
     /* styling */
     padding: .3em;
-    /* styling */
+    background-color:rgb(200, 168, 55);
+    /* debug styling */
     border: 1px solid red;
 }
 
@@ -679,6 +683,7 @@ body, html {
     padding: .3em;
     margin: .2em;
     border: 1px solid black;
+    background-color: white;
     /* debug */
 }
 
@@ -732,7 +737,7 @@ body, html {
     justify-items: center;
     align-self: center;
     justify-self: center;
-    width: 45%;
+    width: 100%;
     /* styling */
 
     /* debug */
@@ -740,8 +745,10 @@ body, html {
 }
 
 .learnRField{
-    font-size: 1rem;
+    font-size: .7rem;
     color: black;
+    font-family: 'Fira Sans Condensed', sans-serif;
+    text-align: center;
 }
 
 .aBigInfoDiv {
@@ -805,16 +812,20 @@ body, html {
     justify-content: center;
     align-content: center;
     width: 40%;
+    padding-right: .3em;
     /* DEBUG */
 }
 
 .fieldP {
-    font-size: 1rem;
+    font-size: .7rem;
     text-align: center;
+    font-family: 'Inter', sans-serif;
 }
 
 .fieldInput {
-
+    font-family: 'Inter', sans-serif;
+    font-size: .7rem;
+    width: 75%;
 }
 
 .fieldTextAreaInput {
@@ -823,8 +834,8 @@ body, html {
 
 .sendButton{
     font-size: 1rem;
-    width: 10em;
-    height: 10em;
+    width: 7em;
+    height: 5em;
 }
 
 .resultInput{
@@ -849,7 +860,9 @@ body, html {
 }
 
 .textFont{
-    font-size: 1rem;
+    font-size: .8rem;
+    text-align: center;
+    font-family: 'Fira Sans Condensed', sans-serif;
 }
 
 .allTextHolder{
