@@ -59,16 +59,11 @@ body, html {
 /* LOGIN PAGE STYLING */
 .mainContentDiv{
     /* flexbox styling */
-    display: flex;
-    flex-flow: wrap;
-    align-content: center;
-    justify-content: center;
-    align-self: center;
-    justify-self: center;
-    width: 100%;
-    height: 100%;
+    display: block;
     margin: 0em;
+    margin-bottom: auto;
     padding: 0em;
+    height: 100vh;
     /* styling */
     background-color: rgb(50, 108, 149);
     /* debug styling */
@@ -85,8 +80,7 @@ body, html {
     justify-self: center;
     width: 100%;
     /* styling */
-    padding: 1rem;
-    margin: 1rem;
+    padding: .5em;
     /* debug */
     /* border: 1px solid green; */
 }
@@ -183,7 +177,8 @@ body, html {
     text-align: center;
     align-self: center;
     justify-self: center;
-    font-size: 1rem;
+    font-size: 2rem;
+    font-family: 'Ubuntu', sans-serif;
 }
 
 .inputSignIn{
@@ -215,6 +210,22 @@ body, html {
     padding-right: 1rem;
     font-family: 'Uchen', serif, sans-serif;
     color: rgb(0, 0, 0);
+}
+
+.labelPTextSignUp{
+    align-self: center;
+    font-size: 1rem;
+    padding-right: 1rem;
+    font-family: 'Uchen', serif, sans-serif;
+    color: rgb(0, 0, 0);
+}
+
+.submitSignUpButton{
+    font-family: 'Uchen', serif, sans-serif;
+    font-size: 2rem;
+    height: 4em;
+    width: 4em;
+    text-align: center;
 }
 
 .inputDiv {
@@ -306,6 +317,26 @@ body, html {
     padding-right: .2em;
     /* debug styling */
     
+}
+
+/* Sign Up Page Styling */
+.loginAllContentDiv{
+    display: flex;
+    flex-flow: wrap;
+    align-content: center;
+    justify-content: center;
+    align-self: center;
+    justify-self: center;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+    margin-top: 0;
+    margin-bottom: auto;
+    padding: 0em;
+    /* styling */
+    background-color: rgb(203, 95, 47);
+    /* debug styling */
+    border: 1px solid rgb(118, 62, 151);
 }
 
 /** STYLING FOR THE HEADER **/ 
