@@ -25,6 +25,20 @@ time, mark, audio, video {
 	vertical-align: baseline;
 }
 
+/* Usage of Google Fonts */
+body, div, p, q, i, h1, h2, h3, h4, h5, h6, a, header, footer, header {
+    font-family: 'Alfa Slab One', cursive;
+    font-family: 'Otomanopee One', sans-serif;
+    font-family: 'Anton', sans-serif;
+    font-family: 'Ubuntu', sans-serif;
+    font-family: 'Uchen', serif;
+    font-family: 'Bebas Neue', cursive;
+    font-family: 'Fira Sans Condensed', sans-serif;
+    font-family: 'Inter', sans-serif;
+    font-family: 'Carter One', cursive;
+    font-family: 'Luckiest Guy', cursive;
+}
+
 /* You need to initialize the parent elements to 100%
 for this to work correctly in the scrollable div */
 body, html {
