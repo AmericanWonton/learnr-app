@@ -536,12 +536,12 @@ func specialLearnRGive(w http.ResponseWriter, req *http.Request) {
 		if theitem.CaseSearch[0] == 0 {
 			//Do nothing, just get all Learnrs
 		}
-		//Add tags into our search
+		//Add Name into our search
 		if theitem.CaseSearch[1] == 0 {
 			nameSearch := bson.M{"name": bson.M{"$regex": primitive.Regex{Pattern: theitem.LearnRName + ".", Options: "im"}}}
 			interfaceConditions = append(interfaceConditions, nameSearch)
 		}
-		//Add a Name into our search
+		//Add a Tags into our search
 		if theitem.CaseSearch[2] == 0 {
 			tagSearch := bson.M{"tags": bson.M{"$eq": theitem.Tag}}
 			interfaceConditions = append(interfaceConditions, tagSearch)
@@ -554,7 +554,7 @@ func specialLearnRGive(w http.ResponseWriter, req *http.Request) {
 		}
 
 		fmt.Printf("DEBUG: Here is our fullConditions: %v\n", fullConditions)
-		/*DEBUG: Add cases later for more criteria */
+
 		/* Run the mongo query after fixed filter/findoptions */
 		find, err := collection.Find(theContext, fullConditions, findOptions)
 		if err != nil {

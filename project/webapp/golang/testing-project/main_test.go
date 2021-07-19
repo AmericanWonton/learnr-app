@@ -260,6 +260,19 @@ func createSpecialLearnRSearch() {
 		ExpectedStringArray: []string{"Nice"},
 		ExpectedLearnRID:    theMap,
 	})
+	//Return Nothing Search
+	theMap = map[string]int{}
+	LearnRSearchCrudCreators = append(LearnRSearchCrudCreators, LearnRSearchCrudCreate{
+		LearnRSearches: TestSearchR{TheCases: []int{0, 0, 0, 1},
+			TheTag:     "Insane-test-value",
+			LearnRName: "Another-Insane-Test-Value",
+			EntryFrom:  0,
+			EntryTo:    0},
+		ExpectedNum:         0,
+		ExpectedTruth:       true,
+		ExpectedStringArray: []string{"Nothing"},
+		ExpectedLearnRID:    theMap,
+	})
 }
 
 /* Test Special LearnRSearch */

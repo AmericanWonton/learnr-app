@@ -505,6 +505,5 @@ function learnRSearch(){
         }
     });
     xhr.send(jsonString);
-    
 }
 
