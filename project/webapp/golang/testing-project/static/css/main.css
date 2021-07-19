@@ -211,7 +211,7 @@ body, html {
 .labelPText {
     /* styling */
     align-self: center;
-    font-size: 1rem;
+    font-size: 3rem;
     padding-right: 1rem;
     font-family: 'Uchen', serif, sans-serif;
     color: rgb(0, 0, 0);
@@ -284,13 +284,28 @@ body, html {
 
 .formSign{
     font-family: 'Anton', sans-serif;
-    font-size: 2rem;
+    font-size: 5rem;
     text-align: center;
 }
 
 /* Login Page Styling */
 .actionDivButton{
     font-family: 'Uchen', serif, sans-serif;
+    font-size: 3rem;
+    height: 4em;
+    width: 4em;
+    text-align: center;
+}
+
+.buttonHolderDiv{
+    /* basic styling */
+    display: flex;
+    flex-wrap: wrap;
+    width: 45%;
+    padding-left: .2em;
+    padding-right: .2em;
+    /* debug styling */
+    
 }
 
 /** STYLING FOR THE HEADER **/ 

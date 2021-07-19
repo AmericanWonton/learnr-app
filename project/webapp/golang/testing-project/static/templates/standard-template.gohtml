@@ -70,10 +70,6 @@
     <div class="divLoginStuff">
         {{/* Section to sign Users in and create accounts */}}
         <div class="signInAndUpDiv" id="signInAndUpDiv">
-            {{/* Div for handling sign-up */}}
-            <div class="actionDiv" id="actionDiv1">
-                <button class="actionDivButton" onclick="navigateHeader(7)">Sign Up</button>
-            </div>
             {{/* Div for handling signing-in */}}
             <div class="actionDiv" id="actionDiv2">
                 {{template "signInFormAjax"}}
@@ -112,7 +108,14 @@
             </div>
             {{/* SUBMIT BUTTON */}}
             <div class="fieldSection">
-                <button id="submitLoginButton" class="actionDivButton">Submit</button>
+                <!-- Sign Up Button -->
+                <div class="buttonHolderDiv" style="justify-content:flex-end">
+                    <button class="actionDivButton" onclick="navigateHeader(7)">Sign-Up</button>
+                </div>
+                <!-- Login Button -->
+                <div class="buttonHolderDiv" style="justify-content:flex-start">
+                    <button id="submitLoginButton" class="actionDivButton">Login</button>
+                </div>
             </div>
             {{/* INFORMITIVE DIV */}}
             <div class="informativeDiv" id="informativeDivSignIn">
