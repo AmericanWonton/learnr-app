@@ -70,9 +70,9 @@ body, html {
     margin: 0em;
     padding: 0em;
     /* styling */
-    /* background-color: rgb(148, 148, 211); */
+    background-color: rgb(50, 108, 149);
     /* debug styling */
-    border: 1px solid rgb(118, 62, 151);
+    /* border: 1px solid rgb(118, 62, 151); */
 }
 
 .divLoginStuff {
@@ -186,6 +186,11 @@ body, html {
     font-size: 1rem;
 }
 
+.inputSignIn{
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 1rem;
+}
+
 /* SYTLING FOR THE FORMS */
 
 #sign-in-form {
@@ -208,7 +213,7 @@ body, html {
     align-self: center;
     font-size: 1rem;
     padding-right: 1rem;
-    font-family: 'Goldman', cursive;
+    font-family: 'Uchen', serif, sans-serif;
     color: rgb(0, 0, 0);
 }
 
@@ -266,6 +271,7 @@ body, html {
 
 .form-field-err {
     font-size: 1rem;
+    font-family: 'Ubuntu', sans-serif;
 }
 
 .informtextP{
@@ -273,13 +279,18 @@ body, html {
     text-align: center;
     align-self: center;
     align-items: center;
-    font-family: 'IBM Plex Mono', monospace, sans-serif;
+    font-family: 'Ubuntu', sans-serif;
 }
 
 .formSign{
-    font-family: 'Nova Flat', cursive, sans-serif;
+    font-family: 'Anton', sans-serif;
     font-size: 2rem;
     text-align: center;
+}
+
+/* Login Page Styling */
+.actionDivButton{
+    font-family: 'Uchen', serif, sans-serif;
 }
 
 /** STYLING FOR THE HEADER **/ 

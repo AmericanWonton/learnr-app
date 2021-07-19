@@ -55,11 +55,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Carter+One&family=Luckiest+Guy&display=swap" rel="stylesheet">
 {{end}}
 
-{{define "fonts1"}}
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Bangers&family=IBM+Plex+Mono:wght@200&family=Nova+Flat&family=Permanent+Marker&display=swap" rel="stylesheet">
-{{end}}
-
 {{define "media-queries"}}
     <link rel="stylesheet" type="text/css" href="static/css/main.css">
 {{end}}
@@ -102,7 +97,7 @@
                 </p>
             </div>
             <div class="inputDiv">
-                <input type="text" name="username" placeholder="username" minlength=1 maxlength=20 id="inputTextMobileUN" required/>
+                <input class="inputSignIn" type="text" name="username" placeholder="username" minlength=1 maxlength=20 id="inputTextMobileUN" required/>
                 <p class="form-field-err" id="username-err"></p>
             </div>
             {{/* PASSWORD */}}
@@ -112,12 +107,12 @@
                 </p>
             </div>
             <div class="inputDiv">
-                <input type="password" name="password" placeholder="password" minlength=1 maxlength=20 id="inputTextMobilePW" required/>
+                <input type="password" class="inputSignIn" name="password" placeholder="password" minlength=1 maxlength=20 id="inputTextMobilePW" required/>
                 <p class="form-field-err" id="password-err"></p>
             </div>
             {{/* SUBMIT BUTTON */}}
             <div class="fieldSection">
-                <button id="submitLoginButton">Submit</button>
+                <button id="submitLoginButton" class="actionDivButton">Submit</button>
             </div>
             {{/* INFORMITIVE DIV */}}
             <div class="informativeDiv" id="informativeDivSignIn">
