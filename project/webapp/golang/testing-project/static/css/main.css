@@ -95,9 +95,10 @@ body, html {
     justify-content: center;
     align-self: center;
     justify-self: center;
-    text-align: center;
     /* styling */
-
+    text-align: center;
+    padding-left: .5em;
+    padding-right: .5em;
     /* debug */
     /* border: 1px solid pink; */
 }
@@ -553,13 +554,10 @@ body, html {
 }
 
 .resultTagDiv{
-    display: flex;
-    flex-wrap: wrap;
-    align-content: center;
-    justify-content: center;
-    height: 5vh;
-    width: 5vw;
+    display: block;
+    overflow: auto;
     /* styling */
+    text-align: center;
     margin-left: .2em;
     margin-right: .2em;
     padding-left: .2em;
@@ -589,6 +587,9 @@ body, html {
 .resultTagP{
     font-size: 1rem;
     color: black;
+    font-family: 'Ubuntu', sans-serif;
+    text-align: center;
+    align-self: center;
 }
 
 .resultLearnrInformDiv{
@@ -989,6 +990,7 @@ body, html {
     width: 100%;
     /* styling */
     text-align: center;
+    margin-top: 1em;
     margin-left: .5em;
     margin-right: .5em;
     margin-bottom: 1em;
@@ -998,6 +1000,7 @@ body, html {
     text-align: center;
     font-size: 4rem;
     text-decoration: underline;
+    font-family: 'Carter One', cursive, sans-serif;
 }
 
 .textDiv{
@@ -1014,10 +1017,11 @@ body, html {
 }
 
 .textP{
-    font-size: 1.5rem;
+    font-size: 1rem;
     padding-bottom: 1em;
     padding-top: 1em;
     line-height: 2.0;
+    font-family: 'Luckiest Guy', cursive, sans-serif;
 }
 
 .listDiv{
