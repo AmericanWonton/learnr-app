@@ -9,6 +9,7 @@
         {{template "fav-icon1"}}
         {{/* Here are our fonts */}}
         {{template "headerFonts"}}
+        {{template "makeOrgFont"}}
         {{/* Here are our Media Query and stylesheets */}}
         {{template "media-queries"}}
         {{/* Here is our Javascript or additional code needed */}}
@@ -53,9 +54,8 @@
         {{/* Here is our header */}}
         {{template "header_everywhere" $theUser}}
 
-        
         {{/* Main */}}
-        <div class="mainContentDiv">
+        <div class="learnRMainContentDiv">
             {{template "makelearnr" .AdminOrgList}}
         </div>
         {{/* Here is our footer */}}

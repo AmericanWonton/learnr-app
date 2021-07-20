@@ -322,6 +322,14 @@ body, html {
     padding-right: .5em;
 }
 
+.superSmallFormSign{
+    font-family: 'Anton', sans-serif;
+    font-size: 1rem;
+    text-align: center;
+    padding-left: .5em;
+    padding-right: .5em;
+}
+
 /* Login Page Styling */
 .actionDivButton{
     font-family: 'Uchen', serif, sans-serif;
@@ -478,6 +486,22 @@ body, html {
 
 
 /* LearnR Page Styling */
+
+.learnRMainContentDiv{
+    /* flexbox styling */
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    margin: 0em;
+    margin-bottom: auto;
+    padding: 0em;
+    height: 275vh;
+    /* styling */
+    background-color: rgb(203, 95, 47);
+    /* debug styling */
+    /* border: 1px solid rgb(118, 62, 151); */
+}
 .resultHolderInformDiv{
     display: flex;
     flex-wrap: wrap;
@@ -500,6 +524,22 @@ body, html {
     align-content: center;
     justify-content: center;
     width: 100%;
+}
+
+.addLearnRTagButton{
+    font-family: 'Uchen', serif, sans-serif;
+    font-size: 1.5rem;
+    height: 3em;
+    width: 6em;
+    text-align: center;
+}
+
+.smallAddLearnRTagButton{
+    font-family: 'Uchen', serif, sans-serif;
+    font-size: 1rem;
+    height: 3em;
+    width: 10em;
+    text-align: center;
 }
 
 
@@ -1008,6 +1048,18 @@ body, html {
 }
 
 /* Send Help Page Styling */
+.helpContentDiv{
+    /* flexbox styling */
+    display: block;
+    margin: 0em;
+    margin-bottom: auto;
+    padding: 0em;
+    height: 100vh;
+    /* styling */
+    background-color: rgb(200, 168, 55);
+    /* debug styling */
+    /* border: 1px solid rgb(118, 62, 151); */
+}
 .sendHelpDiv{
     /* flexbox styling */
     display: flex;
@@ -1063,4 +1115,12 @@ body, html {
 
 .mesMeTextArea{
     font-size: 1rem;
+}
+
+.submitB{
+    font-family: 'Uchen', serif, sans-serif;
+    font-size: 1.5rem;
+    height: 3em;
+    width: 6em;
+    text-align: center;
 }
