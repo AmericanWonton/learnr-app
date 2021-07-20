@@ -216,6 +216,15 @@ body, html {
     color: rgb(0, 0, 0);
 }
 
+.smallLabelPText{
+    /* styling */
+    align-self: center;
+    font-size: 1rem;
+    padding-right: .5em;
+    font-family: 'Uchen', serif, sans-serif;
+    color: rgb(0, 0, 0);
+}
+
 .labelPTextSignUp{
     align-self: center;
     font-size: 1rem;
@@ -301,6 +310,16 @@ body, html {
     font-family: 'Anton', sans-serif;
     font-size: 3rem;
     text-align: center;
+    padding-left: .5em;
+    padding-right: .5em;
+}
+
+.smallFormSign{
+    font-family: 'Anton', sans-serif;
+    font-size: 1.5rem;
+    text-align: center;
+    padding-left: .5em;
+    padding-right: .5em;
 }
 
 /* Login Page Styling */
@@ -309,6 +328,14 @@ body, html {
     font-size: 1.5rem;
     height: 3em;
     width: 6em;
+    text-align: center;
+}
+
+.longActionDivButton{
+    font-family: 'Uchen', serif, sans-serif;
+    font-size: 1.5rem;
+    height: 4em;
+    width: 8em;
     text-align: center;
 }
 
@@ -575,6 +602,8 @@ body, html {
     padding-bottom: .2em;
     padding-top: .2em;
     border: 1px solid black;
+    background-color: rgb(177, 29, 111);
+    /* debug styling */
 }
 
 .searchbarTitle{
