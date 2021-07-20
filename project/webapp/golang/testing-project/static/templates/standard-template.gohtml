@@ -68,13 +68,8 @@
 {{/******* SIGN IN SECTION ********/}}
 {{define "login_form_section"}}
     <div class="divLoginStuff">
-        {{/* Section to sign Users in and create accounts */}}
-        <div class="signInAndUpDiv" id="signInAndUpDiv">
-            {{/* Div for handling signing-in */}}
-            <div class="actionDiv" id="actionDiv2">
-                {{template "signInFormAjax"}}
-            </div>
-        </div>
+        {{/* Div for handling signing-in */}}
+        {{template "signInFormAjax"}}
     </div>
 {{end}}
 {{/**** SIGN-IN FORM USING AJAX **/}}

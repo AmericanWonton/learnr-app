@@ -92,3 +92,12 @@
 2021/07/20 12:28:02 Can Crud was false, or nil values:  
 2021/07/20 12:30:50 Email service is initialized
 2021/07/20 12:32:24 Email service is initialized
+2021/07/20 12:39:36 Email service is initialized
+2021/07/20 12:40:02 Email service is initialized
+2021/07/20 12:43:17 Email service is initialized
+2021/07/20 12:44:39 Email service is initialized
+2021/07/20 12:44:56 Can Crud was false, or nil values:  
+2021/07/20 12:44:56 Can Crud was false, or nil values:  
+2021/07/20 12:44:56 Can Crud was false, or nil values:  
+2021/07/20 12:44:56 Can Crud was false, or nil values:  
+2021/07/20 12:46:22 Successfuly email sending
