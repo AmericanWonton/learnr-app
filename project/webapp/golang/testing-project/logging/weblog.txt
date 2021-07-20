@@ -80,3 +80,15 @@
 2021/07/20 10:35:04 Email service is initialized
 2021/07/20 10:37:43 Email service is initialized
 2021/07/20 10:43:57 Email service is initialized
+2021/07/20 12:09:54 Email service is initialized
+2021/07/20 12:11:45 Email service is initialized
+2021/07/20 12:11:59 Email service is initialized
+2021/07/20 12:22:32 Successfuly email sending
+2021/07/20 12:26:13 Email service is initialized
+2021/07/20 12:27:54 Email service is initialized
+2021/07/20 12:28:02 Can Crud was false, or nil values:  
+2021/07/20 12:28:02 Can Crud was false, or nil values:  
+2021/07/20 12:28:02 Can Crud was false, or nil values:  
+2021/07/20 12:28:02 Can Crud was false, or nil values:  
+2021/07/20 12:30:50 Email service is initialized
+2021/07/20 12:32:24 Email service is initialized

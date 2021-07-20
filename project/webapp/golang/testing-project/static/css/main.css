@@ -60,17 +60,16 @@ body, html {
 .mainContentDiv{
     /* flexbox styling */
     display: flex;
+    flex-flow: wrap;
     justify-content: center;
-    align-content: center;
-    align-items: center;
+    width: 100%;
     margin: 0em;
-    margin-bottom: auto;
     padding: 0em;
-    height: 100vh;
     /* styling */
     background-color: rgb(50, 108, 149);
+    /* background-color: rgb(148, 148, 211); */
     /* debug styling */
-    /* border: 1px solid rgb(118, 62, 151); */
+    /* border: 1px solid black; */
 }
 
 .divLoginStuff {
@@ -108,9 +107,8 @@ body, html {
     display: flex;
     flex-flow: wrap;
     align-content: center;
-    align-self: center;
     justify-content: center;
-    justify-self: center;
+    width: 100%;
     /* debug */
     /* border: 1px solid salmon; */
 }
@@ -120,9 +118,8 @@ body, html {
     display: flex;
     flex-flow: wrap;
     align-content: center;
-    align-self: center;
     justify-content: center;
-    justify-self: center;
+    width: 100%;
     /* styling */
     padding-top: .5em;
     padding-bottom: .5em;
@@ -363,13 +360,11 @@ body, html {
 .loginAllContentDiv{
     /* flexbox styling */
     display: flex;
+    flex-flow: wrap;
     justify-content: center;
-    align-content: center;
-    align-items: center;
     margin: 0em;
-    margin-bottom: auto;
     padding: 0em;
-    height: 130vh;
+    width: 100%;
     /* styling */
     background-color: rgb(203, 95, 47);
     /* debug styling */
@@ -1054,16 +1049,19 @@ body, html {
 /* Send Help Page Styling */
 .helpContentDiv{
     /* flexbox styling */
-    display: block;
+    display: flex;
+    flex-flow: wrap;
+    justify-content: center;
+    width: 100%;
     margin: 0em;
-    margin-bottom: auto;
     padding: 0em;
-    height: 100vh;
     /* styling */
     background-color: rgb(200, 168, 55);
+    /* background-color: rgb(148, 148, 211); */
     /* debug styling */
-    /* border: 1px solid rgb(118, 62, 151); */
+    /* border: 1px solid black; */
 }
+
 .sendHelpDiv{
     /* flexbox styling */
     display: flex;
@@ -1113,7 +1111,7 @@ body, html {
     align-content: center;
     width: 100%;
     /* styling */
-    border: 2px solid black;
+    
     /* debug styling */
 }
 
