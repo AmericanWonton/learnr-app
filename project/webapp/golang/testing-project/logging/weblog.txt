@@ -22,3 +22,82 @@
 2021/07/18 15:09:36 Email service is initialized
 2021/07/18 15:09:42 This is a test message
 2021/07/18 15:20:37 Email service is initialized
+2021/07/19 11:13:05 Email service is initialized
+2021/07/19 11:14:06 Email service is initialized
+2021/07/19 11:20:30 Email service is initialized
+2021/07/19 12:36:32 Email service is initialized
+2021/07/19 12:38:34 Email service is initialized
+2021/07/19 12:39:31 Email service is initialized
+2021/07/19 12:40:27 Email service is initialized
+2021/07/19 12:41:04 Email service is initialized
+2021/07/19 12:41:29 Email service is initialized
+2021/07/19 12:44:41 Email service is initialized
+2021/07/19 12:45:58 Email service is initialized
+2021/07/19 12:48:16 Email service is initialized
+2021/07/19 12:57:10 Email service is initialized
+2021/07/19 12:57:21 Email service is initialized
+2021/07/19 12:58:29 Email service is initialized
+2021/07/19 12:59:46 Email service is initialized
+2021/07/19 13:04:20 Email service is initialized
+2021/07/19 13:04:52 Email service is initialized
+2021/07/19 13:08:19 Email service is initialized
+2021/07/19 13:08:50 Email service is initialized
+2021/07/19 13:11:01 Email service is initialized
+2021/07/19 13:15:26 Email service is initialized
+2021/07/19 13:16:07 Email service is initialized
+2021/07/19 13:21:10 Email service is initialized
+2021/07/19 13:35:22 Email service is initialized
+2021/07/19 13:35:40 Email service is initialized
+2021/07/19 13:38:30 Email service is initialized
+2021/07/19 13:39:17 Email service is initialized
+2021/07/19 13:40:22 Email service is initialized
+2021/07/19 13:41:20 Email service is initialized
+2021/07/19 13:45:54 Email service is initialized
+2021/07/19 13:48:31 Email service is initialized
+2021/07/19 13:52:04 Email service is initialized
+2021/07/19 13:54:26 Email service is initialized
+2021/07/19 13:54:50 Email service is initialized
+2021/07/19 13:56:20 Email service is initialized
+2021/07/19 13:59:05 Email service is initialized
+2021/07/19 14:26:14 Email service is initialized
+2021/07/19 14:30:17 Email service is initialized
+2021/07/19 14:31:08 Email service is initialized
+2021/07/19 14:32:22 Email service is initialized
+2021/07/19 14:35:39 Email service is initialized
+2021/07/19 15:06:12 Email service is initialized
+2021/07/20 09:10:20 Email service is initialized
+2021/07/20 09:25:21 Email service is initialized
+2021/07/20 09:32:38 Email service is initialized
+2021/07/20 09:36:45 Email service is initialized
+2021/07/20 09:40:18 Email service is initialized
+2021/07/20 09:45:22 Email service is initialized
+2021/07/20 09:46:21 Email service is initialized
+2021/07/20 09:47:30 Email service is initialized
+2021/07/20 09:52:22 Email service is initialized
+2021/07/20 10:13:39 Email service is initialized
+2021/07/20 10:15:15 Email service is initialized
+2021/07/20 10:18:39 Email service is initialized
+2021/07/20 10:35:04 Email service is initialized
+2021/07/20 10:37:43 Email service is initialized
+2021/07/20 10:43:57 Email service is initialized
+2021/07/20 12:09:54 Email service is initialized
+2021/07/20 12:11:45 Email service is initialized
+2021/07/20 12:11:59 Email service is initialized
+2021/07/20 12:22:32 Successfuly email sending
+2021/07/20 12:26:13 Email service is initialized
+2021/07/20 12:27:54 Email service is initialized
+2021/07/20 12:28:02 Can Crud was false, or nil values:  
+2021/07/20 12:28:02 Can Crud was false, or nil values:  
+2021/07/20 12:28:02 Can Crud was false, or nil values:  
+2021/07/20 12:28:02 Can Crud was false, or nil values:  
+2021/07/20 12:30:50 Email service is initialized
+2021/07/20 12:32:24 Email service is initialized
+2021/07/20 12:39:36 Email service is initialized
+2021/07/20 12:40:02 Email service is initialized
+2021/07/20 12:43:17 Email service is initialized
+2021/07/20 12:44:39 Email service is initialized
+2021/07/20 12:44:56 Can Crud was false, or nil values:  
+2021/07/20 12:44:56 Can Crud was false, or nil values:  
+2021/07/20 12:44:56 Can Crud was false, or nil values:  
+2021/07/20 12:44:56 Can Crud was false, or nil values:  
+2021/07/20 12:46:22 Successfuly email sending
