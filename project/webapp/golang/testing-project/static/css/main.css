@@ -97,6 +97,7 @@ body, html {
     justify-self: center;
     /* styling */
     text-align: center;
+    padding-top: 1em;
     padding-left: .5em;
     padding-right: .5em;
     /* debug */
@@ -538,6 +539,14 @@ body, html {
     height: 3em;
     width: 6em;
     text-align: center;
+}
+
+.addLearnRTagDiv{
+    display: flex;
+    flex-flow: wrap;
+    width: 100%;
+    align-content: center;
+    justify-content: center;
 }
 
 .smallAddLearnRTagButton{
