@@ -103,3 +103,30 @@
 2021/07/20 12:46:22 Successfuly email sending
 2021/07/20 14:30:56 Email service is initialized
 2021/07/20 14:37:58 Email service is initialized
+2021/07/20 17:54:09 Email service is initialized
+2021/07/20 18:03:31 Email service is initialized
+2021/07/20 18:05:18 Email service is initialized
+2021/07/20 18:06:03 Email service is initialized
+2021/07/20 18:06:38 Email service is initialized
+2021/07/20 18:23:43 Email service is initialized
+2021/07/20 18:24:20 Can Crud was false, or nil values:  
+2021/07/20 18:24:20 Can Crud was false, or nil values:  
+2021/07/20 18:24:20 Can Crud was false, or nil values:  
+2021/07/20 18:24:20 Can Crud was false, or nil values:  
+2021/07/20 18:26:43 Email service is initialized
+2021/07/20 18:28:10 Email service is initialized
+2021/07/20 18:28:43 Email service is initialized
+2021/07/20 18:29:46 Email service is initialized
+2021/07/20 18:30:20 Email service is initialized
+2021/07/20 18:31:25 Email service is initialized
+2021/07/20 18:31:54 Email service is initialized
+2021/07/20 18:33:39 Email service is initialized
+2021/07/20 18:34:43 Email service is initialized
+2021/07/20 18:35:42 Email service is initialized
+2021/07/20 18:38:27 Email service is initialized
+2021/07/21 09:00:06 Email service is initialized
+2021/07/21 09:06:00 Can Crud was false, or nil values:  
+2021/07/21 09:06:00 Can Crud was false, or nil values:  
+2021/07/21 09:06:00 Can Crud was false, or nil values:  
+2021/07/21 09:06:00 Can Crud was false, or nil values:  
+2021/07/21 09:23:09 Email service is initialized

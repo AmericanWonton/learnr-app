@@ -159,7 +159,7 @@ body, html {
     justify-content: center;
     width: 100%;
     /* styling */
-    padding: .5em;
+    padding: .2em;
     /* debug */
 }
 
@@ -213,10 +213,19 @@ body, html {
     color: rgb(0, 0, 0);
 }
 
-.smallLabelPText{
+.mediumPText{
     /* styling */
     align-self: center;
     font-size: 1rem;
+    padding-right: .5em;
+    font-family: 'Uchen', serif, sans-serif;
+    color: rgb(0, 0, 0);
+}
+
+.smallLabelPText{
+    /* styling */
+    align-self: center;
+    font-size: .7rem;
     padding-right: .5em;
     font-family: 'Uchen', serif, sans-serif;
     color: rgb(0, 0, 0);
@@ -232,9 +241,9 @@ body, html {
 
 .submitSignUpButton{
     font-family: 'Uchen', serif, sans-serif;
-    font-size: 2rem;
-    height: 4em;
-    width: 4em;
+    font-size: 1rem;
+    height: 1em;
+    width: 2em;
     text-align: center;
 }
 
@@ -257,7 +266,7 @@ body, html {
     align-content: center;
     width: 100%;
     /* styling */
-    padding-top: 1rem;
+    padding-top: 0rem;
     /* DEBUG */
 }
 
@@ -330,8 +339,8 @@ body, html {
 /* Login Page Styling */
 .actionDivButton{
     font-family: 'Uchen', serif, sans-serif;
-    font-size: 1.5rem;
-    height: 3em;
+    font-size: 1rem;
+    height: 2em;
     width: 6em;
     text-align: center;
 }
@@ -361,13 +370,15 @@ body, html {
     display: flex;
     flex-flow: wrap;
     justify-content: center;
+    width: 100%;
+    height: 100%;
     margin: 0em;
     padding: 0em;
-    width: 100%;
     /* styling */
     background-color: rgb(203, 95, 47);
+    /* background-color: rgb(148, 148, 211); */
     /* debug styling */
-    /* border: 1px solid rgb(118, 62, 151); */
+    /* border: 1px solid black; */
 }
 
 /** STYLING FOR THE HEADER **/ 
@@ -379,7 +390,8 @@ body, html {
     display: block;
     width: 100%;
     /* debug styling */
-    border: 1px solid blue;
+    border: 1px solid black;
+    background-color: rgb(203, 95, 47);
 }
 
 .namediv {
@@ -390,7 +402,6 @@ body, html {
     justify-content: center;
     width: 100%;
     /* Styling */
-    background-color: rgb(24, 168, 108);
     padding: .2em;
     /* DEBUG */
     border: 1px solid black;
@@ -419,7 +430,7 @@ body, html {
     justify-content: center;
     width: 100%;
     /* Styling */
-    background-color: rgb(24, 168, 108);
+    
     /* DEBUG */
     /* border: 1px solid black; */
 }
@@ -620,8 +631,9 @@ body, html {
     display: block;
     
     width: 100%;
+    height: 100%;
     /* styling */
-    
+    background-color:rgb(200, 168, 55);
     /* debug styling */
     border: 1px solid rgb(0, 0, 0); 
 }
@@ -971,7 +983,7 @@ body, html {
     margin: 0em;
     padding: 0em;
     /* styling */
-    /* background-color: rgb(148, 148, 211); */
+    background-color: rgb(148, 148, 211);
     /* debug styling */
     /* border: 1px solid black; */
 }
@@ -1051,6 +1063,8 @@ body, html {
     display: flex;
     flex-flow: wrap;
     justify-content: center;
+    align-content: center;
+    height: 90%;
     width: 100%;
     margin: 0em;
     padding: 0em;
