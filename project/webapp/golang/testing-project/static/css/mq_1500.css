@@ -217,8 +217,8 @@ body, html {
 .mediumPText{
     /* styling */
     align-self: center;
-    font-size: 1.3rem;
-    padding-right: .5em;
+    font-size: 2rem;
+    padding-right: 1em;
     font-family: 'Uchen', serif, sans-serif;
     color: rgb(0, 0, 0);
 }
@@ -226,8 +226,8 @@ body, html {
 .smallLabelPText{
     /* styling */
     align-self: center;
-    font-size: 1.2rem;
-    padding-right: 1em;
+    font-size: 2rem;
+    padding-right: 1.4em;
     font-family: 'Uchen', serif, sans-serif;
     color: rgb(0, 0, 0);
 }
@@ -331,7 +331,7 @@ body, html {
 
 .superSmallFormSign{
     font-family: 'Anton', sans-serif;
-    font-size: 1.3rem;
+    font-size: 1.5rem;
     text-align: center;
     padding-left: 1em;
     padding-right: 1em;
