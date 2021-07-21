@@ -8,7 +8,8 @@
         {{/* Here is our FavIcon */}}
         {{template "fav-icon1"}}
         {{/* Here are our fonts */}}
-        {{template "fonts1"}}
+        {{template "headerFonts"}}
+        {{template "sendHelpFont"}}
         {{/* Here are our Media Query and stylesheets */}}
         {{template "media-queries"}}
         {{/* Here is our Javascript or additional code needed */}}
@@ -55,7 +56,7 @@
 
         
         {{/* Main */}}
-        <div class="mainContentDiv">
+        <div class="helpContentDiv">
             <!-- Page Title -->
             <div class="titleDiv">
                 <p class="titleP">
@@ -76,15 +77,15 @@
                 <div class="formDiv">
                     <!-- Text field -->
                     <div class="fieldHolderDiv">
-                        <textarea  class="mesMeTextArea" id="mesMeTextArea" name="mesMeTextArea" placeholder="What would you like to say?"></textarea>
+                        <textarea class="mesMeTextArea" id="mesMeTextArea" name="mesMeTextArea" placeholder="What would you like to say?"></textarea>
                     </div>
                     <!-- Submit Button -->
                     <div class="fieldHolderDiv">
-                        <button class="submitB" id="submitB" onclick="messageMe()">Submit</button>
+                        <button class="submitB" id="submitB" onclick="messageMe()">Email Me</button>
                     </div>
                     <!-- Response -->
                     <div class="fieldHolderDiv">
-                        <p class="informP" id="messageResponseP"></p>
+                        <p class="informP" id="messageResponseP">   </p>
                     </div>
                 </div>
             </div>

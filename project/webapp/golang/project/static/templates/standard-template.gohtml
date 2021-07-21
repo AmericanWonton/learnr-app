@@ -9,16 +9,59 @@
 {{end}}
 
 {{define "fav-icon1"}}
-    <link rel="shortcut icon" type="image/png" href="static/images/favicons/database.png">
+    <link rel="shortcut icon" type="image/png" href="static/images/favicons/learnRLogoFavicon_512x512.png">
 {{end}}
 
-{{define "fonts1"}}
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Bangers&family=IBM+Plex+Mono:wght@200&family=Nova+Flat&family=Permanent+Marker&display=swap" rel="stylesheet">
+{{define "headerFonts"}}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Otomanopee+One&display=swap" rel="stylesheet">
+{{end}}
+
+{{define "loginFonts"}}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Ubuntu&family=Uchen&display=swap" rel="stylesheet">
+{{end}}
+
+{{define "signUpFonts"}}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Ubuntu&family=Uchen&display=swap" rel="stylesheet">
+{{end}}
+
+{{define "mainPageFont"}}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Fira+Sans+Condensed&family=Inter:wght@500&display=swap" rel="stylesheet">
+{{end}}
+
+{{define "makeOrgFont"}}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Ubuntu&family=Uchen&display=swap" rel="stylesheet">
+{{end}}
+
+{{define "sendHelpFont"}}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Ubuntu&family=Uchen&display=swap" rel="stylesheet">
+{{end}}
+
+{{define "learnMore"}}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Carter+One&family=Luckiest+Guy&display=swap" rel="stylesheet">
 {{end}}
 
 {{define "media-queries"}}
     <link rel="stylesheet" type="text/css" href="static/css/main.css">
+    <link rel="stylesheet" type="text/css" href="static/css/main.css">
+    <link rel="stylesheet" type="text/css" href="static/css/styling.css">
+    <link rel="stylesheet" type="text/css" media="(min-width: 600px)" href="static/css/mq_600.css">
+    <link rel="stylesheet" type="text/css" media="(min-width: 900px)" href="static/css/mq_900.css">
+    <link rel="stylesheet" type="text/css" media="(min-width: 1500px)" href="static/css/mq_1500.css">
 {{end}}
 
 {{define "javascript"}}
@@ -30,17 +73,8 @@
 {{/******* SIGN IN SECTION ********/}}
 {{define "login_form_section"}}
     <div class="divLoginStuff">
-        {{/* Section to sign Users in and create accounts */}}
-        <div class="signInAndUpDiv" id="signInAndUpDiv">
-            {{/* Div for handling sign-up */}}
-            <div class="actionDiv" id="actionDiv1">
-                <button class="actionDivButton" onclick="navigateHeader(7)">Sign Up</button>
-            </div>
-            {{/* Div for handling signing-in */}}
-            <div class="actionDiv" id="actionDiv2">
-                {{template "signInFormAjax"}}
-            </div>
-        </div>
+        {{/* Div for handling signing-in */}}
+        {{template "signInFormAjax"}}
     </div>
 {{end}}
 {{/**** SIGN-IN FORM USING AJAX **/}}
@@ -59,7 +93,7 @@
                 </p>
             </div>
             <div class="inputDiv">
-                <input type="text" name="username" placeholder="username" minlength=1 maxlength=20 id="inputTextMobileUN" required/>
+                <input class="inputSignIn" type="text" name="username" placeholder="username" minlength=1 maxlength=20 id="inputTextMobileUN" required/>
                 <p class="form-field-err" id="username-err"></p>
             </div>
             {{/* PASSWORD */}}
@@ -69,12 +103,19 @@
                 </p>
             </div>
             <div class="inputDiv">
-                <input type="password" name="password" placeholder="password" minlength=1 maxlength=20 id="inputTextMobilePW" required/>
+                <input type="password" class="inputSignIn" name="password" placeholder="password" minlength=1 maxlength=20 id="inputTextMobilePW" required/>
                 <p class="form-field-err" id="password-err"></p>
             </div>
             {{/* SUBMIT BUTTON */}}
             <div class="fieldSection">
-                <button id="submitLoginButton">Submit</button>
+                <!-- Sign Up Button -->
+                <div class="buttonHolderDiv" style="justify-content:flex-end">
+                    <button class="actionDivButton" onclick="navigateHeader(7)">Sign-Up</button>
+                </div>
+                <!-- Login Button -->
+                <div class="buttonHolderDiv" style="justify-content:flex-start">
+                    <button id="submitLoginButton" class="actionDivButton">Login</button>
+                </div>
             </div>
             {{/* INFORMITIVE DIV */}}
             <div class="informativeDiv" id="informativeDivSignIn">
@@ -151,7 +192,7 @@
             {{/* USERNAME */}}
             <div class="feildsSectionDiv">
                 <div class="labelDiv">
-                    <p class="labelPText">
+                    <p class="labelPTextSignUp">
                         USERNAME:
                     </p>
                 </div>
@@ -164,7 +205,7 @@
             {{/* FIRSTNAME */}}
             <div class="feildsSectionDiv">
                 <div class="labelDiv">
-                    <p class="labelPText">
+                    <p class="labelPTextSignUp">
                         FIRSTNAME:
                     </p>
                 </div>
@@ -177,7 +218,7 @@
             {{/* LASTNAME */}}
             <div class="feildsSectionDiv">
                 <div class="labelDiv">
-                    <p class="labelPText">
+                    <p class="labelPTextSignUp">
                         LASTNAME:
                     </p>
                 </div>
@@ -190,7 +231,7 @@
             {{/* PASSWORD */}}
             <div class="feildsSectionDiv">
                 <div class="labelDiv">
-                    <p class="labelPText">
+                    <p class="labelPTextSignUp">
                         PASSWORD:
                     </p>
                 </div>
@@ -203,7 +244,7 @@
             {{/* CHECK PASSWORD*/}}
             <div class="feildsSectionDiv">
                 <div class="labelDiv">
-                    <p class="labelPText">
+                    <p class="labelPTextSignUp">
                         RE-TYPE PASSWORD:
                     </p>
                 </div>
@@ -216,7 +257,7 @@
             {{/* EMAIL */}}
             <div class="feildsSectionDiv">
                 <div class="labelDiv">
-                    <p class="labelPText">
+                    <p class="labelPTextSignUp">
                         Email:
                     </p>
                 </div>
@@ -232,7 +273,7 @@
             {{/* DEBUG: Need to collect multiple phone numbers; use angular to create new tab(s)*/}}
             <div class="feildsSectionDiv">
                 <div class="labelDiv">
-                    <p class="labelPText">
+                    <p class="labelPTextSignUp">
                         Primary Phone Numbers:
                     </p>
                 </div>
@@ -245,7 +286,7 @@
             {{/* TELL US ABOUT YOU */}}
             <div class="feildsSectionDiv">
                 <div class="labelDiv">
-                    <p class="labelPText">
+                    <p class="smallLabelPText">
                         Tell us about you! Why do you want to join LearnR? Inform a friend/family member?
                         Make your own learnR? We'd love to know!
                     </p>
@@ -257,7 +298,7 @@
             {{/* SUBMIT BUTTON */}}
             <div class="feildsSectionDiv">
                 <div class="fieldSection" id="signUpSubmitB">
-                    <button id="submitSignUpButton">Submit</button>
+                    <button id="submitSignUpButton" class="actionDivButton">Sign-Up</button>
                 </div>
             </div>
             {{/* INFORMITIVE DIV */}}
@@ -279,7 +320,7 @@
         <div class="mbHeaderDiv">
             <!--This will contain the sites name/Picture in large font-->
             <div class="namediv">
-                <img class="headerImg" src="static/images/png/testTitleCard.png">
+                <img class="headerImg" src="static/images/png/learnRLogoMainTitle_2000x2000.png">
             </div>
             <!-- This arranges links to various pages -->
             <div class="navigationHolderDiv">
@@ -334,7 +375,7 @@
     <div class="divformDiv" id="divFormMakeOrg">
         {{/* Make Org Instruction */}}
         <div class="instructUserDiv">
-            <p class="formSign">
+            <p class="smallFormSign">
                 Make your organization here! Tell me the name of your Organization and what you hope
                 to inform others about. It could be a political campaign, education on a subject
                 you're passionate about, or details for your next big event. What do YOU
@@ -346,7 +387,7 @@
             {{/* LEARNR ORG NAME */}}
             <div class="feildsSectionDiv">
                 <div class="labelDiv">
-                    <p class="labelPText">
+                    <p class="mediumPText">
                         Name of LearnR Organization:
                     </p>
                 </div>
@@ -360,7 +401,7 @@
             {{/* TELL US ABOUT YOUR ORGANIZATION */}}
             <div class="feildsSectionDiv">
                 <div class="labelDiv">
-                    <p class="labelPText">
+                    <p class="mediumPText">
                         LearnR Goals:
                     </p>
                 </div>
@@ -372,7 +413,7 @@
             {{/* SUBMIT BUTTON */}}
             <div class="feildsSectionDiv">
                 <div class="fieldSection" id="signUpSubmitB">
-                    <button id="submitLearnROrg">Submit</button>
+                    <button class="longActionDivButton" id="submitLearnROrg">Submit LearnROrg</button>
                 </div>
             </div>
             {{/* INFORMITIVE DIV */}}
@@ -393,7 +434,7 @@
     <div class="divformDiv" id="divFormMakeLearnr">
         {{/* Make Learnr Instruction */}}
         <div class="instructUserDiv">
-            <p class="formSign">
+            <p class="superSmallFormSign">
                 Make your Learnr here! Add the text messages you'd like to send to your 
                 Users below,(160 characters each!). A good Learnr should be respectful. A 
                 good Learnr should also be well documented, with links to respectable sources
@@ -432,7 +473,7 @@
             {{/* WHICH ORGANIZATION */}}
             <div class="feildsSectionDiv">
                 <div class="labelDiv">
-                    <p class="labelPText">
+                    <p class="smallLabelPText">
                         Which Organization is this under?
                     </p>
                 </div>
@@ -460,7 +501,7 @@
                         <textarea class="textareaTellMe" id="tagDesc" name="tagDesc"
                         placeholder="What word describes this LearnR?" minlength=1 maxlength=20 required></textarea>
                         <div class="addLearnRTagDiv" id="addLearnRTagDiv">
-                            <button class="addLearnRTagButton" id="addLearnRTagButton" onclick="addLearnRTag()">Add Learnr Tag</button>
+                            <button class="smallAddLearnRTagButton" id="addLearnRTagButton" onclick="addLearnRTag()">Add Learnr Tag</button>
                         </div>
                     </div>
                 </div>
@@ -473,7 +514,7 @@
                 <div class="multiInputHolderDiv">
                     <!-- The text text -->
                     <div class="labelDiv">
-                        <p class="labelPText">
+                        <p class="smallLabelPText">
                             What texts do you want the Reader to have?
                         </p>
                     </div>
@@ -483,7 +524,7 @@
                     </div>
                     <!-- Should wait -->
                     <div class="labelDiv">
-                        <p class="labelPText">
+                        <p class="smallLabelPText">
                             Should this text be given time to be read before sending the next text?
                         </p>
                     </div>
@@ -495,7 +536,7 @@
                     </div>
                     <!-- Amount of time waiting -->
                     <div class="labelDiv">
-                        <p class="labelPText">
+                        <p class="smallLabelPText">
                             How much time should the User be waiting?
                         </p>
                     </div>
@@ -507,7 +548,7 @@
                     <!-- Submit -->
                     <div class="inputDiv">
                         <div class="addLearnRTagDiv" id="addLearnRInformDiv">
-                            <button class="addLearnRTagButton" id="addLearnRInformButton" onclick="addInform()">Add Learnr Inform</button>
+                            <button class="smallAddLearnRTagButton" id="addLearnRInformButton" onclick="addInform()">Add Learnr Inform</button>
                         </div>
                     </div>
                 </div>
@@ -515,7 +556,7 @@
             {{/* SUBMIT BUTTON */}}
             <div class="feildsSectionDiv">
                 <div class="fieldSection" id="signUpSubmitB">
-                    <button id="submitLearnR">Submit</button>
+                    <button class="longActionDivButton" id="submitLearnR">Submit</button>
                 </div>
             </div>
             {{/* INFORMITIVE DIV */}}
