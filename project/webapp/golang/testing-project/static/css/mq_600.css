@@ -216,7 +216,7 @@ body, html {
 .mediumPText{
     /* styling */
     align-self: center;
-    font-size: 1rem;
+    font-size: 1.3rem;
     padding-right: .5em;
     font-family: 'Uchen', serif, sans-serif;
     color: rgb(0, 0, 0);
@@ -225,7 +225,7 @@ body, html {
 .smallLabelPText{
     /* styling */
     align-self: center;
-    font-size: .7rem;
+    font-size: 1rem;
     padding-right: .5em;
     font-family: 'Uchen', serif, sans-serif;
     color: rgb(0, 0, 0);
@@ -1006,7 +1006,7 @@ body, html {
 
 .titleP{
     text-align: center;
-    font-size: 4rem;
+    font-size: 4.5rem;
     text-decoration: underline;
     font-family: 'Carter One', cursive, sans-serif;
 }
@@ -1025,7 +1025,7 @@ body, html {
 }
 
 .textP{
-    font-size: 1rem;
+    font-size: 1.2rem;
     padding-bottom: 1em;
     padding-top: 1em;
     line-height: 2.0;
@@ -1048,7 +1048,7 @@ body, html {
 }
 
 .liList{
-    font-size: 1.3rem;
+    font-size: 1.5rem;
     padding-top: .5em;
     padding-bottom: .5em;
 }

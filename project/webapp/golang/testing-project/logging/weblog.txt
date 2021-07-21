@@ -135,3 +135,4 @@
 2021/07/21 09:38:35 Can Crud was false, or nil values:  
 2021/07/21 09:38:35 Can Crud was false, or nil values:  
 2021/07/21 09:38:35 Can Crud was false, or nil values:  
+2021/07/21 12:18:48 Email service is initialized
