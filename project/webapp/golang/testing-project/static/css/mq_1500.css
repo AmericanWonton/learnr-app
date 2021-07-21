@@ -1,0 +1,1156 @@
+/* CSS Reset */
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+
+/* Usage of Google Fonts */
+body, div, p, q, i, h1, h2, h3, h4, h5, h6, a, header, footer, header {
+    font-family: 'Alfa Slab One', cursive;
+    font-family: 'Otomanopee One', sans-serif;
+    font-family: 'Anton', sans-serif;
+    font-family: 'Ubuntu', sans-serif;
+    font-family: 'Uchen', serif;
+    font-family: 'Bebas Neue', cursive;
+    font-family: 'Fira Sans Condensed', sans-serif;
+    font-family: 'Inter', sans-serif;
+    font-family: 'Carter One', cursive;
+    font-family: 'Luckiest Guy', cursive;
+}
+
+/* You need to initialize the parent elements to 100%
+for this to work correctly in the scrollable div */
+body, html {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    font: inherit;
+    vertical-align: baseline;
+    /* debug */
+    /* background-color: rgb(165, 122, 190); */
+}
+
+/* LOGIN PAGE STYLING */
+.mainContentDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    justify-content: center;
+    width: 100%;
+    margin: 0em;
+    padding: 0em;
+    height: 100%;
+    /* styling */
+    background-color: rgb(50, 108, 149);
+    /* background-color: rgb(148, 148, 211); */
+    /* debug styling */
+    /* border: 1px solid black; */
+}
+
+.divLoginStuff {
+    /* flex box display */
+    display: flex;
+    flex-flow: wrap;
+    align-content: center;
+    justify-content: center;
+    align-self: center;
+    justify-self: center;
+    width: 100%;
+    /* styling */
+    padding: .2em;
+    /* debug */
+    /* border: 1px solid green; */
+}
+
+.instructUserDiv{
+    /* flexbox display */
+    display: block;
+    align-content: center;
+    justify-content: center;
+    align-self: center;
+    justify-self: center;
+    /* styling */
+    text-align: center;
+    padding-top: 1em;
+    padding-left: .5em;
+    padding-right: .5em;
+    /* debug */
+    /* border: 1px solid pink; */
+}
+
+.signInAndUpDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    align-content: center;
+    justify-content: center;
+    width: 100%;
+    /* debug */
+    /* border: 1px solid salmon; */
+}
+
+.actionDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    align-content: center;
+    justify-content: center;
+    width: 100%;
+    /* styling */
+    padding-top: .5em;
+    padding-bottom: .5em;
+    /* debug */
+    /* border: 1px solid purple; */
+}
+
+.divformDiv {
+    /* Flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    align-content: center;
+    justify-content: center;
+    /* styling */
+    padding-top: .2em;
+    padding-bottom: .2em;
+    /* debug styling */
+    
+}
+
+.signInAlignmentDiv{
+    /* Flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    align-content: center;
+    justify-content: center;
+    width: 100%;
+    /* debug styling */
+}
+
+.feildsSectionDiv{
+    /* Flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    align-content: center;
+    justify-content: center;
+    width: 100%;
+    /* styling */
+    padding: .2em;
+    /* debug */
+}
+
+.informFormDiv{
+    /* flexbox styling */
+    display: block;
+    align-content: center;
+    justify-content: center;
+    justify-self: center;
+    align-self: center;
+    width: 100%;
+}
+
+.informFormP{
+    text-align: center;
+    align-self: center;
+    justify-self: center;
+    font-size: 2rem;
+    font-family: 'Ubuntu', sans-serif;
+}
+
+.inputSignIn{
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 1rem;
+    width: fit-content;
+}
+
+/* SYTLING FOR THE FORMS */
+
+#sign-in-form {
+    align-self: center;
+}
+
+.labelDiv {
+    /* flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    justify-content: flex-end;
+    align-content: center;
+    width: 40%;
+    margin-right: .1em;
+    /* DEBUG */
+}
+
+.labelPText {
+    /* styling */
+    align-self: center;
+    font-size: 3rem;
+    padding-right: 1.2em;
+    font-family: 'Uchen', serif, sans-serif;
+    color: rgb(0, 0, 0);
+}
+
+.mediumPText{
+    /* styling */
+    align-self: center;
+    font-size: 1.3rem;
+    padding-right: .5em;
+    font-family: 'Uchen', serif, sans-serif;
+    color: rgb(0, 0, 0);
+}
+
+.smallLabelPText{
+    /* styling */
+    align-self: center;
+    font-size: 1.2rem;
+    padding-right: 1em;
+    font-family: 'Uchen', serif, sans-serif;
+    color: rgb(0, 0, 0);
+}
+
+.labelPTextSignUp{
+    align-self: center;
+    font-size: 1.5rem;
+    padding-right: 1.7rem;
+    font-family: 'Uchen', serif, sans-serif;
+    color: rgb(0, 0, 0);
+}
+
+.submitSignUpButton{
+    font-family: 'Uchen', serif, sans-serif;
+    font-size: 1rem;
+    height: 1em;
+    width: 2em;
+    text-align: center;
+}
+
+.inputDiv {
+    /* flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    align-content: center;
+    justify-content: flex-start;
+    width: 40%;
+    margin-left: .1em;
+    /* Debug */
+}
+
+.fieldSection{
+    /* flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    justify-content: center;
+    align-content: center;
+    width: 100%;
+    /* styling */
+    padding-top: 0rem;
+    /* DEBUG */
+}
+
+#my-form-button{
+    display: inline-block;
+    text-align: center;
+    align-self: center;
+    /* styling */
+    font-size: 1rem;
+}
+
+#inputTextMobileUN{
+    /* font styling */
+    font-size: 1rem;
+    font-family: 'Nunito', sans-serif;
+}
+
+
+#inputTextMobilePW{
+    /* font styling */
+    font-size: 1rem;
+    font-family: 'Nunito', sans-serif;
+}
+
+#username-err {
+
+}
+
+#password-err {
+
+}
+
+.form-field-err {
+    font-size: 1rem;
+    font-family: 'Ubuntu', sans-serif;
+}
+
+.informtextP{
+    font-size: 2rem;
+    text-align: center;
+    align-self: center;
+    align-items: center;
+    font-family: 'Ubuntu', sans-serif;
+}
+
+.formSign{
+    font-family: 'Anton', sans-serif;
+    font-size: 6rem;
+    text-align: center;
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
+.smallFormSign{
+    font-family: 'Anton', sans-serif;
+    font-size: 2rem;
+    text-align: center;
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
+.superSmallFormSign{
+    font-family: 'Anton', sans-serif;
+    font-size: 1.3rem;
+    text-align: center;
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
+/* Login Page Styling */
+.actionDivButton{
+    font-family: 'Uchen', serif, sans-serif;
+    font-size: 2rem;
+    height: 3em;
+    width: 6em;
+    text-align: center;
+}
+
+.longActionDivButton{
+    font-family: 'Uchen', serif, sans-serif;
+    font-size: 1.5rem;
+    height: 4em;
+    width: 8em;
+    text-align: center;
+}
+
+.buttonHolderDiv{
+    /* basic styling */
+    display: flex;
+    flex-wrap: wrap;
+    width: 45%;
+    padding-left: .2em;
+    padding-right: .2em;
+    /* debug styling */
+    
+}
+
+/* Sign Up Page Styling */
+.loginAllContentDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    justify-content: center;
+    align-content: flex-start;
+    width: 100%;
+    height: 110vh;
+    margin: 0em;
+    padding: 0em;
+    /* styling */
+    background-color: rgb(203, 95, 47);
+    /* background-color: rgb(148, 148, 211); */
+    /* debug styling */
+    /* border: 1px solid black; */
+}
+
+/** STYLING FOR THE HEADER **/ 
+.every_header{
+
+}
+
+.mbHeaderDiv{
+    display: block;
+    width: 100%;
+    /* debug styling */
+    border: 1px solid black;
+    background-color: rgb(203, 95, 47);
+}
+
+.namediv {
+    /* Flexbox setup */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    width: 100%;
+    /* Styling */
+    padding: .2em;
+    /* DEBUG */
+    border: 1px solid black;
+}
+
+.headerImg{
+    width: 18vw;
+    height: 18vw;
+    align-self: center;
+    justify-self: center;
+} 
+
+.displayH1 {
+    /* This is for style */
+    font-family: 'Bowlby One SC', cursive, serif, sans-serif;
+    font-size: 3rem;
+    /* font alignment */
+    align-content: center;
+    text-align: center;
+}
+
+.navigationHolderDiv{
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    width: 100%;
+    /* Styling */
+    
+    /* DEBUG */
+    /* border: 1px solid black; */
+}
+
+.navigationLinkDiv{
+    /* Flexbox setup */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    /* Styling */
+    padding-left: .1em;
+    padding-right: .1em;
+    margin-left: .1em;
+    margin-right: .1em;
+    /* border: 1px solid black; */
+    /* DEBUG */
+}
+
+.navigationLinkDiv:hover{
+    /* Flexbox setup */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    /* Styling */
+    padding-left: .4em;
+    padding-right: .4em;
+    margin-left: .2em;
+    margin-right: .2em;
+    border: 1.5px solid black;
+    /* DEBUG */
+}
+
+.navigationLinkP{
+    font-family: 'Alfa Slab One', cursive, sans-serif;
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+.navigationLinkP:hover{
+    font-family: 'Alfa Slab One', cursive, sans-serif;
+    font-size: 1.5rem;
+    cursor: pointer;
+    text-align: center;
+}
+
+.header-ad-Div{
+    display: flex;
+    flex-flow: wrap;
+    width: 100%;
+    /* styling */
+    align-content: center;
+    justify-content: center;
+    background-color: rgb(129, 28, 42);
+    /* DEBUG */
+    /* border: 1px solid black; */
+}
+
+
+/* LearnR Page Styling */
+
+.learnRMainContentDiv{
+    /* flexbox styling */
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    margin: 0em;
+    margin-bottom: auto;
+    padding: 0em;
+    height: 275vh;
+    /* styling */
+    background-color: rgb(203, 95, 47);
+    /* debug styling */
+    /* border: 1px solid rgb(118, 62, 151); */
+}
+
+.resultHolderInformDiv{
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+.resultHolderTagDiv{
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+.multiInputHolderDiv{
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.addLearnRTagButton{
+    font-family: 'Uchen', serif, sans-serif;
+    font-size: 1.5rem;
+    height: 3em;
+    width: 6em;
+    text-align: center;
+}
+
+.addLearnRTagDiv{
+    display: flex;
+    flex-flow: wrap;
+    width: 100%;
+    align-content: center;
+    justify-content: center;
+}
+
+.smallAddLearnRTagButton{
+    font-family: 'Uchen', serif, sans-serif;
+    font-size: 1rem;
+    height: 3em;
+    width: 10em;
+    text-align: center;
+    align-self: center;
+}
+
+
+.addLearnRDiv{
+    /* flex-box display */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.resultTagDiv{
+    display: block;
+    overflow: auto;
+    /* styling */
+    text-align: center;
+    margin-left: .2em;
+    margin-right: .2em;
+    padding-left: .2em;
+    padding-right: .2em;
+    border: 1px solid black;
+    background-color: grey;
+}
+
+.resultTagDiv:hover{
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    height: 5.5vh;
+    width: 5.5vw;
+    /* styling */
+    margin-left: .2em;
+    margin-right: .2em;
+    padding-left: .2em;
+    padding-right: .2em;
+    border: 1px solid black;
+    background-color: grey;
+    /* change cursor */
+    cursor: pointer;
+}
+
+.resultTagP{
+    font-size: 1rem;
+    color: black;
+    font-family: 'Ubuntu', sans-serif;
+    text-align: center;
+    align-self: center;
+}
+
+.resultLearnrInformDiv{
+    display: block;
+    /* styling */
+    margin-left: .2em;
+    margin-right: .2em;
+    padding-left: .2em;
+    padding-right: .2em;
+    border: 1px solid black;
+    background-color: grey;
+}
+
+.resultLearnrInformDiv:hover{
+    display: block;
+    /* styling */
+    margin-left: .2em;
+    margin-right: .2em;
+    padding-left: .2em;
+    padding-right: .2em;
+    border: 1px solid black;
+    background-color: grey;
+    cursor: pointer;
+}
+
+.resultInformP{
+    font-size: 1rem;
+    color: black;
+}
+
+/* MainPage Styling */
+.mainPageContentDiv{
+    /* flexbox styling */
+    display: block;
+    
+    width: 100%;
+    height: 100%;
+    /* styling */
+    background-color:rgb(200, 168, 55);
+    /* debug styling */
+    border: 1px solid rgb(0, 0, 0); 
+}
+
+.searchFieldDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    width: 100%;
+    /* styling */
+    padding-bottom: .2em;
+    padding-top: .2em;
+    border: 1px solid black;
+    background-color: rgb(177, 29, 111);
+    /* debug styling */
+}
+
+.searchbarTitle{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    /* styling */
+    background-color: rgb(177, 29, 111);
+    /* debug stling */
+    /* border: 2px solid black; */
+}
+
+.titleTextP{
+    font-size: 3rem;
+    text-align: center;
+}
+
+.searchBarDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    /* styling */
+    background-color: rgb(177, 29, 111);
+    border: 1px solid black;
+}
+
+.fieldPutDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.inputHolder{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    justify-items: center;
+    width: 40%;
+    /* styling */
+
+    /* debug */
+}
+
+.searchInput{
+    width: 75%;
+    font-size: 1rem;
+}
+
+.resultThing{
+    font-size: 1rem;
+    text-align: center;
+    font-family: 'Bebas Neue', cursive, sans-serif;
+}
+
+/* LearnR Div Holder styling */
+.learnrHolderDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    width: 100%;
+    /* styling */
+    padding: .3em;
+    background-color:rgb(200, 168, 55);
+    /* debug styling */
+    border: 1px solid red;
+}
+
+.descriptionHolder{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    width: 100%;
+    /* styling */
+    padding: .2em;
+    /* styling */
+    border: 1px solid rgb(18, 145, 184);
+}
+
+.resultLearnrHolder{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    width: 100%;
+    /* styling */
+    padding: .3em;
+    margin: .2em;
+    border: 1px solid black;
+    background-color: white;
+    /* debug */
+}
+
+.learnRnameDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    width: 100%;
+    /* styling */
+    border: 1px solid black;
+    /* debug */
+}
+
+.sendLearnRDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    width: 100%;
+    /* styling */
+    border: 1px solid purple;
+    /* debug */
+}
+
+.infolearnrHolder{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    justify-items: center;
+    align-self: center;
+    justify-self: center;
+    width: 100%;
+    /* styling */
+
+    /* debug */
+    border: 1px solid brown;
+    
+}
+
+.aInfoDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    justify-items: center;
+    align-self: center;
+    justify-self: center;
+    width: 100%;
+    /* styling */
+
+    /* debug */
+    border: 1px solid purple;
+}
+
+.learnRField{
+    font-size: 1.3rem;
+    color: black;
+    font-family: 'Fira Sans Condensed', sans-serif;
+    text-align: center;
+}
+
+.aBigInfoDiv {
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    justify-items: center;
+    align-self: center;
+    justify-self: center;
+    width: 100%;
+    /* styling */
+
+    /* debug styling */
+    border: 1px solid seagreen;
+}
+
+.sendLearnRButtonDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    justify-items: center;
+    align-self: center;
+    justify-self: center;
+    width: 100%;
+    /* styling */
+    
+    /* debug */
+    border: 2px solid black;
+}
+
+.seeOptionsButton{
+    font-size: 1rem;
+    width: 100%;
+}
+
+.interiorBigInfoDiv {
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    justify-items: center;
+    align-self: center;
+    justify-self: center;
+    font-size: 1.3rem;
+    width: 100%;
+    /* styling */
+    padding-left: .3em;
+    padding-right: .3em;
+    /* debug */
+    border: 3px solid aquamarine;
+}
+
+.fieldsideDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    justify-content: center;
+    align-content: center;
+    width: 40%;
+    padding-right: .3em;
+    /* DEBUG */
+}
+
+.fieldP {
+    font-size: 1rem;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+}
+
+.fieldInput {
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    width: 75%;
+}
+
+.fieldTextAreaInput {
+    
+}
+
+.sendButton{
+    font-size: 1rem;
+    width: 7em;
+    height: 5em;
+}
+
+.resultInput{
+    text-align: center;
+    font-size: 1rem;
+}
+
+.textHolder {
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    justify-items: center;
+    align-self: center;
+    justify-self: center;
+    width: 100%;
+    /* stlying */
+    padding: .5em;
+    /* debug */
+    border: 1px solid gold;
+}
+
+.textFont{
+    font-size: 1rem;
+    text-align: center;
+    font-family: 'Fira Sans Condensed', sans-serif;
+}
+
+.allTextHolder{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    justify-items: center;
+    align-self: center;
+    justify-self: center;
+    width: 100%;
+    /* stlying */
+    
+    /* debug */
+    border: 1px solid pink;
+}
+
+.aTextHolder{
+    /* flexbox styling */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    justify-items: center;
+    align-self: center;
+    justify-self: center;
+    width: 100%;
+    /* stlying */
+    
+    /* debug */
+    border: 1px solid rgb(0, 0, 0);
+}
+
+/* Styling for 'Learn More' Page */
+.mainContentMoreDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    justify-content: center;
+    width: 100%;
+    margin: 0em;
+    padding: 0em;
+    /* styling */
+    background-color: rgb(148, 148, 211);
+    /* debug styling */
+    /* border: 1px solid black; */
+}
+
+.titleDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    justify-content: center;
+    width: 100%;
+    /* styling */
+    text-align: center;
+    margin-left: .5em;
+    margin-right: .5em;
+    margin-bottom: 1em;
+}
+
+.titleP{
+    text-align: center;
+    font-size: 6rem;
+    text-decoration: underline;
+    font-family: 'Carter One', cursive, sans-serif;
+}
+
+.textDiv{
+     /* flexbox styling */
+     display: flex;
+     flex-flow: wrap;
+     justify-content: center;
+     width: 100%;
+     /* styling */
+     padding-left: 1em;
+     padding-right: 1em;
+     margin-top: .5em;
+     margin-bottom: .5em;
+}
+
+.textP{
+    font-size: 1.5rem;
+    padding-bottom: 1em;
+    padding-top: 1em;
+    line-height: 2.0;
+    font-family: 'Luckiest Guy', cursive, sans-serif;
+}
+
+.listDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    justify-content: flex-start;
+    width: 100%;
+    /* styling */
+    padding-top: .5em;
+    padding-bottom: .5em;
+}
+
+.ulList{
+
+}
+
+.liList{
+    font-size: 1.5rem;
+    line-height: 2.0;
+    padding-top: .5em;
+    padding-bottom: .5em;
+}
+
+.boldText{
+    font-size: 1.3em;
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+/* Send Help Page Styling */
+.helpContentDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    justify-content: center;
+    align-content: flex-start;
+    /* height: 90%; */
+    width: 100%;
+    margin: 0em;
+    padding: 0em;
+    /* styling */
+    background-color: rgb(200, 168, 55);
+    /* background-color: rgb(148, 148, 211); */
+    /* debug styling */
+    /* border: 1px solid black; */
+}
+
+.sendHelpDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    justify-content: center;
+    align-content: center;
+    width: 100%;
+    /* styling */
+    
+    /* debug styling */
+}
+
+.informDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    justify-content: center;
+    align-content: center;
+    width: 100%;
+    /* styling */
+    text-align: center;
+    /* debug styling */
+}
+
+.informP{
+    font-size: 3rem;
+    text-align: center;
+}
+
+.formDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    justify-content: center;
+    align-content: center;
+    width: 100%;
+    /* styling */
+    border: 2px solid black;
+    /* debug styling */
+}
+
+.fieldHolderDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    justify-content: center;
+    align-content: center;
+    width: 100%;
+    /* styling */
+    
+    /* debug styling */
+}
+
+.mesMeTextArea{
+    font-size: 1.3rem;
+    width: 50vw;
+    height: 15vh;
+}
+
+.submitB{
+    font-family: 'Uchen', serif, sans-serif;
+    font-size: 2rem;
+    height: 3em;
+    width: 7em;
+    text-align: center;
+}

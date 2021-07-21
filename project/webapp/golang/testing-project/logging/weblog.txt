@@ -139,3 +139,5 @@
 2021/07/21 12:39:43 Email service is initialized
 2021/07/21 13:01:22 Email service is initialized
 2021/07/21 13:05:31 Email service is initialized
+2021/07/21 13:29:01 Email service is initialized
+2021/07/21 13:35:23 Email service is initialized
