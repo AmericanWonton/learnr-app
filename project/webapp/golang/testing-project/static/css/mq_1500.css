@@ -208,8 +208,8 @@ body, html {
 .labelPText {
     /* styling */
     align-self: center;
-    font-size: 1.5rem;
-    padding-right: .5em;
+    font-size: 3rem;
+    padding-right: 1.2em;
     font-family: 'Uchen', serif, sans-serif;
     color: rgb(0, 0, 0);
 }
@@ -217,8 +217,8 @@ body, html {
 .mediumPText{
     /* styling */
     align-self: center;
-    font-size: 1rem;
-    padding-right: .5em;
+    font-size: 2rem;
+    padding-right: 1em;
     font-family: 'Uchen', serif, sans-serif;
     color: rgb(0, 0, 0);
 }
@@ -226,16 +226,16 @@ body, html {
 .smallLabelPText{
     /* styling */
     align-self: center;
-    font-size: .7rem;
-    padding-right: .5em;
+    font-size: 2rem;
+    padding-right: 1.4em;
     font-family: 'Uchen', serif, sans-serif;
     color: rgb(0, 0, 0);
 }
 
 .labelPTextSignUp{
     align-self: center;
-    font-size: 1rem;
-    padding-right: 1rem;
+    font-size: 1.5rem;
+    padding-right: 1.7rem;
     font-family: 'Uchen', serif, sans-serif;
     color: rgb(0, 0, 0);
 }
@@ -315,33 +315,33 @@ body, html {
 
 .formSign{
     font-family: 'Anton', sans-serif;
-    font-size: 3rem;
+    font-size: 6rem;
     text-align: center;
-    padding-left: .5em;
-    padding-right: .5em;
+    padding-left: 1em;
+    padding-right: 1em;
 }
 
 .smallFormSign{
     font-family: 'Anton', sans-serif;
-    font-size: 1.5rem;
+    font-size: 2rem;
     text-align: center;
-    padding-left: .5em;
-    padding-right: .5em;
+    padding-left: 1em;
+    padding-right: 1em;
 }
 
 .superSmallFormSign{
     font-family: 'Anton', sans-serif;
-    font-size: 1rem;
+    font-size: 1.5rem;
     text-align: center;
-    padding-left: .5em;
-    padding-right: .5em;
+    padding-left: 1em;
+    padding-right: 1em;
 }
 
 /* Login Page Styling */
 .actionDivButton{
     font-family: 'Uchen', serif, sans-serif;
-    font-size: 1rem;
-    height: 2em;
+    font-size: 2rem;
+    height: 3em;
     width: 6em;
     text-align: center;
 }
@@ -371,8 +371,9 @@ body, html {
     display: flex;
     flex-flow: wrap;
     justify-content: center;
+    align-content: flex-start;
     width: 100%;
-    height: 100%;
+    height: 110vh;
     margin: 0em;
     padding: 0em;
     /* styling */
@@ -409,8 +410,8 @@ body, html {
 }
 
 .headerImg{
-    width: 30vw;
-    height: 30vw;
+    width: 18vw;
+    height: 18vw;
     align-self: center;
     justify-self: center;
 } 
@@ -468,13 +469,13 @@ body, html {
 
 .navigationLinkP{
     font-family: 'Alfa Slab One', cursive, sans-serif;
-    font-size: .9rem;
+    font-size: 1.5rem;
     text-align: center;
 }
 
 .navigationLinkP:hover{
     font-family: 'Alfa Slab One', cursive, sans-serif;
-    font-size: 1.1rem;
+    font-size: 1.5rem;
     cursor: pointer;
     text-align: center;
 }
@@ -509,6 +510,7 @@ body, html {
     /* debug styling */
     /* border: 1px solid rgb(118, 62, 151); */
 }
+
 .resultHolderInformDiv{
     display: flex;
     flex-wrap: wrap;
@@ -555,6 +557,7 @@ body, html {
     height: 3em;
     width: 10em;
     text-align: center;
+    align-self: center;
 }
 
 
@@ -830,7 +833,7 @@ body, html {
 }
 
 .learnRField{
-    font-size: .7rem;
+    font-size: 1.3rem;
     color: black;
     font-family: 'Fira Sans Condensed', sans-serif;
     text-align: center;
@@ -882,6 +885,7 @@ body, html {
     justify-items: center;
     align-self: center;
     justify-self: center;
+    font-size: 1.3rem;
     width: 100%;
     /* styling */
     padding-left: .3em;
@@ -902,14 +906,14 @@ body, html {
 }
 
 .fieldP {
-    font-size: .7rem;
+    font-size: 1rem;
     text-align: center;
     font-family: 'Inter', sans-serif;
 }
 
 .fieldInput {
     font-family: 'Inter', sans-serif;
-    font-size: .7rem;
+    font-size: 1rem;
     width: 75%;
 }
 
@@ -945,7 +949,7 @@ body, html {
 }
 
 .textFont{
-    font-size: .8rem;
+    font-size: 1rem;
     text-align: center;
     font-family: 'Fira Sans Condensed', sans-serif;
 }
@@ -1005,7 +1009,6 @@ body, html {
     width: 100%;
     /* styling */
     text-align: center;
-    margin-top: 1em;
     margin-left: .5em;
     margin-right: .5em;
     margin-bottom: 1em;
@@ -1013,7 +1016,7 @@ body, html {
 
 .titleP{
     text-align: center;
-    font-size: 4rem;
+    font-size: 6rem;
     text-decoration: underline;
     font-family: 'Carter One', cursive, sans-serif;
 }
@@ -1025,14 +1028,14 @@ body, html {
      justify-content: center;
      width: 100%;
      /* styling */
-     margin-left: .5em;
-     margin-right: .5em;
+     padding-left: 1em;
+     padding-right: 1em;
      margin-top: .5em;
      margin-bottom: .5em;
 }
 
 .textP{
-    font-size: 1rem;
+    font-size: 1.5rem;
     padding-bottom: 1em;
     padding-top: 1em;
     line-height: 2.0;
@@ -1055,7 +1058,8 @@ body, html {
 }
 
 .liList{
-    font-size: 1.3rem;
+    font-size: 1.5rem;
+    line-height: 2.0;
     padding-top: .5em;
     padding-bottom: .5em;
 }
@@ -1072,8 +1076,8 @@ body, html {
     display: flex;
     flex-flow: wrap;
     justify-content: center;
-    align-content: center;
-    height: 90%;
+    align-content: flex-start;
+    /* height: 90%; */
     width: 100%;
     margin: 0em;
     padding: 0em;
@@ -1109,7 +1113,7 @@ body, html {
 }
 
 .informP{
-    font-size: 2rem;
+    font-size: 3rem;
     text-align: center;
 }
 
@@ -1138,13 +1142,15 @@ body, html {
 }
 
 .mesMeTextArea{
-    font-size: 1rem;
+    font-size: 1.3rem;
+    width: 50vw;
+    height: 15vh;
 }
 
 .submitB{
     font-family: 'Uchen', serif, sans-serif;
-    font-size: 1.5rem;
+    font-size: 2rem;
     height: 3em;
-    width: 6em;
+    width: 7em;
     text-align: center;
 }

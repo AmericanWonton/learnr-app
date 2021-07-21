@@ -217,7 +217,7 @@ body, html {
 .mediumPText{
     /* styling */
     align-self: center;
-    font-size: 1rem;
+    font-size: 1.3rem;
     padding-right: .5em;
     font-family: 'Uchen', serif, sans-serif;
     color: rgb(0, 0, 0);
@@ -226,7 +226,7 @@ body, html {
 .smallLabelPText{
     /* styling */
     align-self: center;
-    font-size: .7rem;
+    font-size: 1rem;
     padding-right: .5em;
     font-family: 'Uchen', serif, sans-serif;
     color: rgb(0, 0, 0);
@@ -315,7 +315,7 @@ body, html {
 
 .formSign{
     font-family: 'Anton', sans-serif;
-    font-size: 3rem;
+    font-size: 5rem;
     text-align: center;
     padding-left: .5em;
     padding-right: .5em;
@@ -340,8 +340,8 @@ body, html {
 /* Login Page Styling */
 .actionDivButton{
     font-family: 'Uchen', serif, sans-serif;
-    font-size: 1rem;
-    height: 2em;
+    font-size: 2rem;
+    height: 3em;
     width: 6em;
     text-align: center;
 }
@@ -468,13 +468,13 @@ body, html {
 
 .navigationLinkP{
     font-family: 'Alfa Slab One', cursive, sans-serif;
-    font-size: .9rem;
+    font-size: 1.1rem;
     text-align: center;
 }
 
 .navigationLinkP:hover{
     font-family: 'Alfa Slab One', cursive, sans-serif;
-    font-size: 1.1rem;
+    font-size: 1.3rem;
     cursor: pointer;
     text-align: center;
 }
@@ -509,6 +509,7 @@ body, html {
     /* debug styling */
     /* border: 1px solid rgb(118, 62, 151); */
 }
+
 .resultHolderInformDiv{
     display: flex;
     flex-wrap: wrap;
@@ -830,7 +831,7 @@ body, html {
 }
 
 .learnRField{
-    font-size: .7rem;
+    font-size: 1rem;
     color: black;
     font-family: 'Fira Sans Condensed', sans-serif;
     text-align: center;
@@ -882,6 +883,7 @@ body, html {
     justify-items: center;
     align-self: center;
     justify-self: center;
+    font-size: 1rem;
     width: 100%;
     /* styling */
     padding-left: .3em;
@@ -902,14 +904,14 @@ body, html {
 }
 
 .fieldP {
-    font-size: .7rem;
+    font-size: 1rem;
     text-align: center;
     font-family: 'Inter', sans-serif;
 }
 
 .fieldInput {
     font-family: 'Inter', sans-serif;
-    font-size: .7rem;
+    font-size: 1rem;
     width: 75%;
 }
 
@@ -945,7 +947,7 @@ body, html {
 }
 
 .textFont{
-    font-size: .8rem;
+    font-size: 1rem;
     text-align: center;
     font-family: 'Fira Sans Condensed', sans-serif;
 }
@@ -1013,7 +1015,7 @@ body, html {
 
 .titleP{
     text-align: center;
-    font-size: 4rem;
+    font-size: 4.5rem;
     text-decoration: underline;
     font-family: 'Carter One', cursive, sans-serif;
 }
@@ -1032,7 +1034,7 @@ body, html {
 }
 
 .textP{
-    font-size: 1rem;
+    font-size: 1.2rem;
     padding-bottom: 1em;
     padding-top: 1em;
     line-height: 2.0;
@@ -1055,7 +1057,7 @@ body, html {
 }
 
 .liList{
-    font-size: 1.3rem;
+    font-size: 1.5rem;
     padding-top: .5em;
     padding-bottom: .5em;
 }
