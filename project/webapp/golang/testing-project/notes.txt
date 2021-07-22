@@ -4,3 +4,7 @@ go test in the testing directory
 OR 
 go test -v in the testing directory
 To run the integration file, run: go test -tags=integration
+
+
+How to embed images in google email:
+http://googlesystem.blogspot.com/2013/02/permalinks-for-google-drive-images.html

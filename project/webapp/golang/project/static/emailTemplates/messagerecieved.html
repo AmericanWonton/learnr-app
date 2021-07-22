@@ -1,20 +1,43 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <!-- Fonts for text -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Fira+Sans+Condensed&family=Inter:wght@500&display=swap" rel="stylesheet">
+        <!-- Styling for fonts and stuff -->
         <style>
-            
+            /* Styling definitions for fonts*/
+            body, div, p, q, i, h1, h2, h3, h4, h5, h6, a, header, footer, header {font-family: 'Bebas Neue', cursive;font-family: 'Fira Sans Condensed', sans-serif;font-family: 'Inter', sans-serif;}
+            /* styling for divs and stuff */
+            .emailContentDiv{display:block;width: 100%;}
+            .greetingDiv{display: flex;flex-flow: wrap;align-content: center;justify-content: flex-start;width: 100%;text-align: left;padding-bottom: 2em;}
+            .mainFont {font-size: 1rem;font-family: 'Inter', sans-serif;color: black;line-height: 1.2rem;}
+            .bodyMain{display: flex;flex-flow: wrap;align-content: center;justify-content: flex-start;width: 100%;text-align: left;padding-top: 1em;padding-bottom: 1em;}
+            .goodbyeDiv{display: flex;flex-flow: wrap;align-content: center;justify-content: flex-start;width: 100%;text-align: left;padding-top: 1em;}
+            .signatureDiv{display: flex;flex-flow: wrap;align-content: center;justify-content: flex-start;width: 100%;padding-top: 2em;}
         </style>
     </head>
     <body>
-        <div>
-            <p>Hello, {{.Username}}, just got your message</p>
-            <br>
-            <p>
-                Thanks for reaching out, I am currently reading your message and will respond back soon.
-            </p>
-            <p>Thanks from the LearnR team,</p>
-            <br>
-            <img alt="My Signature" title="LearnR Logo" src="" width="300" height="300" style="display:block">
+        <div class="emailContentDiv">
+            <!-- Email greeting to User -->
+            <div class="greetingDiv">
+                <p class="mainFont">Hello, {{.Username}}, just got your message</p>
+            </div>
+            <!-- Main Body -->
+            <div class="bodyMain">
+                <p class="mainFont">Thanks for reaching out, I am currently reading your message and will respond back soon.</p>
+            </div>
+            <!-- Exit Response -->
+            <div class="goodbyeDiv">
+                <!-- Goodbye text -->
+                <p class="mainFont">Thanks from the LearnR team,</p>
+            </div>
+            <!-- Exit Signature -->
+            <div class="signatureDiv">
+                <!-- Goodbye image -->
+                <img alt="My Signature" title="LearnR Logo" src="https://drive.google.com/uc?export=view&id=1MEMIxb5bEqdKd_0BtVpiW9AeaPVLGMSQ" width="300" height="300" style="display:block">
+            </div>
         </div>
     </body>
 </html>

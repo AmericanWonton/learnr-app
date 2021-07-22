@@ -1,0 +1,52 @@
+/* Email Template */
+.emailContentDiv{
+    display:block;
+    width: 100%;
+}
+
+.greetingDiv{
+    display: flex;
+    flex-flow: wrap;
+    align-content: center;
+    justify-content: flex-start;
+    width: 100%;
+    text-align: left;
+    padding-bottom: 2em;
+}
+
+.mainFont{
+    font-size: 1rem;
+    font-family: 'Bebas Neue', cursive;
+    color: black;
+    line-height: 1.2rem;
+}
+
+.bodyMain{
+    display: flex;
+    flex-flow: wrap;
+    align-content: center;
+    justify-content: flex-start;
+    width: 100%;
+    text-align: left;
+    padding-top: 1em;
+    padding-bottom: 1em;
+}
+
+.goodbyeDiv{
+    display: flex;
+    flex-flow: wrap;
+    align-content: center;
+    justify-content: flex-start;
+    width: 100%;
+    text-align: left;
+    padding-top: 1em;
+}
+
+.signatureDiv{
+    display: flex;
+    flex-flow: wrap;
+    align-content: center;
+    justify-content: flex-start;
+    width: 100%;
+    padding-top: 2em;
+}
