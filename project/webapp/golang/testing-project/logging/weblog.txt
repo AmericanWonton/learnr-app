@@ -142,3 +142,20 @@
 2021/07/21 13:29:01 Email service is initialized
 2021/07/21 13:35:23 Email service is initialized
 2021/07/21 13:51:50 Email service is initialized
+2021/07/22 09:13:13 Email service is initialized
+2021/07/22 09:13:42 Successfuly email sending
+2021/07/22 09:16:22 Email service is initialized
+2021/07/22 09:16:43 Successfuly email sending
+2021/07/22 10:03:51 Email service is initialized
+2021/07/22 10:04:13 Successfuly email sending
+2021/07/22 10:13:38 Email service is initialized
+2021/07/22 10:13:52 For americanwonton, No User was returned.
+2021/07/22 10:13:52 For americanwonton, No User was returned.
+2021/07/22 10:13:52 For americanwonton, No User was returned.
+2021/07/22 10:13:52 For americanwonton, No User was returned.
+2021/07/22 10:14:26 Successfuly email sending
+2021/07/22 10:14:30 Successfuly email sending
+2021/07/22 10:22:03 Email service is initialized
+2021/07/22 10:22:54 Successfuly email sending
+2021/07/22 10:30:52 Email service is initialized
+2021/07/22 10:31:10 Successfuly email sending
