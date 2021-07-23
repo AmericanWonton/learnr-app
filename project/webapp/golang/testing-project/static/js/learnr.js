@@ -59,9 +59,18 @@ window.addEventListener('DOMContentLoaded', function(){
                     inputLearnRInfo.innerHTML = 'LearnR Name taken...try another name!';
                     submitLearnR.disabled = true;
                 } else {
+                    //Check to see if LearnRName is good
                     var inputLearnRInfo = document.getElementById("inputLearnRInfo");
                     inputLearnRInfo.innerHTML = '';
-                    submitLearnR.disabled = false;
+                    var goodString = checkInput(learnrname.value);
+                    if (goodString === true){
+                        //learnRName is good
+                        inputLearnRInfo.innerHTML = '';
+                        submitLearnR.disabled = false;
+                    } else {
+                        inputLearnRInfo.innerHTML = 'LearnR Name contains illegal characters... ';
+                        submitLearnR.disabled = true;
+                    }
                 }
             }
         });
@@ -99,7 +108,6 @@ window.addEventListener('DOMContentLoaded', function(){
     /* Changes our LearnR object to the organization ID when dropdown menu is selected */
     learnrorgs.addEventListener('change', function(){
         theLearnR.OrgID = Number(learnrorgs.value); //Adjust orgID value
-        console.log("DEBUG: The LearnRID id now: " + theLearnR.OrgID);
     });
 
     /* Disables the 'timewaiting' obect based on whether or not
@@ -186,29 +194,72 @@ function addLearnRTag(){
     resultTagP.setAttribute("name", "resultTagP" + learnrTags.toString());
     resultTagP.innerHTML = String(tagDesc.value);
 
-    /* Add first elements to each other */
-    resultTagDiv.appendChild(resultTagP);
-    /* Add the tag to our current map */
-    learnrTagStrings.set(Number(learnrTags), String(tagDesc.value));
-    /* add the appropriate function on click */
-    var thePosition = Number(learnrTags); //Used for deleteing tags
-    resultTagDiv.addEventListener("click", function(){
-        //Remove from this position
-        learnrTagStrings.delete(thePosition);
-        resultTagDiv.remove();
+    /* Check to see if we can add this tag,(appropriate, good length, etc.) */
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/checkLearnRNames', true);
+    xhr.addEventListener('readystatechange', function(){
+        if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200){
+            var item = xhr.responseText;
+            if (item == 'TooShort') {
+                tagDesc.value = "";
+                tagDesc.innerHTML = "";
+                tagDesc.setAttribute("placeholder", "Enter something for your tag... at least 1 character!");
+            } else if (item == 'TooLong'){
+                tagDesc.value = "";
+                tagDesc.innerHTML = "";
+                tagDesc.setAttribute("placeholder", "LearnR Tag must be under 20 characters!");
+            } else if (item == 'ContainsLanguage'){
+                tagDesc.value = "";
+                tagDesc.innerHTML = "";
+                tagDesc.setAttribute("placeholder", "This LearnR Tag contains bad language; consult our team for more information.");
+            } else if (item == 'true') {
+                //Do Nothing, it's a tag
+            } else {
+                //Check to see if LearnRtag is good
+                var goodString = checkInput(tagDesc.value);
+                if (goodString === true){
+                    //learnRtag is good
+                    tagDesc.value = "";
+                    tagDesc.innerHTML = "";
+                    tagDesc.setAttribute("placeholder", "What word describes this LearnR?");
+                    tagAdder();
+                    //Good tag, add it to our display
+                } else {
+                    tagDesc.value = "";
+                    tagDesc.innerHTML = "";
+                    tagDesc.setAttribute("placeholder", "LearnR Tag contains illegal characters...");
+                }
+            }
+        }
     });
+    xhr.send(tagDesc.value);
+    
 
-    /* Add to result holder div for display */
-    resultHolderTagDiv.appendChild(resultTagDiv);
+    function tagAdder(){
+        /* Add first elements to each other */
+        resultTagDiv.appendChild(resultTagP);
+        /* Add the tag to our current map */
+        learnrTagStrings.set(Number(learnrTags), String(tagDesc.value));
+        /* add the appropriate function on click */
+        var thePosition = Number(learnrTags); //Used for deleteing tags
+        resultTagDiv.addEventListener("click", function(){
+            //Remove from this position
+            learnrTagStrings.delete(thePosition);
+            resultTagDiv.remove();
+        });
 
-    /* Clear the text box after entry */
-    tagDesc.value = "";
-    tagDesc.innerHTML = "";
+        /* Add to result holder div for display */
+        resultHolderTagDiv.appendChild(resultTagDiv);
 
-    for (const [key, value] of learnrTagStrings.entries()){
-        
+        /* Clear the text box after entry */
+        tagDesc.value = "";
+        tagDesc.innerHTML = "";
+
+        for (const [key, value] of learnrTagStrings.entries()){
+            
+        }
+        learnrTags = learnrTags + 1; //Needed to interact with our map and other values
     }
-    learnrTags = learnrTags + 1; //Needed to interact with our map and other values
 }
 
 /* Called when '' is clicked. Create a new inform and add it to our 
