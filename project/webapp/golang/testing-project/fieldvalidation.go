@@ -56,6 +56,8 @@ func getbadWords() {
 	file.Close()
 
 	slurs = text
+
+	fmt.Printf("DEBUG: Here is our slurs: %v\n", slurs)
 }
 
 //Checks the Usernames after every keystroke
@@ -149,6 +151,7 @@ func containsLanguage(theText string) bool {
 	for i := 0; i < len(slurs); i++ {
 		if strings.Contains(textLower, slurs[i]) {
 			hasLanguage = true
+			fmt.Printf("DEBUG: Language detected: %v\n", theText)
 			return hasLanguage
 		}
 	}

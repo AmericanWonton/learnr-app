@@ -159,3 +159,8 @@
 2021/07/22 10:22:54 Successfuly email sending
 2021/07/22 10:30:52 Email service is initialized
 2021/07/22 10:31:10 Successfuly email sending
+2021/07/22 10:59:42 Email service is initialized
+2021/07/23 13:20:02 Email service is initialized
+2021/07/23 13:22:13 Email service is initialized
+2021/07/23 13:35:40 Email service is initialized
+2021/07/23 13:59:53 Email service is initialized
