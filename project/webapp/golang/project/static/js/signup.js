@@ -1,9 +1,8 @@
-
 //Add our listening events to the window loading
 window.addEventListener('DOMContentLoaded', function(){
     /* When 'Sign Up' is clicked contact Ajax to create profile for User; then
     we can log them in with new 'User' cookie created */
-    var signUpB = document.getElementById("signUpSubmitB");
+    var signUpB = document.getElementById("submitSignUpButton");
     var username = document.getElementById("username");
     var firstname = document.getElementById("firstname");
     var lastname = document.getElementById("lastname");
@@ -38,8 +37,16 @@ window.addEventListener('DOMContentLoaded', function(){
                     usernameErr.textContent = 'Username taken - Try another name!';
                     signUpB.disabled = true;
                 } else {
-                    usernameErr.textContent = '';
-                    signUpB.disabled = false;
+                    //Check to see if this Username has the 'wrong characters'
+                    var goodString = checkInput(username.value);
+                    if (goodString === true){
+                        //Username is good
+                        usernameErr.textContent = '';
+                        signUpB.disabled = false;
+                    } else {
+                        usernameErr.textContent = 'Username contains illegal characters... ';
+                        signUpB.disabled = true;
+                    }
                 }
             }
         });
@@ -56,8 +63,16 @@ window.addEventListener('DOMContentLoaded', function(){
             passwordErr.textContent = 'Password must be under 20 characters.';
             signUpB.disabled = true;
         } else {
-            passwordErr.textContent = '';
-            signUpB.disabled = false;
+            //Check to see if this Password has the 'wrong characters'
+            var goodString = checkInput(password.value);
+            if (goodString === true){
+                //Password is good
+                passwordErr.textContent = '';
+                signUpB.disabled = false;
+            } else {
+                passwordErr.textContent = 'Password contains illegal characters... ';
+                signUpB.disabled = true;
+            }
         }
     });
 
@@ -68,9 +83,16 @@ window.addEventListener('DOMContentLoaded', function(){
             signUpB.disabled = true;
             passwordErr.textContent = 'Password must match password re-type';
         } else {
-            //Passwords match
-            passwordErr.textContent = '';
-            signUpB.disabled = false;
+            //Check to see if this Password Re-type has the 'wrong characters'
+            var goodString = checkInput(passwordRetype.value);
+            if (goodString === true){
+                //Password is good
+                passwordErr.textContent = '';
+                signUpB.disabled = false;
+            } else {
+                passwordErr.textContent = 'Password contains illegal characters... ';
+                signUpB.disabled = true;
+            }
         }
     });
 

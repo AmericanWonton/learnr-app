@@ -159,7 +159,6 @@ func learnr(w http.ResponseWriter, r *http.Request) {
 	learnrMap = loadLearnrs() //Get all our LearnR names for validation
 	aUser := getUser(w, r)
 	theAdminOrgs := loadLearnROrgArray(aUser)
-	fmt.Printf("DEBUG: Here are the admin orgs: %v\n", theAdminOrgs)
 	//Redirect User if they are not logged in
 	if !alreadyLoggedIn(w, r) {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
@@ -351,7 +350,6 @@ func loadLearnROrgArray(aUser User) []LearnrOrg {
 		TheIDS []int `json:"TheIDS"`
 	}
 	theID := TheAdminOrgs{TheIDS: aUser.AdminOrgs}
-	fmt.Printf("DEBUG: This is what we're sending off for LearnROrgs: %v\n", theID)
 	theJSONMessage, err := json.Marshal(theID)
 	if err != nil {
 		fmt.Println(err)

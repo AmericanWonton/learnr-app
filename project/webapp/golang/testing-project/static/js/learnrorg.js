@@ -31,9 +31,18 @@ window.addEventListener('DOMContentLoaded', function(){
                     inputOrgInfo.innerHTML = 'LearnR Organization Name taken...try another name!';
                     submitLearnROrg.disabled = true;
                 } else {
+                    //Check to see if learnROrg has no weird characters
                     var inputOrgInfo = document.getElementById("inputOrgInfo");
                     inputOrgInfo.innerHTML = '';
-                    submitLearnROrg.disabled = false;
+                    var goodString = checkInput(learnrorgname.value);
+                    if (goodString === true){
+                        //learnROrg is good
+                        inputOrgInfo.innerHTML = '';
+                        submitLearnROrg.disabled = false;
+                    } else {
+                        inputOrgInfo.innerHTML = 'LearnROrg contains illegal characters... ';
+                        submitLearnROrg.disabled = true;
+                    }
                 }
             }
         });
