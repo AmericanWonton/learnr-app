@@ -33,6 +33,7 @@ func handleRequests() {
 	myRouter.HandleFunc("/checkUsername", checkUsername).Methods("POST")             //Check Username
 	myRouter.HandleFunc("/checkLearnROrgNames", checkLearnROrgNames).Methods("POST") //Check LearnROrg Name
 	myRouter.HandleFunc("/checkLearnRNames", checkLearnRNames).Methods("POST")       //Check Learnr Name
+	myRouter.HandleFunc("/checkEmail", checkEmail).Methods("POST")                   //Check Check Email
 	myRouter.HandleFunc("/checkOrgAbout", checkOrgAbout).Methods("POST")             //Check LearnOrg About
 	myRouter.HandleFunc("/createLearnROrg", createLearnROrg).Methods("POST")         //Create a LearnR Org
 	myRouter.HandleFunc("/createLearnR", createLearnR).Methods("POST")               //Create a LearnR
