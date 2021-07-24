@@ -467,6 +467,42 @@ func TestGetAllUsernames(t *testing.T) {
 	}
 }
 
+//Test for getting all User Emails
+func TestGetAllEmails(t *testing.T) {
+	req, err := http.Get(GETUSEREMAILS)
+	if err != nil {
+		theErr := "There was an error getting emails in loadEmails: " + err.Error()
+		t.Fatal(theErr)
+	}
+
+	defer req.Body.Close()
+
+	body, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		theErr := "There was an error getting a response for Emails in loadEmails: " + err.Error()
+		t.Fatal(theErr)
+	}
+
+	//Marshal the response into a type we can read
+	type ReturnMessage struct {
+		TheErr           []string        `json:"TheErr"`
+		ResultMsg        []string        `json:"ResultMsg"`
+		SuccOrFail       int             `json:"SuccOrFail"`
+		ReturnedEmailMap map[string]bool `json:"ReturnedEmailMap"`
+	}
+	var returnedMessage ReturnMessage
+	json.Unmarshal(body, &returnedMessage)
+
+	//Assign our map variable to the map varialbe and see if it's okay
+	if returnedMessage.SuccOrFail != 0 {
+		errString := ""
+		for l := 0; l < len(returnedMessage.TheErr); l++ {
+			errString = errString + returnedMessage.TheErr[l]
+		}
+		t.Fatal("Had an error getting map: " + errString)
+	}
+}
+
 //Test for Deleting Users
 func TestUserDelete(t *testing.T) {
 	time.Sleep(2 * time.Second) //Might needed for CRUD updating

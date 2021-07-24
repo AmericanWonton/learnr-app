@@ -180,10 +180,13 @@ func TestRandomID(t *testing.T) {
 func createSpecialLearnRSearch() {
 	var theMap map[string]int //Declare map for initialization later
 	//Empty Search (GOOD)
+	/* Warning, will need to adjust this based on ALL the learnrs in our DB */
 	theMap = map[string]int{"855367233056": 855367233056,
 		"478483273602": 478483273602,
 		"65286261652":  65286261652,
-		"645741771884": 645741771884}
+		"645741771884": 645741771884,
+		"340870637511": 340870637511,
+		"814584281060": 814584281060}
 	LearnRSearchCrudCreators = append(LearnRSearchCrudCreators, LearnRSearchCrudCreate{
 		LearnRSearches: TestSearchR{TheCases: []int{0, 1, 1, 1},
 			TheTag:     "",
@@ -288,8 +291,9 @@ func TestSpecialLearnRSearch(t *testing.T) {
 		}
 		//Check to see if returned Array matches test case size
 		if len(arrayOLearnRs) != len(test.ExpectedLearnRID) {
-			t.Fatal("Our array of LearnRs returned does not match our test case: " + strconv.Itoa(len(arrayOLearnRs)) +
-				"TestNum: " + strconv.Itoa(testNum))
+			t.Fatal("Test case " + strconv.Itoa(testNum) + " failed, " + "Our array of LearnRs returned does not match our test case: " + strconv.Itoa(len(arrayOLearnRs)) +
+				"TestNum: " + strconv.Itoa(testNum) + "\n The test case was: " + test.LearnRSearches.LearnRName + "   " +
+				test.LearnRSearches.TheTag)
 		}
 		for n := 0; n < len(arrayOLearnRs); n++ {
 			if _, ok := test.ExpectedLearnRID[strconv.Itoa(arrayOLearnRs[n].ID)]; ok {

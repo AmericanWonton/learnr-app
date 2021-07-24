@@ -20,6 +20,7 @@ const ADDUSERURL string = "http://localhost:4000/addUser"
 const UPDATEURL string = "http://localhost:4000/updateUser"
 const ADDLEARNRORGURL string = "http://localhost:4000/addLearnOrg"
 const GETUSERLOGIN string = "http://localhost:4000/userLogin"
+const GETUSEREMAILS string = "http://localhost:4000/giveAllEmails"
 
 /* Used for LearnR/LearnR Org creation */
 var allLearnROrgNames []string

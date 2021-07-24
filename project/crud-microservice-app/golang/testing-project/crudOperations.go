@@ -1248,6 +1248,89 @@ func giveAllUsernames(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprint(w, string(theJSONMessage))
 }
 
+/* This function returns a map of ALL emails entered into our DB when called,
+should be on the signup page */
+func giveAllEmails(w http.ResponseWriter, req *http.Request) {
+	//Declare data to return
+	type ReturnMessage struct {
+		TheErr           []string        `json:"TheErr"`
+		ResultMsg        []string        `json:"ResultMsg"`
+		SuccOrFail       int             `json:"SuccOrFail"`
+		ReturnedEmailMap map[string]bool `json:"ReturnedEmailMap"`
+	}
+	theReturnMessage := ReturnMessage{}
+	theReturnMessage.SuccOrFail = 0 //Initially set to success
+
+	//Declare empty map to fill and return
+	emailMap := make(map[string]bool) //Clear Map for future use on page load
+
+	userCollection := mongoClient.Database("learnR").Collection("users") //Here's our collection
+
+	//Query Mongo for all Users
+	theFilter := bson.M{}
+	findOptions := options.Find()
+	currUser, err := userCollection.Find(theContext, theFilter, findOptions)
+	if err != nil {
+		if strings.Contains(err.Error(), "no documents in result") {
+			theErr := "No documents were returned for emails in giveAllEmails in MongoDB: " + err.Error()
+			theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
+			theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
+			theReturnMessage.SuccOrFail = 1
+			logWriter(theErr)
+		} else {
+			theErr := "There was an error returning results for these emails, :" + err.Error()
+			theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
+			theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
+			theReturnMessage.SuccOrFail = 1
+			logWriter(theErr)
+		}
+	}
+	//Loop over query results and fill User Array
+	for currUser.Next(theContext) {
+		// create a value into which the single document can be decoded
+		var aUser User
+		err := currUser.Decode(&aUser)
+		if err != nil {
+			theErr := "Error decoding Users in MongoDB in giveAllEmails: " + err.Error()
+			theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
+			theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
+			theReturnMessage.SuccOrFail = 0
+			logWriter(theErr)
+		}
+		//Fill Email map with the found Email
+		emailMap[aUser.Email[0]] = true
+	}
+	// Close the cursor once finished
+	currUser.Close(theContext)
+
+	//Check to see if any emails were returned or we have errors
+	if theReturnMessage.SuccOrFail >= 1 {
+		theErr := "There are a number of errors for returning these Emails..."
+		theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
+		theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
+	} else if len(emailMap) <= 0 {
+		theErr := "No emails returned...this could be the site's first deployment with no users!"
+		theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
+		theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
+		theReturnMessage.SuccOrFail = 1
+	} else {
+		theErr := "No issues returning Emails"
+		theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
+		theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
+		theReturnMessage.SuccOrFail = 0
+	}
+	theReturnMessage.ReturnedEmailMap = emailMap //Add our final Email map
+
+	//Format the JSON map for returning our results
+	theJSONMessage, err := json.Marshal(theReturnMessage)
+	//Send the response back
+	if err != nil {
+		errIs := "Error formatting JSON for return in giveAllUsernames: " + err.Error()
+		logWriter(errIs)
+	}
+	fmt.Fprint(w, string(theJSONMessage))
+}
+
 /* This function searches with a Username and password to return a yes or no response
 if the User is found; is so, we return the User, with a successful response.
 If not, we return a failed response and an empty User profile */
