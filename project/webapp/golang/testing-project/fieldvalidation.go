@@ -80,6 +80,24 @@ func checkUsername(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func checkEmail(w http.ResponseWriter, r *http.Request) {
+	//Get the byte slice from the request body ajax
+	bs, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	sbs := string(bs)
+
+	if len(sbs) <= 0 {
+		fmt.Fprint(w, "TooShort")
+	} else if len(sbs) > 50 {
+		fmt.Fprint(w, "TooLong")
+	} else {
+		fmt.Fprint(w, emailMap[sbs])
+	}
+}
+
 //Checks the LearnROrg Names after every keystroke
 func checkLearnROrgNames(w http.ResponseWriter, r *http.Request) {
 	//Get the byte slice from the request body ajax

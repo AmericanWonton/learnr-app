@@ -175,3 +175,5 @@
 2021/07/24 13:06:15 This is a test message
 2021/07/24 13:09:23 Email service is initialized
 2021/07/24 13:09:28 This is a test message
+2021/07/24 13:52:52 Email service is initialized
+2021/07/24 13:55:47 Email service is initialized

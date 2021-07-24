@@ -11,6 +11,7 @@ window.addEventListener('DOMContentLoaded', function(){
     var primaryPhoneNums = document.getElementById("primaryPhoneNums");
     var textareaTellMe = document.getElementById("textareaTellMe");
     var email = document.getElementById("email");
+    var emailOkay = document.getElementById("emailOkay");
     var usernameErr = document.getElementById("form-input-info");
     var passwordErr = document.getElementById("form-input-info2");
     /* Used for informing User of the results */
@@ -74,6 +75,34 @@ window.addEventListener('DOMContentLoaded', function(){
                 signUpB.disabled = true;
             }
         }
+    });
+
+    /* Check to see if email is already in use */
+    email.addEventListener('input', function(){
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/checkEmail', true);
+        xhr.addEventListener('readystatechange', function(){
+            if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200){
+                var item = xhr.responseText;
+                if (item == 'TooShort') {
+                    emailOkay.textContent = 'Please enter an email';
+                    signUpB.disabled = true;
+                } else if (item == 'TooLong'){
+                    emailOkay.textContent = 'Email must be under 50 characters';
+                    signUpB.disabled = true;
+                } else if (item == 'ContainsLanguage'){
+                    emailOkay.textContent = 'Email is innapropriate';
+                    signUpB.disabled = true;
+                } else if (item == 'true') {
+                    emailOkay.textContent = 'Email taken - try another!';
+                    signUpB.disabled = true;
+                } else {
+                    emailOkay.textContent = '';
+                    signUpB.disabled = false;
+                }
+            }
+        });
+        xhr.send(String(email.value));
     });
 
     /* Check to see if the password matches the password re-type */
