@@ -24,10 +24,11 @@ func handleRequests() {
 
 	logWriter("We are now handling requests")
 	//Serve our User Crud API
-	myRouter.HandleFunc("/addUser", addUser).Methods("POST")       //Add a User
-	myRouter.HandleFunc("/deleteUser", deleteUser).Methods("POST") //Delete a User
-	myRouter.HandleFunc("/updateUser", updateUser).Methods("POST") //Update a User
-	myRouter.HandleFunc("/getUser", getUser).Methods("POST")       //Get User
+	myRouter.HandleFunc("/addUser", addUser).Methods("POST")            //Add a User
+	myRouter.HandleFunc("/deleteUser", deleteUser).Methods("POST")      //Delete a User
+	myRouter.HandleFunc("/updateUser", updateUser).Methods("POST")      //Update a User
+	myRouter.HandleFunc("/getUser", getUser).Methods("POST")            //Get User
+	myRouter.HandleFunc("/giveAllEmails", giveAllEmails).Methods("GET") //Get All user Emails
 	//Serve our LearnROrg Crud API
 	myRouter.HandleFunc("/addLearnOrg", addLearnOrg).Methods("POST")               //Add a LearnROrg
 	myRouter.HandleFunc("/deleteLearnOrg", deleteLearnOrg).Methods("POST")         //Delete a LearnROrg

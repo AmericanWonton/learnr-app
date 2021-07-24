@@ -20,6 +20,7 @@ var ADDUSERURL string
 var ADDLEARNRORGURL string
 var GETUSERLOGIN string
 var UPDATEURL string
+var GETUSEREMAILS string
 
 /* Used for LearnR/LearnR Org creation */
 var allLearnROrgNames []string
@@ -42,6 +43,7 @@ func defineAPIVariables() {
 	ADDLEARNRORGURL = mongoCrudURL + "/addLearnOrg"
 	GETUSERLOGIN = mongoCrudURL + "/userLogin"
 	UPDATEURL = mongoCrudURL + "/updateUser"
+	GETUSEREMAILS = mongoCrudURL + "/giveAllEmails"
 }
 
 //This gets the slur words we check against in our username and
@@ -85,6 +87,24 @@ func checkUsername(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, "ContainsLanguage")
 	} else {
 		fmt.Fprint(w, usernameMap[sbs])
+	}
+}
+
+func checkEmail(w http.ResponseWriter, r *http.Request) {
+	//Get the byte slice from the request body ajax
+	bs, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	sbs := string(bs)
+
+	if len(sbs) <= 0 {
+		fmt.Fprint(w, "TooShort")
+	} else if len(sbs) > 50 {
+		fmt.Fprint(w, "TooLong")
+	} else {
+		fmt.Fprint(w, emailMap[sbs])
 	}
 }
 
