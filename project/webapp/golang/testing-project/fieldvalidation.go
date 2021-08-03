@@ -250,11 +250,13 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 				theSuccMessage.Message = message
 				theSuccMessage.SuccessNum = 0
 			} else {
+				fmt.Println(message)
 				theSuccMessage.Message = message
 				theSuccMessage.SuccessNum = 1
 			}
 		} else {
 			//Couldn't get random Numb
+			fmt.Println(message)
 			theSuccMessage.Message = message
 			theSuccMessage.SuccessNum = 1
 		}

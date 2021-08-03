@@ -227,6 +227,7 @@ func callAddUser(newUser User) (bool, string) {
 			theErr = theErr + returnedMessage.TheErr[n]
 		}
 		goodAdd, message = false, theErr
+		fmt.Println(message)
 	} else {
 		goodAdd, message = true, "User successfully added and able to log in"
 	}
