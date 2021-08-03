@@ -62,6 +62,10 @@ func handleRequests() {
 	myRouter.HandleFunc("/giveAllLearnr", giveAllLearnr).Methods("GET")
 	myRouter.HandleFunc("/randomIDCreationAPI", randomIDCreationAPI).Methods("GET") //Get a random ID
 	myRouter.HandleFunc("/userLogin", userLogin).Methods("POST")                    //Check if User can login
+	myRouter.HandleFunc("/addEmailVerif", addEmailVerif).Methods("POST")            //Adds email verif
+	myRouter.HandleFunc("/getEmailVerif", getEmailVerif).Methods("POST")            //Get email verif
+	myRouter.HandleFunc("/deleteEmailVerify", deleteEmailVerify).Methods("POST")    //Delete email verif
+	myRouter.HandleFunc("/updateEmailVerify", updateEmailVerify).Methods("POST")    //Update Email verif
 	//Serve our test ping
 	myRouter.HandleFunc("/testPingPost", testPingPost).Methods("POST") //Get a random ID
 	myRouter.HandleFunc("/testPingGet", testPingGet).Methods("GET")    //Get a random ID

@@ -203,58 +203,78 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 		logWriter(err.Error())
 	}
 
+	type NewCreation struct {
+		NewUser User `json:"NewUser"`
+		Code    int  `json:"Code"`
+	}
+
 	//Marshal it into our type
-	var theUser User
-	json.Unmarshal(bs, &theUser)
+	var theNewCreation NewCreation
+	json.Unmarshal(bs, &theNewCreation)
 
-	// get form values
-	username := theUser.UserName
-	password := theUser.Password
-	firstname := theUser.Firstname
-	lastname := theUser.Lastname
-	phonenums := theUser.PhoneNums
-	email := theUser.Email
-	whoare := theUser.Whoare
+	/* First check to see if the verificaiton code entered exists */
+	goodCode, errMessage := checkEmailCode(theNewCreation.Code)
+	if !goodCode {
+		theSuccMessage.SuccessNum = 1
+		theSuccMessage.Message = "Wrong code entered, re-creatUser: " + errMessage
+	} else {
+		//Good code gotten for validation, moving on...
 
-	/* perform Crud API here to insert the new User */
-	//Declare new User to insert
-	//Begin to add User to Mongo
-	bsString := []byte(password)                  //Encode Password
-	encodedString := hex.EncodeToString(bsString) //Encode Password Pt2
-	theTimeNow := time.Now()
+		// get form values
+		username := theNewCreation.NewUser.UserName
+		password := theNewCreation.NewUser.Password
+		firstname := theNewCreation.NewUser.Firstname
+		lastname := theNewCreation.NewUser.Lastname
+		phonenums := theNewCreation.NewUser.PhoneNums
+		email := theNewCreation.NewUser.Email
+		whoare := theNewCreation.NewUser.Whoare
 
-	/* First call to random ID API */
-	goodIDGet, message, randomid := randomAPICall()
-	if goodIDGet {
-		newUser := User{
-			UserName:    username,
-			Password:    encodedString,
-			Firstname:   firstname,
-			Lastname:    lastname,
-			PhoneNums:   phonenums,
-			UserID:      randomid, //DEBUG VALUE
-			Email:       email,
-			Whoare:      whoare,
-			AdminOrgs:   []int{},
-			OrgMember:   []int{},
-			Banned:      false,
-			DateCreated: theTimeNow.Format("2006-01-02 15:04:05"),
-			DateUpdated: theTimeNow.Format("2006-01-02 15:04:05"),
-		}
-		//Attempt User Insert
-		goodAdd, message := callAddUser(newUser)
-		if goodAdd {
-			theSuccMessage.Message = message
-			theSuccMessage.SuccessNum = 0
+		/* perform Crud API here to insert the new User */
+		//Declare new User to insert
+		//Begin to add User to Mongo
+		bsString := []byte(password)                  //Encode Password
+		encodedString := hex.EncodeToString(bsString) //Encode Password Pt2
+		theTimeNow := time.Now()
+
+		/* First call to random ID API */
+		goodIDGet, message, randomid := randomAPICall()
+		if goodIDGet {
+			newUser := User{
+				UserName:    username,
+				Password:    encodedString,
+				Firstname:   firstname,
+				Lastname:    lastname,
+				PhoneNums:   phonenums,
+				UserID:      randomid,
+				Email:       email,
+				Whoare:      whoare,
+				AdminOrgs:   []int{},
+				OrgMember:   []int{},
+				Banned:      false,
+				DateCreated: theTimeNow.Format("2006-01-02 15:04:05"),
+				DateUpdated: theTimeNow.Format("2006-01-02 15:04:05"),
+			}
+			//Attempt User Insert
+			goodAdd, message := callAddUser(newUser)
+			if goodAdd {
+				theSuccMessage.Message = message
+				theSuccMessage.SuccessNum = 0
+			} else {
+				fmt.Println(message)
+				theSuccMessage.Message = message
+				theSuccMessage.SuccessNum = 1
+			}
 		} else {
+			//Couldn't get random Numb
+			fmt.Println(message)
 			theSuccMessage.Message = message
 			theSuccMessage.SuccessNum = 1
 		}
-	} else {
-		//Couldn't get random Numb
-		theSuccMessage.Message = message
-		theSuccMessage.SuccessNum = 1
+
+		//No matter what, delete the verification code
+		deleteEmailVerif(theNewCreation.Code)
 	}
+
 	/* Send the response back to Ajax */
 	theJSONMessage, err := json.Marshal(theSuccMessage)
 	//Send the response back
@@ -263,6 +283,28 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 		logWriter(errIs)
 	}
 	fmt.Fprint(w, string(theJSONMessage))
+}
+
+/* Checks to see if the email validation code exists and is time correct */
+func checkEmailCode(theCode int) (bool, string) {
+	goodCheck, message := true, ""
+
+	theGoodGet, aMessage, theEmailVerif := getEmailVerify(theCode)
+	if !theGoodGet {
+		//Error getting this code
+		goodCheck, message = theGoodGet, aMessage
+	} else {
+		/* Good email code recieved; need to see if it's old */
+		duration := time.Since(theEmailVerif.TimeMade).Hours()
+		if int(duration) >= 1 {
+			errMsg := "The email verification code has expired..."
+			goodCheck, message = false, errMsg
+		} else {
+			goodCheck, message = true, "Account verified"
+		}
+	}
+
+	return goodCheck, message
 }
 
 /* Tests to see if User can log in */

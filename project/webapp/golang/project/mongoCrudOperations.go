@@ -56,6 +56,12 @@ var READLEARNRINFORMURL string
 var UPDATELEARNRINFORMURL string
 var DELETELEARNRINFORMURL string
 
+//Email variables
+var ADDEMAILVERIFMURL string
+var READEMAILVERIFURL string
+var UPDATEEMAILVERIFURL string
+var DELETEEMAILVERIFURL string
+
 //Define variables for Microservice
 func defineCrudVariables() {
 	//User
@@ -90,6 +96,12 @@ func defineCrudVariables() {
 	READLEARNRINFORMURL = mongoCrudURL + "/getLearnRInforms"
 	UPDATELEARNRINFORMURL = mongoCrudURL + "/updateLearnRInforms"
 	DELETELEARNRINFORMURL = mongoCrudURL + "/deleteLearnRInforms"
+
+	//Email URL
+	ADDEMAILVERIFMURL = mongoCrudURL + "/addEmailVerif"
+	READEMAILVERIFURL = mongoCrudURL + "/getEmailVerif"
+	UPDATEEMAILVERIFURL = mongoCrudURL + "/updateEmailVerify"
+	DELETEEMAILVERIFURL = mongoCrudURL + "/deleteEmailVerify"
 }
 
 /* App/Data type declarations for our application */
@@ -1605,6 +1617,268 @@ func callDeleteLearnRInform(theid int) (bool, string) {
 
 /* SPECIAL CRUD OPERTAIONS.
 These are opertaions a little out of the norm or for one-off functions */
+
+//This adds our email verification code to our database. Calls our CRUD operation to perform this
+func addEmailVerif(newEmailVerif EmailVerify) (bool, string) {
+	goodAdd, message := true, ""
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	/* 2. Marshal test case to JSON expect */
+	theJSONMessage, err := json.Marshal(newEmailVerif)
+	if err != nil {
+		fmt.Println(err)
+		logWriter(err.Error())
+		goodAdd, message = false, err.Error()
+	}
+	/* 3. Create Post to JSON */
+	payload := strings.NewReader(string(theJSONMessage))
+	req, err := http.NewRequest("POST", ADDEMAILVERIFMURL, payload)
+	if err != nil {
+		theErr := "There was an error posting Email Verification: " + err.Error()
+		fmt.Println(theErr)
+		logWriter(theErr)
+		goodAdd, message = false, theErr
+	}
+	req.Header.Add("Content-Type", "application/json")
+	/* 4. Get response from Post */
+	resp, err := http.DefaultClient.Do(req.WithContext(ctx))
+	if resp.StatusCode >= 300 || resp.StatusCode <= 199 {
+		theErr := "Failed response from addEmailVeriifcation: " + strconv.Itoa(resp.StatusCode)
+		logWriter(theErr)
+		goodAdd, message = false, theErr
+	} else if err != nil {
+		theErr := "Failed response from addEmailVericiation: " + strconv.Itoa(resp.StatusCode) + " " + err.Error()
+		logWriter(theErr)
+		goodAdd, message = false, theErr
+	}
+	//Declare message we expect to see returned
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		theErr := "There was an error reading response from addEmailVerification" + err.Error()
+		logWriter(theErr)
+		goodAdd, message = false, theErr
+	}
+	type ReturnMessage struct {
+		TheErr     []string `json:"TheErr"`
+		ResultMsg  []string `json:"ResultMsg"`
+		SuccOrFail int      `json:"SuccOrFail"`
+	}
+	var returnedMessage ReturnMessage
+	json.Unmarshal(body, &returnedMessage)
+	/* 5. Evaluate response in returnedMessage */
+	if returnedMessage.SuccOrFail != 0 {
+		theErr := ""
+		for n := 0; n < len(returnedMessage.TheErr); n++ {
+			theErr = theErr + returnedMessage.TheErr[n]
+		}
+		goodAdd, message = false, theErr
+	} else {
+		goodAdd, message = true, "Email Vericiation successfully added"
+	}
+
+	return goodAdd, message
+}
+
+//This deletes our email verification from our DB. Calls CRUD operation to perform this
+func deleteEmailVerif(theid int) (bool, string) {
+	goodAdd, message := true, ""
+
+	/* 1. Create Context */
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	/* 2. Marshal test case to JSON expect */
+	type ObjDelete struct {
+		ID int `json:"ID"`
+	}
+	theID := ObjDelete{ID: theid}
+	theJSONMessage, err := json.Marshal(theID)
+	if err != nil {
+		fmt.Println(err)
+		logWriter(err.Error())
+		log.Fatal(err)
+		goodAdd, message = false, err.Error()
+	}
+	/* 3. Create Post to JSON */
+	payload := strings.NewReader(string(theJSONMessage))
+	req, err := http.NewRequest("POST", DELETEEMAILVERIFURL, payload)
+	if err != nil {
+		theErr := "We had an error with this request: %v\n" + err.Error()
+		fmt.Println(theErr)
+		goodAdd, message = false, theErr
+	}
+	req.Header.Add("Content-Type", "application/json")
+	/* 4. Get response from Post */
+	resp, err := http.DefaultClient.Do(req.WithContext(ctx))
+	if resp.StatusCode >= 300 || resp.StatusCode <= 199 {
+		theErr := "We had an error with this response: " + strconv.Itoa(resp.StatusCode)
+		goodAdd, message = false, theErr
+		resp.Body.Close()
+		logWriter(theErr)
+	} else if err != nil {
+		theErr := "We had an error with this response: " + strconv.Itoa(resp.StatusCode)
+		goodAdd, message = false, theErr
+		resp.Body.Close()
+		logWriter(theErr)
+	}
+	//Declare message we expect to see returned
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		theErr := "There was an error reading response from emailVerifDelete " + err.Error()
+		goodAdd, message = false, theErr
+	}
+	type ReturnMessage struct {
+		TheErr     []string `json:"TheErr"`
+		ResultMsg  []string `json:"ResultMsg"`
+		SuccOrFail int      `json:"SuccOrFail"`
+	}
+	var returnedMessage ReturnMessage
+	json.Unmarshal(body, &returnedMessage)
+	/* 5. Evaluate response in returnedMessage */
+	if returnedMessage.SuccOrFail != 0 {
+		theErr := ""
+		for n := 0; n < len(returnedMessage.TheErr); n++ {
+			theErr = theErr + returnedMessage.TheErr[n]
+		}
+		goodAdd, message = false, theErr
+	} else {
+		goodAdd, message = true, "Email Verification successfully deleted"
+	}
+
+	return goodAdd, message
+}
+
+//This gets our email verificaiton from our DB. Calls CRUD operation to perform this
+func getEmailVerify(theid int) (bool, string, EmailVerify) {
+	goodAdd, message := true, ""
+
+	/* 1. Create Context */
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	/* 2. Marshal test case to JSON expect */
+	type EmailVerifID struct {
+		TheEmailVerifID int `json:"TheEmailVerifID"`
+	}
+	theID := EmailVerifID{TheEmailVerifID: theid}
+	theJSONMessage, err := json.Marshal(theID)
+	if err != nil {
+		fmt.Println(err)
+		logWriter(err.Error())
+		log.Fatal(err)
+		goodAdd, message = false, err.Error()
+	}
+	/* 3. Create Post to JSON */
+	payload := strings.NewReader(string(theJSONMessage))
+	req, err := http.NewRequest("POST", READEMAILVERIFURL, payload)
+	if err != nil {
+		theErr := "We had an error with this request: %v\n" + err.Error()
+		fmt.Println(theErr)
+		goodAdd, message = false, theErr
+	}
+	req.Header.Add("Content-Type", "application/json")
+	/* 4. Get response from Post */
+	resp, err := http.DefaultClient.Do(req.WithContext(ctx))
+	//defer resp.Body.Close()
+	if resp.StatusCode >= 300 || resp.StatusCode <= 199 {
+		theErr := "We had an error with this response: " + strconv.Itoa(resp.StatusCode)
+		goodAdd, message = false, theErr
+		resp.Body.Close()
+		logWriter(theErr)
+	} else if err != nil {
+		theErr := "We had an error with this response: " + strconv.Itoa(resp.StatusCode)
+		goodAdd, message = false, theErr
+		resp.Body.Close()
+		logWriter(theErr)
+	}
+	//Declare message we expect to see returned
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		theErr := "There was an error reading response from getEmailVerification" + err.Error()
+		goodAdd, message = false, theErr
+	}
+	type ReturnMessage struct {
+		TheErr              []string    `json:"TheErr"`
+		ResultMsg           []string    `json:"ResultMsg"`
+		SuccOrFail          int         `json:"SuccOrFail"`
+		ReturnedEmailVerify EmailVerify `json:"ReturnedEmailVerify"`
+	}
+	var returnedMessage ReturnMessage
+	json.Unmarshal(body, &returnedMessage)
+	/* 5. Evaluate response in returnedMessage */
+	if returnedMessage.SuccOrFail != 0 {
+		theErr := ""
+		for n := 0; n < len(returnedMessage.TheErr); n++ {
+			theErr = theErr + returnedMessage.TheErr[n]
+		}
+		goodAdd, message = false, theErr
+	} else {
+		goodAdd, message = true, "Email Verification successfully gotten"
+	}
+
+	return goodAdd, message, returnedMessage.ReturnedEmailVerify
+}
+
+//This updates our email verification from our DB. Calls CRUD operation to perform this
+func updateEmailVerify(updatedEmailVerif EmailVerify) (bool, string) {
+	goodAdd, message := true, ""
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	/* 2. Marshal test case to JSON expect */
+	theJSONMessage, err := json.Marshal(updatedEmailVerif)
+	if err != nil {
+		fmt.Println(err)
+		logWriter(err.Error())
+		goodAdd, message = false, err.Error()
+	}
+	/* 3. Create Post to JSON */
+	payload := strings.NewReader(string(theJSONMessage))
+	req, err := http.NewRequest("POST", UPDATEEMAILVERIFURL, payload)
+	if err != nil {
+		theErr := "There was an error posting Updated Email Verify: " + err.Error()
+		fmt.Println(theErr)
+		logWriter(theErr)
+		goodAdd, message = false, theErr
+	}
+	req.Header.Add("Content-Type", "application/json")
+	/* 4. Get response from Post */
+	resp, err := http.DefaultClient.Do(req.WithContext(ctx))
+	if resp.StatusCode >= 300 || resp.StatusCode <= 199 {
+		theErr := "Failed response from updateEmailVerify: " + strconv.Itoa(resp.StatusCode)
+		logWriter(theErr)
+		goodAdd, message = false, theErr
+	} else if err != nil {
+		theErr := "Failed response from updateEmailVerify: " + strconv.Itoa(resp.StatusCode) + " " + err.Error()
+		logWriter(theErr)
+		goodAdd, message = false, theErr
+	}
+	//Declare message we expect to see returned
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		theErr := "There was an error reading response from updateEmailVerify " + err.Error()
+		logWriter(theErr)
+		goodAdd, message = false, theErr
+	}
+	type ReturnMessage struct {
+		TheErr     []string `json:"TheErr"`
+		ResultMsg  []string `json:"ResultMsg"`
+		SuccOrFail int      `json:"SuccOrFail"`
+	}
+	var returnedMessage ReturnMessage
+	json.Unmarshal(body, &returnedMessage)
+	/* 5. Evaluate response in returnedMessage */
+	if returnedMessage.SuccOrFail != 0 {
+		theErr := ""
+		for n := 0; n < len(returnedMessage.TheErr); n++ {
+			theErr = theErr + returnedMessage.TheErr[n]
+		}
+		goodAdd, message = false, theErr
+	} else {
+		goodAdd, message = true, "Updated EmailVerify successfully updated"
+	}
+
+	return goodAdd, message
+}
 
 /* This takes in criteria from User on 'mainpage' to get a unique set of LearnRs for display */
 func getSpecialLearnRs(theCases []int, theTag string, learnrName string, entryFrom int,
