@@ -379,7 +379,7 @@ func sendVerificationEmail(w http.ResponseWriter, r *http.Request) {
 		}
 		//Good to create and send Email template
 		emailRequest := NewRequest([]string{dataEmail.YourEmailInput}, "Account Creation", "Your account Creation")
-		err1 := emailRequest.ParseTemplate("./static/templates/emailverif.html", templateData)
+		err1 := emailRequest.ParseTemplate("./static/emailTemplates/emailverif.html", templateData)
 		if err1 != nil {
 			fmt.Printf("Could not parse the template: %v\n", err1.Error())
 			log.Fatal("Could not parse the template" + err1.Error())

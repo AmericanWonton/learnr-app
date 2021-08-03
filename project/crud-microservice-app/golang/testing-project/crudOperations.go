@@ -1691,7 +1691,7 @@ func getEmailVerif(w http.ResponseWriter, req *http.Request) {
 				theReturnMessage.SuccOrFail = 1
 				theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
 				theReturnMessage.TheErr = append(theReturnMessage.TheErr, returnedErr)
-				theReturnMessage.ReturnedLearnOrg = LearnrOrg{}
+				theReturnMessage.ReturnedEmailVerify = EmailVerify{}
 			} else {
 				stringUserID := strconv.Itoa(theEmailVerifGet.TheEmailVerifID)
 				returnedErr := "For " + stringUserID + ", there was a Mongo Error: " + err.Error()
@@ -1700,7 +1700,7 @@ func getEmailVerif(w http.ResponseWriter, req *http.Request) {
 				theReturnMessage.SuccOrFail = 1
 				theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
 				theReturnMessage.TheErr = append(theReturnMessage.TheErr, returnedErr)
-				theReturnMessage.ReturnedLearnOrg = LearnrOrg{}
+				theReturnMessage.ReturnedEmailVerify = EmailVerify{}
 			}
 		} else {
 			//Found EmailVerif, decode to return
@@ -1715,7 +1715,7 @@ func getEmailVerif(w http.ResponseWriter, req *http.Request) {
 					theReturnMessage.SuccOrFail = 1
 					theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
 					theReturnMessage.TheErr = append(theReturnMessage.TheErr, returnedErr)
-					theReturnMessage.ReturnedLearnOrg = LearnrOrg{}
+					theReturnMessage.ReturnedEmailVerify = EmailVerify{}
 				} else if theEmailVerifReturned.ID <= 1 {
 					returnedErr := "For " + stringUserID +
 						", there was an no document from Mongo: " + err.Error()
@@ -1724,7 +1724,7 @@ func getEmailVerif(w http.ResponseWriter, req *http.Request) {
 					theReturnMessage.SuccOrFail = 1
 					theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
 					theReturnMessage.TheErr = append(theReturnMessage.TheErr, returnedErr)
-					theReturnMessage.ReturnedLearnOrg = LearnrOrg{}
+					theReturnMessage.ReturnedEmailVerify = EmailVerify{}
 				} else {
 					//Successful decode, do nothing
 				}

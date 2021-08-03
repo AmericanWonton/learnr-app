@@ -12,6 +12,7 @@ window.addEventListener('DOMContentLoaded', function(){
     var textareaTellMe = document.getElementById("textareaTellMe");
     var email = document.getElementById("email");
     var emailOkay = document.getElementById("emailOkay");
+    var verificationDiv = document.getElementById("verificationDiv");
     var usernameErr = document.getElementById("form-input-info");
     var passwordErr = document.getElementById("form-input-info2");
     /* Used for informing User of the results */
@@ -145,11 +146,22 @@ window.addEventListener('DOMContentLoaded', function(){
         };
 
         var MessageInfo = {
-            YourNameInput: String(userName.value),
+            YourNameInput: String(username.value),
             YourEmailInput: String(email.value),
             YourUserID: Number(0),
             YourUser: newUser
         };
+
+        /* Disable the inputs so they can't be changed */
+        signUpB.disabled = true;
+        username.disabled = true;
+        firstname.disabled = true;
+        lastname.disabled = true;
+        password.disabled = true;
+        passwordRetype.disabled = true;
+        primaryPhoneNums.disabled = true;
+        textareaTellMe.disabled = true;
+        email.disabled = true;
 
         var jsonString = JSON.stringify(MessageInfo);
         var xhr = new XMLHttpRequest();
@@ -158,17 +170,19 @@ window.addEventListener('DOMContentLoaded', function(){
         xhr.addEventListener('readystatechange', function(){
             if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200){
                 var item = xhr.responseText;
-                var SuccessMSG = JSON.parse(item);
-                if (SuccessMSG.SuccessNum === 0){
-                    console.log("DEBUG: User successfully created: " + SuccessMSG.Message);
-                    informtextPSignUp.innerHTML = "User succesfully created. Returning to login page...";
-                    setTimeout(() => { navigateHeader(1); }, 4000);
+                var ReturnMessage = JSON.parse(item);
+                if (ReturnMessage.SuccOrFail === 0){
+                    console.log("DEBUG: Email verification sent: " + ReturnMessage.ResultMsg);
+                    informtextPSignUp.innerHTML = "Please enter verification code from email sent to you...";
+                    //Display our form for entering verification code 
+                    verificationDiv.style.display = "flex";
                 } else {
-                    console.log("DEBUG: We have an error: " + SuccessMSG.SuccessNum + " " +
-                    SuccessMSG.Message);
-                    document.getElementById("informFormP").innerHTML = SuccessMSG.Message;
-                    document.getElementById("informFormP").value = SuccessMSG.Message;
+                    console.log("DEBUG: We have an error: " + SuccessMSG.SuccOrFail + " " +
+                    SuccessMSG.TheErr);
+                    document.getElementById("informFormP").innerHTML = SuccessMSG.TheErr;
+                    document.getElementById("informFormP").value = SuccessMSG.TheErr;
                     document.getElementById("informFormDiv").style.display = "block";
+                    setTimeout(() => { navigateHeader(1); }, 4000);
                 }
             }
         });
@@ -212,6 +226,10 @@ function checkCode(){
         Code: Number(verifCode.value)
     };
 
+    /* Disable button so User can't click again */
+    var codeCheckerB = document.getElementById("codeCheckerB");
+    codeCheckerB.disabled = true;
+
     var jsonString = JSON.stringify(NewCreation);
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '/createUser', true);
@@ -223,6 +241,7 @@ function checkCode(){
             if (SuccessMSG.SuccOrFail === 0){
                 /* User succussfully created. Delay, then send to home page */
                 informtextPSignUp.innerHTML = "User succesfully created. Returning to login page...";
+                codeOkay.innerHTML = "User succesfully created. Returning to login page...";
                 setTimeout(() => { navigateHeader(1); }, 4000);
             } else {
                 console.log("DEBUG: We have an error: " + SuccessMSG.SuccessNum + " " +
@@ -230,6 +249,7 @@ function checkCode(){
                 document.getElementById("informFormP").innerHTML = SuccessMSG.Message;
                 document.getElementById("informFormP").value = SuccessMSG.Message;
                 document.getElementById("informFormDiv").style.display = "block";
+                codeOkay.innerHTML = SuccessMSG.Message;
                 //Reload page after displaying error
                 setTimeout(() => {  window.location.assign("/"); }, 3000);
             }
