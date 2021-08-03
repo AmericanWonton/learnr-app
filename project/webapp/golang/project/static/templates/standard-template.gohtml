@@ -263,7 +263,7 @@
                 <div class="inputDiv">
                     <input type="email" id="email" name="myEmailInput" placeholder="Enter a valid email" maxlength=50>
                     <!-- Used to inform about status of email -->
-                    <p class="labelPText" id="emailOkay">
+                    <p id="emailOkay">
                         
                     </p>
                 </div>
@@ -292,6 +292,20 @@
                 </div>
                 <div class="inputDiv">
                     <textarea class="textareaTellMe" id="textareaTellMe" name="textareaTellMe" placeholder="Let us know!"></textarea>
+                </div>
+            </div>
+            {{/* ENTER EMAIL VERIFICATION CODE */}}
+            <div class="feildsSectionDiv" id="verificationDiv" style="display:none">
+                <div class="labelDiv">
+                    <p class="labelPTextSignUp">
+                        Email Verification Code:
+                    </p>
+                </div>
+                <div class="inputDiv">
+                    <input type="text" id="verifCode" name="Email Verification Code" placeholder="Enter your verification code" maxlength=6>
+                    <button class="longActionDivButton" onclick="checkCode()" id="codeCheckerB">Check Code</button>
+                    <!-- Used to inform about status of email -->
+                    <p id="codeOkay"></p>
                 </div>
             </div>
             {{/* SUBMIT BUTTON */}}

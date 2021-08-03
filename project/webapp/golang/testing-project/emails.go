@@ -9,8 +9,10 @@ import (
 	"html/template"
 	"io/ioutil"
 	"log"
+	"math/rand"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	"golang.org/x/oauth2"
@@ -46,6 +48,15 @@ type Request struct {
 	to      []string
 	subject string
 	body    string
+}
+
+//This is used for email verification
+type EmailVerify struct {
+	Username string    `json:"Username"`
+	Email    string    `json:"Email"`
+	ID       int       `json:"ID"`
+	TimeMade time.Time `json:"TimeMade"`
+	Active   bool      `json:"Active"`
 }
 
 func loadInEmailCreds() {
@@ -298,4 +309,128 @@ func (r *Request) ParseTemplate(templateFileName string, data interface{}) error
 	}
 	r.body = buf.String()
 	return nil
+}
+
+/* This function sends a verification email to the User. They
+will need to check their email and wait for verification. */
+func sendVerificationEmail(w http.ResponseWriter, r *http.Request) {
+	//Get the byte slice from the JSON
+	bs, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		fmt.Println(err)
+		logWriter(err.Error())
+	}
+
+	//Declare DataType from JSON
+	type MessageInfo struct {
+		YourNameInput  string `json:"YourNameInput"`
+		YourEmailInput string `json:"YourEmailInput"`
+		YourUserID     int    `json:"YourUserID"`
+		YourUser       User   `json:"YourUser"`
+	}
+
+	//Marshal the user data into our type
+	var dataEmail MessageInfo
+	json.Unmarshal(bs, &dataEmail)
+
+	//Declare return information for JSON
+	type ReturnMessage struct {
+		TheErr     string `json:"TheErr"`
+		ResultMsg  string `json:"ResultMsg"`
+		SuccOrFail int    `json:"SuccOrFail"`
+	}
+	theReturnMessage := ReturnMessage{}
+
+	//Make a random number up for the User
+	randIDVerif := simpleEmailID()
+
+	//Make email verification and add it to our DB
+	verifyEmail := EmailVerify{
+		Username: dataEmail.YourNameInput,
+		Email:    dataEmail.YourEmailInput,
+		ID:       randIDVerif,
+		TimeMade: time.Now(),
+		Active:   true,
+	}
+
+	goodAdd, message := addEmailVerif(verifyEmail)
+	if !goodAdd {
+		//Email verification failed
+		theErr := "Failure to send email verification: " + message
+		fmt.Println(theErr)
+		theReturnMessage.SuccOrFail = 1
+		theReturnMessage.TheErr = theErr
+		theReturnMessage.ResultMsg = theErr
+	} else {
+		/* Email verification added to DB. Need to send User email to confirm this */
+		type TemplateData struct {
+			Username      string `json:"Username"`
+			UserID        int    `json:"UserID"`
+			Email         string `json:"Email"`
+			ItemID        int    `json:"ItemID"`
+			DownloadImage string `json:"DownloadImage"`
+			PurchaseLink  string `json:"PurchaseLink"`
+		}
+		templateData := TemplateData{
+			Username: dataEmail.YourNameInput,
+			UserID:   dataEmail.YourUserID,
+			Email:    dataEmail.YourEmailInput,
+			ItemID:   verifyEmail.ID,
+		}
+		//Good to create and send Email template
+		emailRequest := NewRequest([]string{dataEmail.YourEmailInput}, "Account Creation", "Your account Creation")
+		err1 := emailRequest.ParseTemplate("./static/emailTemplates/emailverif.html", templateData)
+		if err1 != nil {
+			fmt.Printf("Could not parse the template: %v\n", err1.Error())
+			log.Fatal("Could not parse the template" + err1.Error())
+		}
+		//Send Email
+		_, goodSend := sendEmailTemplate(dataEmail.YourEmailInput, "Account Creation",
+			"Account Creation", emailRequest)
+		if goodSend {
+			//Confirmation sent
+			theMessage := "Sent confirmation email. Please check to see if you have it in junk or spam. If not sent, please" +
+				" check to see if the email entered is valid."
+			theReturnMessage.SuccOrFail = 0
+			theReturnMessage.ResultMsg = theMessage
+		} else {
+			errMsg := "Failure to send Email to User about creating their acccount"
+			fmt.Println(errMsg)
+			theReturnMessage.SuccOrFail = 1
+			theReturnMessage.ResultMsg = errMsg
+			theReturnMessage.TheErr = errMsg
+		}
+	}
+
+	//Return JSON
+	theJSONMessage, err := json.Marshal(theReturnMessage)
+	if err != nil {
+		fmt.Println(err)
+		logWriter(err.Error())
+	}
+	fmt.Fprint(w, string(theJSONMessage))
+}
+
+/* This creates a short, random ID for User to verify */
+func simpleEmailID() int {
+
+	//Create RandomID
+	randInt := 0
+	randIntString := ""
+	min, max := 0, 9 //The min and Max value for our randInt
+	//Create the random number, convert it to string
+	for i := 0; i < 6; i++ {
+		randInt = rand.Intn(max-min) + min
+		randIntString = randIntString + strconv.Itoa(randInt)
+	}
+	//Once we have a string of numbers, we can convert it back to an integer
+	theID, err := strconv.Atoi(randIntString)
+	if err != nil {
+		fmt.Printf("We got an error converting a string back to a number, %v\n", err)
+		fmt.Printf("Here is randInt: %v\n and randIntString: %v\n", randInt, randIntString)
+		fmt.Println(err)
+		log.Fatal(err)
+	}
+
+	return theID
 }

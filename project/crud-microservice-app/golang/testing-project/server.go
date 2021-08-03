@@ -20,10 +20,11 @@ func handleRequests() {
 
 	logWriter("We are now handling requests")
 	//Serve our User Crud API
-	myRouter.HandleFunc("/addUser", addUser).Methods("POST")       //Add a User
-	myRouter.HandleFunc("/deleteUser", deleteUser).Methods("POST") //Delete a User
-	myRouter.HandleFunc("/updateUser", updateUser).Methods("POST") //Update a User
-	myRouter.HandleFunc("/getUser", getUser).Methods("POST")       //Get User
+	myRouter.HandleFunc("/addUser", addUser).Methods("POST")            //Add a User
+	myRouter.HandleFunc("/deleteUser", deleteUser).Methods("POST")      //Delete a User
+	myRouter.HandleFunc("/updateUser", updateUser).Methods("POST")      //Update a User
+	myRouter.HandleFunc("/getUser", getUser).Methods("POST")            //Get User
+	myRouter.HandleFunc("/giveAllEmails", giveAllEmails).Methods("GET") //Get All user Emails
 	//Serve our LearnROrg Crud API
 	myRouter.HandleFunc("/addLearnOrg", addLearnOrg).Methods("POST")               //Add a LearnROrg
 	myRouter.HandleFunc("/deleteLearnOrg", deleteLearnOrg).Methods("POST")         //Delete a LearnROrg
@@ -56,7 +57,11 @@ func handleRequests() {
 	myRouter.HandleFunc("/giveAllLearnROrg", giveAllLearnROrg).Methods("GET")       //Get all our LearnROrg Names
 	myRouter.HandleFunc("/giveAllLearnr", giveAllLearnr).Methods("GET")             //Get all our Learnr Names
 	myRouter.HandleFunc("/randomIDCreationAPI", randomIDCreationAPI).Methods("GET") //Get a random ID
-	myRouter.HandleFunc("/userLogin", userLogin).Methods("POST")                    //Get a random ID
+	myRouter.HandleFunc("/userLogin", userLogin).Methods("POST")                    //Checks User login creds
+	myRouter.HandleFunc("/addEmailVerif", addEmailVerif).Methods("POST")            //Adds email verif
+	myRouter.HandleFunc("/getEmailVerif", getEmailVerif).Methods("POST")            //Get email verif
+	myRouter.HandleFunc("/deleteEmailVerify", deleteEmailVerify).Methods("POST")    //Delete email verif
+	myRouter.HandleFunc("/updateEmailVerify", updateEmailVerify).Methods("POST")    //Update Email verif
 	//Serve our static files
 	log.Fatal(http.ListenAndServe(":4000", myRouter))
 }

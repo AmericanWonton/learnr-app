@@ -6,7 +6,6 @@ window.addEventListener('DOMContentLoaded', function(){
 });
 
 function mapGoodCharSetter(){
-    console.log("DEBUG: Setting map with good characters");
 
     //Lowercase Letters
     charMap.set('a', 'a');

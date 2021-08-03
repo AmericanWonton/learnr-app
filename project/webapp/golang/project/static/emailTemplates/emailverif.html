@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- Fonts for text -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Fira+Sans+Condensed&family=Inter:wght@500&display=swap" rel="stylesheet">
+        <!-- Styling for fonts and stuff -->
+        <style>
+            /* styling definitions for the fonts */
+            body, div, p, q, i, h1, h2, h3, h4, h5, h6, a, header, footer, header {font-family: 'Architects Daughter', cursive;font-family: 'Bangers', cursive;font-family: 'IBM Plex Mono', monospace;font-family: 'Nova Flat', cursive;font-family: 'Permanent Marker', cursive;}
+            /* Styling for other divs */
+            .emailContentDiv{display:block;width: 100%;}
+            .greetingDiv{display: flex;flex-flow: wrap;align-content: center;justify-content: flex-start;width: 100%;text-align: left;padding-bottom: 2em;}
+            .mainFont {font-size: 1rem;font-family: 'Inter', sans-serif;color: black;line-height: 1.2rem;}
+            .bodyMain{display: flex;flex-flow: wrap;align-content: center;justify-content: flex-start;width: 100%;text-align: left;padding-top: 1em;padding-bottom: 1em;}
+            .goodbyeDiv{display: flex;flex-flow: wrap;align-content: center;justify-content: flex-start;width: 100%;text-align: left;padding-top: 1em;}
+            .signatureDiv{display: flex;flex-flow: wrap;align-content: center;justify-content: flex-start;width: 100%;padding-top: 2em;}
+            .codeDiv{display: flex;flex-flow: wrap;align-content: center;justify-content: center;width: 100%;text-align: center;padding-top: 1em;padding-bottom: 1em;background-color: rgb(204, 198, 198);}
+            .codeP{font-family: sans-serif;font-size: 3rem;}
+        </style>
+    </head>
+    <body>
+        <div class="emailContentDiv">
+            <!-- Email greeting to User -->
+            <div class="greetingDiv">
+                <p class="mainFont">Hello, {{.Username}}, welcome to LearnR!</p>
+            </div>
+            <!-- Main Body -->
+            <div class="bodyMain">
+                <p class="mainFont">
+                    Please see the following verification code for your account:
+                </p>
+            </div>
+            <!-- Code Div -->
+            <div class="codeDiv">
+                <p class="codeP">
+                    {{.ItemID}}
+                </p>
+            </div>
+            <!-- Exit Response -->
+            <div class="goodbyeDiv">
+                <!-- Goodbye text -->
+                <p class="mainFont">
+                    Enter this on the 'Sign-Up' page. This is set to expire in an hour.
+                </p>
+            </div>
+            <!-- Exit Signature -->
+            <div class="signatureDiv">
+                <!-- Goodbye image -->
+                <img alt="LearnR Logo" title="LearnR Signature" src="https://drive.google.com/uc?export=view&id=1MEMIxb5bEqdKd_0BtVpiW9AeaPVLGMSQ" width="300" height="300" style="display:block">
+            </div>
+        </div>
+    </body>
+</html>

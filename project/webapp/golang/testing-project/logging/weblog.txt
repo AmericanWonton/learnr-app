@@ -167,3 +167,24 @@
 2021/07/23 14:18:36 Email service is initialized
 2021/07/23 14:30:45 Email service is initialized
 2021/07/23 14:55:44 Email service is initialized
+2021/07/24 12:47:01 Email service is initialized
+2021/07/24 12:47:06 This is a test message
+2021/07/24 13:03:24 Email service is initialized
+2021/07/24 13:03:30 This is a test message
+2021/07/24 13:06:10 Email service is initialized
+2021/07/24 13:06:15 This is a test message
+2021/07/24 13:09:23 Email service is initialized
+2021/07/24 13:09:28 This is a test message
+2021/07/24 13:52:52 Email service is initialized
+2021/07/24 13:55:47 Email service is initialized
+2021/08/03 13:15:00 Email service is initialized
+2021/08/03 13:15:05 This is a test message
+2021/08/03 13:48:47 Email service is initialized
+2021/08/03 13:56:18 Email service is initialized
+2021/08/03 13:59:11 Email service is initialized
+2021/08/03 14:02:52 Email service is initialized
+2021/08/03 14:18:14 Email service is initialized
+2021/08/03 14:30:38 Email service is initialized
+2021/08/03 14:30:48 Email service is initialized
+2021/08/03 14:34:01 Email service is initialized
+2021/08/03 14:34:56 Email service is initialized

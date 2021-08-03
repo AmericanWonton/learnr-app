@@ -28,11 +28,13 @@ func handleRequests() {
 	//Used for handling emails
 	myRouter.HandleFunc("/emailMe", emailMe).Methods("POST") //Used for email Sending from Users
 	//Used for session work
-	myRouter.HandleFunc("/logUserOut", logUserOut).Methods("POST") //Remove our cookie after logging out user
+	myRouter.HandleFunc("/logUserOut", logUserOut).Methods("POST")                       //Remove our cookie after logging out user
+	myRouter.HandleFunc("/sendVerificationEmail", sendVerificationEmail).Methods("POST") //Send Email to User asking for verification
 	//Serve our Validation API
 	myRouter.HandleFunc("/checkUsername", checkUsername).Methods("POST")             //Check Username
 	myRouter.HandleFunc("/checkLearnROrgNames", checkLearnROrgNames).Methods("POST") //Check LearnROrg Name
 	myRouter.HandleFunc("/checkLearnRNames", checkLearnRNames).Methods("POST")       //Check Learnr Name
+	myRouter.HandleFunc("/checkEmail", checkEmail).Methods("POST")                   //Check Check Email
 	myRouter.HandleFunc("/checkOrgAbout", checkOrgAbout).Methods("POST")             //Check LearnOrg About
 	myRouter.HandleFunc("/createLearnROrg", createLearnROrg).Methods("POST")         //Create a LearnR Org
 	myRouter.HandleFunc("/createLearnR", createLearnR).Methods("POST")               //Create a LearnR
