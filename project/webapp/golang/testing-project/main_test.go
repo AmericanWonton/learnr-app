@@ -84,6 +84,11 @@ func setup() {
 	createLearnRInformDeleteCrud()
 	/* Add values for special LearnR Search */
 	createSpecialLearnRSearch()
+	/* Add values for Email Verification */
+	createCreateEmailVerifCrud()
+	createEmailVerifReadCrud()
+	createEmailVerifUpdateCrud()
+	createEmailVerifDeleteCrud()
 }
 
 //This is shutdown values/actions for testing
