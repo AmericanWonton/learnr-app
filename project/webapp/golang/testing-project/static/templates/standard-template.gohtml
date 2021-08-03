@@ -300,6 +300,20 @@
                     <button id="submitSignUpButton" class="actionDivButton">Sign-Up</button>
                 </div>
             </div>
+            {{/* ENTER EMAIL VERIFICATION CODE */}}
+            <div class="feildsSectionDiv" id="verificationDiv" style="display:none">
+                <div class="labelDiv">
+                    <p class="labelPTextSignUp">
+                        Email Verification Code:
+                    </p>
+                </div>
+                <div class="inputDiv">
+                    <input type="text" id="verifCode" name="Email Verification Code" placeholder="Enter your verification code" maxlength=6>
+                    <button class="actionDivButton" onclick="checkCode()">Check Code</button>
+                    <!-- Used to inform about status of email -->
+                    <p id="codeOkay"></p>
+                </div>
+            </div>
             {{/* INFORMITIVE DIV */}}
             <div class="feildsSectionDiv">
                 <div class="informativeDiv" id="informativeDivSignUp">

@@ -42,6 +42,15 @@ type User struct {
 	DateUpdated string   `json:"DateUpdated"`
 }
 
+//This is used for email verification
+type EmailVerify struct {
+	Username string    `json:"Username"`
+	Email    string    `json:"Email"`
+	ID       int       `json:"ID"`
+	TimeMade time.Time `json:"TimeMade"`
+	Active   bool      `json:"Active"`
+}
+
 //This gets the client to connect to our DB
 func connectDB() *mongo.Client {
 	//Setup Mongo connection to Atlas Cluster
@@ -1556,6 +1565,399 @@ func randomIDCreationAPI(w http.ResponseWriter, req *http.Request) {
 	//Send the response back
 	if err != nil {
 		errIs := "Error formatting JSON for return in randomIDCreationAPI: " + err.Error()
+		logWriter(errIs)
+	}
+	fmt.Fprint(w, string(theJSONMessage))
+}
+
+//This should add a verification code to our DB
+func addEmailVerif(w http.ResponseWriter, req *http.Request) {
+	canCrud := true //Used to determine if we're good to try our crud operation
+
+	//Declare data to return
+	type ReturnMessage struct {
+		TheErr     []string `json:"TheErr"`
+		ResultMsg  []string `json:"ResultMsg"`
+		SuccOrFail int      `json:"SuccOrFail"`
+	}
+	theReturnMessage := ReturnMessage{}
+
+	//Collect JSON from Postman or wherever
+	//Get the byte slice from the request body ajax
+	bs, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		theErr := "Error reading the request from emailVerif: " + err.Error() + "\n" + string(bs)
+		theReturnMessage.SuccOrFail = 1
+		theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
+		theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
+		logWriter(theErr)
+		fmt.Println(theErr)
+		canCrud = false //Reading failed, need to return failure
+	}
+	//Marshal it into our type
+	var postedEmailVerif EmailVerify
+	json.Unmarshal(bs, &postedEmailVerif)
+
+	//Check to see if we can perform CRUD operations and we aren't passing a null LearnOrg
+	if canCrud && postedEmailVerif.ID > 0 {
+		collection := mongoClient.Database("learnR").Collection("emailverifs") //Here's our collection
+		collectionStuff := []interface{}{postedEmailVerif}
+		//Insert Our Data
+		_, err2 := collection.InsertMany(theContext, collectionStuff)
+
+		if err2 != nil {
+			theErr := "Error adding Emailverif in addEmailVerif in crudoperations API: " + err2.Error()
+			logWriter(theErr)
+			theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
+			theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
+			theReturnMessage.SuccOrFail = 1
+		} else {
+			theErr := "Email Verification successfully added in addEmailVerif in crudoperations: " + string(bs)
+			logWriter(theErr)
+			theReturnMessage.TheErr = append(theReturnMessage.TheErr, "")
+			theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
+			theReturnMessage.SuccOrFail = 0
+		}
+	} else {
+		theErr := "Error adding Email Verif; could not perform CRUD or OrgID was bad: " + strconv.Itoa(postedEmailVerif.ID)
+		logWriter(theErr)
+		theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
+		theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
+		theReturnMessage.SuccOrFail = 1
+	}
+
+	theJSONMessage, err := json.Marshal(theReturnMessage)
+	//Send the response back
+	if err != nil {
+		errIs := "Error formatting JSON for return in addUser: " + err.Error()
+		logWriter(errIs)
+	}
+	fmt.Fprint(w, string(theJSONMessage))
+}
+
+//This gets our Email Verif
+func getEmailVerif(w http.ResponseWriter, req *http.Request) {
+	canCrud := true
+	//Declare data to return
+	type ReturnMessage struct {
+		TheErr              []string    `json:"TheErr"`
+		ResultMsg           []string    `json:"ResultMsg"`
+		SuccOrFail          int         `json:"SuccOrFail"`
+		ReturnedEmailVerify EmailVerify `json:"ReturnedEmailVerify"`
+	}
+	theReturnMessage := ReturnMessage{}
+	theReturnMessage.SuccOrFail = 0 //Initially set to success
+
+	//Unwrap from JSON
+	bs, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		theErr := "Error reading the request from updateLearnOrg: " + err.Error() + "\n" + string(bs)
+		theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
+		theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
+		theReturnMessage.SuccOrFail = 1
+		logWriter(theErr)
+		fmt.Println(theErr)
+		canCrud = false
+	}
+
+	//Decalre JSON we recieve
+	type EmailVerifID struct {
+		TheEmailVerifID int `json:"TheEmailVerifID"`
+	}
+
+	//Marshal it into our type
+	var theEmailVerifGet EmailVerifID
+	json.Unmarshal(bs, &theEmailVerifGet)
+
+	//If we successfully decoded, (and the Email Verif is not 0) we can get our Email Verification
+	if canCrud && theEmailVerifGet.TheEmailVerifID > 0 {
+		/* Find the Email Verif with the given ID */
+		var theEmailVerifReturned EmailVerify                                  //Initialize value to be returned
+		collection := mongoClient.Database("learnR").Collection("emailverifs") //Here's our collection
+		theFilter := bson.M{
+			"id": bson.M{
+				"$eq": theEmailVerifGet.TheEmailVerifID, // check if bool field has value of 'false'
+			},
+		}
+		findOptions := options.Find()
+		find, err := collection.Find(theContext, theFilter, findOptions)
+		theFind := 0 //A counter to track how many users we find
+		if find.Err() != nil || err != nil {
+			if strings.Contains(err.Error(), "no documents in result") {
+				stringUserID := strconv.Itoa(theEmailVerifGet.TheEmailVerifID)
+				returnedErr := "For " + stringUserID + ", no Email Verify was returned: " + err.Error()
+				fmt.Println(returnedErr)
+				logWriter(returnedErr)
+				theReturnMessage.SuccOrFail = 1
+				theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
+				theReturnMessage.TheErr = append(theReturnMessage.TheErr, returnedErr)
+				theReturnMessage.ReturnedLearnOrg = LearnrOrg{}
+			} else {
+				stringUserID := strconv.Itoa(theEmailVerifGet.TheEmailVerifID)
+				returnedErr := "For " + stringUserID + ", there was a Mongo Error: " + err.Error()
+				fmt.Println(returnedErr)
+				logWriter(returnedErr)
+				theReturnMessage.SuccOrFail = 1
+				theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
+				theReturnMessage.TheErr = append(theReturnMessage.TheErr, returnedErr)
+				theReturnMessage.ReturnedLearnOrg = LearnrOrg{}
+			}
+		} else {
+			//Found EmailVerif, decode to return
+			for find.Next(theContext) {
+				stringUserID := strconv.Itoa(theEmailVerifGet.TheEmailVerifID)
+				err := find.Decode(&theEmailVerifReturned)
+				if err != nil {
+					returnedErr := "For " + stringUserID +
+						", there was an error decoding document from Mongo: " + err.Error()
+					fmt.Println(returnedErr)
+					logWriter(returnedErr)
+					theReturnMessage.SuccOrFail = 1
+					theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
+					theReturnMessage.TheErr = append(theReturnMessage.TheErr, returnedErr)
+					theReturnMessage.ReturnedLearnOrg = LearnrOrg{}
+				} else if theEmailVerifReturned.ID <= 1 {
+					returnedErr := "For " + stringUserID +
+						", there was an no document from Mongo: " + err.Error()
+					fmt.Println(returnedErr)
+					logWriter(returnedErr)
+					theReturnMessage.SuccOrFail = 1
+					theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
+					theReturnMessage.TheErr = append(theReturnMessage.TheErr, returnedErr)
+					theReturnMessage.ReturnedLearnOrg = LearnrOrg{}
+				} else {
+					//Successful decode, do nothing
+				}
+				theFind = theFind + 1
+			}
+			find.Close(theContext)
+		}
+
+		if theFind <= 0 {
+			//Error, return an error back and log it
+			stringUserID := strconv.Itoa(theEmailVerifGet.TheEmailVerifID)
+			returnedErr := "For " + stringUserID +
+				", No Email Verify was returned."
+			logWriter(returnedErr)
+			theReturnMessage.SuccOrFail = 1
+			theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
+			theReturnMessage.TheErr = append(theReturnMessage.TheErr, returnedErr)
+			theReturnMessage.ReturnedEmailVerify = EmailVerify{}
+		} else {
+			//Success, log the success and return User
+			stringUserID := strconv.Itoa(theEmailVerifGet.TheEmailVerifID)
+			returnedErr := "For " + stringUserID +
+				", Email Verify should be successfully decoded."
+			//fmt.Println(returnedErr)
+			logWriter(returnedErr)
+			theReturnMessage.SuccOrFail = 0
+			theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
+			theReturnMessage.TheErr = append(theReturnMessage.TheErr, "")
+			theReturnMessage.ReturnedEmailVerify = theEmailVerifReturned
+		}
+	} else {
+		//Error, return an error back and log it
+		stringUserID := strconv.Itoa(theEmailVerifGet.TheEmailVerifID)
+		returnedErr := "For " + stringUserID +
+			", No Email Verify was returned. Email Verify was also not accepted: " + stringUserID
+		logWriter(returnedErr)
+		theReturnMessage.SuccOrFail = 1
+		theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
+		theReturnMessage.TheErr = append(theReturnMessage.TheErr, returnedErr)
+		theReturnMessage.ReturnedEmailVerify = EmailVerify{}
+	}
+
+	//Format the JSON map for returning our results
+	theJSONMessage, err := json.Marshal(theReturnMessage)
+	//Send the response back
+	if err != nil {
+		errIs := "Error formatting JSON for return in getUser: " + err.Error()
+		logWriter(errIs)
+	}
+	fmt.Fprint(w, string(theJSONMessage))
+}
+
+//This deletes our Email Verify
+func deleteEmailVerify(w http.ResponseWriter, req *http.Request) {
+	canCrud := true //Used to determine if we're good to try our crud operation
+
+	//Declare data to return
+	type ReturnMessage struct {
+		TheErr     []string `json:"TheErr"`
+		ResultMsg  []string `json:"ResultMsg"`
+		SuccOrFail int      `json:"SuccOrFail"`
+	}
+	theReturnMessage := ReturnMessage{}
+
+	//Get the byte slice from the request body ajax
+	bs, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		theErr := "Error reading the request from deleteEmailVerify: " + err.Error() + "\n" + string(bs)
+		theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
+		theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
+		theReturnMessage.SuccOrFail = 1
+		logWriter(theErr)
+		fmt.Println(theErr)
+		canCrud = false
+	}
+	//Declare JSON we're looking for
+	type ObjDelete struct {
+		ID int `json:"ID"`
+	}
+	//Marshal it into our type
+	var postedEmailVerifID ObjDelete
+	json.Unmarshal(bs, &postedEmailVerifID)
+
+	//Delete only if we had no issues above
+	if canCrud && postedEmailVerifID.ID > 0 {
+		//Search for User and delete
+		collection := mongoClient.Database("learnR").Collection("emailverifs") //Here's our collection
+		deletes := []bson.M{
+			{"id": postedEmailVerifID.ID},
+		} //Here's our filter to look for
+		deletes = append(deletes, bson.M{"id": bson.M{
+			"$eq": postedEmailVerifID.ID,
+		}}, bson.M{"id": bson.M{
+			"$eq": postedEmailVerifID.ID,
+		}},
+		)
+
+		// create the slice of write models
+		var writes []mongo.WriteModel
+
+		for _, del := range deletes {
+			model := mongo.NewDeleteManyModel().SetFilter(del)
+			writes = append(writes, model)
+		}
+
+		// run bulk write
+		bulkWrite, err := collection.BulkWrite(theContext, writes)
+		if err != nil {
+			theErr := "Error writing delete Email Verification in deleteEmailVerif in crudoperations: " + err.Error()
+			logWriter(theErr)
+			theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
+			theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
+			theReturnMessage.SuccOrFail = 1
+		} else {
+			//Check to see if delete count worked; must have deleted at least one
+			resultInt := bulkWrite.DeletedCount
+			if resultInt > 0 {
+				theErr := "Email Verification successfully deleted in deleteEmail Verif in crudoperations: " + string(bs)
+				logWriter(theErr)
+				theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
+				theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
+				theReturnMessage.SuccOrFail = 0
+			} else {
+				theErr := "No documents deleted for this given email Verificatition: " + strconv.Itoa(postedEmailVerifID.ID)
+				logWriter(theErr)
+				theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
+				theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
+				theReturnMessage.SuccOrFail = 1
+			}
+		}
+	} else {
+		theErr := "Error, could not CRUD operate in deleteEmail Veriifctation, or the number we recieved was wrong: " +
+			strconv.Itoa(postedEmailVerifID.ID)
+		logWriter(theErr)
+		theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
+		theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
+		theReturnMessage.SuccOrFail = 1
+	}
+
+	//Write the response back
+	theJSONMessage, err := json.Marshal(theReturnMessage)
+	//Send the response back
+	if err != nil {
+		errIs := "Error formatting JSON for return in deleteUser: " + err.Error()
+		logWriter(errIs)
+	}
+	fmt.Fprint(w, string(theJSONMessage))
+}
+
+//This updates the Email Verify
+func updateEmailVerify(w http.ResponseWriter, req *http.Request) {
+	canCrud := true
+	//Declare data to return
+	type ReturnMessage struct {
+		TheErr     []string `json:"TheErr"`
+		ResultMsg  []string `json:"ResultMsg"`
+		SuccOrFail int      `json:"SuccOrFail"`
+	}
+	theReturnMessage := ReturnMessage{}
+
+	//Unwrap from JSON
+	bs, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		theErr := "Error reading the request from updateLearnOrg: " + err.Error() + "\n" + string(bs)
+		theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
+		theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
+		theReturnMessage.SuccOrFail = 1
+		logWriter(theErr)
+		fmt.Println(theErr)
+		canCrud = false
+	}
+
+	//Marshal it into our type
+	var theemailVerifUpdate EmailVerify
+	json.Unmarshal(bs, &theemailVerifUpdate)
+
+	//Update email verification if we have successfully decoded from JSON
+	if canCrud {
+		//Update Email verif if their ID != 0 or nil
+		if theemailVerifUpdate.ID != 0 {
+			//Update emailverif
+			collection := mongoClient.Database("learnR").Collection("emailverifs") //Here's our collection
+			theFilter := bson.M{
+				"id": bson.M{
+					"$eq": theemailVerifUpdate.ID, // check if bool field has value of 'false'
+				},
+			}
+			updatedDocument := bson.M{
+				"$set": bson.M{
+					"username": theemailVerifUpdate.Username,
+					"email":    theemailVerifUpdate.Email,
+					"id":       theemailVerifUpdate.ID,
+					"timemade": theemailVerifUpdate.TimeMade,
+					"active":   theemailVerifUpdate.Active,
+				},
+			}
+			updateResult, err := collection.UpdateOne(theContext, theFilter, updatedDocument)
+
+			if err != nil {
+				theErr := "Error writing update Email Verif in updateEmailVerify in crudoperations: " + err.Error()
+				logWriter(theErr)
+				theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
+				theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
+				theReturnMessage.SuccOrFail = 1
+			} else {
+				//Check to see if anything was updated; if not, return the error
+				if updateResult.ModifiedCount < 1 {
+					theErr := "No document updated with this ID: " + strconv.Itoa(theemailVerifUpdate.ID)
+					logWriter(theErr)
+					theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
+					theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
+					theReturnMessage.SuccOrFail = 1
+				} else {
+					theErr := "Email Verification successfully updated in updateEmailVerify in crudoperations: " + string(bs) + "\n"
+					logWriter(theErr)
+					theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
+					theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
+					theReturnMessage.SuccOrFail = 0
+				}
+			}
+		} else {
+			theErr := "The Org ID was not found: " + strconv.Itoa(theemailVerifUpdate.ID)
+			logWriter(theErr)
+			theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
+			theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
+			theReturnMessage.SuccOrFail = 1
+		}
+	}
+
+	//Send the response back
+	theJSONMessage, err := json.Marshal(theReturnMessage)
+	if err != nil {
+		errIs := "Error formatting JSON for return in updateUser: " + err.Error()
 		logWriter(errIs)
 	}
 	fmt.Fprint(w, string(theJSONMessage))

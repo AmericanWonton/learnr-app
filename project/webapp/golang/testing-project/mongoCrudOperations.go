@@ -1596,6 +1596,11 @@ func callDeleteLearnRInform(theid int) (bool, string) {
 /* SPECIAL CRUD OPERTAIONS.
 These are opertaions a little out of the norm or for one-off functions */
 
+//This adds our email verification code to our database. Calls our CRUD operation to perform this
+func addEmailVerif() {
+
+}
+
 /* This takes in criteria from User on 'mainpage' to get a unique set of LearnRs for display */
 func getSpecialLearnRs(theCases []int, theTag string, learnrName string, entryFrom int,
 	entryTo int) ([]Learnr, bool, string) {
