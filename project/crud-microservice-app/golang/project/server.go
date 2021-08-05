@@ -69,6 +69,8 @@ func handleRequests() {
 	//Serve our test ping
 	myRouter.HandleFunc("/testPingPost", testPingPost).Methods("POST") //Get a random ID
 	myRouter.HandleFunc("/testPingGet", testPingGet).Methods("GET")    //Get a random ID
+	//Serve response for services checking if we're up
+	myRouter.HandleFunc("/available", available).Methods("GET") //See if this service is available
 	//Serve our static files
 	log.Fatal(http.ListenAndServe(":4000", myRouter))
 }
@@ -172,6 +174,30 @@ func testPingGet(w http.ResponseWriter, r *http.Request) {
 	//Send the response back
 	if err != nil {
 		errIs := "Error formatting JSON for return in testPingGet: " + err.Error()
+		logWriter(errIs)
+	}
+	fmt.Fprint(w, string(theJSONMessage))
+}
+
+//A service that returns if this Microservice is up and running
+func available(w http.ResponseWriter, r *http.Request) {
+	//Declare data to return
+	type ReturnMessage struct {
+		TheErr     []string `json:"TheErr"`
+		ResultMsg  []string `json:"ResultMsg"`
+		SuccOrFail int      `json:"SuccOrFail"`
+	}
+	theReturnMessage := ReturnMessage{
+		TheErr:     []string{""},
+		ResultMsg:  []string{"Good return from available for this  CRUD Microservice"},
+		SuccOrFail: 0,
+	}
+
+	//Format the JSON map for returning our results
+	theJSONMessage, err := json.Marshal(theReturnMessage)
+	//Send the response back
+	if err != nil {
+		errIs := "Error formatting JSON for return in available: " + err.Error()
 		logWriter(errIs)
 	}
 	fmt.Fprint(w, string(theJSONMessage))

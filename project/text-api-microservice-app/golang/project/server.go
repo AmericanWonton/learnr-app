@@ -27,6 +27,8 @@ func handleRequests() {
 	//Test Ping to our Server
 	myRouter.HandleFunc("/testLocalPing", testLocalPing).Methods("POST")
 	myRouter.HandleFunc("/httpTakerFunc", httpTakerFunc).Methods("POST")
+	//Serve response for services checking if we're up
+	myRouter.HandleFunc("/available", available).Methods("GET") //See if this service is available
 	log.Fatal(http.ListenAndServe(":3000", myRouter))
 }
 
@@ -84,4 +86,28 @@ func loadInMicroServiceURL() {
 	textAPIURL = os.Getenv("TEXT_API")
 
 	fmt.Printf("DEBUG: Here is mongo: %v\n and here is text: %v\n", mongoCrudURL, textAPIURL)
+}
+
+//A service that returns if this Microservice is up and running
+func available(w http.ResponseWriter, r *http.Request) {
+	//Declare data to return
+	type ReturnMessage struct {
+		TheErr     []string `json:"TheErr"`
+		ResultMsg  []string `json:"ResultMsg"`
+		SuccOrFail int      `json:"SuccOrFail"`
+	}
+	theReturnMessage := ReturnMessage{
+		TheErr:     []string{""},
+		ResultMsg:  []string{"Good return from available for this text Microservice"},
+		SuccOrFail: 0,
+	}
+
+	//Format the JSON map for returning our results
+	theJSONMessage, err := json.Marshal(theReturnMessage)
+	//Send the response back
+	if err != nil {
+		errIs := "Error formatting JSON for return in available: " + err.Error()
+		logWriter(errIs)
+	}
+	fmt.Fprint(w, string(theJSONMessage))
 }
