@@ -188,3 +188,8 @@
 2021/08/03 14:30:48 Email service is initialized
 2021/08/03 14:34:01 Email service is initialized
 2021/08/03 14:34:56 Email service is initialized
+2021/08/05 12:14:20 Email service is initialized
+2021/08/05 12:14:20 There was an error getting textMicro: Get "http://localhost:4000/available": dial tcp 127.0.0.1:4000: connect: connection refused
+2021/08/05 12:18:47 Email service is initialized
+2021/08/05 12:18:47 Issue getting the response for TextMicro. Response: 200 OK
+2021/08/05 12:21:45 Email service is initialized
