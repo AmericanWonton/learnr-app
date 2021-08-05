@@ -2,16 +2,24 @@ package main
 
 import (
 	"bufio"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"math/rand"
+	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
+	"strings"
 	"time"
 )
 
 /* DEFINED SLURS */
 var slurs []string = []string{}
+
+/* Microservice test ping definition */
+var TESTMONGOMICROPING string = "http://localhost:4000/available"
 
 //Used for writing log messages
 func logWriter(logMessage string) {
@@ -43,6 +51,7 @@ func init() {
 	getTwilioCreds()
 	//Get our stop text values
 	fillStopText()
+	microsUp() //Tests if our Microservices are up
 }
 
 func main() {
@@ -82,4 +91,53 @@ func fillStopText() {
 	StopText["stahp"] = "stahp"
 	StopText["starhp"] = "starhp"
 	StopText["STOP"] = "STOP"
+}
+
+func microsUp() {
+	wg.Add(1)
+	go getCrudMicro()
+	wg.Wait()
+}
+
+func getCrudMicro() {
+	req, err := http.Get(TESTMONGOMICROPING)
+	if err != nil {
+		theErr := "There was an error getting crudMicro: " + err.Error()
+		logWriter(theErr)
+		fmt.Println(theErr)
+		log.Fatal(theErr)
+	}
+	if !strings.Contains(strings.ToLower(req.Status), "200") {
+		theErr := "Issue getting the response for CRUDMicro. Response: " + req.Status
+		fmt.Println(theErr)
+		logWriter(theErr)
+		log.Fatal(theErr)
+	}
+	defer req.Body.Close()
+
+	body, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		theErr := "There was an error getting a response for crudMicro: " + err.Error()
+		logWriter(theErr)
+		fmt.Println(theErr)
+		log.Fatal(theErr)
+	}
+
+	//Marshal the response into a type we can read
+	type ReturnMessage struct {
+		TheErr     []string `json:"TheErr"`
+		ResultMsg  []string `json:"ResultMsg"`
+		SuccOrFail int      `json:"SuccOrFail"`
+	}
+	var returnedMessage ReturnMessage
+	json.Unmarshal(body, &returnedMessage)
+
+	if returnedMessage.SuccOrFail != 0 {
+		theErr := "Error getting correct response from crudAPI: " + strconv.Itoa(returnedMessage.SuccOrFail)
+		fmt.Println(theErr)
+		logWriter(theErr)
+		log.Fatal(theErr)
+	}
+
+	wg.Done() //End waitgroup
 }
