@@ -64,6 +64,10 @@ var DELETEEMAILVERIFURL string
 
 //Define variables for Microservice
 func defineCrudVariables() {
+
+	//Used for test Microservice availability
+	TESTMONGOMICROPING = mongoCrudURL + "/available"
+	TESTTEXTMICROPING = textAPIURL + "/available"
 	//User
 	READUSERURL = mongoCrudURL + "/getUser"
 

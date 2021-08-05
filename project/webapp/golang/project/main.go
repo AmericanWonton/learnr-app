@@ -14,6 +14,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"sync"
 	"text/template"
 	"time"
 )
@@ -30,6 +31,13 @@ var funcMap = template.FuncMap{
 /* Used for test calls to our MongoDB Microservice */
 var TESTMONGOPOST string
 var TESTMONGOGET string
+
+/* Microservice test ping definition */
+var TESTMONGOMICROPING string
+var TESTTEXTMICROPING string
+
+//Here is our waitgroup
+var wg sync.WaitGroup
 
 //initial functions when starting the app
 func init() {
@@ -53,6 +61,7 @@ func init() {
 	//testPingMongoCRUD()
 	//Initialize Emails
 	OAuthGmailService()
+	microsUp() //Tests if our Microservices are up
 }
 
 func logWriter(logMessage string) {
@@ -218,4 +227,99 @@ func testPingMongoCRUD() {
 	json.Unmarshal(body2, &returnedMessage2)
 
 	fmt.Printf("DEBUG: Here is the response from CRUD URL Post: %v\n", returnedMessage2)
+}
+
+//Tests if our other microservices are up and running
+func microsUp() {
+	wg.Add(1)
+	go getTextMicro()
+	wg.Add(1)
+	go getCrudMicro()
+	wg.Wait()
+}
+
+func getTextMicro() {
+	req, err := http.Get(TESTMONGOMICROPING)
+	if err != nil {
+		theErr := "There was an error getting textMicro: " + err.Error()
+		logWriter(theErr)
+		fmt.Println(theErr)
+		log.Fatal(theErr)
+	}
+	if !strings.Contains(strings.ToLower(req.Status), "200") {
+		theErr := "Issue getting the response for TextMicro. Response: " + req.Status
+		fmt.Println(theErr)
+		logWriter(theErr)
+		log.Fatal(theErr)
+	}
+	defer req.Body.Close()
+
+	body, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		theErr := "There was an error getting a response for textMicro: " + err.Error()
+		logWriter(theErr)
+		fmt.Println(theErr)
+		log.Fatal(theErr)
+	}
+
+	//Marshal the response into a type we can read
+	type ReturnMessage struct {
+		TheErr     []string `json:"TheErr"`
+		ResultMsg  []string `json:"ResultMsg"`
+		SuccOrFail int      `json:"SuccOrFail"`
+	}
+	var returnedMessage ReturnMessage
+	json.Unmarshal(body, &returnedMessage)
+
+	if returnedMessage.SuccOrFail != 0 {
+		theErr := "Error getting correct response from textAPI: " + strconv.Itoa(returnedMessage.SuccOrFail)
+		fmt.Println(theErr)
+		logWriter(theErr)
+		log.Fatal(theErr)
+	}
+
+	wg.Done() //End waitgroup
+}
+
+func getCrudMicro() {
+	req, err := http.Get(TESTMONGOMICROPING)
+	if err != nil {
+		theErr := "There was an error getting crudMicro: " + err.Error()
+		logWriter(theErr)
+		fmt.Println(theErr)
+		log.Fatal(theErr)
+	}
+	if !strings.Contains(strings.ToLower(req.Status), "200") {
+		theErr := "Issue getting the response for CRUDMicro. Response: " + req.Status
+		fmt.Println(theErr)
+		logWriter(theErr)
+		log.Fatal(theErr)
+	}
+	defer req.Body.Close()
+
+	body, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		theErr := "There was an error getting a response for crudMicro: " + err.Error()
+		logWriter(theErr)
+		fmt.Println(theErr)
+		log.Fatal(theErr)
+	}
+
+	//Marshal the response into a type we can read
+	type ReturnMessage struct {
+		TheErr     []string `json:"TheErr"`
+		ResultMsg  []string `json:"ResultMsg"`
+		SuccOrFail int      `json:"SuccOrFail"`
+	}
+	var returnedMessage ReturnMessage
+	json.Unmarshal(body, &returnedMessage)
+
+	if returnedMessage.SuccOrFail != 0 {
+		theErr := "Error getting correct response from crudAPI: " + strconv.Itoa(returnedMessage.SuccOrFail)
+		fmt.Println(theErr)
+		logWriter(theErr)
+		log.Fatal(theErr)
+	}
+
+	wg.Done() //End waitgroup
 }
