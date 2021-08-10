@@ -46,6 +46,7 @@ type UserViewData struct {
 	DateCreated      string      `json:"DateCreated"`      //Date this User was created
 	DateUpdated      string      `json:"DateUpdated"`      //Date this User was updated
 	MessageDisplay   int         `json:"MessageDisplay"`   //This is IF we need a message displayed
+	UserMessage      string      `json:"UserMessage"`      //The Message displayed to our User
 }
 
 //Handles the Index requests; Ask User if they're legal here
@@ -216,6 +217,15 @@ func bulksend(w http.ResponseWriter, r *http.Request) {
 		theLearnRIDs = append(theLearnRIDs, theAdminOrgs[n].LearnrList...)
 	}
 	theAdminLearnRs := getAdminLearnRs(theLearnRIDs)
+	/* Tailor the message towards our User, based on what access/how many
+	LearnROrgs they are Admins of */
+	userMessage := ""
+	shouldDisplay := 0
+	if len(theAdminLearnRs) <= 0 || theAdminLearnRs == nil {
+		userMessage = "You do not have any LearnRs you are Admin of to send in Bulk! Please create a LearnR under a " +
+			"LearnROrg that you are an Administrator of..."
+		shouldDisplay = 1
+	}
 	vd := UserViewData{
 		TheUser:          aUser,
 		Username:         aUser.UserName,
@@ -223,10 +233,11 @@ func bulksend(w http.ResponseWriter, r *http.Request) {
 		PhoneNums:        aUser.PhoneNums,
 		Email:            aUser.Email,
 		AdminOrgs:        aUser.AdminOrgs,
-		MessageDisplay:   0,
+		MessageDisplay:   shouldDisplay,
 		AdminOrgList:     theAdminOrgs,
 		OrganizedLearnRs: theAdminLearnRs,
 		Banned:           aUser.Banned,
+		UserMessage:      userMessage,
 	}
 	/* Execute template, handle error */
 	err1 := template1.ExecuteTemplate(w, "bulksend.gohtml", vd)
@@ -556,13 +567,16 @@ func giveAllLearnrDisplay(w http.ResponseWriter, r *http.Request) {
 
 //Called from 'bulksend' to get all or LearnRs
 func getAdminLearnRs(theLearnRIDs []int) []Learnr {
-
-	goodGet, message, returnedLearnRs := callReadLearnRArray(theLearnRIDs)
-	if !goodGet {
-		theErr := "Error getting array of LearnRs: " + message
-		fmt.Println(theErr)
-		logWriter(theErr)
+	/* Only look for admin learnRs if the passed array is larger than 0 */
+	if len(theLearnRIDs) >= 1 {
+		goodGet, message, returnedLearnRs := callReadLearnRArray(theLearnRIDs)
+		if !goodGet {
+			theErr := "Error getting array of LearnRs: " + message
+			fmt.Println(theErr)
+			logWriter(theErr)
+		}
+		return returnedLearnRs
+	} else {
+		return []Learnr{}
 	}
-
-	return returnedLearnRs
 }

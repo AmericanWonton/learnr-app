@@ -13,9 +13,7 @@
         {{/* Here are our Media Query and stylesheets */}}
         {{template "media-queries"}}
         {{/* Here is our Javascript or additional code needed */}}
-        <script src="static/js/fieldVal.js"></script>
         <script src="static/js/pagehandling.js"></script>
-        <script src="static/js/learnrorg.js"></script>
         <script src="static/js/app.js"></script>
         {{/* AngularJS for added email address */}}
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
@@ -58,7 +56,38 @@
         
         {{/* Main */}}
         <div class="mainContentDiv">
-            {{template "makeorg"}}
+            <!-- Instructions for sending a bulk LearnR -->
+            <div class="instructUserDiv">
+                <!-- Instructions -->
+                <p class="smallFormSign">
+                    Send your LearnR to dozens of people! Just download our Example Excel sheet,
+                    fill it with up to 500 people, then we'll email you the results! Please note 
+                    that the Excel sheet must be filled out to exact specifications provided:
+                </p>
+                <!-- Hidden specification -->
+                <div class="specsHiderDiv">
+                    <!-- Hider Button -->
+                    <div class="buttonHideHoldDiv">
+
+                    </div>
+                    <!-- Revealed/Hidden Info -->
+                    <div class="infoHidden" id="infoHidden">
+                        <p class="smallFormSign">
+                            No extra columns or 'confusing characters'. No more than 500 rows.
+                        </p>
+                        <p class="smallFormSign">
+                            'Person name' must be between 1 and 20 characters and contain only approved characters
+                        </p>
+                        <p class="smallFormSign">
+                            'Phone number' must be formatted to the following standard: 
+                            'AREA_CODE + 10-DIGIT-PHONE-NUMBER'. Example: '13467859432'
+                        </p>
+                        <p class="smallFormSign">
+                            'What to say' must be between 1 and 120 characters
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
         {{/* Here is our footer */}}
     </body>
