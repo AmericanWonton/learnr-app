@@ -686,53 +686,61 @@ func getLearnRArray(w http.ResponseWriter, req *http.Request) {
 		collection := mongoClient.Database("learnR").Collection("learnr") //Here's our collection
 		interfaceConditions := make([]interface{}, 0)                     //Used to carry 'or' conditions
 		findOptions := options.Find()
-		find, err := collection.Find(theContext, theFilter, findOptions)
+		//Loop through to add IDS
+		for n := 0; n < len(typePosted.IDs); n++ {
+			newInterface := bson.M{"id": bson.M{"$eq": typePosted.IDs[n]}}
+			interfaceConditions = append(interfaceConditions, newInterface)
+		}
+
+		fullConditions := bson.M{
+			"$or": interfaceConditions,
+		}
+
+		find, err := collection.Find(theContext, fullConditions, findOptions)
 		theFind := 0 //A counter to track how many users we find
 		if find.Err() != nil || err != nil {
 			if strings.Contains(err.Error(), "no documents in result") {
-				stringUserID := strconv.Itoa(typePosted.ID)
-				returnedErr := "For " + stringUserID + ", no LearnR was returned: " + err.Error()
+				returnedErr := "For " + ", no LearnR was returned: " + err.Error()
 				fmt.Println(returnedErr)
 				logWriter(returnedErr)
 				theReturnMessage.SuccOrFail = 1
 				theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
 				theReturnMessage.TheErr = append(theReturnMessage.TheErr, returnedErr)
-				theReturnMessage.ReturnedLearnR = Learnr{}
+				theReturnMessage.ReturnedLearnRs = []Learnr{}
 			} else {
-				stringUserID := strconv.Itoa(typePosted.ID)
-				returnedErr := "For " + stringUserID + ", there was a Mongo Error: " + err.Error()
+				returnedErr := "For " + ", there was a Mongo Error: " + err.Error()
 				fmt.Println(returnedErr)
 				logWriter(returnedErr)
 				theReturnMessage.SuccOrFail = 1
 				theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
 				theReturnMessage.TheErr = append(theReturnMessage.TheErr, returnedErr)
-				theReturnMessage.ReturnedLearnR = Learnr{}
+				theReturnMessage.ReturnedLearnRs = []Learnr{}
 			}
 		} else {
-			//Found Learnorg, decode to return
+			//Found LearnRs, decode to return
 			for find.Next(theContext) {
-				stringid := strconv.Itoa(typePosted.ID)
 				err := find.Decode(&itemReturned)
 				if err != nil {
-					returnedErr := "For " + stringid +
+					returnedErr := "For " +
 						", there was an error decoding document from Mongo: " + err.Error()
 					fmt.Println(returnedErr)
 					logWriter(returnedErr)
 					theReturnMessage.SuccOrFail = 1
 					theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
 					theReturnMessage.TheErr = append(theReturnMessage.TheErr, returnedErr)
-					theReturnMessage.ReturnedLearnR = Learnr{}
+					theReturnMessage.ReturnedLearnRs = []Learnr{}
 				} else if len(itemReturned.Name) <= 1 {
-					returnedErr := "For " + stringid +
+					returnedErr := "For " +
 						", there was an no document from Mongo: " + err.Error()
 					fmt.Println(returnedErr)
 					logWriter(returnedErr)
 					theReturnMessage.SuccOrFail = 1
 					theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
 					theReturnMessage.TheErr = append(theReturnMessage.TheErr, returnedErr)
-					theReturnMessage.ReturnedLearnR = Learnr{}
+					theReturnMessage.ReturnedLearnRs = []Learnr{}
 				} else {
-					//Successful decode, do nothing
+					//Successful decode, add to returnedLearnRs
+					theReturnMessage.ReturnedLearnRs = append(theReturnMessage.ReturnedLearnRs, itemReturned)
 				}
 				theFind = theFind + 1
 			}
@@ -741,25 +749,21 @@ func getLearnRArray(w http.ResponseWriter, req *http.Request) {
 
 		if theFind <= 0 {
 			//Error, return an error back and log it
-			stringID := strconv.Itoa(typePosted.ID)
-			returnedErr := "For " + stringID +
+			returnedErr := "For " +
 				", No LearnR was returned."
 			logWriter(returnedErr)
 			theReturnMessage.SuccOrFail = 1
 			theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
 			theReturnMessage.TheErr = append(theReturnMessage.TheErr, returnedErr)
-			theReturnMessage.ReturnedLearnR = Learnr{}
+			theReturnMessage.ReturnedLearnRs = []Learnr{}
 		} else {
 			//Success, log the success and return User
-			stringID := strconv.Itoa(typePosted.ID)
-			returnedErr := "For " + stringID +
+			returnedErr := "For " +
 				", Learnr should be successfully decoded."
-			//fmt.Println(returnedErr)
 			logWriter(returnedErr)
 			theReturnMessage.SuccOrFail = 0
 			theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
 			theReturnMessage.TheErr = append(theReturnMessage.TheErr, "")
-			theReturnMessage.ReturnedLearnR = itemReturned
 		}
 	} else {
 		//Error, return an error back and log it
@@ -770,7 +774,7 @@ func getLearnRArray(w http.ResponseWriter, req *http.Request) {
 		theReturnMessage.SuccOrFail = 1
 		theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
 		theReturnMessage.TheErr = append(theReturnMessage.TheErr, returnedErr)
-		theReturnMessage.ReturnedLearnR = Learnr{}
+		theReturnMessage.ReturnedLearnRs = []Learnr{}
 	}
 
 	//Format the JSON map for returning our results
