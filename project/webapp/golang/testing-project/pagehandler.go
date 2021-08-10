@@ -47,6 +47,7 @@ type UserViewData struct {
 	DateUpdated      string      `json:"DateUpdated"`      //Date this User was updated
 	MessageDisplay   int         `json:"MessageDisplay"`   //This is IF we need a message displayed
 	UserMessage      string      `json:"UserMessage"`      //The Message displayed to our User
+	ActionDisplay    int         `json:"ActionDisplay"`    //A condition for displaying various things to our Users
 }
 
 //Handles the Index requests; Ask User if they're legal here
@@ -221,10 +222,12 @@ func bulksend(w http.ResponseWriter, r *http.Request) {
 	LearnROrgs they are Admins of */
 	userMessage := ""
 	shouldDisplay := 0
+	actionDisplay := 0
 	if len(theAdminLearnRs) <= 0 || theAdminLearnRs == nil {
 		userMessage = "You do not have any LearnRs you are Admin of to send in Bulk! Please create a LearnR under a " +
 			"LearnROrg that you are an Administrator of..."
 		shouldDisplay = 1
+		actionDisplay = 1
 	}
 	vd := UserViewData{
 		TheUser:          aUser,
@@ -238,6 +241,7 @@ func bulksend(w http.ResponseWriter, r *http.Request) {
 		OrganizedLearnRs: theAdminLearnRs,
 		Banned:           aUser.Banned,
 		UserMessage:      userMessage,
+		ActionDisplay:    actionDisplay,
 	}
 	/* Execute template, handle error */
 	err1 := template1.ExecuteTemplate(w, "bulksend.gohtml", vd)

@@ -90,6 +90,69 @@
                     </div>
                 </div>
             </div>
+            <!-- This contains the form for our User to fill out; it is only 
+            displayed if the User is an Admin of at least 1 organization -->
+            {{if eq .ActionDisplay 1}}
+                <!-- User has no Admin LearnRs, do not display form -->
+                <div class="formHolder">
+                    <!--Message Holder -->
+                    <div class="instructUserDiv">
+                        <p class="smallFormSign" id="formResult">{{.UserMessage}}</p>
+                    </div>
+                </div>
+            {{else}}
+                <!-- User is Admin of at least 1 LearnR, display form -->
+                <div class="formHolder">
+                    <!--Message Holder -->
+                    <div class="instructUserDiv">
+                        <p class="smallFormSign" id="formResult">{{.UserMessage}}</p>
+                    </div>
+                    <!-- Form Holder -->
+                    <div class="formHolder">
+                        <form id="excelForm" name="excelForm" class="excelForm" enctype="multipart/form-data" 
+                        method="POST" action="/bulksend" onload="">
+                            <!-- Input Excel Sheet -->
+                            <div class="formValueRow">
+                                <!-- Description -->
+                                <div class="formValueColumn" style="justify-content:flex-end">
+                                    <p class="formDescP" style="padding-right:.5em">
+                                        Submit Excel Sheet
+                                    </p>
+                                </div>
+                                <!-- Input -->
+                                <div class="formValueColumn" style="justify-content:flex-start">
+                                    <input id="excelFileInput" class="fileSubmit" style="padding-left:.5em"
+                                    type="file" accept=".xlsx" name="excel-file">
+                                </div>
+                            </div>
+                            <!-- Input LearnR Select -->
+                            <div class="formValueRow">
+                                <!-- Description -->
+                                <div class="formValueColumn" style="justify-content:flex-end">
+                                    <p class="formDescP" style="padding-right:.5em">
+                                        Choose LearnR To Send
+                                    </p>
+                                </div>
+                                <!-- Input -->
+                                <div class="formValueColumn" style="justify-content:flex-start">
+                                    <select name="learnR" id="learnR" class="selectValue">
+                                        {{range $element := .OrganizedLearnRs}}
+                                            <option value="{{$element.ID}}">{{$element.Name}}</option>
+                                        {{end}}
+                                    </select>
+                                </div>
+                            </div>
+                            <!-- Button Submit -->
+                            <div class="formValueRow">
+                                <!-- Submit Button -->
+                                <div class="formValueColumn" style="justify-content:center">
+                                    <button class="submitB" id="buttonSubmit">Submit LearnRs to Everyone</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            {{end}}
         </div>
         {{/* Here is our footer */}}
     </body>
