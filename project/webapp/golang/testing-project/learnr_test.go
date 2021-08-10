@@ -72,6 +72,16 @@ type LearnrCrudRead struct {
 
 var learnRCrudReadResults []LearnrCrudRead
 
+type LearnrArrayCrudRead struct {
+	IDGive              []int
+	ExpectedNum         int
+	ExpectedTruth       bool
+	ExpectedStringArray []string
+	ExpectedLearnRIDs   map[string]int
+}
+
+var learnRArrayCrudReadResults []LearnrArrayCrudRead
+
 type LearnrCrudSpecialGet struct {
 	ID                  int
 	ExpectedNum         int
@@ -215,6 +225,18 @@ func createCreateLearnrCrud() {
 	// with negative OrgID value
 	learnRCrudCreateResults = append(learnRCrudCreateResults, LearnrCrudCreate{Learnr{ID: -1}, 1, false,
 		[]string{"Error adding Learnr in addLearnr", "Error reading the request"}})
+}
+
+//This creates our CRUD testing cases for searching LearnRArrays
+func createLearnrArrayReadCrud() {
+	/* Warning; this is good crud read, but depends on the following IDS being in test:
+	855367233056, 478483273602, 65286261652 */
+	map2Read := make(map[string]int)
+	map2Read["855367233056"] = 855367233056
+	map2Read["478483273602"] = 478483273602
+	map2Read["65286261652"] = 65286261652
+	learnRArrayCrudReadResults = append(learnRArrayCrudReadResults, LearnrArrayCrudRead{[]int{855367233056, 478483273602, 65286261652},
+		0, true, []string{"Learnr s successfully retrieved"}, map2Read})
 }
 
 //This creates our CRUD Testing cases for Reading Learnr
@@ -601,21 +623,30 @@ func TestLearnRRead(t *testing.T) {
 	}
 }
 
-//Test for Getting special LearnR
-/*
-func TestSpecialLearnrGet(t *testing.T) {
+//Test for getting LearnRArray
+func TestGetLearnRArray(t *testing.T) {
 	testNum := 0 //Used for incrementing
-	for _, test := range learnRSpecialCrudResults {
-		learnr, success, message := getSpecialLearnRs()
+	for _, test := range learnRArrayCrudReadResults {
+		success, message, theLearnRs := callReadLearnRArray(test.IDGive)
 		if success != test.ExpectedTruth {
 			t.Fatal("Failed at this step: " + strconv.Itoa(testNum) + " :" + message + " ")
-		} else {
-			fmt.Printf("Here is our Learnr: %v\n", learnr)
+		}
+		//Check to see if returned LearnRS are wrong/missing
+		for n := 0; n < len(theLearnRs); n++ {
+			if _, ok := test.ExpectedLearnRIDs[strconv.Itoa(theLearnRs[n].ID)]; ok {
+				//Value okay, no issue
+			} else {
+				errMsg := "Error, did not find the returned LearnRID for this test " + strconv.Itoa(testNum) +
+					": " + strconv.Itoa(theLearnRs[n].ID) + "\n" + "The values returned are...\n"
+				for l := 0; l < len(theLearnRs); l++ {
+					errMsg = errMsg + strconv.Itoa(theLearnRs[l].ID) + ", "
+				}
+				t.Fatal(errMsg)
+			}
 		}
 		testNum = testNum + 1 //Increment this number for testing
 	}
 }
-*/
 
 //Test for Deleting LearnR
 func TestLearnRDelete(t *testing.T) {

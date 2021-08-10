@@ -193,3 +193,5 @@
 2021/08/05 12:18:47 Email service is initialized
 2021/08/05 12:18:47 Issue getting the response for TextMicro. Response: 200 OK
 2021/08/05 12:21:45 Email service is initialized
+2021/08/10 12:42:26 Email service is initialized
+2021/08/10 12:42:32 This is a test message

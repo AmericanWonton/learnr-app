@@ -522,8 +522,6 @@ func specialLearnRGive(w http.ResponseWriter, req *http.Request) {
 	var theitem TheSpecialCases
 	json.Unmarshal(bs, &theitem)
 
-	fmt.Printf("DEBUG: Here is our item: %v\n", theitem)
-
 	//Do CRUD operations if allowed
 	if canCrud {
 		/* Begin building crud operation based on our criteria */
@@ -552,8 +550,6 @@ func specialLearnRGive(w http.ResponseWriter, req *http.Request) {
 				"$or": interfaceConditions,
 			}
 		}
-
-		fmt.Printf("DEBUG: Here is our fullConditions: %v\n", fullConditions)
 
 		/* Run the mongo query after fixed filter/findoptions */
 		find, err := collection.Find(theContext, fullConditions, findOptions)
@@ -767,9 +763,8 @@ func getLearnRArray(w http.ResponseWriter, req *http.Request) {
 		}
 	} else {
 		//Error, return an error back and log it
-		theIDString := strconv.Itoa(typePosted.ID)
-		returnedErr := "For " + theIDString +
-			", No LearnR was returned. Learnorg was also not accepted: " + theIDString
+		returnedErr := "For " +
+			", No LearnR was returned. Learnorg was also not accepted: "
 		logWriter(returnedErr)
 		theReturnMessage.SuccOrFail = 1
 		theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
