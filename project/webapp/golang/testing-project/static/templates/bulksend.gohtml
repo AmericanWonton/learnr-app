@@ -15,6 +15,7 @@
         {{/* Here is our Javascript or additional code needed */}}
         <script src="static/js/pagehandling.js"></script>
         <script src="static/js/app.js"></script>
+        <script src="static/js/bulk.js"></script>
         {{/* AngularJS for added email address */}}
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
     </head>
@@ -60,7 +61,8 @@
             <div class="instructUserDiv">
                 <!-- Instructions -->
                 <p class="smallFormSign">
-                    Send your LearnR to dozens of people! Just download our Example Excel sheet,
+                    Send your LearnR to dozens of people! Just download our 
+                    <a class="downloadExample" href="static/exampleFiles/ExampleSheet.xlsx" target="_blank" download>Example Excel sheet</a>,
                     fill it with up to 500 people, then we'll email you the results! Please note 
                     that the Excel sheet must be filled out to exact specifications provided:
                 </p>
@@ -68,7 +70,7 @@
                 <div class="specsHiderDiv">
                     <!-- Hider Button -->
                     <div class="buttonHideHoldDiv">
-
+                        <button class="seeThingsB" id="seeThingsB" onclick="displayInstructions()">Show Instructions</button>
                     </div>
                     <!-- Revealed/Hidden Info -->
                     <div class="infoHidden" id="infoHidden">
