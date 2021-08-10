@@ -645,6 +645,144 @@ func specialLearnRGive(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprint(w, string(theJSONMessage))
 }
 
+/* This gets a collection of LearnRs from an array of LearnR IDs */
+func getLearnRArray(w http.ResponseWriter, req *http.Request) {
+	canCrud := true
+	//Declare data to return
+	type ReturnMessage struct {
+		TheErr          []string `json:"TheErr"`
+		ResultMsg       []string `json:"ResultMsg"`
+		SuccOrFail      int      `json:"SuccOrFail"`
+		ReturnedLearnRs []Learnr `json:"ReturnedLearnRs"`
+	}
+	theReturnMessage := ReturnMessage{}
+	theReturnMessage.SuccOrFail = 0 //Initially set to success
+
+	//Unwrap from JSON
+	bs, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		theErr := "Error reading the request from getLearnRs: " + err.Error() + "\n" + string(bs)
+		theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, theErr)
+		theReturnMessage.TheErr = append(theReturnMessage.TheErr, theErr)
+		theReturnMessage.SuccOrFail = 1
+		logWriter(theErr)
+		fmt.Println(theErr)
+		canCrud = false
+	}
+
+	//Decalre JSON we recieve
+	type LearnRIDs struct {
+		IDs []int `json:"IDs"`
+	}
+
+	//Marshal it into our type
+	var typePosted LearnRIDs
+	json.Unmarshal(bs, &typePosted)
+
+	//If we successfully decoded, (and the ID is not 0) we can get our item
+	if canCrud {
+		/* Find the Learnorg with the given LearnorgID */
+		var itemReturned Learnr                                           //Initialize Item to be returned after Mongo query
+		collection := mongoClient.Database("learnR").Collection("learnr") //Here's our collection
+		interfaceConditions := make([]interface{}, 0)                     //Used to carry 'or' conditions
+		findOptions := options.Find()
+		find, err := collection.Find(theContext, theFilter, findOptions)
+		theFind := 0 //A counter to track how many users we find
+		if find.Err() != nil || err != nil {
+			if strings.Contains(err.Error(), "no documents in result") {
+				stringUserID := strconv.Itoa(typePosted.ID)
+				returnedErr := "For " + stringUserID + ", no LearnR was returned: " + err.Error()
+				fmt.Println(returnedErr)
+				logWriter(returnedErr)
+				theReturnMessage.SuccOrFail = 1
+				theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
+				theReturnMessage.TheErr = append(theReturnMessage.TheErr, returnedErr)
+				theReturnMessage.ReturnedLearnR = Learnr{}
+			} else {
+				stringUserID := strconv.Itoa(typePosted.ID)
+				returnedErr := "For " + stringUserID + ", there was a Mongo Error: " + err.Error()
+				fmt.Println(returnedErr)
+				logWriter(returnedErr)
+				theReturnMessage.SuccOrFail = 1
+				theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
+				theReturnMessage.TheErr = append(theReturnMessage.TheErr, returnedErr)
+				theReturnMessage.ReturnedLearnR = Learnr{}
+			}
+		} else {
+			//Found Learnorg, decode to return
+			for find.Next(theContext) {
+				stringid := strconv.Itoa(typePosted.ID)
+				err := find.Decode(&itemReturned)
+				if err != nil {
+					returnedErr := "For " + stringid +
+						", there was an error decoding document from Mongo: " + err.Error()
+					fmt.Println(returnedErr)
+					logWriter(returnedErr)
+					theReturnMessage.SuccOrFail = 1
+					theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
+					theReturnMessage.TheErr = append(theReturnMessage.TheErr, returnedErr)
+					theReturnMessage.ReturnedLearnR = Learnr{}
+				} else if len(itemReturned.Name) <= 1 {
+					returnedErr := "For " + stringid +
+						", there was an no document from Mongo: " + err.Error()
+					fmt.Println(returnedErr)
+					logWriter(returnedErr)
+					theReturnMessage.SuccOrFail = 1
+					theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
+					theReturnMessage.TheErr = append(theReturnMessage.TheErr, returnedErr)
+					theReturnMessage.ReturnedLearnR = Learnr{}
+				} else {
+					//Successful decode, do nothing
+				}
+				theFind = theFind + 1
+			}
+			find.Close(theContext)
+		}
+
+		if theFind <= 0 {
+			//Error, return an error back and log it
+			stringID := strconv.Itoa(typePosted.ID)
+			returnedErr := "For " + stringID +
+				", No LearnR was returned."
+			logWriter(returnedErr)
+			theReturnMessage.SuccOrFail = 1
+			theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
+			theReturnMessage.TheErr = append(theReturnMessage.TheErr, returnedErr)
+			theReturnMessage.ReturnedLearnR = Learnr{}
+		} else {
+			//Success, log the success and return User
+			stringID := strconv.Itoa(typePosted.ID)
+			returnedErr := "For " + stringID +
+				", Learnr should be successfully decoded."
+			//fmt.Println(returnedErr)
+			logWriter(returnedErr)
+			theReturnMessage.SuccOrFail = 0
+			theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
+			theReturnMessage.TheErr = append(theReturnMessage.TheErr, "")
+			theReturnMessage.ReturnedLearnR = itemReturned
+		}
+	} else {
+		//Error, return an error back and log it
+		theIDString := strconv.Itoa(typePosted.ID)
+		returnedErr := "For " + theIDString +
+			", No LearnR was returned. Learnorg was also not accepted: " + theIDString
+		logWriter(returnedErr)
+		theReturnMessage.SuccOrFail = 1
+		theReturnMessage.ResultMsg = append(theReturnMessage.ResultMsg, returnedErr)
+		theReturnMessage.TheErr = append(theReturnMessage.TheErr, returnedErr)
+		theReturnMessage.ReturnedLearnR = Learnr{}
+	}
+
+	//Format the JSON map for returning our results
+	theJSONMessage, err := json.Marshal(theReturnMessage)
+	//Send the response back
+	if err != nil {
+		errIs := "Error formatting JSON for return in getUser: " + err.Error()
+		logWriter(errIs)
+	}
+	fmt.Fprint(w, string(theJSONMessage))
+}
+
 /* ENDING LEARNR CRUD OPERATIONS */
 
 /* BEGINNING LEARNRINFO CRUD OPERATIONS */

@@ -201,6 +201,38 @@ func makeorg(w http.ResponseWriter, r *http.Request) {
 	HandleError(w, err1)
 }
 
+//Handles the bulksend page
+func bulksend(w http.ResponseWriter, r *http.Request) {
+	aUser := getUser(w, r)
+	//Redirect User if they are not logged in
+	if !alreadyLoggedIn(w, r) {
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	}
+	theAdminOrgs := loadLearnROrgArray(aUser) //Get the admin orgs for selection
+	//Get all LearnRIds collected
+	theLearnRIDs := []int{}
+	for n := 0; n < len(theAdminOrgs); n++ {
+		theLearnRIDs = append(theLearnRIDs, theAdminOrgs[n].LearnrList...)
+	}
+	theAdminLearnRs := getAdminLearnRs(theLearnRIDs)
+	vd := UserViewData{
+		TheUser:          aUser,
+		Username:         aUser.UserName,
+		UserID:           aUser.UserID,
+		PhoneNums:        aUser.PhoneNums,
+		Email:            aUser.Email,
+		AdminOrgs:        aUser.AdminOrgs,
+		MessageDisplay:   0,
+		AdminOrgList:     theAdminOrgs,
+		OrganizedLearnRs: theAdminLearnRs,
+		Banned:           aUser.Banned,
+	}
+	/* Execute template, handle error */
+	err1 := template1.ExecuteTemplate(w, "bulksend.gohtml", vd)
+	HandleError(w, err1)
+}
+
 // Handle Errors passing templates
 func HandleError(w http.ResponseWriter, err error) {
 	if err != nil {
@@ -520,4 +552,17 @@ func giveAllLearnrDisplay(w http.ResponseWriter, r *http.Request) {
 		logWriter(errIs)
 	}
 	fmt.Fprint(w, string(theJSONMessage))
+}
+
+//Called from 'bulksend' to get all or LearnRs
+func getAdminLearnRs(theLearnRIDs []int) []Learnr {
+
+	goodGet, message, returnedLearnRs := callReadLearnRArray(theLearnRIDs)
+	if !goodGet {
+		theErr := "Error getting array of LearnRs: " + message
+		fmt.Println(theErr)
+		logWriter(theErr)
+	}
+
+	return returnedLearnRs
 }
