@@ -1,8 +1,13 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
+	"mime/multipart"
+	"net/http"
 	"os"
+	"path/filepath"
+	"strconv"
 	"strings"
 
 	"github.com/xuri/excelize/v2"
@@ -187,8 +192,38 @@ func examineExcelSheet(excelPath string, fileName string) (bool, string) {
 /* This function sends our Excel sheet with multiple people
 to send LearnRs to in Amazon buckets. It will be worked by our 'texting project'
 Microservice, then deleted afterwards */
-func sendExcelToBucket() (bool, string) {
+func sendExcelToBucket(aHex string, s *session.Session,
+	file multipart.File, fileHeader *multipart.FileHeader, aUser User) (bool, string) {
 	goodSend, message := true, ""
+
+	// the file content into a buffer
+	size := fileHeader.Size
+	buffer := make([]byte, size)
+	file.Read(buffer)
+
+	// create a unique file name for the file
+	stringUserID := strconv.Itoa(aUser.UserID)
+	tempFileName := "excelSheets/" + stringUserID + "/" + "/" + aHex + filepath.Ext(fileHeader.Filename)
+
+	/* Upload function for certain content type */
+	_, err := s3.New(s).PutObject(&s3.PutObjectInput{
+		Bucket:               aws.String(bucketname),
+		Key:                  aws.String(tempFileName),
+		ACL:                  aws.String("public-read"), // could be private if you want it to be access by only authorized users
+		Body:                 bytes.NewReader(buffer),
+		ContentLength:        aws.Int64(int64(size)),
+		ContentType:          aws.String(http.DetectContentType(buffer)),
+		ContentDisposition:   aws.String("attachment"),
+		ServerSideEncryption: aws.String("AES256"),
+		StorageClass:         aws.String("INTELLIGENT_TIERING"),
+	})
+	if err != nil {
+		errMsg := "Error submitting file for Amazon bucket in UploadFileToS3: " + err.Error()
+		logWriter(errMsg)
+		fmt.Printf("Error submitting file for Amazon bucket in UploadFileToS3: \n%v\n", err.Error())
+		message = errMsg
+		goodSend = false
+	}
 
 	return goodSend, message
 }

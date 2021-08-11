@@ -3,6 +3,7 @@ module learnrapp/project/webapp/golang/project
 go 1.16
 
 require (
+	github.com/aws/aws-sdk-go v1.40.19 // indirect
 	github.com/google/uuid v1.2.0
 	github.com/gorilla/mux v1.8.0
 	github.com/xuri/excelize/v2 v2.4.1

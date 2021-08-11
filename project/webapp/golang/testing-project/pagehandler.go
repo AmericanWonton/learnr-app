@@ -329,21 +329,34 @@ func bulksend(w http.ResponseWriter, r *http.Request) {
 						vd.ActionDisplay = 0
 					} else {
 						//Send this to Amazon buckets for storage
-						goodAmazon, theMessage := sendExcelToBucket()
-						if !goodAmazon {
-							vd.UserMessage = theMessage
+						//Create Amazon Session
+						s, err := session.NewSession(&aws.Config{
+							Region: aws.String("us-east-2"),
+							Credentials: credentials.NewStaticCredentials(
+								AWSAccessKeyId, // id
+								AWSSecretKey,   // secret
+								""),            // token can be left blank for now
+						})
+						if err != nil {
+							errMsg := "STEP 6 Could not upload file. Error creating session: " + err.Error()
+							vd.UserMessage = errMsg
 							vd.ActionDisplay = 0
 							vd.MessageDisplay = 1
-							fmt.Println(theMessage)
+							fmt.Println(errMsg)
+							logWriter(errMsg)
 						} else {
-							/* Good Excel sheet sending to Amazon, now we can see
-							if we can get that bulk load started */
-						}
+							goodAmazon, theMessage := sendExcelToBucket(hexName, s, file, fileHeader, aUser)
+							if !goodAmazon {
+								vd.UserMessage = theMessage
+								vd.ActionDisplay = 0
+								vd.MessageDisplay = 1
+								fmt.Println(theMessage)
+							} else {
+								/* Good Excel sheet sending to Amazon, now we can see
+								if we can get that bulk load started */
 
-						vd.UserMessage = message
-						vd.ActionDisplay = 0
-						vd.MessageDisplay = 1
-						fmt.Println(message)
+							}
+						}
 					}
 				}
 			}
