@@ -13,3 +13,11 @@ function displayInstructions(){
         seeThingsB.innerHTML = "Show Instructions";
     }
 }
+
+/* This funciton disables or button, until we recieve a response from the
+server */
+function disableSubmitting(){
+    var buttonSubmit = document.getElementById("buttonSubmit");
+
+    buttonSubmit.disabled = 'true';
+}

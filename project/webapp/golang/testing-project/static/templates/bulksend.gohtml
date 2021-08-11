@@ -146,9 +146,11 @@
                             <div class="formValueRow">
                                 <!-- Submit Button -->
                                 <div class="formValueColumn" style="justify-content:center">
-                                    <button class="submitB" id="buttonSubmit">Submit LearnRs to Everyone</button>
+                                    <button class="submitB" id="buttonSubmit" onclick="disableSubmitting()">Submit LearnRs to Everyone</button>
                                 </div>
                             </div>
+                            <!-- Hidden Form Value. Used to tell which form this is -->
+                            <input type="hidden" id="hiddenFormValue" name="hiddenFormValue" value="bulk-excel">
                         </form>
                     </div>
                 </div>
