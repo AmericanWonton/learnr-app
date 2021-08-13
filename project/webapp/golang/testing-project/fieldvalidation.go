@@ -814,6 +814,31 @@ func canSendLearnR(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, string(theJSONMessage))
 }
 
+/*	This calls our 'bulk text API' to see if we can start this bulk
+learnr. Called from 'pageHandler' after document is submitted to AWS */
+func canSendBulkLearnR(aUser User, sheetLocation string) (bool, string) {
+	goodSend, message := true, ""
+
+	//Declare struct we are Sending
+	type OurJSON struct {
+		TheUser            User       `json:"TheUser"`
+		TheLearnR          Learnr     `json:"TheLearnR"`
+		TheLearnRInfo      LearnrInfo `json:"TheLearnRInfo"`
+		ExcelSheetLocation string     `json:"ExcelSheetLocation"`
+	}
+
+	ourJSON := OurJSON{
+		TheUser:            aUser,
+		TheLearnR:          Learnr{},
+		TheLearnRInfo:      LearnrInfo{},
+		ExcelSheetLocation: sheetLocation,
+	}
+
+	fmt.Printf("DEBUG: Here is our JSON: %v\n", ourJSON)
+
+	return goodSend, message
+}
+
 /* Calls our CRUD API to narrow our search down */
 func searchLearnRs(w http.ResponseWriter, r *http.Request) {
 	//Declare Ajax return statements to be sent back

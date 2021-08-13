@@ -345,7 +345,7 @@ func bulksend(w http.ResponseWriter, r *http.Request) {
 							fmt.Println(errMsg)
 							logWriter(errMsg)
 						} else {
-							goodAmazon, theMessage := sendExcelToBucket(hexName, s, file, fileHeader, aUser)
+							goodAmazon, theMessage, amazonLocation := sendExcelToBucket(hexName, s, file, fileHeader, aUser)
 							if !goodAmazon {
 								vd.UserMessage = theMessage
 								vd.ActionDisplay = 0
@@ -354,7 +354,23 @@ func bulksend(w http.ResponseWriter, r *http.Request) {
 							} else {
 								/* Good Excel sheet sending to Amazon, now we can see
 								if we can get that bulk load started */
-
+								learnRFormValue := r.FormValue("learnR")
+								fmt.Printf("DEBUG: The form value is: %v\n", learnRFormValue)
+								goodSend, message := canSendBulkLearnR(aUser, amazonLocation)
+								if !goodSend {
+									errMsg := "There was an issue starting the Bulk LearnR: " + message
+									vd.UserMessage = errMsg
+									vd.ActionDisplay = 0
+									vd.MessageDisplay = 1
+									fmt.Println(errMsg)
+									logWriter(errMsg)
+								} else {
+									//Bulk LearnR successfully started
+									goodMsg := "Bulk LearnR successfully started"
+									vd.UserMessage = goodMsg
+									vd.ActionDisplay = 1
+									vd.MessageDisplay = 1
+								}
 							}
 						}
 					}

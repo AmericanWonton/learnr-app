@@ -193,7 +193,7 @@ func examineExcelSheet(excelPath string, fileName string) (bool, string) {
 to send LearnRs to in Amazon buckets. It will be worked by our 'texting project'
 Microservice, then deleted afterwards */
 func sendExcelToBucket(aHex string, s *session.Session,
-	file multipart.File, fileHeader *multipart.FileHeader, aUser User) (bool, string) {
+	file multipart.File, fileHeader *multipart.FileHeader, aUser User) (bool, string, string) {
 	goodSend, message := true, ""
 
 	// the file content into a buffer
@@ -225,5 +225,5 @@ func sendExcelToBucket(aHex string, s *session.Session,
 		goodSend = false
 	}
 
-	return goodSend, message
+	return goodSend, message, tempFileName
 }

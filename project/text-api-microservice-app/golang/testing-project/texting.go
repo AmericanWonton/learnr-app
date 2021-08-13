@@ -196,6 +196,47 @@ func initialLearnRStart(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+/* Called from our webpage to initialize MULTIPLE learnr requests
+to many people */
+func initialBulkLearnRStart(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/event-stream")
+	w.Header().Set("Cache-Control", "no-cache")
+	w.Header().Set("Connection", "keep-alive")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	/* Test Flusher stuff */
+	flusher, ok := w.(http.Flusher)
+	if !ok {
+		http.Error(w, "Server does not support Flusher!",
+			http.StatusInternalServerError)
+		return
+	}
+
+	//Declare Ajax return statements to be sent back
+	type SuccessMSG struct {
+		Message    string `json:"Message"`
+		SuccessNum int    `json:"SuccessNum"`
+	}
+	theSuccMessage := SuccessMSG{
+		Message:    "Bulk LearnRBegun successfully",
+		SuccessNum: 0,
+	}
+
+	/* Send the response back to Ajax */
+	theJSONMessage, err := json.Marshal(theSuccMessage)
+	//Send the response back
+	if err != nil {
+		errIs := "Error formatting JSON for return in initialLearnRStart: " + err.Error()
+		logWriter(errIs)
+		panic(errIs)
+	}
+	theInt, theErr := fmt.Fprint(w, string(theJSONMessage))
+	if theErr != nil {
+		logWriter("Error writing back to initialLearnRStart: " + theErr.Error() + " " + strconv.Itoa(theInt))
+		panic("Error writing back to initialLearnRStart: " + theErr.Error() + " " + strconv.Itoa(theInt))
+	}
+	flusher.Flush()
+}
+
 func conductLearnRSession(theLearnRUserSess UserSession) {
 	/* Start the timer for this LearnRSession */
 	theLearnRUserSess.StartTime = time.Now()
