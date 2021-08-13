@@ -111,8 +111,8 @@
                     </div>
                     <!-- Form Holder -->
                     <div class="formHolder">
-                        <form id="excelForm" name="excelForm" class="excelForm" enctype="multipart/form-data" 
-                        method="POST" action="/bulksend" onload="">
+                        <form id="excelForm" autocomplete="off" name="excelForm" class="excelForm" enctype="multipart/form-data"
+                        onsubmit="return formSubmit()">
                             <!-- Input Excel Sheet -->
                             <div class="formValueRow">
                                 <!-- Description -->
@@ -148,7 +148,7 @@
                             <div class="formValueRow">
                                 <!-- Submit Button -->
                                 <div class="formValueColumn" style="justify-content:center">
-                                    <button class="submitB" id="buttonSubmit">Submit LearnRs to Everyone</button>
+                                    <input type="submit" class="submitB" id="buttonSubmit" value="Submit!"/>
                                 </div>
                             </div>
                             <!-- Hidden Form Value. Used to tell which form this is -->

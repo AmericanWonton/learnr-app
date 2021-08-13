@@ -753,7 +753,6 @@ func canSendLearnR(w http.ResponseWriter, r *http.Request) {
 				}
 				/* 3. Create Post to JSON */
 				pingLocation := textAPIURL + "/initialLearnRStart"
-				logWriter(string(theJSONMessage)) //Debug
 				payload := strings.NewReader(string(theJSONMessage))
 				req, err := http.NewRequest("POST", pingLocation, payload)
 				if err != nil {
@@ -816,7 +815,7 @@ func canSendLearnR(w http.ResponseWriter, r *http.Request) {
 
 /*	This calls our 'bulk text API' to see if we can start this bulk
 learnr. Called from 'pageHandler' after document is submitted to AWS */
-func canSendBulkLearnR(aUser User, sheetLocation string) (bool, string) {
+func canSendBulkLearnR(aUser User, sheetLocation string, learnRID int) (bool, string) {
 	goodSend, message := true, ""
 
 	//Declare struct we are Sending
@@ -834,7 +833,87 @@ func canSendBulkLearnR(aUser User, sheetLocation string) (bool, string) {
 		ExcelSheetLocation: sheetLocation,
 	}
 
-	fmt.Printf("DEBUG: Here is our JSON: %v\n", ourJSON)
+	/* Start by getting LearnR to add to 'ourJSON' */
+	goodLearnRGet, resultMsg, theLearnR := callReadLearnR(learnRID)
+	if !goodLearnRGet {
+		errMsg := "There was an issue getting the LearnR: " + resultMsg
+		goodSend = false
+		message = errMsg
+		fmt.Println(errMsg)
+	} else {
+		/* Good LearnR get. Now get LearnRInform */
+		ourJSON.TheLearnR = theLearnR
+		goodLearnRInformGet, resultingMessage, theLearnRInfo := callReadLearnrInfo(theLearnR.InfoID)
+		if !goodLearnRInformGet {
+			errMsg := "There was an issue getting the LearnRInform: " + resultingMessage
+			goodSend = false
+			message = errMsg
+			fmt.Println(errMsg)
+		} else {
+			/* Good LearnRInfo; ping our text API to see if we can begin */
+			ourJSON.TheLearnRInfo = theLearnRInfo
+			ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+			defer cancel()
+			/* 2. Marshal test case to JSON expect */
+			theJSONMessage, err := json.Marshal(ourJSON)
+			if err != nil {
+				theErr := "Could not marshal JSON: " + err.Error()
+				logWriter(theErr)
+				fmt.Println(theErr)
+				goodSend, message = false, theErr
+			}
+			/* 3. Create Post to JSON */
+			pingLocation := "http://localhost:3000" + "/initialBulkLearnRStart"
+			payload := strings.NewReader(string(theJSONMessage))
+			req, err := http.NewRequest("POST", pingLocation, payload)
+			if err != nil {
+				theErr := "Error making request to Text API: " + err.Error()
+				logWriter(theErr)
+				fmt.Println(theErr)
+				goodSend, message = false, theErr
+			}
+			req.Header.Add("Content-Type", "application/json")
+			defer req.Body.Close()
+			/* 4. Get response from Post */
+			resp, err := http.DefaultClient.Do(req.WithContext(ctx))
+			if resp.StatusCode >= 300 || resp.StatusCode <= 199 {
+				theErr := "Failed response from initialBulkLearnRStart: " + strconv.Itoa(resp.StatusCode)
+				logWriter(theErr)
+				goodSend, message = false, theErr
+				fmt.Println(theErr)
+				return false, theErr
+			} else if err != nil {
+				theErr := "Failed response from initialBulkLearnRStart: " + strconv.Itoa(resp.StatusCode) + " " + err.Error()
+				logWriter(theErr)
+				goodSend, message = false, theErr
+				fmt.Println(theErr)
+				return goodSend, message
+			}
+			defer resp.Body.Close()
+			//Declare message we expect to see returned
+			body, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				theErr := "There was an error reading response from initialBulkLearnRStart " + err.Error()
+				logWriter(theErr)
+				goodSend, message = false, theErr
+				fmt.Println(theErr)
+			}
+			type TheSuccessMsg struct {
+				Message    string `json:"Message"`
+				SuccessNum int    `json:"SuccessNum"`
+			}
+			var returnedMessage TheSuccessMsg
+			json.Unmarshal(body, &returnedMessage)
+			/* 5. Evaluate response in returnedMessage */
+			if returnedMessage.SuccessNum != 0 {
+				goodSend, message = false, "Failed to start bulk text messages with Users"
+			} else {
+				message = "Text convo started with all Users"
+			}
+		}
+	}
+
+	fmt.Printf("DEBUG: Here is goodSend: %v and here is messsage: %v\n", goodSend, message)
 
 	return goodSend, message
 }

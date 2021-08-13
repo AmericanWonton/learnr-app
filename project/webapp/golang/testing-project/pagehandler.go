@@ -4,20 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/credentials"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"gopkg.in/mgo.v2/bson"
 )
 
 /* Both are used for usernames below */
@@ -255,144 +248,45 @@ func bulksend(w http.ResponseWriter, r *http.Request) {
 
 	/* If this is an HTTP Post, determine if we need to load this page differently*/
 	if r.Method == http.MethodPost {
-		fmt.Printf("DEBUG: We posted in bulksend\n")
+		/* Define stuff to return */
+		type TheSuccessMsg struct {
+			Message    string `json:"Message"`
+			SuccessNum int    `json:"SuccessNum"`
+		}
+		theSuccMessage := TheSuccessMsg{
+			Message:    "Good submission",
+			SuccessNum: 0,
+		}
 		hiddenFormValue := r.FormValue("hiddenFormValue")
-		if strings.Contains(strings.ToLower(hiddenFormValue), strings.ToLower("bulk-excel")) {
-			//Good value, continue working this Excel sheet
-			maxSize := int64(1024000) // allow only 1MB of file size
-			err := r.ParseMultipartForm(maxSize)
-			if err != nil {
-				theErr := "File too large. Max Size: " + strconv.Itoa(int(maxSize)) + "mb " + err.Error()
-				fmt.Println(theErr)
-				log.Println(err)
-				vd.MessageDisplay = 1
-				vd.UserMessage = theErr
-				vd.ActionDisplay = 0
-			} else {
-				//File okay, continue on
-				file, fileHeader, err := r.FormFile("excel-file") //Insert name of file element here
-				if err != nil {
-					errMsg := "Error getting file submission: " + err.Error()
-					fmt.Println(errMsg)
-					vd.MessageDisplay = 1
-					vd.UserMessage = errMsg
-					vd.ActionDisplay = 0
-				} else {
-					//Good file form, moving on
-					fmt.Printf("DEBUG: Here is the file name: %v\n", fileHeader.Filename)
-					//Create path and write file on server
-					hexName := bson.NewObjectId().Hex()
-					fileExtension := filepath.Ext(fileHeader.Filename)
-					theFileName := hexName + fileExtension
-					theDir, _ := os.Getwd()
-					thePath := filepath.Join(theDir, "tempFiles")
-					os.MkdirAll(thePath, 0777)
-					//Write file on server
-					f, err := os.OpenFile(theFileName, os.O_WRONLY|os.O_CREATE, 0777)
-					if err != nil {
-						theErr := "Error opening Excel file: " + err.Error()
-						fmt.Println(theErr)
-						log.Fatal(theErr)
-					}
-					io.Copy(f, file)
-					f.Close()
-					file.Close()
-					//Move file to folder
-					thePath2 := filepath.Join(theDir, "tempFiles", theFileName)
-					readFile, err := os.Open(theFileName)
-					if err != nil {
-						errMsg := "STEP 2: Error opening this file: " + err.Error()
-						fmt.Println(errMsg)
-						log.Fatal(errMsg)
-					}
-					writeToFile, err := os.Create(thePath2)
-					if err != nil {
-						errMsg := "STEP 3 Error creating writeToFile: " + err.Error()
-						fmt.Println(errMsg)
-						log.Fatal(errMsg)
-					}
-					//Move file Contents to folder
-					_, err3 := io.Copy(writeToFile, readFile)
-					if err3 != nil {
-						errMsg := "PART 4 Error copying the contents of the one image to the other: " + err3.Error()
-						log.Fatal(errMsg)
-					}
-					readFile.Close()    //Close File
-					writeToFile.Close() //Close File
-					//Delete created file
-					removeErr := os.Remove(theFileName)
-					if removeErr != nil {
-						errMsg := "STEP 5 Error removing the file: " + removeErr.Error()
-						fmt.Println(errMsg)
-						log.Fatal(errMsg)
-					}
-
-					/* Analayze Excel sheet to determine if this Excel sheet is formattted okay */
-					goodExcel, message := examineExcelSheet(thePath2, theFileName)
-					if !goodExcel {
-						fmt.Println(message)
-						vd.MessageDisplay = 1
-						vd.UserMessage = message
-						vd.ActionDisplay = 0
-					} else {
-						//Send this to Amazon buckets for storage
-						//Create Amazon Session
-						s, err := session.NewSession(&aws.Config{
-							Region: aws.String("us-east-2"),
-							Credentials: credentials.NewStaticCredentials(
-								AWSAccessKeyId, // id
-								AWSSecretKey,   // secret
-								""),            // token can be left blank for now
-						})
-						if err != nil {
-							errMsg := "STEP 6 Could not upload file. Error creating session: " + err.Error()
-							vd.UserMessage = errMsg
-							vd.ActionDisplay = 0
-							vd.MessageDisplay = 1
-							fmt.Println(errMsg)
-							logWriter(errMsg)
-						} else {
-							goodAmazon, theMessage, amazonLocation := sendExcelToBucket(hexName, s, file, fileHeader, aUser)
-							if !goodAmazon {
-								vd.UserMessage = theMessage
-								vd.ActionDisplay = 0
-								vd.MessageDisplay = 1
-								fmt.Println(theMessage)
-							} else {
-								/* Good Excel sheet sending to Amazon, now we can see
-								if we can get that bulk load started */
-								learnRFormValue := r.FormValue("learnR")
-								fmt.Printf("DEBUG: The form value is: %v\n", learnRFormValue)
-								goodSend, message := canSendBulkLearnR(aUser, amazonLocation)
-								if !goodSend {
-									errMsg := "There was an issue starting the Bulk LearnR: " + message
-									vd.UserMessage = errMsg
-									vd.ActionDisplay = 0
-									vd.MessageDisplay = 1
-									fmt.Println(errMsg)
-									logWriter(errMsg)
-								} else {
-									//Bulk LearnR successfully started
-									goodMsg := "Bulk LearnR successfully started"
-									vd.UserMessage = goodMsg
-									vd.ActionDisplay = 1
-									vd.MessageDisplay = 1
-								}
-							}
-						}
-					}
-				}
-			}
-		} else {
-			theErr := "Error with form submission: " + "Wrong form value: " + hiddenFormValue
-			vd.MessageDisplay = 1
-			vd.UserMessage = theErr
-			vd.ActionDisplay = 0
+		maxSize := int64(1024000) // allow only 1MB of file size
+		err := r.ParseMultipartForm(maxSize)
+		if err != nil {
+			theErr := "File too large. Max Size: " + strconv.Itoa(int(maxSize)) + "mb " + err.Error()
+			theSuccMessage.Message = theErr
+			theSuccMessage.SuccessNum = 1
 			fmt.Println(theErr)
 		}
-		/* Execute template, handle error */
-		err1 := template1.ExecuteTemplate(w, "bulksend.gohtml", vd)
-		HandleError(w, err1)
+		file, fileHeader, err := r.FormFile("excel-file") //Insert name of file element here
+		if err != nil {
+			theErr := "Error getting Excel file: " + strconv.Itoa(int(maxSize)) + "mb " + err.Error()
+			theSuccMessage.Message = theErr
+			theSuccMessage.SuccessNum = 1
+			fmt.Println(theErr)
+		}
+		fileExtension := filepath.Ext(fileHeader.Filename)
+		fmt.Printf("Here is the file extension: %v\n", fileExtension)
+		file.Close()
+		fmt.Printf("We got the form: %v", hiddenFormValue)
+
+		/* Send the response back to Ajax */
+		theJSONMessage, err := json.Marshal(theSuccMessage)
+		//Send the response back
+		if err != nil {
+			errIs := "Error formatting JSON for return in submitting file: " + err.Error()
+			fmt.Println(errIs)
+			logWriter(errIs)
+		}
+		fmt.Fprint(w, string(theJSONMessage))
 	} else {
 		/* Execute template, handle error */
 		err1 := template1.ExecuteTemplate(w, "bulksend.gohtml", vd)

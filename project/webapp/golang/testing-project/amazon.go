@@ -107,8 +107,7 @@ func examineExcelSheet(excelPath string, fileName string) (bool, string) {
 	for _, row := range rows {
 		//Loop through columns to check each field
 		if theRows == 0 {
-			//Do nothing for first row with titles of columns
-			fmt.Printf("Starting with row %v\n", theRows)
+
 		} else {
 			theColumns := 0
 			for _, colCell := range row {
@@ -126,8 +125,7 @@ func examineExcelSheet(excelPath string, fileName string) (bool, string) {
 						excelErrors = append(excelErrors, theErr)
 						goodExcel = false
 					} else {
-						//Debug printing
-						fmt.Printf("Good name: %v\n", personName)
+
 					}
 					break
 				case 1:
@@ -146,8 +144,7 @@ func examineExcelSheet(excelPath string, fileName string) (bool, string) {
 						excelErrors = append(excelErrors, theErr)
 						goodExcel = false
 					} else {
-						//Debug printing
-						fmt.Printf("Good Phone Num: %v\n", personPhone)
+
 					}
 					break
 				case 2:
@@ -162,8 +159,7 @@ func examineExcelSheet(excelPath string, fileName string) (bool, string) {
 						excelErrors = append(excelErrors, theErr)
 						goodExcel = false
 					} else {
-						//Debug printing
-						fmt.Printf("Good Message: %v\n", personSay)
+
 					}
 				default:
 					//Wrong column, there's an issue

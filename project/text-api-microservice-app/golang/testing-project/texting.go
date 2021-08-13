@@ -221,6 +221,24 @@ func initialBulkLearnRStart(w http.ResponseWriter, r *http.Request) {
 		SuccessNum: 0,
 	}
 
+	//Get the byte slice from the request
+	bs, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		fmt.Println(err)
+		logWriter(err.Error())
+	}
+	type OurJSON struct {
+		TheUser            User       `json:"TheUser"`
+		TheLearnR          Learnr     `json:"TheLearnR"`
+		TheLearnRInfo      LearnrInfo `json:"TheLearnRInfo"`
+		ExcelSheetLocation string     `json:"ExcelSheetLocation"`
+	}
+	//Marshal it into our type
+	var theJSON OurJSON
+	json.Unmarshal(bs, &theJSON)
+
+	fmt.Printf("DEBUG: Hey, you reached the Bulk Text Sender\n")
+
 	/* Send the response back to Ajax */
 	theJSONMessage, err := json.Marshal(theSuccMessage)
 	//Send the response back
