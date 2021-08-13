@@ -11,6 +11,10 @@ import (
 	"strings"
 
 	"github.com/xuri/excelize/v2"
+
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3"
 )
 
 var AWSAccessKeyId string

@@ -1201,7 +1201,7 @@ body, html {
 
 .formHolder{
     /* flexbox styling */
-    display: none;
+    display: flex;
     flex-flow: wrap;
     justify-content: center;
     align-content: center;
@@ -1209,6 +1209,7 @@ body, html {
     /* styling */
     
     /* debug styling */
+    border: 1px solid black;
 }
 
 .excelForm{
@@ -1217,7 +1218,7 @@ body, html {
 
 .formValueRow{
     /* flexbox styling */
-    display: none;
+    display: flex;
     flex-flow: wrap;
     justify-content: center;
     align-content: center;
@@ -1229,7 +1230,7 @@ body, html {
 
 .formValueColumn{
     /* flexbox styling */
-    display: none;
+    display: flex;
     flex-flow: wrap;
     align-content: center;
     width: 45%;

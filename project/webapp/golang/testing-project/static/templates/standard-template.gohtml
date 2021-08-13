@@ -369,6 +369,13 @@
                 <!-- Bulk Send LearnR: NOTE: This should only be visible
                 if the User has at least ONE admin org, AND 1 LearnR
                 under that Admin Org -->
+                {{if eq $userExampOrg 0}}
+                    <div class="navigationLinkDiv">
+                        <p class="navigationLinkP" onclick="navigateHeader(11, 0)">
+                            Bulk LearnR Send (Admins Only!)
+                        </p>
+                    </div>
+                {{end}}
                 <!-- Send Help -->
                 <div class="navigationLinkDiv">
                     <p class="navigationLinkP" onclick="navigateHeader(5, 0)">

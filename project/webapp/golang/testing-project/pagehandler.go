@@ -13,6 +13,11 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"gopkg.in/mgo.v2/bson"
 )
 
 /* Both are used for usernames below */
@@ -231,6 +236,7 @@ func bulksend(w http.ResponseWriter, r *http.Request) {
 			"LearnROrg that you are an Administrator of..."
 		shouldDisplay = 1
 		actionDisplay = 1
+		fmt.Println(userMessage)
 	}
 	vd := UserViewData{
 		TheUser:          aUser,
@@ -249,6 +255,7 @@ func bulksend(w http.ResponseWriter, r *http.Request) {
 
 	/* If this is an HTTP Post, determine if we need to load this page differently*/
 	if r.Method == http.MethodPost {
+		fmt.Printf("DEBUG: We posted in bulksend\n")
 		hiddenFormValue := r.FormValue("hiddenFormValue")
 		if strings.Contains(strings.ToLower(hiddenFormValue), strings.ToLower("bulk-excel")) {
 			//Good value, continue working this Excel sheet
