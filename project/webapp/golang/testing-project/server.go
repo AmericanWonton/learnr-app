@@ -45,7 +45,7 @@ func handleRequests() {
 	//Used for Learnr functions
 	myRouter.HandleFunc("/giveAllLearnrDisplay", giveAllLearnrDisplay).Methods("GET") //Get Learnrs for display
 	//This is a debug section
-	myRouter.HandleFunc("/getFormExcelSubmission", getFormExcelSubmission).Methods("POST") //Post a mutlifile form
+
 	//Serve our static files
 	myRouter.Handle("/", http.FileServer(http.Dir("./static")))
 	myRouter.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))

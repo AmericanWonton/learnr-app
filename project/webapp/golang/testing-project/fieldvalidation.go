@@ -9,7 +9,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -914,8 +913,6 @@ func canSendBulkLearnR(aUser User, sheetLocation string, learnRID int) (bool, st
 		}
 	}
 
-	fmt.Printf("DEBUG: Here is goodSend: %v and here is messsage: %v\n", goodSend, message)
-
 	return goodSend, message
 }
 
@@ -1126,46 +1123,4 @@ func bulkLearnRCreation(excelPath string, excelSheetName string, theUser User,
 		}
 	}
 	return goodExcel, message
-}
-
-/* This is a test Excel sheet send to function*/
-func getFormExcelSubmission(w http.ResponseWriter, r *http.Request) {
-	//Collect JSON from Postman or wherever
-
-	//Send a response back to Ajax after session is made
-	type SuccessMSG struct {
-		Message    string `json:"Message"`
-		SuccessNum int    `json:"SuccessNum"`
-	}
-	theSuccMessage := SuccessMSG{}
-
-	fmt.Printf("DEBUG: We are in example Excel function\n")
-	hiddenFormValue := r.FormValue("hiddenFormValue")
-	maxSize := int64(1024000) // allow only 1MB of file size
-	err := r.ParseMultipartForm(maxSize)
-	if err != nil {
-		theErr := "File too large. Max Size: " + strconv.Itoa(int(maxSize)) + "mb " + err.Error()
-		theSuccMessage.Message = theErr
-		theSuccMessage.SuccessNum = 1
-		fmt.Println(theErr)
-	}
-	file, fileHeader, err := r.FormFile("excel-file") //Insert name of file element here
-	if err != nil {
-		theErr := "Error getting Excel file: " + strconv.Itoa(int(maxSize)) + "mb " + err.Error()
-		theSuccMessage.Message = theErr
-		theSuccMessage.SuccessNum = 1
-		fmt.Println(theErr)
-	}
-	fileExtension := filepath.Ext(fileHeader.Filename)
-	fmt.Printf("Here is the file extension: %v\n", fileExtension)
-	file.Close()
-	fmt.Printf("We got the form: %v", hiddenFormValue)
-
-	//Return JSON
-	theJSONMessage, err := json.Marshal(theSuccMessage)
-	if err != nil {
-		fmt.Println(err)
-		logWriter(err.Error())
-	}
-	fmt.Fprint(w, string(theJSONMessage))
 }
