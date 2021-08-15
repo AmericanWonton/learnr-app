@@ -49,6 +49,7 @@ func init() {
 	getbadWords()
 	//Initialize our Twilio Cresd
 	getTwilioCreds()
+	loadAmazonCreds() // Initialize Amazon Creds
 	//Get our stop text values
 	fillStopText()
 	microsUp() //Tests if our Microservices are up
