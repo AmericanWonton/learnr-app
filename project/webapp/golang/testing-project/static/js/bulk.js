@@ -24,44 +24,46 @@ function disableSubmitting(){
 
 /* This clears our form upon error or page reload */
 window.addEventListener('DOMContentLoaded', function(){
-    /*
-    var form = document.getElementById("excelForm");
-    form.onsubmit = function(){
-        form.reset();
-        console.log("Form cleared");
+    // Access the form element...
+    const form = document.getElementById("excelForm");
+
+    /* Define function for sending form data */
+    function sendData(){
+        const XHR = new XMLHttpRequest();
+        const FD = new FormData(form);
+
+        // Define what happens on successful data submission
+        XHR.addEventListener("load",function(event){
+            var item = XHR.responseText;
+            var SuccessMSG = JSON.parse(item);
+            if (SuccessMSG.SuccessNum === 0){
+                //Good file submit, alert User
+                alert(String(SuccessMSG.Message));
+                form.reset();
+            } else {
+                //Bad file submit, alert User
+                alert(String(SuccessMSG.Message));
+                form.reset();
+            }
+        });
+
+        // Define what happens in case of error
+        XHR.addEventListener("error",function(event) {
+            alert('Oops! Something went wrong.');
+        });
+
+        // Set up our request
+        XHR.open("POST","/bulksend");
+
+        // The data sent is what the user provided in the form
+        XHR.send(FD);
     }
-    */
+    
+
+    //Add listening event to the form when submitted
+    form.addEventListener("submit", function(event){
+        event.preventDefault();
+
+        sendData(); //Send Form data from JS
+    });
 });
-
-function formSubmit(){
-    /* Get file name for form submission */
-    var filename;
-    var fullPath = document.getElementById('excelFileInput').value;
-    if (fullPath) {
-        var startIndex = (fullPath.indexOf('\\') >= 0 ? fullPath.lastIndexOf('\\') : fullPath.lastIndexOf('/'));
-        filename = fullPath.substring(startIndex);
-        if (filename.indexOf('\\') === 0 || filename.indexOf('/') === 0) {
-            filename = filename.substring(1);
-        }
-    }
-    //Get Form Data
-    var data = new FormData();
-    data.append('excel-file', document.getElementById("excelFileInput").value, String(filename));
-    data.append('learnR', document.getElementById("learnR").value);
-    data.append('hiddenFormValue', document.getElementById("hiddenFormValue").value);
-
-
-    //Ajax
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/bulksend', true);
-    xhr.onload = function(){
-        console.log("Form submitted: " + this.response);
-        //MANUAL RESET
-        document.getElementById("excelFileInput").value = "";
-        document.getElementById("learnR").value = "";
-    };
-    xhr.send(data);
-
-    // (C) STOP DEFAULT FORM SUBMIT/PAGE RELOAD
-    return false;
-}
