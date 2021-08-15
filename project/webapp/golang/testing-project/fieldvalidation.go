@@ -815,7 +815,7 @@ func canSendLearnR(w http.ResponseWriter, r *http.Request) {
 
 /*	This calls our 'bulk text API' to see if we can start this bulk
 learnr. Called from 'pageHandler' after document is submitted to AWS */
-func canSendBulkLearnR(aUser User, sheetLocation string, learnRID int) (bool, string) {
+func canSendBulkLearnR(aUser User, sheetLocation string, fileName string, learnRID int) (bool, string) {
 	goodSend, message := true, ""
 
 	//Declare struct we are Sending
@@ -823,6 +823,7 @@ func canSendBulkLearnR(aUser User, sheetLocation string, learnRID int) (bool, st
 		TheUser            User       `json:"TheUser"`
 		TheLearnR          Learnr     `json:"TheLearnR"`
 		TheLearnRInfo      LearnrInfo `json:"TheLearnRInfo"`
+		TheFileName        string     `json:"TheFileName"`
 		ExcelSheetLocation string     `json:"ExcelSheetLocation"`
 	}
 
@@ -830,6 +831,7 @@ func canSendBulkLearnR(aUser User, sheetLocation string, learnRID int) (bool, st
 		TheUser:            aUser,
 		TheLearnR:          Learnr{},
 		TheLearnRInfo:      LearnrInfo{},
+		TheFileName:        fileName,
 		ExcelSheetLocation: sheetLocation,
 	}
 

@@ -231,6 +231,7 @@ func initialBulkLearnRStart(w http.ResponseWriter, r *http.Request) {
 		TheUser            User       `json:"TheUser"`
 		TheLearnR          Learnr     `json:"TheLearnR"`
 		TheLearnRInfo      LearnrInfo `json:"TheLearnRInfo"`
+		TheFileName        string     `json:"TheFileName"`
 		ExcelSheetLocation string     `json:"ExcelSheetLocation"`
 	}
 	//Marshal it into our type
@@ -240,7 +241,8 @@ func initialBulkLearnRStart(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("DEBUG: Hey, you reached the Bulk Text Sender\n")
 
 	/* Start by getting our Excel sheet down from AWS and putting it in a location to work with */
-	goodFilePlacement, filePlaceMSG, workFileLocation := placeAmazonFile(theJSON.ExcelSheetLocation, strconv.Itoa(theJSON.TheUser.UserID),
+	goodFilePlacement, filePlaceMSG, workFileLocation := placeAmazonFile(theJSON.ExcelSheetLocation, theJSON.TheFileName,
+		strconv.Itoa(theJSON.TheUser.UserID),
 		strconv.Itoa(theJSON.TheLearnR.ID), strconv.Itoa(theJSON.TheLearnRInfo.ID))
 	if !goodFilePlacement {
 		theSuccMessage.Message = "Could not get Amazon file to work off of: " + filePlaceMSG

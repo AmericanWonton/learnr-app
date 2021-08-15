@@ -203,7 +203,7 @@ func sendExcelToBucket(aHex string, s *session.Session,
 
 	// create a unique file name for the file
 	stringUserID := strconv.Itoa(aUser.UserID)
-	tempFileName := "excelSheets/" + stringUserID + "/" + "/" + aHex + filepath.Ext(fileHeader.Filename)
+	tempFileName := "excelSheets/" + stringUserID + "/" + aHex + filepath.Ext(fileHeader.Filename)
 
 	/* Upload function for certain content type */
 	_, err := s3.New(s).PutObject(&s3.PutObjectInput{

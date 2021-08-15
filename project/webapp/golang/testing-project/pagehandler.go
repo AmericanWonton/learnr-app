@@ -381,7 +381,7 @@ func bulksend(w http.ResponseWriter, r *http.Request) {
 								if we can get that bulk load started */
 								learnRFormValue := r.FormValue("learnR")
 								learnRID, _ := strconv.Atoi(learnRFormValue)
-								goodSend, message := canSendBulkLearnR(aUser, amazonLocation, learnRID)
+								goodSend, message := canSendBulkLearnR(aUser, amazonLocation, theFileName, learnRID)
 								if !goodSend {
 									errMsg := "There was an issue starting the Bulk LearnR: " + message
 									vd.UserMessage = errMsg

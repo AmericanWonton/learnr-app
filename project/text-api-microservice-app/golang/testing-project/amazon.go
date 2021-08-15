@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"strconv"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
@@ -42,15 +43,16 @@ func loadAmazonCreds() {
 	AWSSecretKey = os.Getenv("AWS_SECRET_KEY")
 }
 
-func placeAmazonFile(amazonFileLocation string, userid string, learnrID string, learnrinfoid string) (bool, string, string) {
+func placeAmazonFile(amazonFileLocation string, theFileName string,
+	userid string, learnrID string, learnrinfoid string) (bool, string, string) {
 	goodFileGet, returnMessage, filePlacement := true, "Working file created successfully", ""
 
 	//Make the potential directory
 	curDir, _ := os.Getwd()
-	tempFileLocation := filepath.Join(curDir, userid, learnrID, learnrinfoid)
+	tempFileLocation := filepath.Join(curDir, "aws-workfiles", userid, learnrID, learnrinfoid)
 	os.MkdirAll(tempFileLocation, 0777)
 	//Create file to copy to and place in temp directory
-	item := "fileMove.xlsx"
+	item := theFileName
 	file, err := os.Create(item)
 	if err != nil {
 		logMsg := "Error creating file: " + err.Error()
@@ -62,9 +64,6 @@ func placeAmazonFile(amazonFileLocation string, userid string, learnrID string, 
 	//Initialize secret keys
 	os.Setenv("AWS_ACCESS_KEY", AWSAccessKeyId)
 	os.Setenv("AWS_SECRET_KEY", AWSSecretKey)
-
-	fmt.Printf("DEBUG: Here is access key: %v\nHere is secret key: %v\nHere is filelocation: %v\n", AWSAccessKeyId,
-		AWSSecretKey, amazonFileLocation)
 	sess, _ := session.NewSession(&aws.Config{
 		Region:                         aws.String("us-east-2"),
 		Credentials:                    credentials.NewEnvCredentials(),
@@ -91,46 +90,64 @@ func placeAmazonFile(amazonFileLocation string, userid string, learnrID string, 
 	}
 	file.Close() //Closes the file in order to move it
 
-	//Open this file again to move
-	readFile, err := os.Open(file.Name())
+	sourceFileStat, err := os.Stat(theFileName)
 	if err != nil {
-		theErr := "Error opening this file: " + err.Error()
+		theErr := "Error with sourceStat: " + err.Error()
 		fmt.Println(theErr)
 		logWriter(theErr)
 		goodFileGet, returnMessage, filePlacement = false, theErr, ""
 		return goodFileGet, returnMessage, filePlacement
 	}
-	writeToFile, err := os.Create(tempFileLocation)
-	if err != nil {
-		theErr := "Error creating writeToFile: " + err.Error()
+
+	if !sourceFileStat.Mode().IsRegular() {
+		theErr := "Error with regular sourceStat: " + err.Error()
 		fmt.Println(theErr)
 		logWriter(theErr)
 		goodFileGet, returnMessage, filePlacement = false, theErr, ""
 		return goodFileGet, returnMessage, filePlacement
 	}
-	//Move file Contents to folder
-	n, err := io.Copy(writeToFile, readFile)
+
+	source, err := os.Open(theFileName)
 	if err != nil {
-		theErr := "Error copying the contents of the one Excel sheet to another: " + err.Error()
+		theErr := "Error with file opening: " + err.Error()
 		fmt.Println(theErr)
 		logWriter(theErr)
 		goodFileGet, returnMessage, filePlacement = false, theErr, ""
 		return goodFileGet, returnMessage, filePlacement
 	}
-	fmt.Printf("DEBUG: move the contents of n: %v\n", n)
-	readFile.Close()    //Close File
-	writeToFile.Close() //Close File
+
+	dst := filepath.Join(tempFileLocation, theFileName)
+	destination, err := os.Create(dst)
+	if err != nil {
+		theErr := "Error with destination creation: " + err.Error()
+		fmt.Println(theErr)
+		logWriter(theErr)
+		goodFileGet, returnMessage, filePlacement = false, theErr, ""
+		return goodFileGet, returnMessage, filePlacement
+	}
+	nBytes, err := io.Copy(destination, source)
+	if err != nil {
+		theErr := "Error copying files: " + err.Error() + strconv.Itoa(int(nBytes))
+		fmt.Println(theErr)
+		logWriter(theErr)
+		goodFileGet, returnMessage, filePlacement = false, theErr, ""
+		return goodFileGet, returnMessage, filePlacement
+	}
+
+	/* Close our files */
+	source.Close()
+	destination.Close()
+
 	//Delete created file
-	removeErr := os.Remove(file.Name())
+	removeErr := os.Remove(theFileName)
 	if removeErr != nil {
-		theErr := "Error removing the file: " + removeErr.Error()
+		theErr := "Error deleting file: " + removeErr.Error()
 		fmt.Println(theErr)
 		logWriter(theErr)
 		goodFileGet, returnMessage, filePlacement = false, theErr, ""
 		return goodFileGet, returnMessage, filePlacement
 	}
 
-	/* Set returned variables */
-
-	return goodFileGet, returnMessage, filePlacement
+	/* Set returned variables, (the destination should be where our file is) */
+	return goodFileGet, returnMessage, dst
 }
