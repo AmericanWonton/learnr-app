@@ -44,6 +44,7 @@ function navigateHeader(whichLink, whichgame) {
         case 10:
             //Make LearnR Page
             window.location.assign("/learnr");
+            break;
         case 11:
             //Bulk LearnR Send
             window.location.assign("/bulksend");

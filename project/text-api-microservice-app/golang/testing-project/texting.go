@@ -411,13 +411,18 @@ func conductBulkLearnRSession(theBulkLearnRUserSess BulkUserSession) {
 	for l := 0; l < len(theBulkLearnRUserSess.UserSessions); l++ {
 		wg.Add(1)
 		go goRoutConductLearnRSession(theBulkLearnRUserSess.UserSessions[l])
+		fmt.Printf("DEBUG: About to start our UserSession. Phone Number is: %v\nPersonName is: %v\nWhat to Say:%v\n\n",
+			theBulkLearnRUserSess.UserSessions[l].PersonPhoneNum, theBulkLearnRUserSess.UserSessions[l].PersonPhoneNum,
+			theBulkLearnRUserSess.UserSessions[l].IntroductionSaying)
 	}
 
 	wg.Wait() //Wait until LearnRS are done
+	fmt.Printf("DEBUG: Done with bulkLearnRSession\n")
 }
 
 /* This conducts a singleLearnR Session as a GoRoutine which returns 'Done'*/
 func goRoutConductLearnRSession(theLearnRUserSess UserSession) {
+	fmt.Printf("DEBUG: Starting LearnR Session to: %v at %v\n", theLearnRUserSess.PersonName, theLearnRUserSess.PersonPhoneNum)
 	/* Start the timer for this LearnRSession */
 	theLearnRUserSess.StartTime = time.Now()
 	//Add this User Session to our map of phone numbers
