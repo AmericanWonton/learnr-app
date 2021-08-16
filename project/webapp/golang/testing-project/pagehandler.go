@@ -368,7 +368,8 @@ func bulksend(w http.ResponseWriter, r *http.Request) {
 							theSuccMessage.SuccessNum = 1
 							theSuccMessage.Message = "Error uplodaing Excel file; contact Admin step 6"
 						} else {
-							goodAmazon, theMessage, amazonLocation := sendExcelToBucket(hexName, s, file, fileHeader, aUser)
+							goodAmazon, theMessage, amazonLocation := sendExcelToBucket(thePath2, hexName,
+								s, file, fileHeader, aUser)
 							if !goodAmazon {
 								vd.UserMessage = theMessage
 								vd.ActionDisplay = 0

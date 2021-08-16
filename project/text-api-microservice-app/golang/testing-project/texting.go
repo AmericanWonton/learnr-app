@@ -312,9 +312,8 @@ func createBulkUserSessions(workFileLocation string, theBulkSession BulkUserSess
 	f, err := excelize.OpenFile(workFileLocation)
 	if err != nil {
 		errMsg := "Issue opening Excel sheet: " + err.Error()
+		fmt.Println("DEBUG: workfileLoaciton: " + workFileLocation)
 		fmt.Println(errMsg)
-		goodExcel, message = false, errMsg
-		return goodExcel, message
 	}
 
 	/* Check through person name to make sure values are okay */

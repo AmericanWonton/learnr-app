@@ -24,3 +24,6 @@
 2021/08/15 16:14:36 There was an issue starting the Bulk LearnR: Failed to start bulk text messages with Users
 2021/08/15 18:20:27 Email service is initialized
 2021/08/15 18:39:19 Email service is initialized
+2021/08/16 13:23:46 Email service is initialized
+2021/08/16 13:30:26 Email service is initialized
+2021/08/16 13:58:15 Email service is initialized

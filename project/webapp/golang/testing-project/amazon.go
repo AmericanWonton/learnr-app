@@ -192,14 +192,23 @@ func examineExcelSheet(excelPath string, fileName string) (bool, string) {
 /* This function sends our Excel sheet with multiple people
 to send LearnRs to in Amazon buckets. It will be worked by our 'texting project'
 Microservice, then deleted afterwards */
-func sendExcelToBucket(aHex string, s *session.Session,
+func sendExcelToBucket(thePath string, aHex string, s *session.Session,
 	file multipart.File, fileHeader *multipart.FileHeader, aUser User) (bool, string, string) {
 	goodSend, message := true, ""
 
 	// the file content into a buffer
+	theFile, err1 := os.Open(thePath)
+	if err1 != nil {
+		errMsg := "Error opening file for S3: " + err1.Error()
+		logWriter(errMsg)
+		fmt.Println(errMsg)
+		message = errMsg
+		goodSend = false
+	}
+	defer theFile.Close()
 	size := fileHeader.Size
 	buffer := make([]byte, size)
-	file.Read(buffer)
+	theFile.Read(buffer)
 
 	// create a unique file name for the file
 	stringUserID := strconv.Itoa(aUser.UserID)
