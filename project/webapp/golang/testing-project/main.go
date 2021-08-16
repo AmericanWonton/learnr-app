@@ -39,6 +39,7 @@ func init() {
 	//Get Environment Variables
 	loadInEmailCreds()
 	loadInMicroServiceURL()
+	loadAmazonCreds()
 	usernameMap = make(map[string]bool)      //Clear all Usernames when loading so no problems are caused
 	learnOrgMapNames = make(map[string]bool) //Clear all Org Names when loading so no problems are caused
 	learnrMap = make(map[string]bool)        //Clear all Learnr Names when loading so no problems are caused

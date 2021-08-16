@@ -1147,3 +1147,107 @@ body, html {
     width: 6em;
     text-align: center;
 }
+
+/* Bulk Send Page styling */
+.specsHiderDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    justify-content: center;
+    align-content: center;
+    width: 100%;
+    /* styling */
+    
+    /* debug styling */
+}
+
+.buttonHideHoldDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    justify-content: center;
+    align-content: center;
+    width: 100%;
+    /* styling */
+    
+    /* debug styling */
+}
+
+.seeThingsB{
+    width: 70%;
+    height: 3em;
+    font-size: 2rem;
+    text-align: center;
+}
+
+.infoHidden{
+    /* flexbox styling */
+    display: none;
+    flex-flow: wrap;
+    justify-content: center;
+    align-content: center;
+    width: 100%;
+    /* styling */
+    
+    /* debug styling */
+}
+
+.downloadExample{
+    font-family: 'Anton', sans-serif;
+    font-size: 1.5rem;
+    padding-left: .5em;
+    padding-right: .5em;
+}
+
+.formHolder{
+    /* flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    justify-content: center;
+    align-content: center;
+    width: 100%;
+    /* styling */
+    
+    /* debug styling */
+    border: 1px solid black;
+}
+
+.excelForm{
+
+}
+
+.formValueRow{
+    /* flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    justify-content: center;
+    align-content: center;
+    width: 100%;
+    /* styling */
+    
+    /* debug styling */
+}
+
+.formValueColumn{
+    /* flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    align-content: center;
+    width: 45%;
+    /* styling */
+    
+    /* debug styling */
+}
+
+.formDescP{
+    font-family: 'Anton', sans-serif;
+    font-size: 1rem;
+}
+
+.fileSubmit{
+
+}
+
+.selectValue{
+
+}

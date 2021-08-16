@@ -12,6 +12,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/xuri/excelize/v2"
 )
 
 /* Used for API Calls */
@@ -751,7 +753,6 @@ func canSendLearnR(w http.ResponseWriter, r *http.Request) {
 				}
 				/* 3. Create Post to JSON */
 				pingLocation := textAPIURL + "/initialLearnRStart"
-				logWriter(string(theJSONMessage)) //Debug
 				payload := strings.NewReader(string(theJSONMessage))
 				req, err := http.NewRequest("POST", pingLocation, payload)
 				if err != nil {
@@ -810,6 +811,111 @@ func canSendLearnR(w http.ResponseWriter, r *http.Request) {
 		logWriter(errIs)
 	}
 	fmt.Fprint(w, string(theJSONMessage))
+}
+
+/*	This calls our 'bulk text API' to see if we can start this bulk
+learnr. Called from 'pageHandler' after document is submitted to AWS */
+func canSendBulkLearnR(aUser User, sheetLocation string, fileName string, learnRID int) (bool, string) {
+	goodSend, message := true, ""
+
+	//Declare struct we are Sending
+	type OurJSON struct {
+		TheUser            User       `json:"TheUser"`
+		TheLearnR          Learnr     `json:"TheLearnR"`
+		TheLearnRInfo      LearnrInfo `json:"TheLearnRInfo"`
+		TheFileName        string     `json:"TheFileName"`
+		ExcelSheetLocation string     `json:"ExcelSheetLocation"`
+	}
+
+	ourJSON := OurJSON{
+		TheUser:            aUser,
+		TheLearnR:          Learnr{},
+		TheLearnRInfo:      LearnrInfo{},
+		TheFileName:        fileName,
+		ExcelSheetLocation: sheetLocation,
+	}
+
+	/* Start by getting LearnR to add to 'ourJSON' */
+	goodLearnRGet, resultMsg, theLearnR := callReadLearnR(learnRID)
+	if !goodLearnRGet {
+		errMsg := "There was an issue getting the LearnR: " + resultMsg
+		goodSend = false
+		message = errMsg
+		fmt.Println(errMsg)
+	} else {
+		/* Good LearnR get. Now get LearnRInform */
+		ourJSON.TheLearnR = theLearnR
+		goodLearnRInformGet, resultingMessage, theLearnRInfo := callReadLearnrInfo(theLearnR.InfoID)
+		if !goodLearnRInformGet {
+			errMsg := "There was an issue getting the LearnRInform: " + resultingMessage
+			goodSend = false
+			message = errMsg
+			fmt.Println(errMsg)
+		} else {
+			/* Good LearnRInfo; ping our text API to see if we can begin */
+			ourJSON.TheLearnRInfo = theLearnRInfo
+			ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+			defer cancel()
+			/* 2. Marshal test case to JSON expect */
+			theJSONMessage, err := json.Marshal(ourJSON)
+			if err != nil {
+				theErr := "Could not marshal JSON: " + err.Error()
+				logWriter(theErr)
+				fmt.Println(theErr)
+				goodSend, message = false, theErr
+			}
+			/* 3. Create Post to JSON */
+			pingLocation := "http://localhost:3000" + "/initialBulkLearnRStart"
+			payload := strings.NewReader(string(theJSONMessage))
+			req, err := http.NewRequest("POST", pingLocation, payload)
+			if err != nil {
+				theErr := "Error making request to Text API: " + err.Error()
+				logWriter(theErr)
+				fmt.Println(theErr)
+				goodSend, message = false, theErr
+			}
+			req.Header.Add("Content-Type", "application/json")
+			defer req.Body.Close()
+			/* 4. Get response from Post */
+			resp, err := http.DefaultClient.Do(req.WithContext(ctx))
+			if resp.StatusCode >= 300 || resp.StatusCode <= 199 {
+				theErr := "Failed response from initialBulkLearnRStart: " + strconv.Itoa(resp.StatusCode)
+				logWriter(theErr)
+				goodSend, message = false, theErr
+				fmt.Println(theErr)
+				return false, theErr
+			} else if err != nil {
+				theErr := "Failed response from initialBulkLearnRStart: " + strconv.Itoa(resp.StatusCode) + " " + err.Error()
+				logWriter(theErr)
+				goodSend, message = false, theErr
+				fmt.Println(theErr)
+				return goodSend, message
+			}
+			defer resp.Body.Close()
+			//Declare message we expect to see returned
+			body, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				theErr := "There was an error reading response from initialBulkLearnRStart " + err.Error()
+				logWriter(theErr)
+				goodSend, message = false, theErr
+				fmt.Println(theErr)
+			}
+			type TheSuccessMsg struct {
+				Message    string `json:"Message"`
+				SuccessNum int    `json:"SuccessNum"`
+			}
+			var returnedMessage TheSuccessMsg
+			json.Unmarshal(body, &returnedMessage)
+			/* 5. Evaluate response in returnedMessage */
+			if returnedMessage.SuccessNum != 0 {
+				goodSend, message = false, "Failed to start bulk text messages with Users"
+			} else {
+				message = "Text convo started with all Users"
+			}
+		}
+	}
+
+	return goodSend, message
 }
 
 /* Calls our CRUD API to narrow our search down */
@@ -871,4 +977,152 @@ func searchLearnRs(w http.ResponseWriter, r *http.Request) {
 		logWriter(errIs)
 	}
 	fmt.Fprint(w, string(theJSONMessage))
+}
+
+/* This takes an Excel sheet from our User and checks to see if
+it is good for sending off to Amazon and other places */
+func bulkLearnRCreation(excelPath string, excelSheetName string, theUser User,
+	theLearnOrg LearnrOrg, theLearnR Learnr) (bool, string) {
+	goodExcel, message := true, ""
+	excelErrors := []string{} //This is collected and put into our message variable at the end
+	f, err := excelize.OpenFile(excelPath)
+	if err != nil {
+		errMsg := "Issue opening Excel sheet: " + err.Error()
+		fmt.Println(errMsg)
+		goodExcel, message = false, errMsg
+		return goodExcel, message
+	}
+	/* Check to see if  first few cells are formatted correctly */
+	//Person Name
+	cell, err := f.GetCellValue("Sheet1", "A1")
+	if err != nil {
+		errMsg := "Error working with this Excel Sheet: " + err.Error()
+		fmt.Println(errMsg)
+		goodExcel, message = false, errMsg
+		return goodExcel, message
+	} else if !(strings.ToLower(cell) == "person name") {
+		errMsg := "Error working with this Excel Sheet: " + "A1 must be 'person name'"
+		fmt.Println(errMsg)
+		goodExcel, message = false, errMsg
+		return goodExcel, message
+	}
+	//Phone Number
+	cell, err = f.GetCellValue("Sheet1", "B1")
+	if err != nil {
+		errMsg := "Error working with this Excel Sheet: " + err.Error()
+		fmt.Println(errMsg)
+		goodExcel, message = false, errMsg
+		return goodExcel, message
+	} else if !(strings.ToLower(cell) == "phone number") {
+		errMsg := "Error working with this Excel Sheet: " + "B1 must be 'phone number'"
+		fmt.Println(errMsg)
+		goodExcel, message = false, errMsg
+		return goodExcel, message
+	}
+	//What to Say
+	cell, err = f.GetCellValue("Sheet1", "C1")
+	if err != nil {
+		errMsg := "Error working with this Excel Sheet: " + err.Error()
+		fmt.Println(errMsg)
+		goodExcel, message = false, errMsg
+		return goodExcel, message
+	} else if !(strings.ToLower(cell) == "what to say") {
+		errMsg := "Error working with this Excel Sheet: " + "C1 must be 'what to say'"
+		fmt.Println(errMsg)
+		goodExcel, message = false, errMsg
+		return goodExcel, message
+	}
+	/* Check through person name to make sure values are okay*/
+	// Get all the rows in the Sheet1.
+	rows, err := f.GetRows("Sheet1")
+	if err != nil {
+		fmt.Println(err)
+	}
+	theRows := 0
+	for _, row := range rows {
+		//Loop through columns to check each field
+		if theRows == 0 {
+			//Do nothing for first row with titles of columns
+			fmt.Printf("Starting with row %v\n", theRows)
+		} else {
+			theColumns := 0
+			for _, colCell := range row {
+				//For each column case, check each column
+				switch theColumns {
+				case 0:
+					//Check Person Name
+					personName := colCell
+					if len(personName) > 20 {
+						theErr := "Error; person name is too long, needs to be under 20 characters: " + personName
+						excelErrors = append(excelErrors, theErr)
+						goodExcel = false
+					} else if len(personName) <= 0 {
+						theErr := "Error; person name is too short, needs to be at least 1 character: " + personName
+						excelErrors = append(excelErrors, theErr)
+						goodExcel = false
+					} else {
+						//Debug printing
+						fmt.Printf("Good name: %v\n", personName)
+					}
+					break
+				case 1:
+					//Check Phone Number
+					personPhone := colCell
+					if len(personPhone) > 11 {
+						theErr := "Error; person phone number is too long, needs to be under 11 characters: " + personPhone
+						excelErrors = append(excelErrors, theErr)
+						goodExcel = false
+					} else if len(personPhone) <= 0 {
+						theErr := "Error; person phone number is too short, needs to be at least 1 character: " + personPhone
+						excelErrors = append(excelErrors, theErr)
+						goodExcel = false
+					} else if personPhone == "911" {
+						theErr := "Error; cannot use emergency numbers for phone number: " + personPhone
+						excelErrors = append(excelErrors, theErr)
+						goodExcel = false
+					} else {
+						//Debug printing
+						fmt.Printf("Good Phone Num: %v\n", personPhone)
+					}
+					break
+				case 2:
+					//Check what to Say
+					personSay := colCell
+					if len(personSay) > 120 {
+						theErr := "Error; message to user cannot be larger than 120 characters: " + personSay
+						excelErrors = append(excelErrors, theErr)
+						goodExcel = false
+					} else if len(personSay) <= 0 {
+						theErr := "Error; person message is too short, needs to be at least 1 character: " + personSay
+						excelErrors = append(excelErrors, theErr)
+						goodExcel = false
+					} else {
+						//Debug printing
+						fmt.Printf("Good Message: %v\n", personSay)
+					}
+				default:
+					//Wrong column, there's an issue
+					theErr := "Error; column distribution is incorrect. Please contain all data in the first 3 columns"
+					excelErrors = append(excelErrors, theErr)
+					goodExcel = false
+				}
+				theColumns = theColumns + 1 //Increment column counter for logic above
+			}
+		}
+		theRows = theRows + 1
+	}
+
+	//Format message to display the errors
+	if !goodExcel {
+		message = "There were errors with the Excel sheet, please review and submit again: \n"
+		for n := 0; n < len(excelErrors); n++ {
+			message = message + excelErrors[n] + "\n"
+		}
+	} else {
+		message = "Excel sheet was successful; here are any errors returned: "
+		for n := 0; n < len(excelErrors); n++ {
+			message = message + excelErrors[n] + "\n"
+		}
+	}
+	return goodExcel, message
 }

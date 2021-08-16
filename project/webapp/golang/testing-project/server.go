@@ -24,7 +24,8 @@ func handleRequests() {
 	myRouter.HandleFunc("/learnmore", learnmore) //Serve learnmore page
 	myRouter.HandleFunc("/sendhelp", sendhelp)   //Serve the sendhelp page
 	myRouter.HandleFunc("/learnr", learnr)       //Serve the learnr page
-	myRouter.HandleFunc("/makeorg", makeorg)     //Serve the learnr page
+	myRouter.HandleFunc("/makeorg", makeorg)     //Serve the makeorg page
+	myRouter.HandleFunc("/bulksend", bulksend)   //Serve the bulksend page
 	//Used for handling emails
 	myRouter.HandleFunc("/emailMe", emailMe).Methods("POST")                             //Used for email Sending from Users
 	myRouter.HandleFunc("/logUserOut", logUserOut).Methods("POST")                       //Remove our cookie after logging out user
@@ -43,6 +44,8 @@ func handleRequests() {
 	myRouter.HandleFunc("/searchLearnRs", searchLearnRs).Methods("POST")             //Send LearnR
 	//Used for Learnr functions
 	myRouter.HandleFunc("/giveAllLearnrDisplay", giveAllLearnrDisplay).Methods("GET") //Get Learnrs for display
+	//This is a debug section
+
 	//Serve our static files
 	myRouter.Handle("/", http.FileServer(http.Dir("./static")))
 	myRouter.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
