@@ -42,7 +42,7 @@ function navigateHeader(whichLink, whichgame) {
             window.location.assign("/admin");
             break;
         case 10:
-            //Make LearR Page
+            //Make LearnR Page
             window.location.assign("/learnr");
         case 11:
             //Bulk LearnR Send
