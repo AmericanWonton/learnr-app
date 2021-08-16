@@ -14,6 +14,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/xuri/excelize/v2"
 )
 
 //Response Text from what our Users sent
@@ -66,6 +68,20 @@ type UserSession struct {
 	PersonName         string        `json:"PersonName"`
 	PersonPhoneNum     string        `json:"PersonPhoneNum"`
 	TheSession         LearnRSession `json:"TheSession"`
+	LogInfo            []string      `json:"LogInfo"`
+}
+
+//Used to record active bulk LearnR sessions
+type BulkUserSession struct {
+	Active             bool          `json:"Active"`
+	StartTime          time.Time     `json:"StartTime"`
+	EndTime            time.Time     `json:"EndTime"`
+	LocalSessID        int           `json:"LocalSessID"`
+	TheUser            User          `json:"TheUser"`
+	TheLearnR          Learnr        `json:"TheLearnR"`
+	TheLearnRInfo      LearnrInfo    `json:"TheLearnRInfo"`
+	ExcelSheetLocation string        `json:"ExcelSheetLocation"`
+	UserSessions       []UserSession `json:"UserSessions"`
 	LogInfo            []string      `json:"LogInfo"`
 }
 
@@ -238,8 +254,6 @@ func initialBulkLearnRStart(w http.ResponseWriter, r *http.Request) {
 	var theJSON OurJSON
 	json.Unmarshal(bs, &theJSON)
 
-	fmt.Printf("DEBUG: Hey, you reached the Bulk Text Sender\n")
-
 	/* Start by getting our Excel sheet down from AWS and putting it in a location to work with */
 	goodFilePlacement, filePlaceMSG, workFileLocation := placeAmazonFile(theJSON.ExcelSheetLocation, theJSON.TheFileName,
 		strconv.Itoa(theJSON.TheUser.UserID),
@@ -251,6 +265,28 @@ func initialBulkLearnRStart(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(theSuccMessage.Message)
 	} else {
 		fmt.Printf("DEBUG: %v\n", workFileLocation)
+		/* Create Bulk LearnR Session for this LearnR to this person*/
+		//Get Random ID
+		goodGet, message, _ := randomAPICall()
+		if !goodGet {
+			theErr := "Failure to get random API in session: " + message
+			theSuccMessage.Message = theErr
+			logWriter(theErr)
+		} else {
+			newBulkLearnRSession := BulkUserSession{
+				Active:             true,
+				StartTime:          time.Now(),
+				EndTime:            time.Time{},
+				LocalSessID:        getRandomID(),
+				TheUser:            theJSON.TheUser,
+				TheLearnR:          theJSON.TheLearnR,
+				TheLearnRInfo:      theJSON.TheLearnRInfo,
+				ExcelSheetLocation: workFileLocation,
+				UserSessions:       []UserSession{},
+				LogInfo:            []string{},
+			}
+			newBulkLearnRSession.UserSessions = createBulkUserSessions(workFileLocation, newBulkLearnRSession)
+		}
 	}
 	/* Send the response back to Ajax */
 	theJSONMessage, err := json.Marshal(theSuccMessage)
@@ -266,6 +302,95 @@ func initialBulkLearnRStart(w http.ResponseWriter, r *http.Request) {
 		panic("Error writing back to initialLearnRStart: " + theErr.Error() + " " + strconv.Itoa(theInt))
 	}
 	flusher.Flush()
+}
+
+/* This creates a bulk amount of User Sessions based on how many Excel files are in the Excel Sheet */
+func createBulkUserSessions(workFileLocation string, theBulkSession BulkUserSession) []UserSession {
+	allUserSessions := []UserSession{}
+
+	//Read Excel sheet
+	f, err := excelize.OpenFile(workFileLocation)
+	if err != nil {
+		errMsg := "Issue opening Excel sheet: " + err.Error()
+		fmt.Println(errMsg)
+		goodExcel, message = false, errMsg
+		return goodExcel, message
+	}
+
+	/* Check through person name to make sure values are okay */
+	// Get all the rows in the Sheet1.
+	rows, err := f.GetRows("Sheet1")
+	if err != nil {
+		fmt.Println(err)
+	}
+	theRows := 0
+	for _, row := range rows {
+		//Loop through columns to check each field
+		if theRows == 0 {
+			//Do nothing for first row with titles of columns
+			fmt.Printf("Starting with row %v\n", theRows)
+		} else {
+			theTimeNow := time.Now()
+			newUserSession := UserSession{
+				Active:             true,
+				StartTime:          time.Now(),
+				EndTime:            time.Now(),
+				LocalSessID:        getRandomID(),
+				IntroductionSaying: "Fill in later",
+				TheUserName:        theBulkSession.TheUser.UserName,
+				TheUser:            theBulkSession.TheUser,
+				TheLearnR:          theBulkSession.TheLearnR,
+				TheLearnRInfo:      theBulkSession.TheLearnRInfo,
+				PersonName:         "Fill in later",
+				PersonPhoneNum:     "Fill in later",
+			}
+			newLearnRSession := LearnRSession{
+				ID:               getRandomID(),
+				LearnRID:         theBulkSession.TheLearnR.ID,
+				LearnRName:       theBulkSession.TheLearnR.Name,
+				TheLearnR:        theBulkSession.TheLearnR,
+				TheUser:          theBulkSession.TheUser,
+				TargetUserNumber: "Fill In",
+				Ongoing:          true,
+				TextsSent:        []LearnRInforms{},
+				UserResponses:    []string{},
+				DateCreated:      theTimeNow.Format("2006-01-02 15:04:05"),
+				DateUpdated:      theTimeNow.Format("2006-01-02 15:04:05"),
+			}
+			theColumns := 0
+			for _, colCell := range row {
+				//For each column case, check each column
+				switch theColumns {
+				case 0:
+					//Fill Person Name
+					personName := colCell
+					newUserSession.PersonName = personName
+					break
+				case 1:
+					//Check Phone Number
+					personPhone := colCell
+					newLearnRSession.TargetUserNumber = personPhone
+					newUserSession.PersonPhoneNum = personPhone
+					break
+				case 2:
+					//Check what to Say
+					personSay := colCell
+					newUserSession.IntroductionSaying = personSay
+					//User Session and regular session details filled, add them to the bulk session
+					newUserSession.TheSession = newLearnRSession
+					allUserSessions = append(allUserSessions, newUserSession)
+					break
+				default:
+					//Wrong column, there's an issue
+					break
+				}
+				theColumns = theColumns + 1 //Increment column counter for logic above
+			}
+		}
+		theRows = theRows + 1
+	}
+
+	return allUserSessions
 }
 
 func conductLearnRSession(theLearnRUserSess UserSession) {
