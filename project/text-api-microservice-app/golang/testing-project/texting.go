@@ -289,6 +289,7 @@ func initialBulkLearnRStart(w http.ResponseWriter, r *http.Request) {
 				LogInfo:            []string{},
 			}
 			newBulkLearnRSession.UserSessions = createBulkUserSessions(workFileLocation, newBulkLearnRSession)
+			sendBulkLearnRSession = newBulkLearnRSession //Assign value to send to GoRoutine
 		}
 	}
 	/* Send the response back to Ajax */
@@ -400,7 +401,6 @@ func createBulkUserSessions(workFileLocation string, theBulkSession BulkUserSess
 
 /* This manages multiple LearnRSessions from a submitted Excel sheet */
 func conductBulkLearnRSession(theBulkLearnRUserSess BulkUserSession) {
-	fmt.Printf("DEBUG: In the bulkLearnRSession\n")
 	/* Start the timer for this LearnRSession */
 	theBulkLearnRUserSess.StartTime = time.Now()
 	/* Loop through LearnRUserSessions and add phone numbers to map */
@@ -409,15 +409,11 @@ func conductBulkLearnRSession(theBulkLearnRUserSess BulkUserSession) {
 	}
 	/* Start Multiple Go-Routines for each LearnRSession */
 	for l := 0; l < len(theBulkLearnRUserSess.UserSessions); l++ {
-		wg.Add(1)
 		go goRoutConductLearnRSession(theBulkLearnRUserSess.UserSessions[l])
 		fmt.Printf("DEBUG: About to start our UserSession. Phone Number is: %v\nPersonName is: %v\nWhat to Say:%v\n\n",
 			theBulkLearnRUserSess.UserSessions[l].PersonPhoneNum, theBulkLearnRUserSess.UserSessions[l].PersonPhoneNum,
 			theBulkLearnRUserSess.UserSessions[l].IntroductionSaying)
 	}
-
-	wg.Wait() //Wait until LearnRS are done
-	fmt.Printf("DEBUG: Done with bulkLearnRSession\n")
 }
 
 /* This conducts a singleLearnR Session as a GoRoutine which returns 'Done'*/
