@@ -43,6 +43,57 @@ func loadAmazonCreds() {
 	AWSSecretKey = os.Getenv("AWS_SECRET_KEY")
 }
 
+/* This deletes our Amazon file after it has been read into our session */
+func deleteExcelFromAmazon(amazonExcelLocation string) {
+	os.Setenv("AWS_ACCESS_KEY", AWSAccessKeyId)
+	os.Setenv("AWS_SECRET_KEY", AWSSecretKey)
+	sess, err := session.NewSession(&aws.Config{
+		Region:                         aws.String("us-east-2"),
+		Credentials:                    credentials.NewEnvCredentials(),
+		DisableRestProtocolURICleaning: aws.Bool(true),
+	},
+	)
+	if err != nil {
+		theErr := "Error connection to Amazon session in deleteFileFromS3: " + err.Error()
+		fmt.Println(theErr)
+		logWriter(theErr)
+		return
+	}
+	// Create S3 service client
+	svc := s3.New(sess)
+	_, err = svc.DeleteObject(&s3.DeleteObjectInput{Bucket: aws.String(bucketname), Key: aws.String(amazonExcelLocation)})
+	if err != nil {
+		theErr := "Whoops, error deleteing object: " + err.Error()
+		fmt.Println(theErr)
+		logWriter(theErr)
+		return
+	}
+	//Delete Confirmation
+	err = svc.WaitUntilObjectNotExists(&s3.HeadObjectInput{
+		Bucket: aws.String(bucketname),
+		Key:    aws.String(amazonExcelLocation),
+	})
+	if err != nil {
+		theErr := "Error waiting until document deletes: " + err.Error()
+		fmt.Println(theErr)
+		logWriter(theErr)
+		return
+	} else {
+		giveString := "Object successfully deleted in Amazon: " + amazonExcelLocation
+		fmt.Println(giveString)
+	}
+}
+
+/* This deletes the Excel sheet locally in our Server */
+func deleteLocalFile(workFileLocation string) {
+	fileError := os.Remove(workFileLocation)
+	if fileError != nil {
+		theErr := "Error removing file at this location: " + fileError.Error()
+		fmt.Println(theErr)
+		logWriter(theErr)
+	}
+}
+
 func placeAmazonFile(amazonFileLocation string, theFileName string,
 	userid string, learnrID string, learnrinfoid string) (bool, string, string) {
 	goodFileGet, returnMessage, filePlacement := true, "Working file created successfully", ""
