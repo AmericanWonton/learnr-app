@@ -1,7 +1,7 @@
 runtest:
 	go test -v
 runprogram:
-	go run main.go mongoCrudOperations.go server.go texting.go
+	go run main.go mongoCrudOperations.go server.go texting.go amazon.go
 gomod-exp:
 	export GO111MODULE=on
 gobuild:
