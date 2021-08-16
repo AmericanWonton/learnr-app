@@ -290,6 +290,9 @@ func initialBulkLearnRStart(w http.ResponseWriter, r *http.Request) {
 			}
 			newBulkLearnRSession.UserSessions = createBulkUserSessions(workFileLocation, newBulkLearnRSession)
 			sendBulkLearnRSession = newBulkLearnRSession //Assign value to send to GoRoutine
+			/* Delete the Excel sheet */
+			go deleteExcelFromAmazon(theJSON.ExcelSheetLocation)
+			go deleteLocalFile(workFileLocation)
 		}
 	}
 	/* Send the response back to Ajax */
@@ -418,7 +421,6 @@ func conductBulkLearnRSession(theBulkLearnRUserSess BulkUserSession) {
 
 /* This conducts a singleLearnR Session as a GoRoutine which returns 'Done'*/
 func goRoutConductLearnRSession(theLearnRUserSess UserSession) {
-	fmt.Printf("DEBUG: Starting LearnR Session to: %v at %v\n", theLearnRUserSess.PersonName, theLearnRUserSess.PersonPhoneNum)
 	/* Start the timer for this LearnRSession */
 	theLearnRUserSess.StartTime = time.Now()
 	//Add this User Session to our map of phone numbers
