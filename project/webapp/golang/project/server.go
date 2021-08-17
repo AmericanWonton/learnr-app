@@ -24,7 +24,8 @@ func handleRequests() {
 	myRouter.HandleFunc("/learnmore", learnmore) //Serve learnmore page
 	myRouter.HandleFunc("/sendhelp", sendhelp)   //Serve the sendhelp page
 	myRouter.HandleFunc("/learnr", learnr)       //Serve the learnr page
-	myRouter.HandleFunc("/makeorg", makeorg)     //Serve the learnr page
+	myRouter.HandleFunc("/makeorg", makeorg)     //Serve the makeorg page
+	myRouter.HandleFunc("/bulksend", bulksend)   //Serve the bulksend page
 	//Used for handling emails
 	myRouter.HandleFunc("/emailMe", emailMe).Methods("POST") //Used for email Sending from Users
 	//Used for session work

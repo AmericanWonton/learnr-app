@@ -803,23 +803,25 @@ func callReadLearnRArray(theids []int) (bool, string, []Learnr) {
 	req.Header.Add("Content-Type", "application/json")
 	/* 4. Get response from Post */
 	resp, err := http.DefaultClient.Do(req.WithContext(ctx))
-	//defer resp.Body.Close()
 	if resp.StatusCode >= 300 || resp.StatusCode <= 199 {
 		theErr := "We had an error with this response: " + strconv.Itoa(resp.StatusCode)
 		goodAdd, message = false, theErr
 		resp.Body.Close()
 		logWriter(theErr)
+		fmt.Println(theErr)
 	} else if err != nil {
 		theErr := "We had an error with this response: " + strconv.Itoa(resp.StatusCode)
 		goodAdd, message = false, theErr
 		resp.Body.Close()
 		logWriter(theErr)
+		fmt.Println(theErr)
 	}
 	//Declare message we expect to see returned
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		theErr := "There was an error reading response from UserCreate " + err.Error()
 		goodAdd, message = false, theErr
+		fmt.Println(theErr)
 	}
 	type ReturnMessage struct {
 		TheErr          []string `json:"TheErr"`
