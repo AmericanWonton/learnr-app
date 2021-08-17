@@ -104,3 +104,20 @@ function checkInput(theInput){
 
     return goodCharacters;
 }
+
+/* This is only a little different, it allows spaces */
+function checkInputLearnRName(theInput){
+    //Add special characters that a LearnRname can also have 
+    charMap.set(' ', ' ');
+    charMap.set('=', '=');
+    var goodCharacters = true; // A check returned if we have good characters
+    for (var i = 0; i < theInput.length; i++){
+        if (charMap.has(theInput[i]) != true){
+            console.log("Wrong character: '" + theInput[i] + "', not allowed!");
+            goodCharacters = false;
+            break;
+        } 
+    }
+
+    return goodCharacters;
+}

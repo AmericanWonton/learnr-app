@@ -62,7 +62,7 @@ window.addEventListener('DOMContentLoaded', function(){
                     //Check to see if LearnRName is good
                     var inputLearnRInfo = document.getElementById("inputLearnRInfo");
                     inputLearnRInfo.innerHTML = '';
-                    var goodString = checkInput(learnrname.value);
+                    var goodString = checkInputLearnRName(learnrname.value);
                     if (goodString === true){
                         //learnRName is good
                         inputLearnRInfo.innerHTML = '';
