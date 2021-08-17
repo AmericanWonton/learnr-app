@@ -609,8 +609,6 @@ func goRoutConductLearnRSession(theLearnRUserSess UserSession) {
 		//Print success
 		fmt.Printf("This LearnR Session has now ended: %v for this LearnR: %v\n", theLearnRUserSess.LocalSessID, theLearnRUserSess.TheLearnR.Name)
 	}
-
-	wg.Done() //Finishes this Go Routine
 }
 
 func conductLearnRSession(theLearnRUserSess UserSession) {
