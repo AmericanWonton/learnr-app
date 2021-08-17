@@ -219,10 +219,10 @@ function addLearnRTag(){
                 var goodString = checkInput(tagDesc.value);
                 if (goodString === true){
                     //learnRtag is good
+                    tagAdder();
                     tagDesc.value = "";
                     tagDesc.innerHTML = "";
                     tagDesc.setAttribute("placeholder", "What word describes this LearnR?");
-                    tagAdder();
                     //Good tag, add it to our display
                 } else {
                     tagDesc.value = "";
