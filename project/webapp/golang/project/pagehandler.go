@@ -336,6 +336,7 @@ func bulksend(w http.ResponseWriter, r *http.Request) {
 					_, err3 := io.Copy(writeToFile, readFile)
 					if err3 != nil {
 						errMsg := "PART 4 Error copying the contents of the one image to the other: " + err3.Error()
+						fmt.Println(errMsg)
 						log.Fatal(errMsg)
 					}
 					readFile.Close()    //Close File
@@ -417,8 +418,9 @@ func bulksend(w http.ResponseWriter, r *http.Request) {
 		} else {
 			theSuccMessage.SuccessNum = 0
 			theSuccMessage.Message = "Error getting special values for form. Please contact Admin."
+			fmt.Println(theSuccMessage.Message)
 		}
-
+		fmt.Printf("DEBUG: About to send back to Ajax\n")
 		/* Send the response back to Ajax */
 		theJSONMessage, err := json.Marshal(theSuccMessage)
 		//Send the response back

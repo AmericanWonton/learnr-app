@@ -522,8 +522,6 @@ func specialLearnRGive(w http.ResponseWriter, req *http.Request) {
 	var theitem TheSpecialCases
 	json.Unmarshal(bs, &theitem)
 
-	fmt.Printf("DEBUG: Here is our item: %v\n", theitem)
-
 	//Do CRUD operations if allowed
 	if canCrud {
 		/* Begin building crud operation based on our criteria */
