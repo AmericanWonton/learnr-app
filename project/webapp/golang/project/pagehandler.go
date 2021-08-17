@@ -4,12 +4,21 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/session"
+
+	"gopkg.in/mgo.v2/bson"
 )
 
 /* Both are used for usernames below */
@@ -46,6 +55,8 @@ type UserViewData struct {
 	DateCreated      string      `json:"DateCreated"`      //Date this User was created
 	DateUpdated      string      `json:"DateUpdated"`      //Date this User was updated
 	MessageDisplay   int         `json:"MessageDisplay"`   //This is IF we need a message displayed
+	UserMessage      string      `json:"UserMessage"`      //The Message displayed to our User
+	ActionDisplay    int         `json:"ActionDisplay"`    //A condition for displaying various things to our Users
 }
 
 //Define pagehandler variables to Crud Microservice
@@ -207,6 +218,221 @@ func makeorg(w http.ResponseWriter, r *http.Request) {
 	/* Execute template, handle error */
 	err1 := template1.ExecuteTemplate(w, "makeorg.gohtml", vd)
 	HandleError(w, err1)
+}
+
+//Handles the bulksend page
+func bulksend(w http.ResponseWriter, r *http.Request) {
+	aUser := getUser(w, r)
+	//Redirect User if they are not logged in
+	if !alreadyLoggedIn(w, r) {
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	}
+	theAdminOrgs := loadLearnROrgArray(aUser) //Get the admin orgs for selection
+	//Get all LearnRIds collected
+	theLearnRIDs := []int{}
+	for n := 0; n < len(theAdminOrgs); n++ {
+		theLearnRIDs = append(theLearnRIDs, theAdminOrgs[n].LearnrList...)
+	}
+	theAdminLearnRs := getAdminLearnRs(theLearnRIDs)
+	/* Tailor the message towards our User, based on what access/how many
+	LearnROrgs they are Admins of */
+	userMessage := ""
+	shouldDisplay := 0
+	actionDisplay := 0
+	if len(theAdminLearnRs) <= 0 || theAdminLearnRs == nil {
+		userMessage = "You do not have any LearnRs you are Admin of to send in Bulk! Please create a LearnR under a " +
+			"LearnROrg that you are an Administrator of..."
+		shouldDisplay = 1
+		actionDisplay = 1
+		fmt.Println(userMessage)
+	}
+	vd := UserViewData{
+		TheUser:          aUser,
+		Username:         aUser.UserName,
+		UserID:           aUser.UserID,
+		PhoneNums:        aUser.PhoneNums,
+		Email:            aUser.Email,
+		AdminOrgs:        aUser.AdminOrgs,
+		MessageDisplay:   shouldDisplay,
+		AdminOrgList:     theAdminOrgs,
+		OrganizedLearnRs: theAdminLearnRs,
+		Banned:           aUser.Banned,
+		UserMessage:      userMessage,
+		ActionDisplay:    actionDisplay,
+	}
+
+	/* If this is an HTTP Post, determine if we need to load this page differently*/
+	if r.Method == http.MethodPost {
+		/* Define stuff to return */
+		type TheSuccessMsg struct {
+			Message    string `json:"Message"`
+			SuccessNum int    `json:"SuccessNum"`
+		}
+		theSuccMessage := TheSuccessMsg{
+			Message:    "Bulk LearnR Successfully started",
+			SuccessNum: 0,
+		}
+
+		hiddenFormValue := r.FormValue("hiddenFormValue")
+		if strings.Contains(strings.ToLower(hiddenFormValue), strings.ToLower("bulk-excel")) {
+			//Good value, continue working this Excel sheet
+			maxSize := int64(1024000) // allow only 1MB of file size
+			err := r.ParseMultipartForm(maxSize)
+			if err != nil {
+				theErr := "File too large. Max Size: " + strconv.Itoa(int(maxSize)) + "mb " + err.Error()
+				fmt.Println(theErr)
+				log.Println(err)
+				vd.MessageDisplay = 1
+				vd.UserMessage = theErr
+				vd.ActionDisplay = 0
+				theSuccMessage.SuccessNum = 1
+				theSuccMessage.Message = theErr
+			} else {
+				//File okay, continue on
+				file, fileHeader, err := r.FormFile("excel-file") //Insert name of file element here
+				if err != nil {
+					errMsg := "Error getting file submission: " + err.Error()
+					fmt.Println(errMsg)
+					vd.MessageDisplay = 1
+					vd.UserMessage = errMsg
+					vd.ActionDisplay = 0
+					theSuccMessage.SuccessNum = 1
+					theSuccMessage.Message = errMsg
+				} else {
+					//Good file form, moving on
+					//Create path and write file on server
+					hexName := bson.NewObjectId().Hex()
+					fileExtension := filepath.Ext(fileHeader.Filename)
+					theFileName := hexName + fileExtension
+					theDir, _ := os.Getwd()
+					thePath := filepath.Join(theDir, "tempFiles")
+					os.MkdirAll(thePath, 0777)
+					//Write file on server
+					f, err := os.OpenFile(theFileName, os.O_WRONLY|os.O_CREATE, 0777)
+					if err != nil {
+						theErr := "Error opening Excel file: " + err.Error()
+						fmt.Println(theErr)
+						log.Fatal(theErr)
+					}
+					io.Copy(f, file)
+					f.Close()
+					file.Close()
+					//Move file to folder
+					thePath2 := filepath.Join(theDir, "tempFiles", theFileName)
+					readFile, err := os.Open(theFileName)
+					if err != nil {
+						errMsg := "STEP 2: Error opening this file: " + err.Error()
+						fmt.Println(errMsg)
+						log.Fatal(errMsg)
+					}
+					writeToFile, err := os.Create(thePath2)
+					if err != nil {
+						errMsg := "STEP 3 Error creating writeToFile: " + err.Error()
+						fmt.Println(errMsg)
+						log.Fatal(errMsg)
+					}
+					//Move file Contents to folder
+					_, err3 := io.Copy(writeToFile, readFile)
+					if err3 != nil {
+						errMsg := "PART 4 Error copying the contents of the one image to the other: " + err3.Error()
+						log.Fatal(errMsg)
+					}
+					readFile.Close()    //Close File
+					writeToFile.Close() //Close File
+					//Delete created file
+					removeErr := os.Remove(theFileName)
+					if removeErr != nil {
+						errMsg := "STEP 5 Error removing the file: " + removeErr.Error()
+						fmt.Println(errMsg)
+						log.Fatal(errMsg)
+					}
+
+					/* Analayze Excel sheet to determine if this Excel sheet is formattted okay */
+					goodExcel, message := examineExcelSheet(thePath2, theFileName)
+					if !goodExcel {
+						fmt.Println(message)
+						vd.MessageDisplay = 1
+						vd.UserMessage = message
+						vd.ActionDisplay = 0
+						theSuccMessage.SuccessNum = 1
+						theSuccMessage.Message = message
+					} else {
+						//Send this to Amazon buckets for storage
+						//Create Amazon Session
+						s, err := session.NewSession(&aws.Config{
+							Region: aws.String("us-east-2"),
+							Credentials: credentials.NewStaticCredentials(
+								AWSAccessKeyId, // id
+								AWSSecretKey,   // secret
+								""),            // token can be left blank for now
+						})
+						if err != nil {
+							errMsg := "STEP 6 Could not upload file. Error creating session: " + err.Error()
+							vd.UserMessage = errMsg
+							vd.ActionDisplay = 0
+							vd.MessageDisplay = 1
+							fmt.Println(errMsg)
+							logWriter(errMsg)
+							theSuccMessage.SuccessNum = 1
+							theSuccMessage.Message = "Error uplodaing Excel file; contact Admin step 6"
+						} else {
+							goodAmazon, theMessage, amazonLocation := sendExcelToBucket(thePath2, hexName,
+								s, file, fileHeader, aUser)
+							if !goodAmazon {
+								vd.UserMessage = theMessage
+								vd.ActionDisplay = 0
+								vd.MessageDisplay = 1
+								fmt.Println(theMessage)
+								theSuccMessage.SuccessNum = 1
+								theSuccMessage.Message = theMessage
+							} else {
+								/* Good Excel sheet sending to Amazon, now we can see
+								if we can get that bulk load started */
+								learnRFormValue := r.FormValue("learnR")
+								learnRID, _ := strconv.Atoi(learnRFormValue)
+								goodSend, message := canSendBulkLearnR(aUser, amazonLocation, theFileName, learnRID)
+								if !goodSend {
+									errMsg := "There was an issue starting the Bulk LearnR: " + message
+									vd.UserMessage = errMsg
+									vd.ActionDisplay = 0
+									vd.MessageDisplay = 1
+									fmt.Println(errMsg)
+									logWriter(errMsg)
+									theSuccMessage.SuccessNum = 1
+									theSuccMessage.Message = errMsg
+								} else {
+									//Bulk LearnR successfully started
+									goodMsg := "Bulk LearnR successfully started"
+									vd.UserMessage = goodMsg
+									vd.ActionDisplay = 1
+									vd.MessageDisplay = 1
+									theSuccMessage.Message = goodMsg
+								}
+							}
+						}
+					}
+				}
+			}
+		} else {
+			theSuccMessage.SuccessNum = 0
+			theSuccMessage.Message = "Error getting special values for form. Please contact Admin."
+		}
+
+		/* Send the response back to Ajax */
+		theJSONMessage, err := json.Marshal(theSuccMessage)
+		//Send the response back
+		if err != nil {
+			errIs := "Error formatting JSON for return in submitting file: " + err.Error()
+			fmt.Println(errIs)
+			logWriter(errIs)
+		}
+		fmt.Fprint(w, string(theJSONMessage))
+	} else {
+		/* Execute template, handle error */
+		err1 := template1.ExecuteTemplate(w, "bulksend.gohtml", vd)
+		HandleError(w, err1)
+	}
 }
 
 // Handle Errors passing templates
@@ -483,4 +709,20 @@ func giveAllLearnrDisplay(w http.ResponseWriter, r *http.Request) {
 		logWriter(errIs)
 	}
 	fmt.Fprint(w, string(theJSONMessage))
+}
+
+//Called from 'bulksend' to get all or LearnRs
+func getAdminLearnRs(theLearnRIDs []int) []Learnr {
+	/* Only look for admin learnRs if the passed array is larger than 0 */
+	if len(theLearnRIDs) >= 1 {
+		goodGet, message, returnedLearnRs := callReadLearnRArray(theLearnRIDs)
+		if !goodGet {
+			theErr := "Error getting array of LearnRs: " + message
+			fmt.Println(theErr)
+			logWriter(theErr)
+		}
+		return returnedLearnRs
+	} else {
+		return []Learnr{}
+	}
 }

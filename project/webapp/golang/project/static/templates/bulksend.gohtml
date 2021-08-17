@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        {{/* Here is our meta charset and title */}}
+        {{template "meta-title"}}
+        {{/* Here is our pixel density markup */}}
+        {{template "pixel-dense"}}
+        {{/* Here is our FavIcon */}}
+        {{template "fav-icon1"}}
+        {{/* Here are our fonts */}}
+        {{template "headerFonts"}}
+        {{template "makeOrgFont"}}
+        {{/* Here are our Media Query and stylesheets */}}
+        {{template "media-queries"}}
+        {{/* Here is our Javascript or additional code needed */}}
+        <script src="static/js/pagehandling.js"></script>
+        <script src="static/js/app.js"></script>
+        <script src="static/js/bulk.js"></script>
+        {{/* AngularJS for added email address */}}
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    </head>
+    <body>
+        {{/* Send data to javascript */}}
+        {{$theUser := .TheUser}}
+        {{$messageDisplay := .MessageDisplay}}
+        {{/* Need to loop through arrays because Javascript dosen't like what gets passed in */}}
+        {{/* Emails */}}
+        {{range $element := .TheUser.Email}}
+            {{template "setEmail" $element}}
+        {{end}}
+        {{/* Admin Orgs */}}
+        {{range $element := .TheUser.AdminOrgs}}
+            {{template "setAdminOrgs" $element}}
+        {{end}}
+        {{/* Org Member */}}
+        {{range $element := .TheUser.OrgMember}}
+            {{template "setOrgMember" $element}}
+        {{end}}
+        {{/* Phone Nums */}}
+        {{range $element := .TheUser.PhoneNums}}
+            {{template "setPhoneNums" $element}}
+        {{end}}
+
+        {{template "setUsername" .TheUser.UserName}}
+        {{template "setPassword" .TheUser.Password}}
+        {{template "setFirstname" .TheUser.Firstname}}
+        {{template "setLastname" .TheUser.Lastname}}
+        {{template "setUserID" .TheUser.UserID}}
+        {{template "setWhoAre" .TheUser.Whoare}}
+        {{template "sendBanned" .TheUser.Banned}}
+        {{template "setDateCreated" .TheUser.DateCreated}}
+        {{template "setDateUpdated" .TheUser.DateUpdated}}
+
+        {{/* Here is our header */}}
+        {{template "header_everywhere" $theUser}}
+
+        
+        {{/* Main */}}
+        <div class="mainContentDiv">
+            <!-- Instructions for sending a bulk LearnR -->
+            <div class="instructUserDiv">
+                <!-- Instructions -->
+                <p class="smallFormSign">
+                    Send your LearnR to dozens of people! Just download our 
+                    <a class="downloadExample" href="static/exampleFiles/ExampleSheet.xlsx" target="_blank" download>Example Excel sheet</a>,
+                    fill it with up to 500 people, then we'll email you the results! Please note 
+                    that the Excel sheet must be filled out to exact specifications provided:
+                </p>
+                <!-- Hidden specification -->
+                <div class="specsHiderDiv">
+                    <!-- Hider Button -->
+                    <div class="buttonHideHoldDiv">
+                        <button class="seeThingsB" id="seeThingsB" onclick="displayInstructions()">Show Instructions</button>
+                    </div>
+                    <!-- Revealed/Hidden Info -->
+                    <div class="infoHidden" id="infoHidden">
+                        <p class="smallFormSign">
+                            No extra columns or 'confusing characters'. No more than 500 rows.
+                        </p>
+                        <p class="smallFormSign">
+                            'Person name' must be between 1 and 20 characters and contain only approved characters
+                        </p>
+                        <p class="smallFormSign">
+                            'Phone number' must be formatted to the following standard: 
+                            'AREA_CODE + 10-DIGIT-PHONE-NUMBER'. Example: '13467859432'
+                        </p>
+                        <p class="smallFormSign">
+                            'What to say' must be between 1 and 120 characters
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <!-- This contains the form for our User to fill out; it is only 
+            displayed if the User is an Admin of at least 1 organization -->
+            <p>DEBUG: Here is action display: {{.ActionDisplay}}</p>
+            {{if eq .ActionDisplay 1}}
+                <!-- User has no Admin LearnRs, do not display form -->
+                <div class="formHolder">
+                    <!--Message Holder -->
+                    <div class="instructUserDiv">
+                        <p class="smallFormSign" id="formResult">{{.UserMessage}}</p>
+                    </div>
+                </div>
+            {{else if eq .ActionDisplay 0}}
+                <p>We should be seeing our form here</p>
+                <!-- User is Admin of at least 1 LearnR, display form -->
+                <div class="formHolder">
+                    <!--Message Holder -->
+                    <div class="instructUserDiv">
+                        <p class="smallFormSign" id="formResult">{{.UserMessage}}</p>
+                    </div>
+                    <!-- Form Holder -->
+                    <div class="formHolder">
+                        <form id="excelForm"  name="excelForm" class="excelForm" enctype="multipart/form-data">
+                            <!-- Input Excel Sheet -->
+                            <div class="formValueRow">
+                                <!-- Description -->
+                                <div class="formValueColumn" style="justify-content:flex-end">
+                                    <p class="formDescP" style="padding-right:.5em">
+                                        Submit Excel Sheet
+                                    </p>
+                                </div>
+                                <!-- Input -->
+                                <div class="formValueColumn" style="justify-content:flex-start">
+                                    <input id="excelFileInput" class="fileSubmit" style="padding-left:.5em"
+                                    type="file" accept=".xlsx" name="excel-file">
+                                </div>
+                            </div>
+                            <!-- Input LearnR Select -->
+                            <div class="formValueRow">
+                                <!-- Description -->
+                                <div class="formValueColumn" style="justify-content:flex-end">
+                                    <p class="formDescP" style="padding-right:.5em">
+                                        Choose LearnR To Send
+                                    </p>
+                                </div>
+                                <!-- Input -->
+                                <div class="formValueColumn" style="justify-content:flex-start">
+                                    <select name="learnR" id="learnR" class="selectValue">
+                                        {{range $element := .OrganizedLearnRs}}
+                                            <option value="{{$element.ID}}">{{$element.Name}}</option>
+                                        {{end}}
+                                    </select>
+                                </div>
+                            </div>
+                            <!-- Button Submit -->
+                            <div class="formValueRow">
+                                <!-- Submit Button -->
+                                <div class="formValueColumn" style="justify-content:center">
+                                    <input type="submit" class="submitB" id="buttonSubmit" value="Submit!"/>
+                                </div>
+                            </div>
+                            <!-- Hidden Form Value. Used to tell which form this is -->
+                            <input type="hidden" id="hiddenFormValue" name="hiddenFormValue" value="bulk-excel">
+                        </form>
+                    </div>
+                </div>
+            {{else}}
+                <!-- Error, inform User -->
+                <div class="formHolder">
+                    <p class="smallFormSign">
+                        Error, please contact Administrator
+                    </p>
+                </div>
+            {{end}}
+        </div>
+        {{/* Here is our footer */}}
+    </body>
+</html>
