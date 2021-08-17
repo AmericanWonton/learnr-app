@@ -865,7 +865,7 @@ func canSendBulkLearnR(aUser User, sheetLocation string, fileName string, learnR
 				goodSend, message = false, theErr
 			}
 			/* 3. Create Post to JSON */
-			pingLocation := "http://localhost:3000" + "/initialBulkLearnRStart"
+			pingLocation := textAPIURL + "/initialBulkLearnRStart"
 			payload := strings.NewReader(string(theJSONMessage))
 			req, err := http.NewRequest("POST", pingLocation, payload)
 			if err != nil {

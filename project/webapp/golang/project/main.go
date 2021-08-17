@@ -44,6 +44,7 @@ func init() {
 	//Get Environment Variables
 	loadInEmailCreds()
 	loadInMicroServiceURL()
+	loadAmazonCreds()                        //Load In Amazon Creds
 	defineAPIVariables()                     //Define variables in feildvalidation.go
 	defineCrudVariables()                    //Define variables for mongoCrudOperations.go
 	definePageHandlerVariables()             //Define varialbes for pagehandler.go

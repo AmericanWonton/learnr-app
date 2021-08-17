@@ -41,6 +41,7 @@ func handleRequests() {
 	myRouter.HandleFunc("/updateLearnR", updateLearnR).Methods("POST")           //Update a LearnR
 	myRouter.HandleFunc("/getLearnR", getLearnR).Methods("POST")                 //Get LearnR
 	myRouter.HandleFunc("/specialLearnRGive", specialLearnRGive).Methods("POST") //Gets an array of special learnrs
+	myRouter.HandleFunc("/getLearnRArray", getLearnRArray).Methods("POST")       //Gets an array of learnrs
 	//Serve our LearnRInfo Crud API
 	myRouter.HandleFunc("/addLearnrInfo", addLearnrInfo).Methods("POST")       //Add a LearnRInfo
 	myRouter.HandleFunc("/deleteLearnrInfo", deleteLearnrInfo).Methods("POST") //Delete a LearnRInfo
