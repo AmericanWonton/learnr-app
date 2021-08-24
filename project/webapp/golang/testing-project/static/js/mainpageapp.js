@@ -18,6 +18,7 @@ app.controller('myCtrl', function($scope, $http) {
     $scope.LearnRArray = []; //The LearnRArray used for display
     $scope.LearnRCounter = 0; //Some variable for counting
     $scope.showDivMap={};
+    $scope.buttonDisableMap={};
     /* Call HTTP to get our data */
     $http({
         method: 'GET',
@@ -45,6 +46,7 @@ app.controller('myCtrl', function($scope, $http) {
         console.log("The Return counter is: " + $scope.LearnRCounter + ". The LearnR Name is: " + aLearnR.Name);
         //Add LearnRID to map to have the divs shown as false
         $scope.showDivMap[aLearnR.ID] = false;
+        $scope.buttonDisableMap[aLearnR.ID] = false;
         //Debug Print
         /*
         angular.forEach($scope.showDivMap, function(value, key){
@@ -81,10 +83,50 @@ app.controller('myCtrl', function($scope, $http) {
             $scope.showDivMap[learnRID] = true;
         }
     }
-
+    //Show a button based on a click
+    $scope.buttonDisable = function(learnRID){
+        $scope.buttonDisableMap[learnRID] = true;
+    }
     //Return a unique ID based on counter
     $scope.uniqueIDInput = function(){
         return "fieldinputPersonName" + String($scope.LearnRCounter);
+    }
+    $scope.uniqueIDForm = function(){
+        console.log("We should be sending this: " + "learnRSendForm" + String($scope.LearnRCounter));
+        return "learnRSendForm" + String($scope.LearnRCounter);
+    }
+
+    //Used for sending finished form
+    $scope.LearnRSending = function(learnR, learnRID){
+        var fieldinputPersonName = document.getElementById("fieldinputPersonName" + String(learnRID));
+        var fieldinputPersonPN = document.getElementById("fieldinputPersonPN" + String(learnRID));
+        var fieldinputIntroduction = document.getElementById("fieldinputIntroduction" + String(learnRID));
+
+        var OurJSON = {
+            TheUser: TheUser,
+            TheLearnR: learnR,
+            TheLearnRInfo: {},
+            PersonName: String(fieldinputPersonName.value),
+            PersonPhoneNum: String(fieldinputPersonPN.value.toString()),
+            Introduction: String(fieldinputIntroduction.value)
+        };
+
+        $http({
+            method: 'POST',
+            url: '/canSendLearnR',
+            data: JSON.stringify(OurJSON)
+            }).then(function successCallback(response) {
+            // this callback will be called asynchronously
+            // when the response is available
+            console.log(response.data);
+            console.log(response.data.ResultMsg);
+            
+            setTimeout(() => { navigateHeader(3); }, 5000); //Delay 5, then reload page
+            }, function errorCallback(response) {
+            // called asynchronously if an error occurs
+            // or server returns response with an error status.
+            console.log("Error with returned Data! " + String(response));
+        });
     }
 
     //Handle the printed LearnRstuff

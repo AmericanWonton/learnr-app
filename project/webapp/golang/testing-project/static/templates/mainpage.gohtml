@@ -101,7 +101,7 @@
                     </div>
                     <!-- See and send texts Div -->
                     <div class="aBigInfoDiv" ng-show="returnVisibleLearnR(x.ID)">
-                        <form>
+                        <form ng-attr-id="[['learnRSendForm' + x.ID]]" name="[['learnRSendForm' + x.ID]]" onload="" action="">
                             <!-- Person Name Entry -->
                             <div class="aInfoDiv">
                                 <!-- Input Desc -->
@@ -110,8 +110,26 @@
                                 </div>
                                 <!-- Input -->
                                 <div class="fieldsideDiv">
-                                    <input class="fieldInput" id="uniqueIDInput()" name="uniqueIDInput()" type="text" maxlength=20 placeholder="What is this person's name?">
+                                    <input class="fieldInput" ng-attr-id="[['fieldinputPersonName' + x.ID]]" 
+                                    name="[['fieldinputPersonName' + x.ID]]" type="text" 
+                                    maxlength=20 placeholder="What is this person's name?">
                                 </div>
+                            </div>
+                            <!-- Phone Number -->
+
+                            <!-- What to Say -->
+
+
+                            <!-- Result Send -->
+                            <div class="aInfoDiv">
+                                <p></p>
+                            </div>
+                            <!-- Submit Button -->
+                            <div class="aInfoDiv">
+                                <button class="sendButton" ng-click="LearnRSending(x, x.ID)" 
+                                ng-disabled="buttonDisable(x.ID, x)">
+                                    Send LearnR
+                                </button>
                             </div>
                         </form>
                     </div>
