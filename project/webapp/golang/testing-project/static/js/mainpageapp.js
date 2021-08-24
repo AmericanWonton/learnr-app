@@ -17,6 +17,7 @@ app.controller('myCtrl', function($scope, $http) {
     $scope.hasCompleted = false; // Do not show data until http gets back with data
     $scope.LearnRArray = []; //The LearnRArray used for display
     $scope.LearnRCounter = 0; //Some variable for counting
+    $scope.showDivMap={};
     /* Call HTTP to get our data */
     $http({
         method: 'GET',
@@ -38,18 +39,57 @@ app.controller('myCtrl', function($scope, $http) {
         console.log("Error with returned Data! " + String(response));
     });
 
-    $scope.seeLearnRClickStats = function(aLearnR, theCounter){
-        console.log("Hey, here is some of the LearnR info for " + theCounter + ": " + aLearnR.Name);
+    //Increment the Counter
+    $scope.incrementCounter = function(aLearnR){
+        $scope.LearnRCounter++;
+        console.log("The Return counter is: " + $scope.LearnRCounter + ". The LearnR Name is: " + aLearnR.Name);
+        //Add LearnRID to map to have the divs shown as false
+        $scope.showDivMap[aLearnR.ID] = false;
+        //Debug Print
+        /*
+        angular.forEach($scope.showDivMap, function(value, key){
+            console.log("Map Key: " + key +  " Map Value: " + value);
+        });
+        */
+        //console.log("Map is currently: " + $scope.showDivMap);
     }
 
-    //Increment the Counter
-    $scope.incrementCounter = function(){
-        $scope.LearnRCounter++;
+    //Compile LearnR description to one big string
+    $scope.giveLearnRDescription = function(arrayODesc) {
+        let bigString = "";
+        for (var n = 0; n < arrayODesc.length; n++){
+            bigString = bigString + arrayODesc[n] + " ";
+        }
+        return bigString;
     }
 
     //Return the counter
     $scope.returnCounter = function(){
         return $scope.LearnRCounter;
+    }
+    
+    //Return if this page is LearnR sending info is visible
+    $scope.returnVisibleLearnR = function(learnRID){
+        return $scope.showDivMap[learnRID];
+    }
+
+    //Show a div based on a click
+    $scope.divTextClicker = function(learnRID){
+        if ($scope.showDivMap[learnRID] == true){
+            $scope.showDivMap[learnRID] = false;
+        } else {
+            $scope.showDivMap[learnRID] = true;
+        }
+    }
+
+    //Return a unique ID based on counter
+    $scope.uniqueIDInput = function(){
+        return "fieldinputPersonName" + String($scope.LearnRCounter);
+    }
+
+    //Handle the printed LearnRstuff
+    $scope.LearnRPageAdd = function(){
+
     }
 });
 

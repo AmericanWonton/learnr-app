@@ -87,13 +87,41 @@
             </div>
             <!-- Holds all our LearnRs loaded in -->
             <div class="learnrHolderDiv" id="learnrHolderDiv" ng-show="hasCompleted">
-                <div ng-repeat="x in LearnRArray track by $index" class="learnrHolderDiv">
-                    <p>Here is the LearnR's name: [[x.Name]]</p>
-                    <p>Here is the Learnr's ID: [[x.ID]]</p>
+                <div ng-repeat="x in LearnRArray track by $index" class="resultLearnrHolder">
+                    <!-- Name and description Holder -->
+                    <div class="infolearnrHolder">
+                        <!-- LearnR Name -->
+                        <div class="aInfoDiv">
+                            <p class="class">Name: [[x.Name]]</p>
+                        </div>
+                        <!-- LearnR Description -->
+                        <div class="aInfoDiv">
+                            <p class="learnRField">Description: [[giveLearnRDescription(x.Description)]]</p>
+                        </div>
+                    </div>
+                    <!-- See and send texts Div -->
+                    <div class="aBigInfoDiv" ng-show="returnVisibleLearnR(x.ID)">
+                        <form>
+                            <!-- Person Name Entry -->
+                            <div class="aInfoDiv">
+                                <!-- Input Desc -->
+                                <div class="fieldsideDiv">
+                                    <p>Enter the name of the person you want to send this to...</p>
+                                </div>
+                                <!-- Input -->
+                                <div class="fieldsideDiv">
+                                    <input class="fieldInput" id="uniqueIDInput()" name="uniqueIDInput()" type="text" maxlength=20 placeholder="What is this person's name?">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="interiorBigInfoDiv" ng-click="divTextClicker(x.ID)">
+                        Click to see texts
+                    </div>
+
+
                     <p ng-repeat="y in x.Tags track by $index">One of their tags is: [[y]]</p>
-                    <br>
-                    <p>[[returnCounter()]]</p>
-                    <p>[[incrementCounter()]]</p>
+                    <p ng-init="incrementCounter(x)"></p>
                 </div>
             </div>
         </div>
