@@ -736,7 +736,6 @@ func giveAllLearnrDisplay(w http.ResponseWriter, r *http.Request) {
 		TheDisplayLearnrs: displayLearnrs,
 	}
 
-	//fmt.Printf("DEBUG: Here is our learnr display we are returning: %v\n", theSuccMessage.TheDisplayLearnrs)
 	/* Send the response back to Ajax */
 	theJSONMessage, err := json.Marshal(theSuccMessage)
 	//Send the response back
@@ -761,4 +760,46 @@ func getAdminLearnRs(theLearnRIDs []int) []Learnr {
 	} else {
 		return []Learnr{}
 	}
+}
+
+/* This is called from mainpageapp.js to get our learnR data
+to load to an Angular app */
+func getLearnRAngular(w http.ResponseWriter, r *http.Request) {
+	type ReturnMessage struct {
+		TheErr      string   `json:"TheErr"`
+		ResultMsg   string   `json:"ResultMsg"`
+		SuccOrFail  int      `json:"SuccOrFail"`
+		LearnRArray []Learnr `json:"LearnRArray"`
+	}
+	returnMessage := ReturnMessage{
+		TheErr:      "",
+		ResultMsg:   "LearnRs returned successfully",
+		SuccOrFail:  0,
+		LearnRArray: []Learnr{},
+	}
+
+	displayLearnrs = nil
+	theLearnRs, goodGet, message := getSpecialLearnRs([]int{0, 1, 1, 1}, "", "", 0, 0)
+	if !goodGet {
+		theErr := "Issue getting Learnrs for this page: " + message
+		logWriter(theErr)
+		returnMessage.TheErr = theErr
+		returnMessage.SuccOrFail = 1
+		returnMessage.ResultMsg = theErr
+		returnMessage.LearnRArray = theLearnRs
+	} else {
+		displayLearnrs = theLearnRs //Set Learnrs for display
+		returnMessage.LearnRArray = displayLearnrs
+		returnMessage.SuccOrFail = 0
+		returnMessage.ResultMsg = "Learnrs successfully retrieved"
+	}
+
+	/* Send the response back to Ajax */
+	theJSONMessage, err := json.Marshal(returnMessage)
+	//Send the response back
+	if err != nil {
+		errIs := "Error formatting JSON for return in giveAllLearnrDisplay: " + err.Error()
+		logWriter(errIs)
+	}
+	fmt.Fprint(w, string(theJSONMessage))
 }

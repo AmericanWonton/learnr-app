@@ -26,6 +26,8 @@ func handleRequests() {
 	myRouter.HandleFunc("/learnr", learnr)       //Serve the learnr page
 	myRouter.HandleFunc("/makeorg", makeorg)     //Serve the makeorg page
 	myRouter.HandleFunc("/bulksend", bulksend)   //Serve the bulksend page
+	//Serve our functions for different web pages
+	myRouter.HandleFunc("/getLearnRAngular", getLearnRAngular) //Return learnrs for Angular
 	//Used for handling emails
 	myRouter.HandleFunc("/emailMe", emailMe).Methods("POST")                             //Used for email Sending from Users
 	myRouter.HandleFunc("/logUserOut", logUserOut).Methods("POST")                       //Remove our cookie after logging out user

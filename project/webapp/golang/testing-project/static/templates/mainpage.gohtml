@@ -86,8 +86,15 @@
                 </div>
             </div>
             <!-- Holds all our LearnRs loaded in -->
-            <div class="learnrHolderDiv" id="learnrHolderDiv">
-                
+            <div class="learnrHolderDiv" id="learnrHolderDiv" ng-show="hasCompleted">
+                <div ng-repeat="x in LearnRArray track by $index" class="learnrHolderDiv">
+                    <p>Here is the LearnR's name: [[x.Name]]</p>
+                    <p>Here is the Learnr's ID: [[x.ID]]</p>
+                    <p ng-repeat="y in x.Tags track by $index">One of their tags is: [[y]]</p>
+                    <br>
+                    <p>[[returnCounter()]]</p>
+                    <p>[[incrementCounter()]]</p>
+                </div>
             </div>
         </div>
         {{/* Here is our footer */}}
