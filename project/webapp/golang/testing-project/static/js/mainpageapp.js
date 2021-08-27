@@ -18,6 +18,7 @@ app.controller('myCtrl', function($scope, $http) {
     $scope.LearnRArray = []; //The LearnRArray used for display
     $scope.LearnRCounter = 0; //Some variable for counting
     $scope.showDivMap={};
+    $scope.showTextDivMap={};
     $scope.buttonDisableMap={};
     /* Call HTTP to get our data */
     $http({
@@ -26,10 +27,9 @@ app.controller('myCtrl', function($scope, $http) {
         }).then(function successCallback(response) {
         // this callback will be called asynchronously
         // when the response is available
-        console.log(response.data);
-        console.log(response.data.ResultMsg);
+        //console.log(response.data);
+        //console.log(response.data.ResultMsg);
         for (var i = 0; i < response.data.LearnRArray.length; i++){
-            console.log("This is LearnR: " + response.data.LearnRArray[i].Name);
             $scope.LearnRArray.push(response.data.LearnRArray[i]);
         }
 
@@ -43,9 +43,10 @@ app.controller('myCtrl', function($scope, $http) {
     //Increment the Counter
     $scope.incrementCounter = function(aLearnR){
         $scope.LearnRCounter++;
-        console.log("The Return counter is: " + $scope.LearnRCounter + ". The LearnR Name is: " + aLearnR.Name);
+        //console.log("The Return counter is: " + $scope.LearnRCounter + ". The LearnR Name is: " + aLearnR.Name);
         //Add LearnRID to map to have the divs shown as false
         $scope.showDivMap[aLearnR.ID] = false;
+        $scope.showTextDivMap[aLearnR.ID] = false;
         $scope.buttonDisableMap[aLearnR.ID] = false;
         //Debug Print
         /*
@@ -75,12 +76,25 @@ app.controller('myCtrl', function($scope, $http) {
         return $scope.showDivMap[learnRID];
     }
 
+    //Return if this page is LearnR text info is visible
+    $scope.returnVisibleLearnRTexts = function(learnRID){
+        return $scope.showTextDivMap[learnRID];
+    }
     //Show a div based on a click
     $scope.divTextClicker = function(learnRID){
         if ($scope.showDivMap[learnRID] == true){
             $scope.showDivMap[learnRID] = false;
         } else {
             $scope.showDivMap[learnRID] = true;
+        }
+    }
+
+    //Show LearnR Texts for a div based on a click
+    $scope.divLearnRTextClicker = function(learnRID){
+        if ($scope.showTextDivMap[learnRID] == true){
+            $scope.showTextDivMap[learnRID] = false;
+        } else {
+            $scope.showTextDivMap[learnRID] = true;
         }
     }
     //Show a button based on a click
@@ -101,6 +115,7 @@ app.controller('myCtrl', function($scope, $http) {
         var fieldinputPersonName = document.getElementById("fieldinputPersonName" + String(learnRID));
         var fieldinputPersonPN = document.getElementById("fieldinputPersonPN" + String(learnRID));
         var fieldinputIntroduction = document.getElementById("fieldinputIntroduction" + String(learnRID));
+        var sendLearnRButton = document.getElementById("sendLearnRButton" + String(learnRID));
         var sendLearnRResult = document.getElementById("sendLearnRResult" + String(learnRID));
 
         var OurJSON = {
@@ -112,7 +127,6 @@ app.controller('myCtrl', function($scope, $http) {
             Introduction: String(fieldinputIntroduction.value)
         };
 
-        setTimeout(() => { console.log("DEBUG: You're in LearnRSending rn...\n" + OurJSON); }, 5000); //Delay 5, then reload page
         $http({
             method: 'POST',
             url: '/canSendLearnR',
@@ -120,10 +134,11 @@ app.controller('myCtrl', function($scope, $http) {
             }).then(function successCallback(response) {
             // this callback will be called asynchronously
             // when the response is available
+            sendLearnRButton.disabled = true;
             console.log(response.data);
             console.log(response.data.ResultMsg);
-            alert("Your learnR has successfully benn started!");
-            navigateHeader(3); //Reload page
+            sendLearnRResult.innerHTML = "Your LearnR has successfully been started!";
+            setTimeout(() => {navigateHeader(3);}, 5000);
             }, function errorCallback(response) {
             // called asynchronously if an error occurs
             // or server returns response with an error status.

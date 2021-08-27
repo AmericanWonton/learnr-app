@@ -92,12 +92,20 @@
                     <div class="infolearnrHolder">
                         <!-- LearnR Name -->
                         <div class="aInfoDiv">
-                            <p class="class">Name: [[x.Name]]</p>
+                            <p class="learnRField">Name: [[x.Name]]</p>
                         </div>
                         <!-- LearnR Description -->
                         <div class="aInfoDiv">
                             <p class="learnRField">Description: [[giveLearnRDescription(x.Description)]]</p>
                         </div>
+                    </div>
+                    <!-- Div instructing Users to send this LearnR -->
+                    <div class="interiorBigInfoDiv" ng-click="divTextClicker(x.ID)">
+                        Click to send this LearnR!
+                    </div>
+                    <!-- Div showing Users the texts within this LearnR -->
+                    <div class="interiorBigInfoDiv" ng-click="divLearnRTextClicker(x.ID)">
+                        Click to see the Texts this LearnR sends!
                     </div>
                     <!-- See and send texts Div -->
                     <div class="aBigInfoDiv" ng-show="returnVisibleLearnR(x.ID)">
@@ -105,7 +113,7 @@
                         <div class="aInfoDiv">
                             <!-- Input Desc -->
                             <div class="fieldsideDiv">
-                                <p>Enter the name of the person you want to send this to...</p>
+                                <p class="fieldP">Enter the name of the person you want to send this to...</p>
                             </div>
                             <!-- Input -->
                             <div class="fieldsideDiv">
@@ -118,7 +126,9 @@
                         <div class="aInfoDiv">
                             <!-- Input Desc -->
                             <div class="fieldsideDiv">
-                                <p>Enter the phone number of this person, like so, (area code in front, no hyphens): '13783434567'</p>
+                                <p class="fieldP">
+                                    Enter the phone number of this person, like so, (area code in front, no hyphens): '13783434567'
+                                </p>
                             </div>
                             <!-- Input -->
                             <div class="fieldsideDiv">
@@ -131,7 +141,7 @@
                         <div class="aInfoDiv">
                             <!-- Input Desc -->
                             <div class="fieldsideDiv">
-                                <p>
+                                <p class="fieldP">
                                     What would you like to say to this person? Remember to be kind,
                                     it's the best way to be persuasive!
                                 </p>
@@ -149,14 +159,17 @@
                         <!-- Submit Button -->
                         <div class="aInfoDiv">
                             <button class="sendButton" ng-click="LearnRSending(x, x.ID)" 
-                            ng-disabled="buttonDisable(x.ID, x)">
+                            ng-attr-id="[['sendLearnRButton' + x.ID]]" ng-disabled="buttonDisable(x.ID, x)">
                                 Send LearnR
                             </button>
                         </div>
                     </div>
-                    <!-- Div that holds texts to see -->
-                    <div class="interiorBigInfoDiv" ng-click="divTextClicker(x.ID)">
-                        Click to see texts
+                    <!-- See LearnR Texts -->
+                    <div class="aBigInfoDiv" ng-show="returnVisibleLearnRTexts(x.ID)">
+                        <!-- Loop through this LearnR's texts and display them" -->
+                        <div class="aInfoDiv" ng-repeat="y in x.LearnRInforms track by $index">
+                            <p class="fieldP">[[y.TheInfo]]</p>
+                        </div>
                     </div>
                     <!-- Increment counter for naming -->
                     <p ng-init="incrementCounter(x)"></p>
