@@ -101,44 +101,64 @@
                     </div>
                     <!-- See and send texts Div -->
                     <div class="aBigInfoDiv" ng-show="returnVisibleLearnR(x.ID)">
-                        <form ng-attr-id="[['learnRSendForm' + x.ID]]" name="[['learnRSendForm' + x.ID]]" onload="" action="">
-                            <!-- Person Name Entry -->
-                            <div class="aInfoDiv">
-                                <!-- Input Desc -->
-                                <div class="fieldsideDiv">
-                                    <p>Enter the name of the person you want to send this to...</p>
-                                </div>
-                                <!-- Input -->
-                                <div class="fieldsideDiv">
-                                    <input class="fieldInput" ng-attr-id="[['fieldinputPersonName' + x.ID]]" 
-                                    name="[['fieldinputPersonName' + x.ID]]" type="text" 
-                                    maxlength=20 placeholder="What is this person's name?">
-                                </div>
+                        <!-- Person Name Entry -->
+                        <div class="aInfoDiv">
+                            <!-- Input Desc -->
+                            <div class="fieldsideDiv">
+                                <p>Enter the name of the person you want to send this to...</p>
                             </div>
-                            <!-- Phone Number -->
-
-                            <!-- What to Say -->
-
-
-                            <!-- Result Send -->
-                            <div class="aInfoDiv">
-                                <p></p>
+                            <!-- Input -->
+                            <div class="fieldsideDiv">
+                                <input class="fieldInput" ng-attr-id="[['fieldinputPersonName' + x.ID]]" 
+                                name="[['fieldinputPersonName' + x.ID]]" type="text" 
+                                maxlength=20 placeholder="What is this person's name?">
                             </div>
-                            <!-- Submit Button -->
-                            <div class="aInfoDiv">
-                                <button class="sendButton" ng-click="LearnRSending(x, x.ID)" 
-                                ng-disabled="buttonDisable(x.ID, x)">
-                                    Send LearnR
-                                </button>
+                        </div>
+                        <!-- Phone Number -->
+                        <div class="aInfoDiv">
+                            <!-- Input Desc -->
+                            <div class="fieldsideDiv">
+                                <p>Enter the phone number of this person, like so, (area code in front, no hyphens): '13783434567'</p>
                             </div>
-                        </form>
+                            <!-- Input -->
+                            <div class="fieldsideDiv">
+                                <input class="fieldInput" ng-attr-id="[['fieldinputPersonPN' + x.ID]]" 
+                                name="[['fieldinputPersonPN' + x.ID]]" type="number" 
+                                maxlength=11 minglength=11 placeholder="E.g. 13459780123">
+                            </div>
+                        </div>
+                        <!-- What to Say -->
+                        <div class="aInfoDiv">
+                            <!-- Input Desc -->
+                            <div class="fieldsideDiv">
+                                <p>
+                                    What would you like to say to this person? Remember to be kind,
+                                    it's the best way to be persuasive!
+                                </p>
+                            </div>
+                            <!-- Input -->
+                            <div class="fieldsideDiv">
+                                <textarea minlength=1 maxlength=120 placeholder="What would you like to say to this person to let them know what they're reading?"
+                                ng-attr-id="[['fieldinputIntroduction' + x.ID]]" name="[['fieldinputIntroduction' + x.ID]]"></textarea>
+                            </div>
+                        </div>
+                        <!-- Result Send -->
+                        <div class="aInfoDiv">
+                            <p class="resultInput" ng-attr-id="[['sendLearnRResult' + x.ID]]" name="[['sendLearnRResult' + x.ID]]"></p>
+                        </div>
+                        <!-- Submit Button -->
+                        <div class="aInfoDiv">
+                            <button class="sendButton" ng-click="LearnRSending(x, x.ID)" 
+                            ng-disabled="buttonDisable(x.ID, x)">
+                                Send LearnR
+                            </button>
+                        </div>
                     </div>
+                    <!-- Div that holds texts to see -->
                     <div class="interiorBigInfoDiv" ng-click="divTextClicker(x.ID)">
                         Click to see texts
                     </div>
-
-
-                    <p ng-repeat="y in x.Tags track by $index">One of their tags is: [[y]]</p>
+                    <!-- Increment counter for naming -->
                     <p ng-init="incrementCounter(x)"></p>
                 </div>
             </div>

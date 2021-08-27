@@ -64,3 +64,8 @@
 2021/08/24 14:20:59 Email service is initialized
 2021/08/24 14:28:19 Email service is initialized
 2021/08/24 14:32:09 Email service is initialized
+2021/08/27 09:44:50 Email service is initialized
+2021/08/27 09:46:56 Email service is initialized
+2021/08/27 09:48:53 Email service is initialized
+2021/08/27 10:00:59 Email service is initialized
+2021/08/27 10:03:21 Email service is initialized

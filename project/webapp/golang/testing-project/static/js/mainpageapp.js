@@ -101,6 +101,7 @@ app.controller('myCtrl', function($scope, $http) {
         var fieldinputPersonName = document.getElementById("fieldinputPersonName" + String(learnRID));
         var fieldinputPersonPN = document.getElementById("fieldinputPersonPN" + String(learnRID));
         var fieldinputIntroduction = document.getElementById("fieldinputIntroduction" + String(learnRID));
+        var sendLearnRResult = document.getElementById("sendLearnRResult" + String(learnRID));
 
         var OurJSON = {
             TheUser: TheUser,
@@ -111,6 +112,7 @@ app.controller('myCtrl', function($scope, $http) {
             Introduction: String(fieldinputIntroduction.value)
         };
 
+        setTimeout(() => { console.log("DEBUG: You're in LearnRSending rn...\n" + OurJSON); }, 5000); //Delay 5, then reload page
         $http({
             method: 'POST',
             url: '/canSendLearnR',
@@ -120,12 +122,23 @@ app.controller('myCtrl', function($scope, $http) {
             // when the response is available
             console.log(response.data);
             console.log(response.data.ResultMsg);
-            
-            setTimeout(() => { navigateHeader(3); }, 5000); //Delay 5, then reload page
+            alert("Your learnR has successfully benn started!");
+            navigateHeader(3); //Reload page
             }, function errorCallback(response) {
             // called asynchronously if an error occurs
             // or server returns response with an error status.
-            console.log("Error with returned Data! " + String(response));
+            alert("Error returned: " + String(response.data.Message));
+            console.log("Error with returned Data! " + String(response.data.Message));
+            //Report Error
+            sendLearnRResult.innerHTML = "Error: "+ String(response.data.Message);
+            sendLearnRResult.value = "Error: "+ String(response.data.Message);
+            //Clear input data
+            fieldinputPersonName.value = "";
+            fieldinputPersonName.innerHTML = "";
+            fieldinputPersonPN.value = "";
+            fieldinputPersonPN.innerHTML = "";
+            fieldinputIntroduction.value = "";
+            fieldinputIntroduction.innerHTML = "";
         });
     }
 
