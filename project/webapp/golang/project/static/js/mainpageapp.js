@@ -2,417 +2,17 @@ var app = angular.module('mymainpageApp', []);
 
 var displayedTexts = [];
 
-/* This takes the learnr array we've created and begins to list it on our page.
-Divs will be created, being added into 'learnrHolderDiv'*/
-function addlearnRVisuals(learnrArray){
-    /* Loop through our array to create divs/other properties */
-    for (var n = 0; n < learnrArray.length; n++) {
-        visualCreator(n, learnrArray);
-    }
+/* Changed at Golang templating to give ourselves special search display criteria */
+var specialLearnRSearch = 0;
+
+/* This sets our special learnr search variable above to determine if we
+need to display special searched learnrs*/
+/* SET LEARNR FUNC BEGINNING */
+function setLearnnRSearchNew(variablepassed){
+    specialLearnRSearch = Number(variablepassed);
 }
 
-/* This is called whenever User searches for a specific learnr;
-we delete all the learnrs on a page and populate it with what
-their search returns. */
-function rePopulateLearnRs(learnrArray){
-    //Get our variables we need declared
-    var learnrHolderDiv = document.getElementById("learnrHolderDiv");
-    //Delete all variables within
-    learnrHolderDiv.innerHTML = "";
-    addlearnRVisuals(learnrArray); //Repopulate with the new learnrs
-}
-
-/* This creates our divs and other learnR stuf for users to see. Called from addlearnRVisuals */
-function visualCreator(intCurrently, learnrArray){
-    /* Create an array of bools for our button; this will determine if we can keep it disabled
-    or not. 'True' means disabled for phone num, introduction, then person name */
-    var submitDisablers = [true, true, true];
-
-    var theInt = Number(intCurrently);
-    //Get our variables we need declared
-    var learnrHolderDiv = document.getElementById("learnrHolderDiv");
-
-    //Create general div to hold learnr. Parent ==> learnrHolderDiv
-    var resultLearnrHolder = document.createElement("div");
-    resultLearnrHolder.setAttribute("id", "resultLearnrHolder" + theInt.toString());
-    resultLearnrHolder.setAttribute("class", "resultLearnrHolder");
-    resultLearnrHolder.setAttribute("name", "resultLearnrHolder" + theInt.toString());
-
-    //Create Div to hold information on the LearnR. Parent ==> resultLearnrHolder
-    var infolearnrHolder = document.createElement("div");
-    infolearnrHolder.setAttribute("id", "infolearnrHolder" + theInt.toString());
-    infolearnrHolder.setAttribute("class", "infolearnrHolder");
-    infolearnrHolder.setAttribute("name", "infolearnrHolder" + theInt.toString());
-
-    //Create Div to hold Name information for LearnR. Parent ==> infolearnrHolder
-    var nameHolder = document.createElement("div");
-    nameHolder.setAttribute("id", "nameHolder" + theInt.toString());
-    nameHolder.setAttribute("class", "aInfoDiv");
-    nameHolder.setAttribute("name", "nameHolder" + theInt.toString());
-    //Create P to go inside Div for Name. Parent ==> nameHolder
-    var pName = document.createElement("p");
-    pName.setAttribute("id", "pName" + theInt.toString());
-    pName.setAttribute("class", "learnRField");
-    pName.setAttribute("name", "pName" + theInt.toString());
-    pName.innerHTML = "Name: " + learnrArray[theInt].Name;
-    //Attach this to div
-    nameHolder.appendChild(pName);
-
-
-    //Create Div to hold Description information for LearnR. Parent ==> infolearnrHolder
-    var descriptionHolder = document.createElement("div");
-    descriptionHolder.setAttribute("id", "descriptionHolder" + theInt.toString());
-    descriptionHolder.setAttribute("class", "aInfoDiv");
-    descriptionHolder.setAttribute("name", "descriptionHolder" + theInt.toString());
-    //Create P to go inside Div for Description. Parent ==> descriptionHolder
-    var theString = ""; //Used to put into inner HTML
-    //Get value for description
-    for (var j = 0; j < learnrArray[theInt].Description.length; j++){
-        theString = theString + learnrArray[theInt].Description[j];
-    }
-    var pDescription = document.createElement("p");
-    pDescription.setAttribute("id", "pDescription" + theInt.toString());
-    pDescription.setAttribute("class", "learnRField");
-    pDescription.setAttribute("name", "pDescription" + theInt.toString());
-    pDescription.innerHTML = "Description: " + theString;
-    //Attach value to div
-    descriptionHolder.appendChild(pDescription);
-    
-    /* Add first two elements to 'infolearnrHolder' */
-    infolearnrHolder.appendChild(nameHolder);
-    infolearnrHolder.appendChild(descriptionHolder);
-
-    /* Create text display to add to infolearnrHolder. ==> infolearnrHolder */
-    var textDecisionHolder = document.createElement("div");
-    textDecisionHolder.setAttribute("id", "textDecisionHolder" + theInt.toString());
-    textDecisionHolder.setAttribute("class", "aBigInfoDiv");
-    textDecisionHolder.setAttribute("name", "textDecisionHolder" + theInt.toString());
-
-    //Create a Div to send this LearnR for the User
-    var userLearnRSender = document.createElement("div");
-    userLearnRSender.setAttribute("id", "userLearnRSender" + theInt.toString());
-    userLearnRSender.setAttribute("class", "aBigInfoDiv");
-    userLearnRSender.setAttribute("name", "userLearnRSender" + theInt.toString());
-    //Initially set to hidden; will be unhidden with 'textDropDownDiv'
-    userLearnRSender.style.display = "none";
-
-    //Add the inputs for the userLearnRSender div
-    //Send User Name
-    var theFieldDiv = document.createElement("div");
-    theFieldDiv.setAttribute("id", "theFieldDiv" + theInt.toString() + "1");
-    theFieldDiv.setAttribute("class", "aBigInfoDiv");
-    theFieldDiv.setAttribute("name", "theFieldDiv" + theInt.toString() + "1");
-    //The Desc
-    var fieldsideDiv = document.createElement("div");
-    fieldsideDiv.setAttribute("id", "fieldsideDiv" + theInt.toString() + "1");
-    fieldsideDiv.setAttribute("class", "fieldsideDiv");
-    fieldsideDiv.setAttribute("name", "fieldsideDiv" + theInt.toString() + "1");
-    var fieldsideDescP = document.createElement("p");
-    fieldsideDescP.setAttribute("id", "fieldsideDescP" + theInt.toString() + "1");
-    fieldsideDescP.setAttribute("class", "fieldP");
-    fieldsideDescP.setAttribute("name", "fieldsideDescP" + theInt.toString() + "1");
-    fieldsideDescP.innerHTML = "Enter the name of the person you want to send this to...";
-    //Append the values
-    fieldsideDiv.appendChild(fieldsideDescP);
-    theFieldDiv.appendChild(fieldsideDiv);
-    //The Input
-    var fieldsideDiv = document.createElement("div");
-    fieldsideDiv.setAttribute("id", "fieldsideDiv" + theInt.toString() + "2");
-    fieldsideDiv.setAttribute("class", "fieldsideDiv");
-    fieldsideDiv.setAttribute("name", "fieldsideDiv" + theInt.toString() + "2");
-    var fieldinputPersonName = document.createElement("input");
-    fieldinputPersonName.setAttribute("id", "fieldinputPersonName" + theInt.toString() + "2");
-    fieldinputPersonName.setAttribute("class", "fieldInput");
-    fieldinputPersonName.setAttribute("name", "fieldinputPersonName" + theInt.toString() + "2");
-    fieldinputPersonName.setAttribute("type", "text");
-    fieldinputPersonName.setAttribute("maxlength", "20");
-    fieldinputPersonName.setAttribute("placeholder", "What is this person's name?");
-    //Append the values
-    fieldsideDiv.appendChild(fieldinputPersonName);
-    theFieldDiv.appendChild(fieldsideDiv);
-
-    //Attach this field
-    userLearnRSender.appendChild(theFieldDiv);
-
-    //Send User PhoneNumber
-    var theFieldDiv = document.createElement("div");
-    theFieldDiv.setAttribute("id", "theFieldDiv" + theInt.toString() + "2");
-    theFieldDiv.setAttribute("class", "aBigInfoDiv");
-    theFieldDiv.setAttribute("name", "theFieldDiv" + theInt.toString() + "2");
-    //The Desc
-    var fieldsideDiv = document.createElement("div");
-    fieldsideDiv.setAttribute("id", "fieldsideDiv" + theInt.toString() + "2");
-    fieldsideDiv.setAttribute("class", "fieldsideDiv");
-    fieldsideDiv.setAttribute("name", "fieldsideDiv" + theInt.toString() + "2");
-    var fieldsideDescP = document.createElement("p");
-    fieldsideDescP.setAttribute("id", "fieldsideDescP" + theInt.toString() + "2");
-    fieldsideDescP.setAttribute("class", "fieldP");
-    fieldsideDescP.setAttribute("name", "fieldsideDescP" + theInt.toString() + "2");
-    fieldsideDescP.innerHTML = "Enter the phone number of this person, like so, (area code in front, no hyphens): '13783434567'"
-    //Append the values
-    fieldsideDiv.appendChild(fieldsideDescP);
-    theFieldDiv.appendChild(fieldsideDiv);
-    //The Input
-    var fieldsideDiv = document.createElement("div");
-    fieldsideDiv.setAttribute("id", "fieldsideDiv" + theInt.toString() + "3");
-    fieldsideDiv.setAttribute("class", "fieldsideDiv");
-    fieldsideDiv.setAttribute("name", "fieldsideDiv" + theInt.toString() + "3");
-    var fieldinputPersonPN = document.createElement("input");
-    fieldinputPersonPN.setAttribute("id", "fieldinputPersonPN" + theInt.toString() + "3");
-    fieldinputPersonPN.setAttribute("class", "fieldInput");
-    fieldinputPersonPN.setAttribute("name", "fieldinputPersonPN" + theInt.toString() + "3");
-    fieldinputPersonPN.setAttribute("type", "number");
-    fieldinputPersonPN.setAttribute("maxlength", "11");
-    fieldinputPersonPN.setAttribute("minlength", "11");
-    fieldinputPersonPN.setAttribute("placeholder", "E.g. 13459780123");
-    //Append the values
-    fieldsideDiv.appendChild(fieldinputPersonPN);
-    theFieldDiv.appendChild(fieldsideDiv);
-
-    //Attach this field
-    userLearnRSender.appendChild(theFieldDiv);
-
-    //Send Introduction for User
-    var theFieldDiv = document.createElement("div");
-    theFieldDiv.setAttribute("id", "theFieldDiv" + theInt.toString() + "4");
-    theFieldDiv.setAttribute("class", "aBigInfoDiv");
-    theFieldDiv.setAttribute("name", "theFieldDiv" + theInt.toString() + "4");
-    //The Desc
-    var fieldsideDiv = document.createElement("div");
-    fieldsideDiv.setAttribute("id", "fieldsideDiv" + theInt.toString() + "4");
-    fieldsideDiv.setAttribute("class", "fieldsideDiv");
-    fieldsideDiv.setAttribute("name", "fieldsideDiv" + theInt.toString() + "4");
-    var fieldsideDescP = document.createElement("p");
-    fieldsideDescP.setAttribute("id", "fieldsideDescP" + theInt.toString() + "4");
-    fieldsideDescP.setAttribute("class", "fieldP");
-    fieldsideDescP.setAttribute("name", "fieldsideDescP" + theInt.toString() + "4");
-    fieldsideDescP.innerHTML = "What would you like to say to this person? Remember to be kind, it's the best way to be persuasive!"
-    //Append the values
-    fieldsideDiv.appendChild(fieldsideDescP);
-    theFieldDiv.appendChild(fieldsideDiv);
-    //The Input
-    var fieldsideDiv = document.createElement("div");
-    fieldsideDiv.setAttribute("id", "fieldsideDiv" + theInt.toString() + "5");
-    fieldsideDiv.setAttribute("class", "fieldsideDiv");
-    fieldsideDiv.setAttribute("name", "fieldsideDiv" + theInt.toString() + "5");
-    var fieldinputIntroduction = document.createElement("textarea");
-    fieldinputIntroduction.setAttribute("id", "fieldinputIntroduction" + theInt.toString() + "5");
-    fieldinputIntroduction.setAttribute("class", "fieldTextAreaInput");
-    fieldinputIntroduction.setAttribute("name", "fieldinputIntroduction" + theInt.toString() + "5");
-    fieldinputIntroduction.setAttribute("maxlength", "120");
-    fieldinputIntroduction.setAttribute("minlength", "1");
-    fieldinputIntroduction.setAttribute("placeholder", "What would you like to say to this person to let them know what they're reading?");
-    //Append the values
-    fieldsideDiv.appendChild(fieldinputIntroduction);
-    theFieldDiv.appendChild(fieldsideDiv);
-
-    //Attach this field
-    userLearnRSender.appendChild(theFieldDiv);
-
-    //Send LearnRButton
-    var theFieldDiv = document.createElement("div");
-    theFieldDiv.setAttribute("id", "theFieldDiv" + theInt.toString() + "5");
-    theFieldDiv.setAttribute("class", "aBigInfoDiv");
-    theFieldDiv.setAttribute("name", "theFieldDiv" + theInt.toString() + "5");
-    //Add Result P
-    var sendLearnRResult = document.createElement("p");
-    sendLearnRResult.setAttribute("id", "sendLearnRResult" + theInt.toString() + "6");
-    sendLearnRResult.setAttribute("class", "resultInput");
-    sendLearnRResult.setAttribute("name", "sendLearnRResult" + theInt.toString() + "6");
-    //Append Result P
-    theFieldDiv.appendChild(sendLearnRResult);
-    //Add Button
-    var sendLearnRButton = document.createElement("button");
-    sendLearnRButton.setAttribute("id", "sendLearnRButton" + theInt.toString() + "7");
-    sendLearnRButton.setAttribute("class", "sendButton");
-    sendLearnRButton.setAttribute("name", "sendLearnRButton" + theInt.toString() + "7");
-    sendLearnRButton.innerHTML = "Send LearnR";
-    sendLearnRButton.disabled = true; //Initially set as disabled
-    sendLearnRButton.addEventListener('click', function(){
-        submitDisablers[0] = true;
-        submitDisablers[1] = true;
-        submitDisablers[2] = true;
-        sendLearnRButton.disabled = true; //Disable Button for no further sends
-        var OurJSON = {
-            TheUser: TheUser,
-            TheLearnR: learnrArray[theInt],
-            TheLearnRInfo: {},
-            PersonName: String(fieldinputPersonName.value),
-            PersonPhoneNum: String(fieldinputPersonPN.value.toString()),
-            Introduction: String(fieldinputIntroduction.value)
-        };
-        /* Start Loading Bar */
-        sendLearnRResult.innerHTML = "Sending LearnR, please wait..."
-        //Send Ajax
-        var jsonString = JSON.stringify(OurJSON); //Stringify Data
-        //Send Request to change page
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', '/canSendLearnR', true);
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.addEventListener('readystatechange', function(){
-            if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200){
-                var item = xhr.responseText;
-                var ReturnData = JSON.parse(item);
-                if (ReturnData.SuccessNum == 0){
-                    /* Successful LearnR Send start. Update our result, delay, then reload page */
-                    submitDisablers[0] = true;
-                    submitDisablers[1] = true;
-                    submitDisablers[2] = true;
-                    sendLearnRButton.disabled = true; //Disable Button for no further sends
-                    sendLearnRResult.innerHTML = ReturnData.Message; //Set success message
-                    setTimeout(() => { navigateHeader(3); }, 5000); //Delay 5, then reload page
-                } else {
-                    /* Sending text to User unsuccessful. Inform User */
-                    sendLearnRButton.disabled = true;
-                    sendLearnRResult.innerHTML = "Failed to send LearnR! " + ReturnData.Message;
-                    setTimeout(() => { sendButtonFix(); }, 5000); //Delay 5, then un-disable button
-                }
-                function sendButtonFix(){
-                    sendLearnRButton.disabled = false;
-                    submitDisablers[0] = false;
-                    submitDisablers[1] = false;
-                    submitDisablers[2] = false;
-                }
-            }
-        });
-        xhr.send(jsonString);
-    });
-    //Append Button
-    theFieldDiv.appendChild(sendLearnRButton);
-
-    //Attach this field
-    userLearnRSender.appendChild(theFieldDiv);
-
-    /* Add event listeners that will disable our button above if they have the wrong in put */
-    //Phone Number
-    fieldinputPersonPN.addEventListener('input', function(){
-        var theText = fieldinputPersonPN.value.toString();
-        //Another check to see if numbers are too long
-        var theText = fieldinputPersonPN.value.toString();
-        if (theText.length > 11 || theText.length < 1) {
-            submitDisablers[0] = true;
-            sendLearnRButton.disabled = true;
-        } else {
-            submitDisablers[0] = false;
-            if (submitDisablers[1] == false && submitDisablers[2] == false){
-                sendLearnRButton.disabled = false;
-            } else {
-                sendLearnRButton.disabled = true;
-            }
-        }
-        //Check for illegal characters
-        if (theText.includes("-") || theText.includes("+") || theText.includes(" ") || theText.includes(".") || theText.includes(",")) {
-            console.log("Removing bad character.");
-            theText = theText.replace('-', '');
-            theText = theText.replace('+', '');
-            theText = theText.replace(' ', '');
-            theText = theText.replace('.', '');
-            theText = theText.replace(',', '');
-            fieldinputPersonPN.value = Number(theText);
-        }
-    });
-    //Person Name
-    fieldinputPersonName.addEventListener('input', function(){
-        if (fieldinputPersonName.value.length >= 1 && fieldinputPersonName.value.length <= 20){
-            submitDisablers[1] = false;
-            if (submitDisablers[0] == false && submitDisablers[2] == false){
-                sendLearnRButton.disabled = false;
-            } else {
-                sendLearnRButton.disabled = true;
-            }
-        } else {
-            submitDisablers[1] = true;
-            sendLearnRButton.disabled = true;
-        }
-    });
-    //Person Introduction
-    fieldinputIntroduction.addEventListener('input', function(){
-        if (fieldinputIntroduction.value.length >= 1 && fieldinputIntroduction.value.length <= 120){
-            submitDisablers[2] = false;
-            if (submitDisablers[0] == false && submitDisablers[1] == false){
-                sendLearnRButton.disabled = false;
-            } else {
-                sendLearnRButton.disabled = true;
-            }
-        } else {
-            submitDisablers[2] = true;
-            sendLearnRButton.disabled = true;
-        }
-    });
-
-
-    //Add the userLearnRSender to this hidden div
-    textDecisionHolder.appendChild(userLearnRSender);
-
-    //Make div to hold all texts for this LearnR,(will start as hidden). Parent ==> textDecisionHolder
-    var allTextHolder = document.createElement("div");
-    allTextHolder.setAttribute("id", "allTextHolder" + theInt.toString());
-    allTextHolder.setAttribute("class", "aBigInfoDiv");
-    allTextHolder.setAttribute("name", "allTextHolder" + theInt.toString());
-    //Initially set to hidden; will be unhidden with 'textDropDownDiv'
-    allTextHolder.style.display = "none";
-
-    //Got texts, add allTextHolder to textDecisionHolder
-    textDecisionHolder.appendChild(allTextHolder);
-
-    //Loop thorough texts to add text divs/texts to the allTextHolder
-    for (var k = 0; k < learnrArray[theInt].LearnRInforms.length; k++) {
-        //Create Div to hold text. Parent ==> allTextHolder
-        var aTextHolder = document.createElement("div");
-        aTextHolder.setAttribute("id", "aTextHolder" + theInt.toString() + k.toString());
-        aTextHolder.setAttribute("class", "textHolder");
-        aTextHolder.setAttribute("name", "aTextHolder" + theInt.toString() + k.toString());
-
-        //Create P with text in it. Parent ==> aTextHolder
-        var aText = document.createElement("p");
-        aText.setAttribute("id", "aText" + theInt.toString() + k.toString());
-        aText.setAttribute("class", "textFont");
-        aText.setAttribute("name", "aText" + theInt.toString() + k.toString());
-        aText.innerHTML = learnrArray[theInt].LearnRInforms[k].TheInfo;
-        
-        //Add text to div
-        aTextHolder.appendChild(aText);
-        //Add to allTextHolder
-        allTextHolder.appendChild(aTextHolder);
-    }
-
-    //Add div for drop down. Parent ==> textDecisionHolder
-    var textDropDownDiv = document.createElement("button");
-    textDropDownDiv.setAttribute("id", "textDropDownDiv" + theInt.toString());
-    textDropDownDiv.setAttribute("class", "interiorBigInfoDiv");
-    textDropDownDiv.setAttribute("name", "textDropDownDiv" + theInt.toString());
-    //textDropDownDiv.style.backgroundImage = 'url(static/images/svg/downarrow.svg)'; //Set image
-    textDropDownDiv.innerHTML = "Click to see texts";
-    
-    //Add this button to div first
-    textDecisionHolder.appendChild(textDropDownDiv); 
-
-    /* textDecisionHolder assembled, add it to infolearnrHolder */
-    infolearnrHolder.appendChild(textDecisionHolder);
-
-    /* All infolearnrHolder parts assembled. Add it to 'resultLearnrHolder' */
-    resultLearnrHolder.appendChild(infolearnrHolder);
-
-    /* All elements have been added to the learnr. Add to learnrHolderDiv */
-    learnrHolderDiv.appendChild(resultLearnrHolder);
-
-    //Add event listener for this button
-    textDropDownDiv.addEventListener('click', function(){ 
-        if (allTextHolder.style.display === "none"){
-            //textDropDownDiv.style.backgroundImage = 'url(static/images/svg/uparrow.svg)'; //Set Image
-            allTextHolder.style.display = "flex";
-            userLearnRSender.style.display = "flex";
-            //console.log("DEBUG: Showing this 'allTExtHolder': " + allTextHolder.getAttribute("id"));
-        } else {
-            //textDropDownDiv.style.backgroundImage = 'url(static/images/svg/downarrow.svg)'; //Set Image
-            allTextHolder.style.display = "none";
-            userLearnRSender.style.display = "none";
-        }
-    });
-
-    
-    /* DEBUG PRINTING */
-}
+/* SET LEARNR FUNC ENDING */
 
 //Set a custom delimiter for templates
 app.config(function($interpolateProvider) {
@@ -421,40 +21,229 @@ app.config(function($interpolateProvider) {
 });
 
 //Main Controller
-app.controller('myCtrl', function($scope, $timeout) {
-    /* Use for casedata loading */
-    $scope.caseData = null;
-    //Learnr/LearnRInforms Declarations
-    $scope.jsLearnRArray = [];
-    $scope.jsLearnInformArray = [];
-    /* LearnrSet
-    Calls Ajax to get our Learnrs and put them into our jsLearnRArray */
-    $scope.learnRSet = function() {
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', '/giveAllLearnrDisplay', true);
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.addEventListener('readystatechange', function(){
-            if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200){
-                var item = xhr.responseText;
-                var SuccessMSG = JSON.parse(item);
-                if (SuccessMSG.SuccessNum === 0){
-                    $scope.jsLearnRArray = SuccessMSG.TheDisplayLearnrs;
-                    //console.log("DEBUG: Here is our jsLearnRArray: " + JSON.stringify($scope.jsLearnRArray));
-                    $scope.caseData = 'hey!';
-                    //Pass it on to Javascript to add data
-                    addlearnRVisuals($scope.jsLearnRArray);
-                } else {
-                    console.log("Failed to reach out to giveAllLearnrDisplay");
+app.controller('myCtrl', function($scope, $http) {
+    $scope.hasCompleted = false; // Do not show data until http gets back with data
+    $scope.LearnRArray = []; //The LearnRArray used for display
+    $scope.LearnRCounter = 0; //Some variable for counting
+    $scope.showDivMap={};
+    $scope.showTextDivMap={};
+    $scope.buttonDisableMap={};
+    /* Call HTTP to get our data. If specialLearnRSearch == false, then
+    we search for all LearnRs. If specialLearnRSearch == true, call HTTP to get the LearnRs
+    we already searched for */
+    if (specialLearnRSearch == 1){
+        $http({
+            method: 'GET',
+            url: '/getSpecialLearnRAngular'
+            }).then(function successCallback(response) {
+            // this callback will be called asynchronously
+            // when the response is available
+            $scope.theCheck = response.data.LearnRArray;
+            /* Initial Check to see if value is greater than 0 */
+            if (!$scope.theCheck){
+                //Data has not loaded or no search results were found!
+                var errDataLoadP = document.getElementById("errDataLoadP");
+                errDataLoadP.innerHTML = "No data returned for search!";
+                $scope.hasCompleted = true; //Data load complete, we can show data in template
+            } else {
+                for (var i = 0; i < response.data.LearnRArray.length; i++){
+                    $scope.LearnRArray.push(response.data.LearnRArray[i]);
                 }
+                $scope.hasCompleted = true; //Data load complete, we can show data in template
             }
+            
+            }, function errorCallback(response) {
+            // called asynchronously if an error occurs
+            // or server returns response with an error status.
+            console.log("Error with returned Data! " + String(response));
+            //Data has not loaded or no search results were found!
+            var errDataLoadP = document.getElementById("errDataLoadP");
+            errDataLoadP.innerHTML = "Error finding LearnR data!\n" + String(response);
+            $scope.hasCompleted = true; //Data load complete, we can show data in template
         });
-        xhr.send("testsend");
-    };
-    $scope.learnRSet();
-    //mimic a delay in getting the data from $http
-    $timeout(function () {
-        $scope.caseData = 'hey!';
-    }, 1000);
+    } else {
+        $http({
+            method: 'GET',
+            url: '/getLearnRAngular'
+            }).then(function successCallback(response) {
+            // this callback will be called asynchronously
+            // when the response is available
+            $scope.theCheck = response.data.LearnRArray;
+            /* Initial Check to see if value is greater than 0 */
+            if (!$scope.theCheck){
+                //Data has not loaded or no search results were found!
+                var errDataLoadP = document.getElementById("errDataLoadP");
+                errDataLoadP.innerHTML = "No data returned for search!";
+                $scope.hasCompleted = true; //Data load complete, we can show data in template
+            } else {
+                for (var i = 0; i < response.data.LearnRArray.length; i++){
+                    $scope.LearnRArray.push(response.data.LearnRArray[i]);
+                }
+                $scope.hasCompleted = true; //Data load complete, we can show data in template
+            }
+            }, function errorCallback(response) {
+            // called asynchronously if an error occurs
+            // or server returns response with an error status.
+            console.log("Error with returned Data! " + String(response));
+            //Data has not loaded or no search results were found!
+            var errDataLoadP = document.getElementById("errDataLoadP");
+            errDataLoadP.innerHTML = "Error finding LearnR data!\n" + String(response);
+            $scope.hasCompleted = true; //Data load complete, we can show data in template
+        });
+    }
+
+    //Increment the Counter
+    $scope.incrementCounter = function(aLearnR){
+        $scope.LearnRCounter++;
+        //console.log("The Return counter is: " + $scope.LearnRCounter + ". The LearnR Name is: " + aLearnR.Name);
+        //Add LearnRID to map to have the divs shown as false
+        $scope.showDivMap[aLearnR.ID] = false;
+        $scope.showTextDivMap[aLearnR.ID] = false;
+        $scope.buttonDisableMap[aLearnR.ID] = false;
+    }
+
+    //Compile LearnR description to one big string
+    $scope.giveLearnRDescription = function(arrayODesc) {
+        let bigString = "";
+        for (var n = 0; n < arrayODesc.length; n++){
+            bigString = bigString + arrayODesc[n] + " ";
+        }
+        return bigString;
+    }
+
+    //Return the counter
+    $scope.returnCounter = function(){
+        return $scope.LearnRCounter;
+    }
+    
+    //Return if this page is LearnR sending info is visible
+    $scope.returnVisibleLearnR = function(learnRID){
+        return $scope.showDivMap[learnRID];
+    }
+
+    //Return if this page is LearnR text info is visible
+    $scope.returnVisibleLearnRTexts = function(learnRID){
+        return $scope.showTextDivMap[learnRID];
+    }
+    //Show a div based on a click
+    $scope.divTextClicker = function(learnRID){
+        if ($scope.showDivMap[learnRID] == true){
+            $scope.showDivMap[learnRID] = false;
+        } else {
+            $scope.showDivMap[learnRID] = true;
+        }
+    }
+
+    //Show LearnR Texts for a div based on a click
+    $scope.divLearnRTextClicker = function(learnRID){
+        if ($scope.showTextDivMap[learnRID] == true){
+            $scope.showTextDivMap[learnRID] = false;
+        } else {
+            $scope.showTextDivMap[learnRID] = true;
+        }
+    }
+    //Show a button based on a click
+    $scope.buttonDisable = function(learnRID){
+        $scope.buttonDisableMap[learnRID] = true;
+    }
+    //Return a unique ID based on counter
+    $scope.uniqueIDInput = function(){
+        return "fieldinputPersonName" + String($scope.LearnRCounter);
+    }
+    $scope.uniqueIDForm = function(){
+        console.log("We should be sending this: " + "learnRSendForm" + String($scope.LearnRCounter));
+        return "learnRSendForm" + String($scope.LearnRCounter);
+    }
+
+    //Used for sending finished form
+    $scope.LearnRSending = function(learnR, learnRID){
+        var fieldinputPersonName = document.getElementById("fieldinputPersonName" + String(learnRID));
+        var fieldinputPersonPN = document.getElementById("fieldinputPersonPN" + String(learnRID));
+        var fieldinputIntroduction = document.getElementById("fieldinputIntroduction" + String(learnRID));
+        var sendLearnRButton = document.getElementById("sendLearnRButton" + String(learnRID));
+        var sendLearnRResult = document.getElementById("sendLearnRResult" + String(learnRID));
+
+        var OurJSON = {
+            TheUser: TheUser,
+            TheLearnR: learnR,
+            TheLearnRInfo: {},
+            PersonName: String(fieldinputPersonName.value),
+            PersonPhoneNum: String(fieldinputPersonPN.value.toString()),
+            Introduction: String(fieldinputIntroduction.value)
+        };
+
+        $http({
+            method: 'POST',
+            url: '/canSendLearnR',
+            data: JSON.stringify(OurJSON)
+            }).then(function successCallback(response) {
+            // this callback will be called asynchronously
+            // when the response is available
+            sendLearnRButton.disabled = true;
+            console.log(response.data);
+            console.log(response.data.ResultMsg);
+            sendLearnRResult.innerHTML = "Your LearnR has successfully been started!";
+            setTimeout(() => {navigateHeader(3);}, 5000);
+            }, function errorCallback(response) {
+            // called asynchronously if an error occurs
+            // or server returns response with an error status.
+            alert("Error returned: " + String(response.data.Message));
+            console.log("Error with returned Data! " + String(response.data.Message));
+            //Report Error
+            sendLearnRResult.innerHTML = "Error: "+ String(response.data.Message);
+            sendLearnRResult.value = "Error: "+ String(response.data.Message);
+            //Clear input data
+            fieldinputPersonName.value = "";
+            fieldinputPersonName.innerHTML = "";
+            fieldinputPersonPN.value = "";
+            fieldinputPersonPN.innerHTML = "";
+            fieldinputIntroduction.value = "";
+            fieldinputIntroduction.innerHTML = "";
+        });
+    }
+
+    //Used for searching LearnRs based off tag or name
+    $scope.searchLearnRs = function(){
+        var learnRNameInput = document.getElementById("learnRNameInput");
+        var learnRTagInput = document.getElementById("learnRTagInput");
+        var resultThing = document.getElementById("resultThing");
+
+        var SearchJSON = {
+            TheNameInput: String(learnRNameInput.value),
+            TheTagInput: String(learnRTagInput.value)
+        };
+
+        $http({
+            method: 'POST',
+            url: '/searchLearnRs',
+            data: JSON.stringify(SearchJSON)
+            }).then(function successCallback(response) {
+            // this callback will be called asynchronously
+            // when the response is available
+            
+            //Determine response returned
+            if (response.data.SuccessNum == 0){
+                //Reload page, server should have new learnrs
+                navigateHeader(3, 0);
+            } else {
+                //Error show error
+                resultThing.innerHTML = "Error finding those LearnRs! " + String(response.data.Message);
+                learnRNameInput.value = "";
+                learnRTagInput.value = "";
+            }
+            }, function errorCallback(response) {
+            // called asynchronously if an error occurs
+            // or server returns response with an error status.
+            resultThing.innerHTML = "Error finding those LearnRs! " + String(response.data.Message);
+            learnRNameInput.value = "";
+            learnRTagInput.value = "";
+        });
+    }
+
+    //Handle the printed LearnRstuff
+    $scope.LearnRPageAdd = function(){
+
+    }
 });
 
 //Javascript stuff to call Angular and vice versa
@@ -474,7 +263,6 @@ function learnRSearch(){
         TheTagInput: String(learnRTagInput.value)
     };
     
-    //console.log("DEBUG: Here is special cases: " + TheSpecialCases);
     //Send Ajax
     var jsonString = JSON.stringify(SearchJSON); //Stringify Data
     //Send Request to change page
@@ -490,9 +278,9 @@ function learnRSearch(){
                 learnRNameInput.value = "";
                 learnRTagInput.value = "";
                 //Take action if nothing is returned
-                if (ReturnData.ReturnLearnRs != null && ReturnData.ReturnLearnRs){
+                if (ReturnData.ReturnLearnRs != null && ReturnData.ReturnLearnRs.length >= 1){
                     //Repopulate learnrs
-                    rePopulateLearnRs(ReturnData.ReturnLearnRs);
+                    
                 } else {
                     //Nothing returned
                     resultThing.innerHTML = "No LearnRs returned from search!";

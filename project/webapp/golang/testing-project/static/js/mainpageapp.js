@@ -38,17 +38,17 @@ app.controller('myCtrl', function($scope, $http) {
             }).then(function successCallback(response) {
             // this callback will be called asynchronously
             // when the response is available
-            
+            $scope.theCheck = response.data.LearnRArray;
             /* Initial Check to see if value is greater than 0 */
-            if (response.data.LearnRArray.length >= 1){
-                for (var i = 0; i < response.data.LearnRArray.length; i++){
-                    $scope.LearnRArray.push(response.data.LearnRArray[i]);
-                }
-                $scope.hasCompleted = true; //Data load complete, we can show data in template
-            } else {
+            if (!$scope.theCheck){
                 //Data has not loaded or no search results were found!
                 var errDataLoadP = document.getElementById("errDataLoadP");
                 errDataLoadP.innerHTML = "No data returned for search!";
+                $scope.hasCompleted = true; //Data load complete, we can show data in template
+            } else {
+                for (var i = 0; i < response.data.LearnRArray.length; i++){
+                    $scope.LearnRArray.push(response.data.LearnRArray[i]);
+                }
                 $scope.hasCompleted = true; //Data load complete, we can show data in template
             }
             
@@ -68,16 +68,16 @@ app.controller('myCtrl', function($scope, $http) {
             }).then(function successCallback(response) {
             // this callback will be called asynchronously
             // when the response is available
-            
-            if (response.data.LearnRArray.length >= 1){
-                for (var i = 0; i < response.data.LearnRArray.length; i++){
-                    $scope.LearnRArray.push(response.data.LearnRArray[i]);
-                }
-                $scope.hasCompleted = true; //Data load complete, we can show data in template
-            } else {
+            $scope.theCheck = response.data.LearnRArray;
+            if (!$scope.theCheck){
                 //Data has not loaded or no search results were found!
                 var errDataLoadP = document.getElementById("errDataLoadP");
                 errDataLoadP.innerHTML = "No data returned for search!";
+                $scope.hasCompleted = true; //Data load complete, we can show data in template
+            } else {
+                for (var i = 0; i < response.data.LearnRArray.length; i++){
+                    $scope.LearnRArray.push(response.data.LearnRArray[i]);
+                }
                 $scope.hasCompleted = true; //Data load complete, we can show data in template
             }
             }, function errorCallback(response) {

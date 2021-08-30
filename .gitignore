@@ -20,6 +20,9 @@ project/text-api-microservice-app/golang/testing-project/security
 project/text-api-microservice-app/golang/testing-project/logging
 project/text-api-microservice-app/golang/testing-project/security/text-microservice-keypair.pem
 project/text-api-microservice-app/golang/testing-project/security/installallbinary
+#Ignore logging
+project/webapp/golang/testing-project/logging/weblog.txt
+project/webapp/golang/project/logging/weblog.txt
 
 
 #texting credentials
