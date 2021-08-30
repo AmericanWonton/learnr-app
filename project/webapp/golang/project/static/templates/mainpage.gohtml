@@ -24,6 +24,7 @@
         {{/* Send data to javascript */}}
         {{$theUser := .TheUser}}
         {{$messageDisplay := .MessageDisplay}}
+        {{$newSearchLearnR := .NewSearchLearnR}}
         {{$thelearnrs := .OrganizedLearnRs}}
         {{/* Need to loop through arrays because Javascript dosen't like what gets passed in */}}
         {{/* Emails */}}
@@ -52,6 +53,9 @@
         {{template "setDateCreated" .TheUser.DateCreated}}
         {{template "setDateUpdated" .TheUser.DateUpdated}}
 
+        {{/* Used to display new LearnRs after a search*/}}
+        {{template "sendNewLearnRSearch" $newSearchLearnR}}
+
         {{/* Here is our header */}}
         {{template "header_everywhere" $theUser}}
 
@@ -79,15 +83,102 @@
                     <!-- Submit and Result -->
                     <div class="fieldPutDiv">
                         <!-- Submit Button -->
-                        <button class="actionDivButton" onclick="learnRSearch()">Search 4 LearnRs</button>
+                        <button class="actionDivButton" ng-click="searchLearnRs()">Search 4 LearnRs</button>
                         <!-- Result Div -->
                         <p class="resultThing" id="resultThing"></p>
                     </div>
                 </div>
             </div>
             <!-- Holds all our LearnRs loaded in -->
-            <div class="learnrHolderDiv" id="learnrHolderDiv">
-                
+            <div class="learnrHolderDiv" id="learnrHolderDiv" ng-show="hasCompleted">
+                <div ng-repeat="x in LearnRArray track by $index" class="resultLearnrHolder">
+                    <!-- Name and description Holder -->
+                    <div class="infolearnrHolder">
+                        <!-- LearnR Name -->
+                        <div class="aInfoDiv">
+                            <p class="learnRField">Name: [[x.Name]]</p>
+                        </div>
+                        <!-- LearnR Description -->
+                        <div class="aInfoDiv">
+                            <p class="learnRField">Description: [[giveLearnRDescription(x.Description)]]</p>
+                        </div>
+                    </div>
+                    <!-- Div instructing Users to send this LearnR -->
+                    <div class="interiorBigInfoDiv" ng-click="divTextClicker(x.ID)">
+                        Click to send this LearnR!
+                    </div>
+                    <!-- Div showing Users the texts within this LearnR -->
+                    <div class="interiorBigInfoDiv" ng-click="divLearnRTextClicker(x.ID)">
+                        Click to see the Texts this LearnR sends!
+                    </div>
+                    <!-- See and send texts Div -->
+                    <div class="aBigInfoDiv" ng-show="returnVisibleLearnR(x.ID)">
+                        <!-- Person Name Entry -->
+                        <div class="aInfoDiv">
+                            <!-- Input Desc -->
+                            <div class="fieldsideDiv">
+                                <p class="fieldP">Enter the name of the person you want to send this to...</p>
+                            </div>
+                            <!-- Input -->
+                            <div class="fieldsideDiv">
+                                <input class="fieldInput" ng-attr-id="[['fieldinputPersonName' + x.ID]]" 
+                                name="[['fieldinputPersonName' + x.ID]]" type="text" 
+                                maxlength=20 placeholder="What is this person's name?">
+                            </div>
+                        </div>
+                        <!-- Phone Number -->
+                        <div class="aInfoDiv">
+                            <!-- Input Desc -->
+                            <div class="fieldsideDiv">
+                                <p class="fieldP">
+                                    Enter the phone number of this person, like so, (area code in front, no hyphens): '13783434567'
+                                </p>
+                            </div>
+                            <!-- Input -->
+                            <div class="fieldsideDiv">
+                                <input class="fieldInput" ng-attr-id="[['fieldinputPersonPN' + x.ID]]" 
+                                name="[['fieldinputPersonPN' + x.ID]]" type="number" 
+                                maxlength=11 minglength=11 placeholder="E.g. 13459780123">
+                            </div>
+                        </div>
+                        <!-- What to Say -->
+                        <div class="aInfoDiv">
+                            <!-- Input Desc -->
+                            <div class="fieldsideDiv">
+                                <p class="fieldP">
+                                    What would you like to say to this person? Remember to be kind,
+                                    it's the best way to be persuasive!
+                                </p>
+                            </div>
+                            <!-- Input -->
+                            <div class="fieldsideDiv">
+                                <textarea minlength=1 maxlength=120 placeholder="What would you like to say to this person to let them know what they're reading?"
+                                ng-attr-id="[['fieldinputIntroduction' + x.ID]]" name="[['fieldinputIntroduction' + x.ID]]"></textarea>
+                            </div>
+                        </div>
+                        <!-- Result Send -->
+                        <div class="aInfoDiv">
+                            <p class="resultInput" ng-attr-id="[['sendLearnRResult' + x.ID]]" name="[['sendLearnRResult' + x.ID]]"></p>
+                        </div>
+                        <!-- Submit Button -->
+                        <div class="aInfoDiv">
+                            <button class="sendButton" ng-click="LearnRSending(x, x.ID)" 
+                            ng-attr-id="[['sendLearnRButton' + x.ID]]" ng-disabled="buttonDisable(x.ID, x)">
+                                Send LearnR
+                            </button>
+                        </div>
+                    </div>
+                    <!-- See LearnR Texts -->
+                    <div class="aBigInfoDiv" ng-show="returnVisibleLearnRTexts(x.ID)">
+                        <!-- Loop through this LearnR's texts and display them" -->
+                        <div class="aInfoDiv" ng-repeat="y in x.LearnRInforms track by $index">
+                            <p class="fieldP">[[y.TheInfo]]</p>
+                        </div>
+                    </div>
+                    <!-- Increment counter for naming -->
+                    <p ng-init="incrementCounter(x)"></p>
+                </div>
+                <p id="errDataLoadP" class="textFont"></p>
             </div>
         </div>
         {{/* Here is our footer */}}

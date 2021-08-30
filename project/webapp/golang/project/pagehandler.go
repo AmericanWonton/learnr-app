@@ -30,6 +30,7 @@ var emailMap map[string]bool
 
 /* Used for displaying Learners */
 var displayLearnrs []Learnr
+var newDisplay int = 0 //Used if we need to show a returned group of Users
 
 var GETALLUSERNAMESURL string
 var GETALLLEARNRORGURL string
@@ -51,6 +52,7 @@ type UserViewData struct {
 	OrgMember        []int       `json:"OrgMember"`        //List of organizations this Member is apart of
 	AdminOrgList     []LearnrOrg `json:"AdminOrgList"`     //List of organization objects this User is Admin of(used on SOME pages)
 	Banned           bool        `json:"Banned"`           //If the User is banned, we display nothing
+	NewSearchLearnR  int         `json:"NewSearchLearnR"`  //Determines if new LearnRs are being displayed in Agular. 0 == no
 	OrganizedLearnRs []Learnr    `json:"OrganizedLearnRs"` //An array of Learnrs with User input for ordering
 	DateCreated      string      `json:"DateCreated"`      //Date this User was created
 	DateUpdated      string      `json:"DateUpdated"`      //Date this User was updated
@@ -91,42 +93,75 @@ func signup(w http.ResponseWriter, r *http.Request) {
 
 //Handles the mainpage
 func mainpage(w http.ResponseWriter, r *http.Request) {
-	//Erase the learnrs loaded
-	displayLearnrs = nil
-	aUser := getUser(w, r)
-	theLearnRs, goodGet, message := getSpecialLearnRs([]int{0, 1, 1, 1}, "", "", 0, 0)
-	if !goodGet {
-		logWriter("Issue getting Learnrs for this page: " + message)
-		http.Redirect(w, r, "/", http.StatusSeeOther)
-		return
+	if newDisplay == 1 {
+		aUser := getUser(w, r)
+		//Redirect User if they are not logged in
+		if !alreadyLoggedIn(w, r) {
+			http.Redirect(w, r, "/", http.StatusSeeOther)
+			return
+		}
+		/* Set view data based on new learnrs we searched for */
+		vd := UserViewData{
+			TheUser:          aUser,
+			Username:         aUser.UserName,
+			Password:         aUser.Password,
+			Firstname:        aUser.Firstname,
+			Lastname:         aUser.Lastname,
+			PhoneNums:        aUser.PhoneNums,
+			UserID:           aUser.UserID,
+			Email:            aUser.Email,
+			Whoare:           aUser.Whoare,
+			AdminOrgs:        aUser.AdminOrgs,
+			OrgMember:        aUser.OrgMember,
+			Banned:           aUser.Banned,
+			NewSearchLearnR:  newDisplay,
+			OrganizedLearnRs: displayLearnrs,
+			DateCreated:      aUser.DateCreated,
+			DateUpdated:      aUser.DateUpdated,
+			MessageDisplay:   0,
+		}
+		/* Execute template, handle error */
+		err1 := template1.ExecuteTemplate(w, "mainpage.gohtml", vd)
+		HandleError(w, err1)
+	} else {
+		//Erase the learnrs loaded
+		displayLearnrs = nil
+		aUser := getUser(w, r)
+		theLearnRs, goodGet, message := getSpecialLearnRs([]int{0, 1, 1, 1}, "", "", 0, 0)
+		if !goodGet {
+			logWriter("Issue getting Learnrs for this page: " + message)
+			http.Redirect(w, r, "/", http.StatusSeeOther)
+			return
+		}
+		displayLearnrs = theLearnRs //Set Learnrs for display
+		//Redirect User if they are not logged in
+		if !alreadyLoggedIn(w, r) {
+			http.Redirect(w, r, "/", http.StatusSeeOther)
+			return
+		}
+		vd := UserViewData{
+			TheUser:          aUser,
+			Username:         aUser.UserName,
+			Password:         aUser.Password,
+			Firstname:        aUser.Firstname,
+			Lastname:         aUser.Lastname,
+			PhoneNums:        aUser.PhoneNums,
+			UserID:           aUser.UserID,
+			Email:            aUser.Email,
+			Whoare:           aUser.Whoare,
+			AdminOrgs:        aUser.AdminOrgs,
+			OrgMember:        aUser.OrgMember,
+			Banned:           aUser.Banned,
+			NewSearchLearnR:  newDisplay,
+			OrganizedLearnRs: theLearnRs,
+			DateCreated:      aUser.DateCreated,
+			DateUpdated:      aUser.DateUpdated,
+			MessageDisplay:   0,
+		}
+		/* Execute template, handle error */
+		err1 := template1.ExecuteTemplate(w, "mainpage.gohtml", vd)
+		HandleError(w, err1)
 	}
-	displayLearnrs = theLearnRs //Set Learnrs for display
-	//Redirect User if they are not logged in
-	if !alreadyLoggedIn(w, r) {
-		http.Redirect(w, r, "/", http.StatusSeeOther)
-		return
-	}
-	vd := UserViewData{
-		TheUser:          aUser,
-		Username:         aUser.UserName,
-		Password:         aUser.Password,
-		Firstname:        aUser.Firstname,
-		Lastname:         aUser.Lastname,
-		PhoneNums:        aUser.PhoneNums,
-		UserID:           aUser.UserID,
-		Email:            aUser.Email,
-		Whoare:           aUser.Whoare,
-		AdminOrgs:        aUser.AdminOrgs,
-		OrgMember:        aUser.OrgMember,
-		Banned:           aUser.Banned,
-		OrganizedLearnRs: theLearnRs,
-		DateCreated:      aUser.DateCreated,
-		DateUpdated:      aUser.DateUpdated,
-		MessageDisplay:   0,
-	}
-	/* Execute template, handle error */
-	err1 := template1.ExecuteTemplate(w, "mainpage.gohtml", vd)
-	HandleError(w, err1)
 }
 
 //Handles the learnmore page
@@ -727,4 +762,78 @@ func getAdminLearnRs(theLearnRIDs []int) []Learnr {
 	} else {
 		return []Learnr{}
 	}
+}
+
+/* This is called from mainpageapp.js to get our learnR data
+to load to an Angular app */
+func getLearnRAngular(w http.ResponseWriter, r *http.Request) {
+	type ReturnMessage struct {
+		TheErr      string   `json:"TheErr"`
+		ResultMsg   string   `json:"ResultMsg"`
+		SuccOrFail  int      `json:"SuccOrFail"`
+		LearnRArray []Learnr `json:"LearnRArray"`
+	}
+	returnMessage := ReturnMessage{
+		TheErr:      "",
+		ResultMsg:   "LearnRs returned successfully",
+		SuccOrFail:  0,
+		LearnRArray: []Learnr{},
+	}
+
+	displayLearnrs = nil
+	theLearnRs, goodGet, message := getSpecialLearnRs([]int{0, 1, 1, 1}, "", "", 0, 0)
+	if !goodGet {
+		theErr := "Issue getting Learnrs for this page: " + message
+		logWriter(theErr)
+		returnMessage.TheErr = theErr
+		returnMessage.SuccOrFail = 1
+		returnMessage.ResultMsg = theErr
+		returnMessage.LearnRArray = theLearnRs
+	} else {
+		displayLearnrs = theLearnRs //Set Learnrs for display
+		newDisplay = 1              //Set new learnrdisplay method
+		returnMessage.LearnRArray = displayLearnrs
+		returnMessage.SuccOrFail = 0
+		returnMessage.ResultMsg = "Learnrs successfully retrieved"
+	}
+
+	/* Send the response back to Ajax */
+	theJSONMessage, err := json.Marshal(returnMessage)
+	//Send the response back
+	if err != nil {
+		errIs := "Error formatting JSON for return in giveAllLearnrDisplay: " + err.Error()
+		logWriter(errIs)
+	}
+	fmt.Fprint(w, string(theJSONMessage))
+}
+
+/* This is called from mainpageapp.js to get special search learnR data.
+It then deletes any returned LearnRs and sets NewSearchLearnR back to false for another search*/
+func getSpecialLearnRAngular(w http.ResponseWriter, r *http.Request) {
+	type ReturnMessage struct {
+		TheErr      string   `json:"TheErr"`
+		ResultMsg   string   `json:"ResultMsg"`
+		SuccOrFail  int      `json:"SuccOrFail"`
+		LearnRArray []Learnr `json:"LearnRArray"`
+	}
+	returnMessage := ReturnMessage{
+		TheErr:      "",
+		ResultMsg:   "LearnRs returned successfully",
+		SuccOrFail:  0,
+		LearnRArray: []Learnr{},
+	}
+	//Assign LearnRs to return message
+	returnMessage.LearnRArray = displayLearnrs
+	//Delete 'searched for' LearnRs
+	displayLearnrs = nil
+	newDisplay = 0
+
+	/* Send the response back to Ajax */
+	theJSONMessage, err := json.Marshal(returnMessage)
+	//Send the response back
+	if err != nil {
+		errIs := "Error formatting JSON for return in giveAllLearnrDisplay: " + err.Error()
+		logWriter(errIs)
+	}
+	fmt.Fprint(w, string(theJSONMessage))
 }
