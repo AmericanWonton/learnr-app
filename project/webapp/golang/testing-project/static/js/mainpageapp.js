@@ -3,14 +3,13 @@ var app = angular.module('mymainpageApp', []);
 var displayedTexts = [];
 
 /* Changed at Golang templating to give ourselves special search display criteria */
-var specialLearnRSearch = false;
+var specialLearnRSearch = 0;
 
 /* This sets our special learnr search variable above to determine if we
 need to display special searched learnrs*/
 /* SET LEARNR FUNC BEGINNING */
 function setLearnnRSearchNew(variablepassed){
-    specialLearnRSearch = variablepassed;
-    console.log("DEBUG: We have set specialLearnR search to: " + specialLearnRSearch);
+    specialLearnRSearch = Number(variablepassed);
 }
 
 /* SET LEARNR FUNC ENDING */
@@ -32,45 +31,63 @@ app.controller('myCtrl', function($scope, $http) {
     /* Call HTTP to get our data. If specialLearnRSearch == false, then
     we search for all LearnRs. If specialLearnRSearch == true, call HTTP to get the LearnRs
     we already searched for */
-    if (specialLearnRSearch == true){
-        console.log("DEBUG: Performing specialLearnr return special. specailSearchVar: " + specialLearnRSearch);
+    if (specialLearnRSearch == 1){
         $http({
             method: 'GET',
             url: '/getSpecialLearnRAngular'
             }).then(function successCallback(response) {
             // this callback will be called asynchronously
             // when the response is available
-            //console.log(response.data);
-            //console.log(response.data.ResultMsg);
-            for (var i = 0; i < response.data.LearnRArray.length; i++){
-                $scope.LearnRArray.push(response.data.LearnRArray[i]);
+            
+            /* Initial Check to see if value is greater than 0 */
+            if (response.data.LearnRArray.length >= 1){
+                for (var i = 0; i < response.data.LearnRArray.length; i++){
+                    $scope.LearnRArray.push(response.data.LearnRArray[i]);
+                }
+                $scope.hasCompleted = true; //Data load complete, we can show data in template
+            } else {
+                //Data has not loaded or no search results were found!
+                var errDataLoadP = document.getElementById("errDataLoadP");
+                errDataLoadP.innerHTML = "No data returned for search!";
+                $scope.hasCompleted = true; //Data load complete, we can show data in template
             }
-    
-            $scope.hasCompleted = true; //Data load complete, we can show data in template
+            
             }, function errorCallback(response) {
             // called asynchronously if an error occurs
             // or server returns response with an error status.
             console.log("Error with returned Data! " + String(response));
+            //Data has not loaded or no search results were found!
+            var errDataLoadP = document.getElementById("errDataLoadP");
+            errDataLoadP.innerHTML = "Error finding LearnR data!\n" + String(response);
+            $scope.hasCompleted = true; //Data load complete, we can show data in template
         });
     } else {
-        console.log("DEBUG: Performing normal LearnR search. Special LearnR Search: " + specialLearnRSearch);
         $http({
             method: 'GET',
             url: '/getLearnRAngular'
             }).then(function successCallback(response) {
             // this callback will be called asynchronously
             // when the response is available
-            //console.log(response.data);
-            //console.log(response.data.ResultMsg);
-            for (var i = 0; i < response.data.LearnRArray.length; i++){
-                $scope.LearnRArray.push(response.data.LearnRArray[i]);
+            
+            if (response.data.LearnRArray.length >= 1){
+                for (var i = 0; i < response.data.LearnRArray.length; i++){
+                    $scope.LearnRArray.push(response.data.LearnRArray[i]);
+                }
+                $scope.hasCompleted = true; //Data load complete, we can show data in template
+            } else {
+                //Data has not loaded or no search results were found!
+                var errDataLoadP = document.getElementById("errDataLoadP");
+                errDataLoadP.innerHTML = "No data returned for search!";
+                $scope.hasCompleted = true; //Data load complete, we can show data in template
             }
-    
-            $scope.hasCompleted = true; //Data load complete, we can show data in template
             }, function errorCallback(response) {
             // called asynchronously if an error occurs
             // or server returns response with an error status.
             console.log("Error with returned Data! " + String(response));
+            //Data has not loaded or no search results were found!
+            var errDataLoadP = document.getElementById("errDataLoadP");
+            errDataLoadP.innerHTML = "Error finding LearnR data!\n" + String(response);
+            $scope.hasCompleted = true; //Data load complete, we can show data in template
         });
     }
 
@@ -82,13 +99,6 @@ app.controller('myCtrl', function($scope, $http) {
         $scope.showDivMap[aLearnR.ID] = false;
         $scope.showTextDivMap[aLearnR.ID] = false;
         $scope.buttonDisableMap[aLearnR.ID] = false;
-        //Debug Print
-        /*
-        angular.forEach($scope.showDivMap, function(value, key){
-            console.log("Map Key: " + key +  " Map Value: " + value);
-        });
-        */
-        //console.log("Map is currently: " + $scope.showDivMap);
     }
 
     //Compile LearnR description to one big string

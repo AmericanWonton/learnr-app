@@ -681,7 +681,7 @@
 {{/* SEND LEARNR DATA BEGINNING */}}
 {{define "sendNewLearnRSearch"}}
     <script>
-        var variablepassed = Boolean("{{.}}");
+        var variablepassed = Number("{{.}}");
         setLearnnRSearchNew(variablepassed);
     </script>
 {{end}}

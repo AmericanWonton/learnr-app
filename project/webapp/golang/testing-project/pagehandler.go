@@ -85,7 +85,6 @@ func signup(w http.ResponseWriter, r *http.Request) {
 //Handles the mainpage
 func mainpage(w http.ResponseWriter, r *http.Request) {
 	if newDisplay == 1 {
-		fmt.Printf("DEBUG: We are in the mainpage. Here is newDisplay %v\nHere is the LearnRS:\n%v\n", newDisplay, displayLearnrs)
 		aUser := getUser(w, r)
 		//Redirect User if they are not logged in
 		if !alreadyLoggedIn(w, r) {
@@ -116,7 +115,6 @@ func mainpage(w http.ResponseWriter, r *http.Request) {
 		err1 := template1.ExecuteTemplate(w, "mainpage.gohtml", vd)
 		HandleError(w, err1)
 	} else {
-		fmt.Printf("DEBUG: We are in the mainpage, basic. Here is newDisplay %v\n", newDisplay)
 		//Erase the learnrs loaded
 		displayLearnrs = nil
 		aUser := getUser(w, r)
