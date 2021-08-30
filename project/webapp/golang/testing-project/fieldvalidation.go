@@ -967,6 +967,8 @@ func searchLearnRs(w http.ResponseWriter, r *http.Request) {
 		theSuccMessage.Message = "Bad LearnR search: " + message
 	} else {
 		theSuccMessage.ReturnLearnRs = newLearnRs
+		displayLearnrs = newLearnRs //Set learnrs up for display on server
+		newDisplay = true
 	}
 
 	/* Send the response back to Ajax */

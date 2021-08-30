@@ -24,6 +24,7 @@
         {{/* Send data to javascript */}}
         {{$theUser := .TheUser}}
         {{$messageDisplay := .MessageDisplay}}
+        {{$newSearchLearnR := .NewSearchLearnR}}
         {{$thelearnrs := .OrganizedLearnRs}}
         {{/* Need to loop through arrays because Javascript dosen't like what gets passed in */}}
         {{/* Emails */}}
@@ -52,6 +53,9 @@
         {{template "setDateCreated" .TheUser.DateCreated}}
         {{template "setDateUpdated" .TheUser.DateUpdated}}
 
+        {{/* Used to display new LearnRs after a search*/}}
+        {{template "sendNewLearnRSearch" $newSearchLearnR}}
+
         {{/* Here is our header */}}
         {{template "header_everywhere" $theUser}}
 
@@ -79,7 +83,7 @@
                     <!-- Submit and Result -->
                     <div class="fieldPutDiv">
                         <!-- Submit Button -->
-                        <button class="actionDivButton" onclick="learnRSearch()">Search 4 LearnRs</button>
+                        <button class="actionDivButton" ng-click="searchLearnRs()">Search 4 LearnRs</button>
                         <!-- Result Div -->
                         <p class="resultThing" id="resultThing"></p>
                     </div>

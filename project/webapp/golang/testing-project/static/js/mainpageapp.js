@@ -2,9 +2,18 @@ var app = angular.module('mymainpageApp', []);
 
 var displayedTexts = [];
 
-/* This takes the learnr array we've created and begins to list it on our page.
-Divs will be created, being added into 'learnrHolderDiv'*/
+/* Changed at Golang templating to give ourselves special search display criteria */
+var specialLearnRSearch = false;
 
+/* This sets our special learnr search variable above to determine if we
+need to display special searched learnrs*/
+/* SET LEARNR FUNC BEGINNING */
+function setLearnnRSearchNew(variablepassed){
+    specialLearnRSearch = variablepassed;
+    console.log("DEBUG: We have set specialLearnR search to: " + specialLearnRSearch);
+}
+
+/* SET LEARNR FUNC ENDING */
 
 //Set a custom delimiter for templates
 app.config(function($interpolateProvider) {
@@ -20,25 +29,50 @@ app.controller('myCtrl', function($scope, $http) {
     $scope.showDivMap={};
     $scope.showTextDivMap={};
     $scope.buttonDisableMap={};
-    /* Call HTTP to get our data */
-    $http({
-        method: 'GET',
-        url: '/getLearnRAngular'
-        }).then(function successCallback(response) {
-        // this callback will be called asynchronously
-        // when the response is available
-        //console.log(response.data);
-        //console.log(response.data.ResultMsg);
-        for (var i = 0; i < response.data.LearnRArray.length; i++){
-            $scope.LearnRArray.push(response.data.LearnRArray[i]);
-        }
-
-        $scope.hasCompleted = true; //Data load complete, we can show data in template
-        }, function errorCallback(response) {
-        // called asynchronously if an error occurs
-        // or server returns response with an error status.
-        console.log("Error with returned Data! " + String(response));
-    });
+    /* Call HTTP to get our data. If specialLearnRSearch == false, then
+    we search for all LearnRs. If specialLearnRSearch == true, call HTTP to get the LearnRs
+    we already searched for */
+    if (specialLearnRSearch == true){
+        console.log("DEBUG: Performing specialLearnr return special. specailSearchVar: " + specialLearnRSearch);
+        $http({
+            method: 'GET',
+            url: '/getSpecialLearnRAngular'
+            }).then(function successCallback(response) {
+            // this callback will be called asynchronously
+            // when the response is available
+            //console.log(response.data);
+            //console.log(response.data.ResultMsg);
+            for (var i = 0; i < response.data.LearnRArray.length; i++){
+                $scope.LearnRArray.push(response.data.LearnRArray[i]);
+            }
+    
+            $scope.hasCompleted = true; //Data load complete, we can show data in template
+            }, function errorCallback(response) {
+            // called asynchronously if an error occurs
+            // or server returns response with an error status.
+            console.log("Error with returned Data! " + String(response));
+        });
+    } else {
+        console.log("DEBUG: Performing normal LearnR search. Special LearnR Search: " + specialLearnRSearch);
+        $http({
+            method: 'GET',
+            url: '/getLearnRAngular'
+            }).then(function successCallback(response) {
+            // this callback will be called asynchronously
+            // when the response is available
+            //console.log(response.data);
+            //console.log(response.data.ResultMsg);
+            for (var i = 0; i < response.data.LearnRArray.length; i++){
+                $scope.LearnRArray.push(response.data.LearnRArray[i]);
+            }
+    
+            $scope.hasCompleted = true; //Data load complete, we can show data in template
+            }, function errorCallback(response) {
+            // called asynchronously if an error occurs
+            // or server returns response with an error status.
+            console.log("Error with returned Data! " + String(response));
+        });
+    }
 
     //Increment the Counter
     $scope.incrementCounter = function(aLearnR){
@@ -157,6 +191,44 @@ app.controller('myCtrl', function($scope, $http) {
         });
     }
 
+    //Used for searching LearnRs based off tag or name
+    $scope.searchLearnRs = function(){
+        var learnRNameInput = document.getElementById("learnRNameInput");
+        var learnRTagInput = document.getElementById("learnRTagInput");
+        var resultThing = document.getElementById("resultThing");
+
+        var SearchJSON = {
+            TheNameInput: String(learnRNameInput.value),
+            TheTagInput: String(learnRTagInput.value)
+        };
+
+        $http({
+            method: 'POST',
+            url: '/searchLearnRs',
+            data: JSON.stringify(SearchJSON)
+            }).then(function successCallback(response) {
+            // this callback will be called asynchronously
+            // when the response is available
+            
+            //Determine response returned
+            if (response.data.SuccessNum == 0){
+                //Reload page, server should have new learnrs
+                navigateHeader(3, 0);
+            } else {
+                //Error show error
+                resultThing.innerHTML = "Error finding those LearnRs! " + String(response.data.Message);
+                learnRNameInput.value = "";
+                learnRTagInput.value = "";
+            }
+            }, function errorCallback(response) {
+            // called asynchronously if an error occurs
+            // or server returns response with an error status.
+            resultThing.innerHTML = "Error finding those LearnRs! " + String(response.data.Message);
+            learnRNameInput.value = "";
+            learnRTagInput.value = "";
+        });
+    }
+
     //Handle the printed LearnRstuff
     $scope.LearnRPageAdd = function(){
 
@@ -180,7 +252,6 @@ function learnRSearch(){
         TheTagInput: String(learnRTagInput.value)
     };
     
-    //console.log("DEBUG: Here is special cases: " + TheSpecialCases);
     //Send Ajax
     var jsonString = JSON.stringify(SearchJSON); //Stringify Data
     //Send Request to change page
@@ -196,9 +267,9 @@ function learnRSearch(){
                 learnRNameInput.value = "";
                 learnRTagInput.value = "";
                 //Take action if nothing is returned
-                if (ReturnData.ReturnLearnRs != null && ReturnData.ReturnLearnRs){
+                if (ReturnData.ReturnLearnRs != null && ReturnData.ReturnLearnRs.length >= 1){
                     //Repopulate learnrs
-                    rePopulateLearnRs(ReturnData.ReturnLearnRs);
+                    
                 } else {
                     //Nothing returned
                     resultThing.innerHTML = "No LearnRs returned from search!";
