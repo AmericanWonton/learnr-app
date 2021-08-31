@@ -79,8 +79,6 @@ body, html {
     flex-flow: wrap;
     align-content: center;
     justify-content: center;
-    align-self: center;
-    justify-self: center;
     width: 100%;
     /* styling */
     padding: .2em;
