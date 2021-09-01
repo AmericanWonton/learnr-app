@@ -22,7 +22,14 @@
         
         {{/* Login section */}}
         <div class="mainContentDiv">
-            {{template "login_form_section"}}
+            {{/* Actual login content */}}
+            <div class="divLoginStuff">
+                {{template "signInFormAjax"}}
+            </div>
+            {{/* Logo/Empty Section */}}
+            <div class="divLoginStuff">
+                <img class="loginLogoImage" src="static/images/png/learnRLogoMainTitle_2000x2000.png">
+            </div>
         </div>
         {{/* Here is our footer */}}
     </body>

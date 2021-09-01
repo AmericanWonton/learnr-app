@@ -60,12 +60,14 @@ body, html {
 .mainContentDiv{
     /* flexbox styling */
     display: flex;
-    flex-flow: wrap;
+    flex-flow: row wrap;
     justify-content: center;
+    align-items: center;
+    align-content: center;
     width: 100%;
+    height: 120vh;
     margin: 0em;
     padding: 0em;
-    height: 100%;
     /* styling */
     background-color: rgb(50, 108, 149);
     /* background-color: rgb(148, 148, 211); */
@@ -79,13 +81,13 @@ body, html {
     flex-flow: wrap;
     align-content: center;
     justify-content: center;
-    align-self: center;
-    justify-self: center;
     width: 100%;
+    height: 55vh;
     /* styling */
-    padding: .2em;
+    margin-top: .1em;
+    margin-bottom: .1em;
     /* debug */
-    /* border: 1px solid green; */
+    
 }
 
 .instructUserDiv{
@@ -97,7 +99,7 @@ body, html {
     justify-self: center;
     /* styling */
     text-align: center;
-    padding-top: 1em;
+    padding-top: .5em;
     padding-left: .5em;
     padding-right: .5em;
     /* debug */
@@ -138,6 +140,8 @@ body, html {
     /* styling */
     padding-top: .2em;
     padding-bottom: .2em;
+    background-color: white;
+    border-radius: 20px;
     /* debug styling */
     
 }
@@ -146,6 +150,7 @@ body, html {
     /* Flexbox styling */
     display: flex;
     flex-flow: wrap;
+    align-items: center;
     align-content: center;
     justify-content: center;
     width: 100%;
@@ -186,6 +191,119 @@ body, html {
     font-family: 'Ubuntu', sans-serif;
     font-size: 1rem;
     width: fit-content;
+    border-radius: 5px;
+}
+
+.linkP{
+    text-align: center;
+    align-items: center;
+    align-self: center;
+    padding: .5em;
+    font-size: 1rem;
+    font-family: 'Ubuntu', serif, sans-serif;
+    color: black;
+}
+
+.linkP:hover{
+    text-align: center;
+    align-items: center;
+    align-self: center;
+    padding: .5em;
+    font-size: 1rem;
+    font-family: 'Ubuntu', serif, sans-serif;
+    color: blueviolet;
+    cursor: pointer;
+}
+
+.actionDivButton{
+    font-family: 'Uchen', serif, sans-serif;
+    font-size: 2rem;
+    height: 2em;
+    width: 7em;
+    text-align: center;
+    align-content: center;
+    justify-content: center;
+    /* styling */
+    border-radius: 45px;
+    background-color: aquamarine;
+}
+
+.longActionDivButton{
+    font-family: 'Uchen', serif, sans-serif;
+    font-size: 1.5rem;
+    height: 4em;
+    width: 8em;
+    text-align: center;
+}
+
+.buttonHolderDiv{
+    /* basic styling */
+    display: flex;
+    flex-wrap: row wrap;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    width: 45%;
+    padding-left: .2em;
+    padding-right: .2em;
+    /* debug styling */
+    
+}
+
+.seperateHolder{
+    /* basic styling */
+    display: flex;
+    flex-wrap: row wrap;
+    align-content: center;
+    justify-content: center;
+    width: 45%;
+    /* styling */
+    margin-left: .4em;
+    margin-right: .4em;
+    border: 1px solid orange;
+    border-radius: 30px;
+    /* debug styling */
+    
+}
+
+.loginFormText{
+
+}
+
+.loginLogoImage{
+    width: 50vw;
+    height: 50vh;
+    align-self: center;
+    justify-self: center;
+    max-width: fit-content;
+    max-height: fit-content;
+}
+
+.actionDivButton{
+    font-family: 'Uchen', serif, sans-serif;
+    font-size: 2rem;
+    height: 3em;
+    width: 6em;
+    text-align: center;
+}
+
+.longActionDivButton{
+    font-family: 'Uchen', serif, sans-serif;
+    font-size: 1.5rem;
+    height: 4em;
+    width: 8em;
+    text-align: center;
+}
+
+.buttonHolderDiv{
+    /* basic styling */
+    display: flex;
+    flex-wrap: wrap;
+    width: 45%;
+    padding-left: .2em;
+    padding-right: .2em;
+    /* debug styling */
+    
 }
 
 /* SYTLING FOR THE FORMS */
@@ -253,9 +371,13 @@ body, html {
     display: flex;
     flex-flow: wrap;
     align-content: center;
-    justify-content: flex-start;
-    width: 40%;
-    margin-left: .1em;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
+    width: 100%;
+    /* styling */
+    padding-top: .5em;
+    padding-bottom: .5em;
     /* Debug */
 }
 
@@ -335,34 +457,6 @@ body, html {
     text-align: center;
     padding-left: 1em;
     padding-right: 1em;
-}
-
-/* Login Page Styling */
-.actionDivButton{
-    font-family: 'Uchen', serif, sans-serif;
-    font-size: 2rem;
-    height: 3em;
-    width: 6em;
-    text-align: center;
-}
-
-.longActionDivButton{
-    font-family: 'Uchen', serif, sans-serif;
-    font-size: 1.5rem;
-    height: 4em;
-    width: 8em;
-    text-align: center;
-}
-
-.buttonHolderDiv{
-    /* basic styling */
-    display: flex;
-    flex-wrap: wrap;
-    width: 45%;
-    padding-left: .2em;
-    padding-right: .2em;
-    /* debug styling */
-    
 }
 
 /* Sign Up Page Styling */

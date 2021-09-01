@@ -71,6 +71,7 @@
 {{/******* END OF HEAD SECTION *****/}}
 {{/******* SIGN IN SECTION ********/}}
 {{define "login_form_section"}}
+    {{/* Actual login div */}}
     <div class="divLoginStuff">
         {{/* Div for handling signing-in */}}
         {{template "signInFormAjax"}}
@@ -81,39 +82,38 @@
     <div id="divformDivLogin" class="divformDiv">
         <div class="instructUserDiv">
             <p class="formSign">
-                Log-In
+                Log-In to LearnR
             </p>
         </div>
         <div class="signInAlignmentDiv">
             {{/* USERNAME */}}
-            <div class="labelDiv">
-                <p class="labelPText">
-                    USERNAME:
-                </p>
-            </div>
             <div class="inputDiv">
-                <input class="inputSignIn" type="text" name="username" placeholder="username" minlength=1 maxlength=20 id="inputTextMobileUN" required/>
+                <input class="inputSignIn" type="text" name="username" 
+                placeholder="Enter your Username!" minlength=1 maxlength=20 id="inputTextMobileUN" required/>
                 <p class="form-field-err" id="username-err"></p>
             </div>
             {{/* PASSWORD */}}
-            <div class="labelDiv">
-                <p class="labelPText">
-                    PASSWORD:
-                </p>
-            </div>
             <div class="inputDiv">
-                <input type="password" class="inputSignIn" name="password" placeholder="password" minlength=1 maxlength=20 id="inputTextMobilePW" required/>
+                <input type="password" class="inputSignIn" name="password" placeholder="Enter your Password!" 
+                minlength=1 maxlength=20 id="inputTextMobilePW" required/>
                 <p class="form-field-err" id="password-err"></p>
             </div>
             {{/* SUBMIT BUTTON */}}
             <div class="fieldSection">
-                <!-- Sign Up Button -->
-                <div class="buttonHolderDiv" style="justify-content:flex-end">
-                    <button class="actionDivButton" onclick="navigateHeader(7)">Sign-Up</button>
-                </div>
                 <!-- Login Button -->
-                <div class="buttonHolderDiv" style="justify-content:flex-start">
+                <div class="buttonHolderDiv">
                     <button id="submitLoginButton" class="actionDivButton">Login</button>
+                </div>
+            </div>
+            {{/* No account, forgot User credentials*/}}
+            <div class="fieldSection">
+                {{/* Create LearnR Account */}}
+                <div class="seperateHolder">
+                    <p onclick="navigateHeader(7)" class="linkP">Create LearnR Account</p>
+                </div>
+                {{/* Reset password */}}
+                <div class="seperateHolder">
+                    <p onclick="navigateHeader(7)" class="linkP">Forgot Login?</p>
                 </div>
             </div>
             {{/* INFORMITIVE DIV */}}
