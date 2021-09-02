@@ -455,11 +455,15 @@ body, html {
      align-content: center;
      justify-content: center;
      align-self: center;
+     width: 100%;
      /* styling */
      padding-top: .2em;
      padding-bottom: .2em;
+     margin-right: 1em;
+     margin-left: 1em;
      background-color: white;
      border-radius: 20px;
+     border: 1px solid black;
      /* debug styling */
 }
 
