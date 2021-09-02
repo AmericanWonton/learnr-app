@@ -179,7 +179,7 @@
 {{/***** SIGN UP FORM *******/}}
 {{define "ajaxsignup"}}
     {{/* Here is the form setup */}}
-    <div id="divformDivSignUp" class="divformDiv">
+    <div id="divformDivSignUp" class="divFormHodler">
         {{/* Sign Up Title Instruction */}}
         <div class="instructUserDiv">
             <p class="formSign">
@@ -190,11 +190,6 @@
         <div class="signInAlignmentDiv">
             {{/* USERNAME */}}
             <div class="feildsSectionDiv">
-                <div class="labelDiv">
-                    <p class="labelPTextSignUp">
-                        USERNAME:
-                    </p>
-                </div>
                 <div class="inputDiv">
                     <input type="text" id="username" name="username" placeholder="username" minlength=1 maxlength=20 required>
                     <br>
@@ -203,11 +198,6 @@
             </div>
             {{/* FIRSTNAME */}}
             <div class="feildsSectionDiv">
-                <div class="labelDiv">
-                    <p class="labelPTextSignUp">
-                        FIRSTNAME:
-                    </p>
-                </div>
                 <div class="inputDiv">
                     <input type="text" id="firstname" name="firstname" placeholder="firstname" minlength=1 maxlength=20 required>
                     <br>
@@ -216,11 +206,6 @@
             </div>
             {{/* LASTNAME */}}
             <div class="feildsSectionDiv">
-                <div class="labelDiv">
-                    <p class="labelPTextSignUp">
-                        LASTNAME:
-                    </p>
-                </div>
                 <div class="inputDiv">
                     <input type="text" id="lastname" name="lastname" placeholder="lastname" minlength=1 maxlength=20 required>
                     <br>
@@ -229,11 +214,6 @@
             </div>
             {{/* PASSWORD */}}
             <div class="feildsSectionDiv">
-                <div class="labelDiv">
-                    <p class="labelPTextSignUp">
-                        PASSWORD:
-                    </p>
-                </div>
                 <div class="inputDiv">
                     <input type="password" id="password" name="password" placeholder="Password" minlength=8 maxlength=20 required>
                     <br>
@@ -242,11 +222,6 @@
             </div>
             {{/* CHECK PASSWORD*/}}
             <div class="feildsSectionDiv">
-                <div class="labelDiv">
-                    <p class="labelPTextSignUp">
-                        RE-TYPE PASSWORD:
-                    </p>
-                </div>
                 <div class="inputDiv">
                     <input type="password" id="passwordRetype" name="passwordRetype" placeholder="Re-type password" minlength=8 maxlength=20 required>
                     <br>
@@ -255,11 +230,6 @@
             </div>
             {{/* EMAIL */}}
             <div class="feildsSectionDiv">
-                <div class="labelDiv">
-                    <p class="labelPTextSignUp">
-                        Email:
-                    </p>
-                </div>
                 <div class="inputDiv">
                     <input type="email" id="email" name="myEmailInput" placeholder="Enter a valid email" maxlength=50>
                     <!-- Used to inform about status of email -->
@@ -271,11 +241,6 @@
             {{/* PRIMARY PHONE NUMBER(S) */}}
             {{/* DEBUG: Need to collect multiple phone numbers; use angular to create new tab(s)*/}}
             <div class="feildsSectionDiv">
-                <div class="labelDiv">
-                    <p class="labelPTextSignUp">
-                        Primary Phone Numbers:
-                    </p>
-                </div>
                 <div class="inputDiv">
                     <input type="text" id="primaryPhoneNums" name="primaryPhoneNums" placeholder="Primary phone number" minlength=1 maxlength=20>
                     <br>
@@ -284,14 +249,9 @@
             </div>
             {{/* TELL US ABOUT YOU */}}
             <div class="feildsSectionDiv">
-                <div class="labelDiv">
-                    <p class="smallLabelPText">
-                        Tell us about you! Why do you want to join LearnR? Inform a friend/family member?
-                        Make your own learnR? We'd love to know!
-                    </p>
-                </div>
                 <div class="inputDiv">
-                    <textarea class="textareaTellMe" id="textareaTellMe" name="textareaTellMe" placeholder="Let us know!"></textarea>
+                    <textarea class="textareaTellMe" id="textareaTellMe" name="textareaTellMe" 
+                    placeholder="Let us know why you want to join LearnR!"></textarea>
                 </div>
             </div>
             {{/* ENTER EMAIL VERIFICATION CODE */}}

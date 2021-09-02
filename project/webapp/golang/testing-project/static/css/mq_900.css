@@ -463,9 +463,10 @@ body, html {
 .loginAllContentDiv{
     /* flexbox styling */
     display: flex;
-    flex-flow: wrap;
+    flex-flow: row wrap;
     justify-content: center;
-    align-content: flex-start;
+    align-content: center;
+    align-items: center;
     width: 100%;
     margin: 0em;
     padding: 0em;
@@ -474,6 +475,23 @@ body, html {
     /* background-color: rgb(148, 148, 211); */
     /* debug styling */
     /* border: 1px solid black; */
+}
+
+.divFormHodler{
+    /* Flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    align-content: center;
+    justify-content: center;
+    /* styling */
+    padding-top: .2em;
+    padding-bottom: .2em;
+    margin-right: 1em;
+    margin-left: 1em;
+    background-color: white;
+    border-radius: 20px;
+    border: 1px solid black;
+    /* debug styling */
 }
 
 /** STYLING FOR THE HEADER **/ 
