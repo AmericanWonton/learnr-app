@@ -476,6 +476,20 @@ body, html {
     /* border: 1px solid black; */
 }
 
+.divFormHodler{
+    /* Flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    align-content: center;
+    justify-content: center;
+    /* styling */
+    padding-top: .2em;
+    padding-bottom: .2em;
+    background-color: white;
+    border-radius: 20px;
+    /* debug styling */
+}
+
 /** STYLING FOR THE HEADER **/ 
 .every_header{
 
