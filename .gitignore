@@ -4,6 +4,11 @@ generalnotes.txt
 #Ignore the bad phrases
 badphrases.txt
 
+#ignore startup script stuff
+external-project-resources/startupScripts/crud-env.list
+external-project-resources/startupScripts/text-env.list
+external-project-resources/startupScripts/web-env.list
+
 #ignore all security folders
 security
 security/mongocreds.txt
