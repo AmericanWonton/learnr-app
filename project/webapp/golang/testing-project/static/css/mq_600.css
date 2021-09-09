@@ -489,7 +489,6 @@ body, html {
     /* Styling */
     padding: .2em;
     /* DEBUG */
-    border: 1px solid black;
 }
 
 .headerImg{
@@ -526,12 +525,10 @@ body, html {
     flex-wrap: wrap;
     align-content: center;
     justify-content: center;
+    
     /* Styling */
-    padding-left: .1em;
-    padding-right: .1em;
-    margin-left: .1em;
-    margin-right: .1em;
-    /* border: 1px solid black; */
+    background-color: green;
+    border: 1px solid black;
     /* DEBUG */
 }
 
@@ -542,23 +539,23 @@ body, html {
     align-content: center;
     justify-content: center;
     /* Styling */
-    padding-left: .4em;
-    padding-right: .4em;
-    margin-left: .2em;
-    margin-right: .2em;
-    border: 1.5px solid black;
+    background-color: rgb(131, 238, 131);
+    border: 1px solid black;
+    cursor: pointer;
     /* DEBUG */
 }
 
 .navigationLinkP{
     font-family: 'Alfa Slab One', cursive, sans-serif;
-    font-size: 1.1rem;
+    font-size: 1rem;
     text-align: center;
+    padding: 1em;
 }
 
 .navigationLinkP:hover{
     font-family: 'Alfa Slab One', cursive, sans-serif;
-    font-size: 1.3rem;
+    padding: 1em;
+    font-size: 1rem;
     cursor: pointer;
     text-align: center;
 }
