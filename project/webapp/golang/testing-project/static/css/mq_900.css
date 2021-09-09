@@ -229,6 +229,20 @@ body, html {
     background-color: aquamarine;
 }
 
+.actionDivButton:hover{
+    font-family: 'Uchen', serif, sans-serif;
+    font-size: 2rem;
+    height: 2em;
+    width: 7em;
+    text-align: center;
+    align-content: center;
+    justify-content: center;
+    /* styling */
+    border-radius: 45px;
+    background-color: aquamarine;
+    cursor: pointer;
+}
+
 .longActionDivButton{
     font-family: 'Uchen', serif, sans-serif;
     font-size: 1.5rem;

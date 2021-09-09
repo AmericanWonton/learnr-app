@@ -92,3 +92,4 @@
 2021/09/09 12:59:22 Email service is initialized
 2021/09/09 13:14:32 Email service is initialized
 2021/09/09 13:40:42 Email service is initialized
+2021/09/09 14:39:40 Email service is initialized
