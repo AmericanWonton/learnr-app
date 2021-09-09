@@ -1110,7 +1110,7 @@ body, html {
     margin: 0em;
     padding: 0em;
     /* styling */
-    background-color: rgb(148, 148, 211);
+    /* background-color: rgb(148, 148, 211);*/
     /* debug styling */
     /* border: 1px solid black; */
 }
@@ -1120,40 +1120,52 @@ body, html {
     display: flex;
     flex-flow: wrap;
     justify-content: center;
+    align-content: center;
+    align-items: center;
     width: 100%;
     /* styling */
     text-align: center;
-    margin-left: .5em;
-    margin-right: .5em;
+    margin-top: 1em;
+    margin-left: 1.5em;
+    margin-right: 1.5em;
     margin-bottom: 1em;
+    border: 4px solid rgb(114, 114, 230);
+    background-color: rgb(148, 148, 211);
+    border-radius: 2%;
 }
 
 .titleP{
     text-align: center;
+    align-self: center;
+    padding-top: .5em;
+    padding-bottom: .5em;
+    padding-right: .5em;
+    padding-left: .5em;
     font-size: 6rem;
-    text-decoration: underline;
-    font-family: 'Carter One', cursive, sans-serif;
+    font-family: 'Inconsolata', monospace, sans-serif;
 }
 
 .textDiv{
-     /* flexbox styling */
-     display: flex;
-     flex-flow: wrap;
-     justify-content: center;
-     width: 100%;
-     /* styling */
-     padding-left: 1em;
-     padding-right: 1em;
-     margin-top: .5em;
-     margin-bottom: .5em;
+    /* flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    justify-content: center;
+    width: 100%;
+    /* styling */
+    margin-left: 1.5em;
+    margin-right: 1.5em;
+    margin-top: .5em;
+    margin-bottom: .5em;
 }
 
 .textP{
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     padding-bottom: 1em;
     padding-top: 1em;
+    padding-left: 1em;
+    padding-right: 1em;
     line-height: 2.0;
-    font-family: 'Luckiest Guy', cursive, sans-serif;
+    font-family: 'Inconsolata', monospace, sans-serif;
 }
 
 .listDiv{
@@ -1172,16 +1184,11 @@ body, html {
 }
 
 .liList{
-    font-size: 1.5rem;
-    line-height: 2.0;
+    font-size: 1.8rem;
     padding-top: .5em;
     padding-bottom: .5em;
-}
-
-.boldText{
-    font-size: 1.3em;
-    text-decoration: underline;
-    font-weight: bold;
+    line-height: 2.0;
+    font-family: 'Inconsolata', monospace, sans-serif;
 }
 
 /* Send Help Page Styling */
