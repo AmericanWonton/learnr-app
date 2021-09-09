@@ -37,6 +37,7 @@ body, div, p, q, i, h1, h2, h3, h4, h5, h6, a, header, footer, header {
     font-family: 'Inter', sans-serif;
     font-family: 'Carter One', cursive;
     font-family: 'Luckiest Guy', cursive;
+    font-family: 'Inconsolata', monospace, sans-serif;
 }
 
 /* You need to initialize the parent elements to 100%
