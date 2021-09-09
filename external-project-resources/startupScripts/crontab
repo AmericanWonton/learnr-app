@@ -1,0 +1,18 @@
+  GNU nano 4.8                                                 /tmp/crontab.eRxq3X/crontab                                                           
+# 
+# Output of the crontab jobs (including errors) is sent through
+# email to the user the crontab file belongs to (unless redirected).
+# 
+# For example, you can run a backup of all your user accounts
+# at 5 a.m every week with:
+# 0 5 * * 1 tar -zcf /var/backups/home.tgz /home/
+# 
+# For more information see the manual pages of crontab(5) and cron(8)
+# 
+# m h  dom mon dow   command
+@reboot sleep 5 && pwd
+@reboot cd
+@reboot sudo /home/ubuntu/startUpCronJob/startup.sh >> /home/ubuntu/scriptlog.log 2>&1
+#Reset this every night
+0 1 * * * sudo /home/ubuntu/startUpCronJob/startup.sh >> /home/ubuntu/scriptlog.log 2>&1
+#echo the results
