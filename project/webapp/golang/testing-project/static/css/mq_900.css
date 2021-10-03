@@ -57,6 +57,23 @@ body, html {
 }
 
 /* LOGIN PAGE STYLING */
+.bodyLoginPage {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    font: inherit;
+    vertical-align: baseline;
+    /* styling */
+    background-color: rgb(50, 108, 149);
+    /* debug */
+    /* background-color: rgb(165, 122, 190); */
+}
+c
 .mainContentDiv{
     /* flexbox styling */
     display: flex;
@@ -82,12 +99,11 @@ body, html {
     align-content: center;
     justify-content: center;
     width: 100%;
-    height: 55vh;
+    height: 100vh;
     /* styling */
-    margin-top: .1em;
-    margin-bottom: .1em;
-    /* debug */
     
+    /* debug */
+    border: 1px solid black;
 }
 
 .instructUserDiv{
@@ -104,6 +120,14 @@ body, html {
     padding-right: .5em;
     /* debug */
     /* border: 1px solid pink; */
+}
+
+.logininstructP{
+    font-family: 'Anton', sans-serif;
+    font-size: 60px;
+    text-align: center;
+    padding-left: .5em;
+    padding-right: .5em;
 }
 
 .signInAndUpDiv{
@@ -138,6 +162,8 @@ body, html {
     align-content: center;
     justify-content: center;
     /* styling */
+    width: 600px;
+    height: 600px;
     padding-top: .2em;
     padding-bottom: .2em;
     background-color: white;
@@ -149,12 +175,19 @@ body, html {
 .signInAlignmentDiv{
     /* Flexbox styling */
     display: flex;
-    flex-flow: wrap;
+    flex-flow: row wrap;
     align-items: center;
     align-content: center;
     justify-content: center;
     width: 100%;
+    /* styling */
+    text-align: center;
+    padding-top: .5em;
+    padding-left: .5em;
+    padding-right: .5em;
+    padding-bottom: .5em;
     /* debug styling */
+    border: 1px solid brown;
 }
 
 .feildsSectionDiv{

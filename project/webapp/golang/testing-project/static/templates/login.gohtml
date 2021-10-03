@@ -17,20 +17,31 @@
         {{/* AngularJS for added email address */}}
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
     </head>
-    <body>
+    <body class="bodyLoginPage">
         {{/* Here is our header */}}
         
-        {{/* Login section */}}
-        <div class="mainContentDiv">
-            {{/* Actual login content */}}
-            <div class="divLoginStuff">
-                {{template "signInFormAjax"}}
-            </div>
-            {{/* Logo/Empty Section */}}
-            <div class="divLoginStuff">
-                <img class="loginLogoImage" src="static/images/png/learnRLogoMainTitle_2000x2000.png">
+        <div class="divLoginStuff">
+            <div class="divformDiv" id="divformDivLogin">
+                <div class="instructUserDiv">
+                    <p class="logininstructP">
+                        LearnR Login
+                    </p>
+                </div>
+                <!-- Actual Form -->
+                <div class="signInAlignmentDiv">
+                    {{/* Used to display any errors upon messups */}}
+                    <div class="errorLoginDiv">
+
+                    </div>
+                    {{/* USERNAME */}}
+                    <div class="inputLoginDiv">
+                        <input class="inputSignIn" type="text" name="username" 
+                        placeholder="Enter your Username!" minlength=1 maxlength=20 id="inputTextMobileUN" required/>
+                    </div>
+                </div>
             </div>
         </div>
+        
         {{/* Here is our footer */}}
     </body>
 </html>

@@ -57,6 +57,23 @@ body, html {
 }
 
 /* LOGIN PAGE STYLING */
+.bodyLoginPage {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    font: inherit;
+    vertical-align: baseline;
+    /* styling */
+    background-color: rgb(50, 108, 149);
+    /* debug */
+    /* background-color: rgb(165, 122, 190); */
+}
+
 .mainContentDiv{
     /* flexbox styling */
     display: flex;
@@ -81,27 +98,35 @@ body, html {
     align-content: center;
     justify-content: center;
     width: 100%;
-    height: 48vh;
+    height: 100vh;
     /* styling */
-    margin: .5em;
-    /* debug */
     
+    /* debug */
+    border: 1px solid black;
 }
 
 .instructUserDiv{
     /* flexbox display */
-    display: block;
+    display: flex;
+    flex-flow: row wrap;
     align-content: center;
     justify-content: center;
-    align-self: center;
-    justify-self: center;
     /* styling */
     text-align: center;
     padding-top: .5em;
     padding-left: .5em;
     padding-right: .5em;
+    padding-bottom: .5em;
     /* debug */
-    /* border: 1px solid pink; */
+    border: 1px solid pink; 
+}
+
+.logininstructP{
+    font-family: 'Anton', sans-serif;
+    font-size: 35px;
+    text-align: center;
+    padding-left: .5em;
+    padding-right: .5em;
 }
 
 .signInAndUpDiv{
@@ -136,6 +161,8 @@ body, html {
     align-content: center;
     justify-content: center;
     /* styling */
+    width: 340px;
+    height: 340px;
     padding-top: .2em;
     padding-bottom: .2em;
     background-color: white;
@@ -152,7 +179,29 @@ body, html {
     align-content: center;
     justify-content: center;
     width: 100%;
+    /* styling */
+    text-align: center;
+    padding-top: .5em;
+    padding-left: .5em;
+    padding-right: .5em;
+    padding-bottom: .5em;
     /* debug styling */
+    border: 1px solid brown;
+}
+
+.inputLoginDiv {
+    /* flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
+    width: 100%;
+    /* styling */
+    padding-top: .5em;
+    padding-bottom: .5em;
+    /* Debug */
 }
 
 .feildsSectionDiv{
@@ -404,6 +453,7 @@ body, html {
     align-items: center;
     font-family: 'Ubuntu', sans-serif;
 }
+
 
 .formSign{
     font-family: 'Anton', sans-serif;
