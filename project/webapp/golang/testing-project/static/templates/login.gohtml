@@ -15,7 +15,7 @@
         <script src="static/js/pagehandling.js"></script>
         <script src="static/js/login.js"></script>
         {{/* AngularJS for added email address */}}
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+        
     </head>
     <body class="bodyLoginPage">
         {{/* Here is our header */}}
@@ -31,12 +31,33 @@
                 <div class="signInAlignmentDiv">
                     {{/* Used to display any errors upon messups */}}
                     <div class="errorLoginDiv">
-
+                        <p class="form-field-err" id="password-err"></p>
                     </div>
                     {{/* USERNAME */}}
                     <div class="inputLoginDiv">
                         <input class="inputSignIn" type="text" name="username" 
                         placeholder="Enter your Username!" minlength=1 maxlength=20 id="inputTextMobileUN" required/>
+                    </div>
+                    {{/* PASSWORD */}}
+                    <div class="inputLoginDiv">
+                        <input type="password" class="inputSignIn" name="password" placeholder="Enter your Password!" 
+                        minlength=1 maxlength=20 id="inputTextMobilePW" required/>
+                    </div>
+                    {{/* SUBMIT BUTTON */}}
+                    <div class="inputLoginDiv">
+                        <!-- Login Button -->
+                        <button class="actionDivButton" id="submitLoginButton">Login</button>
+                    </div>
+                    {{/* No account, forgot User credentials*/}}
+                    <div class="inputLoginDiv">
+                        {{/* Create LearnR Account */}}
+                        <div class="seperateHolder">
+                            <p onclick="navigateHeader(7)" class="linkP">Create LearnR Account</p>
+                        </div>
+                        {{/* Reset password */}}
+                        <div class="seperateHolder">
+                            <p onclick="navigateHeader(7)" class="linkP">Forgot Login?</p>
+                        </div>
                     </div>
                 </div>
             </div>
