@@ -4,7 +4,8 @@ window.addEventListener('DOMContentLoaded', function(){
     var inputTextMobileUN = document.getElementById("inputTextMobileUN");
     var inputTextMobilePW = document.getElementById("inputTextMobilePW");
     var submitLoginButton = document.getElementById("submitLoginButton");
-    var informtextPSignIn = document.getElementById("informtextPSignIn");
+    var passwordErr = document.getElementById("password-err");
+    var divformDivLogin = document.getElementById("divformDivLogin");
 
     /* When clicked, submit the results of the login items;
     if successful, it will redirect to the mainpage with your newly made cookie.
@@ -27,21 +28,27 @@ window.addEventListener('DOMContentLoaded', function(){
                 var SuccessMSG = JSON.parse(Response);
                 if (Number(SuccessMSG.SuccessNum) === 0){
                     //Successful User Search
-                    //Clear informtextPSignIn
-                    informtextPSignIn.innerHTML = "";
-                    informtextPSignIn.innerHTML = SuccessMSG.Message;
+                    //Increase size of Div
+                    divformDivLogin.style.height = "400px";
+                    //Clear passwordErr
+                    passwordErr.innerHTML = "";
+                    passwordErr.innerHTML = SuccessMSG.Message;
                     //This User should have their cookie. Send them to the choice page
                     navigateHeader(3);
                 } else if (Number(SuccessMSG.SuccessNum) === 1){
                     //Failed User Search
-                    //Clear informtextPSignIn
-                    informtextPSignIn.innerHTML = "";
-                    informtextPSignIn.innerHTML = SuccessMSG.Message;
+                    //Increase size of Div
+                    divformDivLogin.style.height = "400px";
+                    //Clear passwordErr
+                    passwordErr.innerHTML = "";
+                    passwordErr.innerHTML = SuccessMSG.Message;
                 } else {
                     //Failed User Search
+                    //Increase size of Div
+                    divformDivLogin.style.height = "400px";
                     //Clear informtextPSignIn
-                    informtextPSignIn.innerHTML = "";
-                    informtextPSignIn.innerHTML = "Wrong information returned from server";
+                    passwordErr.innerHTML = "";
+                    passwordErr.innerHTML = "Wrong information returned from server";
                     console.log("Wrong number returned from canLogin: " + SuccessMSG.SuccessNum);
                 }
             }

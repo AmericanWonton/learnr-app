@@ -266,21 +266,6 @@ body, html {
     cursor: pointer;
 }
 
-.actionDivButton{
-    font-family: 'Uchen', serif, sans-serif;
-    font-size: 30px;
-    width: 100%;
-    text-align: center;
-    align-content: center;
-    justify-content: center;
-    /* styling */
-    margin-left: 10px;
-    margin-right: 10px;
-    border-radius: 5px;
-    opacity: 0.6;
-    background-color: rgba(115, 196, 193, 0.644);
-}
-
 .longActionDivButton{
     font-family: 'Uchen', serif, sans-serif;
     font-size: 1.5rem;

@@ -10,7 +10,9 @@
         {{/* Here are our fonts */}}
         {{template "loginFonts"}}
         {{/* Here are our Media Query and stylesheets */}}
-        {{template "media-queries"}}
+        <link rel="stylesheet" type="text/css" href="static/css/main.css">
+        <link rel="stylesheet" type="text/css" href="static/css/styling.css">
+        <link rel="stylesheet" type="text/css" media="(min-width: 600px)" href="static/css/mq_600.css">
         {{/* Here is our Javascript or additional code needed */}}
         <script src="static/js/pagehandling.js"></script>
         <script src="static/js/login.js"></script>
@@ -41,7 +43,7 @@
                     {{/* PASSWORD */}}
                     <div class="inputLoginDiv">
                         <input type="password" class="inputSignIn" name="password" placeholder="Enter your Password!" 
-                        minlength=1 maxlength=20 id="inputTextMobilePW" required/>
+                        minlength=1 maxlength=20 id="inputTextMobilePW" autocomplete="off" required/>
                     </div>
                     {{/* SUBMIT BUTTON */}}
                     <div class="inputLoginDiv">
