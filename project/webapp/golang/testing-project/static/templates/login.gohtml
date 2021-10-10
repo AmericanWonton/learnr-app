@@ -10,27 +10,65 @@
         {{/* Here are our fonts */}}
         {{template "loginFonts"}}
         {{/* Here are our Media Query and stylesheets */}}
-        {{template "media-queries"}}
+        <link rel="stylesheet" type="text/css" href="static/css/main.css">
+        <link rel="stylesheet" type="text/css" href="static/css/styling.css">
+        <link rel="stylesheet" type="text/css" media="(min-width: 600px)" href="static/css/mq_600.css">
         {{/* Here is our Javascript or additional code needed */}}
         <script src="static/js/pagehandling.js"></script>
         <script src="static/js/login.js"></script>
         {{/* AngularJS for added email address */}}
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+        
     </head>
-    <body>
+    <body class="bodyLoginPage">
         {{/* Here is our header */}}
         
-        {{/* Login section */}}
-        <div class="mainContentDiv">
-            {{/* Actual login content */}}
-            <div class="divLoginStuff">
-                {{template "signInFormAjax"}}
+        <div class="divLoginStuff">
+            <!-- LearnR Logo -->
+            <div class="logoDivHolder">
+                <img class="loginIMG" src="static/images/png/learnRLogoLoginEasel512x512.png">
             </div>
-            {{/* Logo/Empty Section */}}
-            <div class="divLoginStuff">
-                <img class="loginLogoImage" src="static/images/png/learnRLogoMainTitle_2000x2000.png">
+            <div class="divformDiv" id="divformDivLogin">
+                <div class="instructUserDiv">
+                    <p class="logininstructP">
+                        LearnR Login
+                    </p>
+                </div>
+                <!-- Actual Form -->
+                <div class="signInAlignmentDiv">
+                    {{/* Used to display any errors upon messups */}}
+                    <div class="errorLoginDiv">
+                        <p class="form-field-err" id="password-err"></p>
+                    </div>
+                    {{/* USERNAME */}}
+                    <div class="inputLoginDiv">
+                        <input class="inputSignIn" type="text" name="username" 
+                        placeholder="Enter your Username!" minlength=1 maxlength=20 id="inputTextMobileUN" required/>
+                    </div>
+                    {{/* PASSWORD */}}
+                    <div class="inputLoginDiv">
+                        <input type="password" class="inputSignIn" name="password" placeholder="Enter your Password!" 
+                        minlength=1 maxlength=20 id="inputTextMobilePW" autocomplete="off" required/>
+                    </div>
+                    {{/* SUBMIT BUTTON */}}
+                    <div class="inputLoginDiv">
+                        <!-- Login Button -->
+                        <button class="actionDivButton" id="submitLoginButton">Login</button>
+                    </div>
+                    {{/* No account, forgot User credentials*/}}
+                    <div class="inputLoginDiv">
+                        {{/* Create LearnR Account */}}
+                        <div class="seperateHolder">
+                            <p onclick="navigateHeader(7)" class="linkP">Create LearnR Account</p>
+                        </div>
+                        {{/* Reset password */}}
+                        <div class="seperateHolder">
+                            <p onclick="navigateHeader(7)" class="linkP">Forgot Login?</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+        
         {{/* Here is our footer */}}
     </body>
 </html>

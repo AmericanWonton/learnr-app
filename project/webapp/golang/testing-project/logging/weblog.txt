@@ -87,3 +87,97 @@
 2021/09/02 08:47:23 Email service is initialized
 2021/09/02 08:53:24 Email service is initialized
 2021/09/02 08:57:33 Email service is initialized
+2021/10/03 17:47:46 Email service is initialized
+2021/10/03 18:01:37 Email service is initialized
+2021/10/03 18:02:14 Email service is initialized
+2021/10/03 18:02:22 Email service is initialized
+2021/10/03 18:03:02 Email service is initialized
+2021/10/03 18:03:45 Email service is initialized
+2021/10/03 18:07:49 Email service is initialized
+2021/10/03 18:10:27 Email service is initialized
+2021/10/03 18:12:32 Email service is initialized
+2021/10/03 18:15:58 Email service is initialized
+2021/10/03 18:18:55 Email service is initialized
+2021/10/03 18:27:41 Email service is initialized
+2021/10/03 18:31:12 Email service is initialized
+2021/10/03 18:33:02 Email service is initialized
+2021/10/03 18:33:49 Email service is initialized
+2021/10/03 18:45:23 Email service is initialized
+2021/10/03 18:47:09 Email service is initialized
+2021/10/03 18:48:03 Email service is initialized
+2021/10/04 18:28:57 Email service is initialized
+2021/10/04 18:34:56 Email service is initialized
+2021/10/04 18:37:05 Email service is initialized
+2021/10/04 18:45:41 Email service is initialized
+2021/10/04 18:46:06 Email service is initialized
+2021/10/04 18:46:25 Email service is initialized
+2021/10/04 18:48:12 Email service is initialized
+2021/10/04 18:49:41 Email service is initialized
+2021/10/04 18:49:56 Email service is initialized
+2021/10/04 18:54:02 Email service is initialized
+2021/10/04 18:55:00 Email service is initialized
+2021/10/04 18:56:18 Email service is initialized
+2021/10/04 18:56:54 Email service is initialized
+2021/10/04 18:57:24 Email service is initialized
+2021/10/04 18:58:21 Email service is initialized
+2021/10/04 19:01:03 Email service is initialized
+2021/10/04 19:02:16 Email service is initialized
+2021/10/04 19:03:48 Email service is initialized
+2021/10/04 19:05:08 Email service is initialized
+2021/10/04 19:07:41 Email service is initialized
+2021/10/04 19:10:11 Email service is initialized
+2021/10/04 19:11:15 Email service is initialized
+2021/10/04 19:13:05 Email service is initialized
+2021/10/04 19:16:10 Email service is initialized
+2021/10/04 19:19:29 Email service is initialized
+2021/10/04 19:20:32 Email service is initialized
+2021/10/04 19:28:17 Email service is initialized
+2021/10/04 19:30:23 Email service is initialized
+2021/10/04 19:31:11 Email service is initialized
+2021/10/04 19:35:10 Email service is initialized
+2021/10/04 19:40:54 Email service is initialized
+2021/10/09 17:27:00 Email service is initialized
+2021/10/09 17:30:22 Email service is initialized
+2021/10/09 17:32:13 Email service is initialized
+2021/10/09 17:35:25 Email service is initialized
+2021/10/09 17:35:55 Email service is initialized
+2021/10/09 17:36:25 Email service is initialized
+2021/10/09 17:48:05 Email service is initialized
+2021/10/09 17:50:37 Email service is initialized
+2021/10/09 18:01:31 Can Crud was false, or nil values:  
+2021/10/09 18:01:31 Can Crud was false, or nil values:  
+2021/10/09 18:08:53 Email service is initialized
+2021/10/09 18:08:59 Can Crud was false, or nil values:  
+2021/10/09 18:08:59 Can Crud was false, or nil values:  
+2021/10/09 18:12:10 Email service is initialized
+2021/10/09 18:12:20 Can Crud was false, or nil values:  
+2021/10/09 18:12:20 Can Crud was false, or nil values:  
+2021/10/09 18:14:56 Email service is initialized
+2021/10/09 18:15:01 Can Crud was false, or nil values:  
+2021/10/09 18:15:01 Can Crud was false, or nil values:  
+2021/10/09 18:16:44 Email service is initialized
+2021/10/09 18:16:50 Can Crud was false, or nil values:  
+2021/10/09 18:16:50 Can Crud was false, or nil values:  
+2021/10/09 18:17:03 For americanwonton, No User was returned.
+2021/10/09 18:17:03 For americanwonton, No User was returned.
+2021/10/09 18:17:06 For americanwonton, No User was returned.
+2021/10/09 18:17:06 For americanwonton, No User was returned.
+2021/10/09 18:20:42 Can Crud was false, or nil values:  
+2021/10/09 18:20:42 Can Crud was false, or nil values:  
+2021/10/09 18:23:37 Email service is initialized
+2021/10/09 18:23:41 Can Crud was false, or nil values:  
+2021/10/09 18:23:41 Can Crud was false, or nil values:  
+2021/10/09 18:25:15 Can Crud was false, or nil values:  
+2021/10/09 18:25:15 Can Crud was false, or nil values:  
+2021/10/09 18:41:12 Email service is initialized
+2021/10/09 18:41:48 Can Crud was false, or nil values:  
+2021/10/09 18:41:48 Can Crud was false, or nil values:  
+2021/10/09 18:45:14 Can Crud was false, or nil values:  64736166
+2021/10/09 18:45:14 Can Crud was false, or nil values:  64736166
+2021/10/09 18:47:30 Can Crud was false, or nil values:  64
+2021/10/09 18:47:30 Can Crud was false, or nil values:  64
+2021/10/09 18:49:57 Email service is initialized
+2021/10/09 18:50:54 Email service is initialized
+2021/10/09 18:55:35 Email service is initialized
+2021/10/09 19:09:36 Email service is initialized
+2021/10/09 19:13:33 Email service is initialized

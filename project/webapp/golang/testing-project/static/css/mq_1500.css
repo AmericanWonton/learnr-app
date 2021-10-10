@@ -57,6 +57,23 @@ body, html {
 }
 
 /* LOGIN PAGE STYLING */
+.bodyLoginPage {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    font: inherit;
+    vertical-align: baseline;
+    /* styling */
+    background-color: rgb(50, 108, 149);
+    /* debug */
+    /* background-color: rgb(165, 122, 190); */
+}
+
 .mainContentDiv{
     /* flexbox styling */
     display: flex;
@@ -82,12 +99,11 @@ body, html {
     align-content: center;
     justify-content: center;
     width: 100%;
-    height: 55vh;
+    height: 100vh;
     /* styling */
-    margin-top: .1em;
-    margin-bottom: .1em;
-    /* debug */
     
+    /* debug */
+    border: 1px solid black;
 }
 
 .instructUserDiv{
@@ -105,6 +121,15 @@ body, html {
     /* debug */
     /* border: 1px solid pink; */
 }
+
+.logininstructP{
+    font-family: 'Anton', sans-serif;
+    font-size: 35px;
+    text-align: center;
+    padding-left: .5em;
+    padding-right: .5em;
+}
+
 
 .signInAndUpDiv{
     /* flexbox styling */
@@ -138,6 +163,8 @@ body, html {
     align-content: center;
     justify-content: center;
     /* styling */
+    width: 340px;
+    height: 340px;
     padding-top: .2em;
     padding-bottom: .2em;
     background-color: white;
@@ -146,15 +173,38 @@ body, html {
     
 }
 
+.inputLoginDiv {
+    /* flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
+    width: 100%;
+    /* styling */
+    padding-top: .5em;
+    padding-bottom: .5em;
+    /* Debug */
+    border: 1px solid black;
+}
+
 .signInAlignmentDiv{
     /* Flexbox styling */
     display: flex;
-    flex-flow: wrap;
+    flex-flow: row wrap;
     align-items: center;
     align-content: center;
     justify-content: center;
     width: 100%;
+    /* styling */
+    text-align: center;
+    padding-top: .5em;
+    padding-left: .5em;
+    padding-right: .5em;
+    padding-bottom: .5em;
     /* debug styling */
+    border: 1px solid brown;
 }
 
 .feildsSectionDiv{
@@ -191,6 +241,7 @@ body, html {
     font-family: 'Ubuntu', sans-serif;
     font-size: 1rem;
     width: fit-content;
+    height: 1.5em;
     border-radius: 5px;
 }
 
@@ -213,19 +264,6 @@ body, html {
     font-family: 'Ubuntu', serif, sans-serif;
     color: blueviolet;
     cursor: pointer;
-}
-
-.actionDivButton{
-    font-family: 'Uchen', serif, sans-serif;
-    font-size: 2rem;
-    height: 2em;
-    width: 7em;
-    text-align: center;
-    align-content: center;
-    justify-content: center;
-    /* styling */
-    border-radius: 45px;
-    background-color: aquamarine;
 }
 
 .longActionDivButton{
@@ -364,21 +402,6 @@ body, html {
     height: 1em;
     width: 2em;
     text-align: center;
-}
-
-.inputDiv {
-    /* flexbox styling */
-    display: flex;
-    flex-flow: wrap;
-    align-content: center;
-    justify-content: center;
-    align-items: center;
-    align-self: center;
-    width: 100%;
-    /* styling */
-    padding-top: .5em;
-    padding-bottom: .5em;
-    /* Debug */
 }
 
 .fieldSection{

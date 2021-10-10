@@ -31,6 +31,8 @@ body, div, p, q, i, h1, h2, h3, h4, h5, h6, a, header, footer, header {
     font-family: 'Otomanopee One', sans-serif;
     font-family: 'Anton', sans-serif;
     font-family: 'Ubuntu', sans-serif;
+    font-family: 'Dosis', sans-serif;
+    font-family: 'Josefin Sans', sans-serif;
     font-family: 'Uchen', serif;
     font-family: 'Bebas Neue', cursive;
     font-family: 'Fira Sans Condensed', sans-serif;
@@ -57,6 +59,23 @@ body, html {
 }
 
 /* LOGIN PAGE STYLING */
+.bodyLoginPage {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    font: inherit;
+    vertical-align: baseline;
+    /* styling */
+    background-color: rgb(50, 108, 149);
+    /* debug */
+    /* background-color: rgb(165, 122, 190); */
+}
+
 .mainContentDiv{
     /* flexbox styling */
     display: flex;
@@ -81,27 +100,35 @@ body, html {
     align-content: center;
     justify-content: center;
     width: 100%;
-    height: 48vh;
+    height: 100vh;
     /* styling */
-    margin: .5em;
-    /* debug */
     
+    /* debug */
+    border: 1px solid black;
 }
 
 .instructUserDiv{
     /* flexbox display */
-    display: block;
+    display: flex;
+    flex-flow: row wrap;
     align-content: center;
     justify-content: center;
-    align-self: center;
-    justify-self: center;
     /* styling */
     text-align: center;
     padding-top: .5em;
     padding-left: .5em;
     padding-right: .5em;
+    padding-bottom: .5em;
     /* debug */
-    /* border: 1px solid pink; */
+    
+}
+
+.logininstructP{
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 35px;
+    text-align: center;
+    padding-left: .5em;
+    padding-right: .5em;
 }
 
 .signInAndUpDiv{
@@ -136,6 +163,8 @@ body, html {
     align-content: center;
     justify-content: center;
     /* styling */
+    width: 340px;
+    height: 340px;
     padding-top: .2em;
     padding-bottom: .2em;
     background-color: white;
@@ -152,7 +181,46 @@ body, html {
     align-content: center;
     justify-content: center;
     width: 100%;
+    /* styling */
+    text-align: center;
+    padding-top: .5em;
+    padding-left: .5em;
+    padding-right: .5em;
+    padding-bottom: .5em;
     /* debug styling */
+    
+}
+
+.errorLoginDiv{
+    /* flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
+    width: 100%;
+    /* styling */
+    padding-top: .5em;
+    padding-bottom: .5em;
+    /* Debug */
+    
+}
+
+.inputLoginDiv {
+    /* flexbox styling */
+    display: flex;
+    flex-flow: wrap;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
+    width: 100%;
+    /* styling */
+    padding-top: .5em;
+    padding-bottom: .5em;
+    /* Debug */
+    
 }
 
 .feildsSectionDiv{
@@ -188,9 +256,27 @@ body, html {
 .inputSignIn{
     font-family: 'Ubuntu', sans-serif;
     font-size: 1rem;
-    width: fit-content;
+    width: 100%;
+    height: 1.5em;
+    margin-left: 10px;
+    margin-right: 10px;
     border-radius: 5px;
 }
+
+.inputSignIn:focus {
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 1rem;
+    width: 100%;
+    height: 1.5em;
+    margin-left: 10px;
+    margin-right: 10px;
+    border-radius: 5px;
+    /* Add shadow */
+    outline: none !important;
+    border-color: #719ECE;
+    box-shadow: 0 0 10px #719ECE;
+}
+
 
 .linkP{
     text-align: center;
@@ -199,7 +285,7 @@ body, html {
     padding: .5em;
     font-size: 1rem;
     font-family: 'Ubuntu', serif, sans-serif;
-    color: black;
+    color: grey;
 }
 
 .linkP:hover{
@@ -209,22 +295,64 @@ body, html {
     padding: .5em;
     font-size: 1rem;
     font-family: 'Ubuntu', serif, sans-serif;
-    color: blueviolet;
+    color: black;
     cursor: pointer;
 }
 
 .actionDivButton{
-    font-family: 'Uchen', serif, sans-serif;
-    font-size: 2rem;
-    height: 2em;
-    width: 7em;
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 30px;
+    width: 100%;
     text-align: center;
     align-content: center;
     justify-content: center;
     /* styling */
-    border-radius: 45px;
-    background-color: aquamarine;
+    margin-left: 10px;
+    margin-right: 10px;
+    padding-top: .2em;
+    padding-bottom: .2em;
+    border-radius: 5px;
+    opacity: 0.6;
+    background-color: rgb(41, 245, 238);
+    border: 1px solid rgb(41, 245, 238);
 }
+
+.actionDivButton:hover {
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 30px;
+    width: 100%;
+    text-align: center;
+    align-content: center;
+    justify-content: center;
+    /* styling */
+    margin-left: 10px;
+    margin-right: 10px;
+    padding-top: .2em;
+    padding-bottom: .2em;
+    border-radius: 5px;
+    opacity: 1.0;
+    background-color: rgb(43, 238, 231);
+    border: 1px solid rgb(41, 245, 238);
+}
+
+.logoDivHolder{
+    /* Flexbox styling */
+    display: flex;
+    flex-flow: row;
+    align-content: center;
+    justify-content: center;
+    width: 100%;
+    /* DEBUG */
+    
+}
+
+.loginIMG{
+    width: 100px;
+    height: 100px;
+    align-self: center;
+    justify-self: center;
+}
+
 
 .longActionDivButton{
     font-family: 'Uchen', serif, sans-serif;
@@ -258,14 +386,8 @@ body, html {
     /* styling */
     margin-left: .4em;
     margin-right: .4em;
-    border: 1px solid orange;
-    border-radius: 30px;
     /* debug styling */
     
-}
-
-.loginFormText{
-
 }
 
 .loginLogoImage{
@@ -335,21 +457,6 @@ body, html {
     text-align: center;
 }
 
-.inputDiv {
-    /* flexbox styling */
-    display: flex;
-    flex-flow: wrap;
-    align-content: center;
-    justify-content: center;
-    align-items: center;
-    align-self: center;
-    width: 100%;
-    /* styling */
-    padding-top: .5em;
-    padding-bottom: .5em;
-    /* Debug */
-}
-
 .fieldSection{
     /* flexbox styling */
     display: flex;
@@ -404,6 +511,7 @@ body, html {
     align-items: center;
     font-family: 'Ubuntu', sans-serif;
 }
+
 
 .formSign{
     font-family: 'Anton', sans-serif;
