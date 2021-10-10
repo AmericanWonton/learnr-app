@@ -180,3 +180,4 @@
 2021/10/09 18:50:54 Email service is initialized
 2021/10/09 18:55:35 Email service is initialized
 2021/10/09 19:09:36 Email service is initialized
+2021/10/09 19:13:33 Email service is initialized
