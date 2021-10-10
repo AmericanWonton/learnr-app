@@ -10,7 +10,9 @@
         {{/* Here are our fonts */}}
         {{template "signUpFonts"}}
         {{/* Here are our Media Query and stylesheets */}}
-        {{template "media-queries"}}
+        <link rel="stylesheet" type="text/css" href="static/css/main.css">
+        <link rel="stylesheet" type="text/css" href="static/css/styling.css">
+        <link rel="stylesheet" type="text/css" media="(min-width: 600px)" href="static/css/mq_600.css">
         {{/* Here is our Javascript or additional code needed */}}
         <script src="static/js/pagehandling.js"></script>
         <script src="static/js/signup.js"></script>
@@ -18,12 +20,122 @@
         {{/* AngularJS for added email address */}}
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
     </head>
-    <body>
+    <body class="bodySignUpPage">
         {{/* Here is our header */}}
         
         {{/* Login section */}}
-        <div class="loginAllContentDiv">
-            {{template "ajaxsignup"}}
+        <div class="signInAllContentDiv">
+            {{/* Here is the form setup */}}
+            <div id="divformDivSignUp" class="divSignInHolder">
+                {{/* Sign Up Title Instruction */}}
+                <div class="instructUserDiv">
+                    <p class="logininstructP">
+                        Sign-Up
+                    </p>
+                </div>
+                {{/* Begin signup form */}}
+                <div class="signUpAlignmentDiv">
+                    {{/* Used to display any errors upon messups */}}
+                    <div class="errorSignUpDiv">
+                        <p class="form-field-err" id="password-err"></p>
+                    </div>
+                    {{/* USERNAME */}}
+                    <div class="signUpFieldSecDiv">
+                        <div class="inputDiv">
+                            <input class="signUpInput" type="text" id="username" name="username" placeholder="username" minlength=1 maxlength=20 required>
+                            <br>
+                            <p id="form-input-info"></p>
+                        </div>
+                    </div>
+                    {{/* FIRSTNAME */}}
+                    <div class="signUpFieldSecDiv">
+                        <div class="inputDiv">
+                            <input class="signUpInput" type="text" id="firstname" name="firstname" placeholder="firstname" minlength=1 maxlength=20 required>
+                            <br>
+                            <p id="form-input-info"></p>
+                        </div>
+                    </div>
+                    {{/* LASTNAME */}}
+                    <div class="signUpFieldSecDiv">
+                        <div class="inputDiv">
+                            <input class="signUpInput" type="text" id="lastname" name="lastname" placeholder="lastname" minlength=1 maxlength=20 required>
+                            <br>
+                            <p id="form-input-info"></p>
+                        </div>
+                    </div>
+                    {{/* PASSWORD */}}
+                    <div class="signUpFieldSecDiv">
+                        <div class="inputDiv">
+                            <input class="signUpInput" type="password" id="password" name="password" placeholder="Password" minlength=8 maxlength=20 autocomplete="off" required>
+                            <br>
+                            <p id="form-input-info2"></p>
+                        </div>
+                    </div>
+                    {{/* CHECK PASSWORD*/}}
+                    <div class="signUpFieldSecDiv">
+                        <div class="inputDiv">
+                            <input class="signUpInput" type="password" id="passwordRetype" name="passwordRetype" placeholder="Re-type password" minlength=8 maxlength=20 autocomplete="off" required>
+                            <br>
+                            <p id="form-input-info2"></p>
+                        </div>
+                    </div>
+                    {{/* EMAIL */}}
+                    <div class="signUpFieldSecDiv">
+                        <div class="inputDiv">
+                            <input class="signUpInput" type="email" id="email" name="myEmailInput" placeholder="Enter a valid email" maxlength=50>
+                            <!-- Used to inform about status of email -->
+                            <p id="emailOkay">
+                                
+                            </p>
+                        </div>
+                    </div>
+                    {{/* PRIMARY PHONE NUMBER(S) */}}
+                    {{/* DEBUG: Need to collect multiple phone numbers; use angular to create new tab(s)*/}}
+                    <div class="signUpFieldSecDiv">
+                        <div class="inputDiv">
+                            <input class="signUpInput" type="text" id="primaryPhoneNums" name="primaryPhoneNums" placeholder="Primary phone number" minlength=1 maxlength=20>
+                            <br>
+                            <p id="form-input-info"></p>
+                        </div>
+                    </div>
+                    {{/* TELL US ABOUT YOU */}}
+                    <div class="signUpFieldSecDiv">
+                        <div class="inputDiv">
+                            <textarea class="textareaTellMe" id="textareaTellMe" name="textareaTellMe" 
+                            placeholder="Let us know why you want to join LearnR!"></textarea>
+                        </div>
+                    </div>
+                    {{/* ENTER EMAIL VERIFICATION CODE */}}
+                    <div class="signUpFieldSecDiv" id="verificationDiv" style="display:none">
+                        <div class="labelDiv">
+                            <p class="labelPTextSignUp">
+                                Email Verification Code:
+                            </p>
+                        </div>
+                        <div class="inputDiv">
+                            <input class="signUpInput" type="text" id="verifCode" name="Email Verification Code" placeholder="Enter your verification code" maxlength=6>
+                            <button class="longActionDivButton" onclick="checkCode()" id="codeCheckerB">Check Code</button>
+                            <!-- Used to inform about status of email -->
+                            <p id="codeOkay"></p>
+                        </div>
+                    </div>
+                    {{/* SUBMIT BUTTON */}}
+                    <div class="signUpFieldSecDiv">
+                        <div class="fieldSection" id="signUpSubmitB">
+                            <button id="submitSignUpButton" class="actionDivButton">Sign-Up</button>
+                        </div>
+                    </div>
+                    {{/* INFORMITIVE DIV */}}
+                    <div class="signUpFieldSecDiv">
+                        <div class="informativeDiv" id="informativeDivSignUp">
+                            <p class="informtextP" id="informtextPSignUp"></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="informFormDiv" id="informFormDiv">
+                    <p class="informFormP" id="informFormP"></p>
+                </div>
+            </div>
         </div>
         {{/* Here is our footer */}}
     </body>
