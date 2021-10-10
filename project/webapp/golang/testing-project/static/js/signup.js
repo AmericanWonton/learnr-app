@@ -15,7 +15,6 @@ window.addEventListener('DOMContentLoaded', function(){
 
     /* When an error is displayed, we must increase the height of 'divformDivSignUp'
     to properly display the error; when the erro goes away, we can decrease it.*/
-    var divformDivSignUp = document.getElementById("divformDivSignUp");
     var username = document.getElementById("username");
     var firstname = document.getElementById("firstname");
     var lastname = document.getElementById("lastname");
@@ -25,12 +24,8 @@ window.addEventListener('DOMContentLoaded', function(){
     var textareaTellMe = document.getElementById("textareaTellMe");
     var email = document.getElementById("email");
     var signUpB = document.getElementById("submitSignUpButton");
-    var emailOkay = document.getElementById("emailOkay");
     var verificationDiv = document.getElementById("verificationDiv");
-    var usernameErr = document.getElementById("form-input-info");
-    var passwordErr = document.getElementById("form-input-info2");
     /* Used for informing User of the results */
-    var informativeDivSignUp = document.getElementById("informativeDivSignUp");
     var informtextPSignUp = document.getElementById("informtextPSignUp");
 
     /* Check the database for Username when the key is pressed! */
@@ -187,9 +182,14 @@ window.addEventListener('DOMContentLoaded', function(){
                 var ReturnMessage = JSON.parse(item);
                 if (ReturnMessage.SuccOrFail === 0){
                     console.log("DEBUG: Email verification sent: " + ReturnMessage.ResultMsg);
-                    informtextPSignUp.innerHTML = "Please enter verification code from email sent to you...";
-                    //Display our form for entering verification code 
-                    verificationDiv.style.display = "flex";
+                    var promptAnswer = prompt("Please enter your email verification", "");
+                    if (promptAnswer != null || promptAnswer != ""){
+                        //User answered, evaulate the code
+                        checkCode(promptAnswer);
+                    } else {
+                        //Did not detect User input, reset page
+                        alert("User input not detected, please reload page and try again...");
+                    }
                 } else {
                     console.log("DEBUG: We have an error: " + SuccessMSG.SuccOrFail + " " +
                     SuccessMSG.TheErr);
@@ -206,10 +206,9 @@ window.addEventListener('DOMContentLoaded', function(){
 
 
 /* This checks the verification code the User enters */
-function checkCode(){
+function checkCode(theCode){
     /* Values for our verification code entry */
     var codeOkay = document.getElementById("codeOkay");
-    var verifCode = document.getElementById("verifCode");
     /* Values for building our User */
     var username = document.getElementById("username");
     var firstname = document.getElementById("firstname");
@@ -237,12 +236,8 @@ function checkCode(){
 
     var NewCreation = {
         NewUser: newUser,
-        Code: Number(verifCode.value)
+        Code: Number(theCode)
     };
-
-    /* Disable button so User can't click again */
-    var codeCheckerB = document.getElementById("codeCheckerB");
-    codeCheckerB.disabled = true;
 
     var jsonString = JSON.stringify(NewCreation);
     var xhr = new XMLHttpRequest();
@@ -254,16 +249,15 @@ function checkCode(){
             var SuccessMSG = JSON.parse(item);
             if (SuccessMSG.SuccOrFail === 0){
                 /* User succussfully created. Delay, then send to home page */
-                informtextPSignUp.innerHTML = "User succesfully created. Returning to login page...";
-                codeOkay.innerHTML = "User succesfully created. Returning to login page...";
+                errorSignUpDiv.style.backgroundColor = "green";
+                signInErrorP.innerHTML = SuccessMSG.Message;
+                signInErrorP.innerText = SuccessMSG.Message;
                 setTimeout(() => { navigateHeader(1); }, 4000);
             } else {
                 console.log("DEBUG: We have an error: " + SuccessMSG.SuccessNum + " " +
-                    SuccessMSG.Message);
-                document.getElementById("informFormP").innerHTML = SuccessMSG.Message;
-                document.getElementById("informFormP").value = SuccessMSG.Message;
-                document.getElementById("informFormDiv").style.display = "block";
-                codeOkay.innerHTML = SuccessMSG.Message;
+                SuccessMSG.Message);
+                signInErrorP.innerText = SuccessMSG.Message;
+                errorSignUpDiv.style.backgroundColor = "red";
                 //Reload page after displaying error
                 setTimeout(() => {  window.location.assign("/"); }, 3000);
             }
@@ -302,9 +296,6 @@ function errorDisplay(theError, whichField) {
             errorSignUpDiv.style.backgroundColor = "white";
             signUpB.disabled = false;
         }
-
-        console.log("Should be displaying this error: " + theError);
-        
     } else {
         /* Change the background color, have the newewst error displayed */
         errorSignUpDiv.style.backgroundColor = "red";
@@ -319,6 +310,5 @@ function errorDisplay(theError, whichField) {
                 break;
             }
         }
-        console.log("Should be displaying this error: " + theError);
     }
 }

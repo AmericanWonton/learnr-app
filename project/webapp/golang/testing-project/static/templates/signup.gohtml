@@ -42,27 +42,22 @@
                     {{/* USERNAME */}}
                     <div class="signUpFieldSecDiv">
                         <input class="signUpInput" type="text" id="username" name="username" placeholder="username" minlength=1 maxlength=20 required>
-                        <p id="form-input-info" style="display:none"></p>
                     </div>
                     {{/* FIRSTNAME */}}
                     <div class="signUpFieldSecDiv">
                         <input class="signUpInput" type="text" id="firstname" name="firstname" placeholder="firstname" minlength=1 maxlength=20 required>
-                        <p id="form-input-info" style="display:none"></p>
                     </div>
                     {{/* LASTNAME */}}
                     <div class="signUpFieldSecDiv">
                         <input class="signUpInput" type="text" id="lastname" name="lastname" placeholder="lastname" minlength=1 maxlength=20 required>
-                        <p id="form-input-info" style="display:none"></p>
                     </div>
                     {{/* PASSWORD */}}
                     <div class="signUpFieldSecDiv">
                         <input class="signUpInput" type="password" id="password" name="password" placeholder="Password" minlength=8 maxlength=20 autocomplete="off" required>
-                        <p id="form-input-info2" style="display:none"></p>
                     </div>
                     {{/* CHECK PASSWORD*/}}
                     <div class="signUpFieldSecDiv">
                         <input class="signUpInput" type="password" id="passwordRetype" name="passwordRetype" placeholder="Re-type password" minlength=8 maxlength=20 autocomplete="off" required>
-                        <p id="form-input-info2" style="display:none"></p>
                     </div>
                     {{/* EMAIL */}}
                     <div class="signUpFieldSecDiv">
@@ -76,26 +71,11 @@
                     {{/* DEBUG: Need to collect multiple phone numbers; use angular to create new tab(s)*/}}
                     <div class="signUpFieldSecDiv">
                         <input class="signUpInput" type="text" id="primaryPhoneNums" name="primaryPhoneNums" placeholder="Primary phone number" minlength=1 maxlength=20>
-                        <p id="form-input-info" style="display:none"></p>
                     </div>
                     {{/* TELL US ABOUT YOU */}}
                     <div class="signUpFieldSecDiv">
                         <textarea class="textareaTellMe" id="textareaTellMe" name="textareaTellMe" 
-                        placeholder="Let us know why you want to join LearnR!"></textarea>
-                    </div>
-                    {{/* ENTER EMAIL VERIFICATION CODE */}}
-                    <div class="signUpFieldSecDiv" id="verificationDiv" style="display:none">
-                        <div class="labelDiv">
-                            <p class="labelPTextSignUp">
-                                Email Verification Code:
-                            </p>
-                        </div>
-                        <div class="inputDiv">
-                            <input class="signUpInput" type="text" id="verifCode" name="Email Verification Code" placeholder="Enter your verification code" maxlength=6>
-                            <button class="longActionDivButton" onclick="checkCode()" id="codeCheckerB">Check Code</button>
-                            <!-- Used to inform about status of email -->
-                            <p id="codeOkay"></p>
-                        </div>
+                        placeholder="Let us know why you want to join LearnR!" maxlength=120></textarea>
                     </div>
                     {{/* SUBMIT BUTTON */}}
                     <div class="signUpFieldSecDiv">
@@ -103,15 +83,6 @@
                             <button id="submitSignUpButton" class="actionDivButton">Sign-Up</button>
                         </div>
                     </div>
-                    {{/* INFORMITIVE DIV */}}
-                    <div class="signUpFieldSecDiv">
-                        <div class="informativeDiv" id="informativeDivSignUp">
-                            <p class="informtextP" id="informtextPSignUp"></p>
-                        </div>
-                    </div>
-                </div>
-                <div class="informFormDiv" id="informFormDiv">
-                    <p class="informFormP" id="informFormP"></p>
                 </div>
             </div>
         </div>
