@@ -1,8 +1,21 @@
+
+/* The original height of our div that holds form values.
+Will be adjusted as the dom is resized or errors appear/dissapear.
+Should be changed if css files changes for this div: divformDivSignUp */
+let originalHeight = 700;
+/* Order: Username, Password, RetypePassword, Email
+1 is not okay, 0 is okay*/
+let okayFields = [0,0,0,0];
+let errorMessages = ["", "", "", ""];
+
 //Add our listening events to the window loading
 window.addEventListener('DOMContentLoaded', function(){
     /* When 'Sign Up' is clicked contact Ajax to create profile for User; then
     we can log them in with new 'User' cookie created */
-    var signUpB = document.getElementById("submitSignUpButton");
+
+    /* When an error is displayed, we must increase the height of 'divformDivSignUp'
+    to properly display the error; when the erro goes away, we can decrease it.*/
+    var divformDivSignUp = document.getElementById("divformDivSignUp");
     var username = document.getElementById("username");
     var firstname = document.getElementById("firstname");
     var lastname = document.getElementById("lastname");
@@ -11,6 +24,7 @@ window.addEventListener('DOMContentLoaded', function(){
     var primaryPhoneNums = document.getElementById("primaryPhoneNums");
     var textareaTellMe = document.getElementById("textareaTellMe");
     var email = document.getElementById("email");
+    var signUpB = document.getElementById("submitSignUpButton");
     var emailOkay = document.getElementById("emailOkay");
     var verificationDiv = document.getElementById("verificationDiv");
     var usernameErr = document.getElementById("form-input-info");
@@ -27,27 +41,27 @@ window.addEventListener('DOMContentLoaded', function(){
             if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200){
                 var item = xhr.responseText;
                 if (item == 'TooShort') {
-                    usernameErr.textContent = 'Please enter a Username';
-                    signUpB.disabled = true;
+                    errorDisplay("Please enter a Username", 0);
+                    
                 } else if (item == 'TooLong'){
-                    usernameErr.textContent = 'Username must be under 20 characters';
-                    signUpB.disabled = true;
+                    errorDisplay("Username must be under 20 characters",0);
+                    
                 } else if (item == 'ContainsLanguage'){
-                    usernameErr.textContent = 'Username is innapropriate';
-                    signUpB.disabled = true;
+                    errorDisplay("Username is innapropriate",0);
+                    
                 } else if (item == 'true') {
-                    usernameErr.textContent = 'Username taken - Try another name!';
-                    signUpB.disabled = true;
+                    errorDisplay("Username is taken...try another name!",0);
+                    
                 } else {
                     //Check to see if this Username has the 'wrong characters'
                     var goodString = checkInput(username.value);
                     if (goodString === true){
                         //Username is good
-                        usernameErr.textContent = '';
+                        errorDisplay("",0);
                         signUpB.disabled = false;
                     } else {
-                        usernameErr.textContent = 'Username contains illegal characters... ';
-                        signUpB.disabled = true;
+                        errorDisplay("Username contains illegal characters...",0);
+                        
                     }
                 }
             }
@@ -59,21 +73,41 @@ window.addEventListener('DOMContentLoaded', function(){
     password.addEventListener('input', function(){
         passString = password.value;
         if (passString.length <= 0) {
-            passwordErr.textContent = 'Please enter a password';
-            signUpB.disabled = true;
+            errorDisplay("Please enter a password",1);
+            
         } else if (passString.length > 20){
-            passwordErr.textContent = 'Password must be under 20 characters.';
-            signUpB.disabled = true;
+            errorDisplay("Password must be under 20 characters",1);
+            
         } else {
             //Check to see if this Password has the 'wrong characters'
             var goodString = checkInput(password.value);
             if (goodString === true){
                 //Password is good
-                passwordErr.textContent = '';
+                errorDisplay("",1);
                 signUpB.disabled = false;
             } else {
-                passwordErr.textContent = 'Password contains illegal characters... ';
-                signUpB.disabled = true;
+                errorDisplay("Password contains illegal characters",1);
+                
+            }
+        }
+    });
+
+    /* Check to see if the password matches the password re-type */
+    passwordRetype.addEventListener('input', function(){
+        if (passwordRetype.value != password.value){
+            //Passwords don't match, inform user
+            errorDisplay("Passwords do not match!",2);
+            
+        } else {
+            //Check to see if this Password Re-type has the 'wrong characters'
+            var goodString = checkInput(passwordRetype.value);
+            if (goodString === true){
+                //Password is good
+                errorDisplay("",2);
+                signUpB.disabled = false;
+            } else {
+                errorDisplay("Password contains illegal characters",2);
+                
             }
         }
     });
@@ -86,44 +120,24 @@ window.addEventListener('DOMContentLoaded', function(){
             if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200){
                 var item = xhr.responseText;
                 if (item == 'TooShort') {
-                    emailOkay.textContent = 'Please enter an email';
-                    signUpB.disabled = true;
+                    errorDisplay("Please enter an email",3);
+                    
                 } else if (item == 'TooLong'){
-                    emailOkay.textContent = 'Email must be under 50 characters';
-                    signUpB.disabled = true;
+                    errorDisplay("Email address must be under 50 characters",3);
+                    
                 } else if (item == 'ContainsLanguage'){
-                    emailOkay.textContent = 'Email is innapropriate';
-                    signUpB.disabled = true;
+                    errorDisplay("Email is innapropriate",3);
+                    
                 } else if (item == 'true') {
-                    emailOkay.textContent = 'Email taken - try another!';
-                    signUpB.disabled = true;
+                    errorDisplay("Email is taken...try another!",3);
+                    
                 } else {
-                    emailOkay.textContent = '';
+                    errorDisplay("",3);
                     signUpB.disabled = false;
                 }
             }
         });
         xhr.send(String(email.value));
-    });
-
-    /* Check to see if the password matches the password re-type */
-    passwordRetype.addEventListener('input', function(){
-        if (passwordRetype.value != password.value){
-            //Passwords don't match, inform user
-            signUpB.disabled = true;
-            passwordErr.textContent = 'Password must match password re-type';
-        } else {
-            //Check to see if this Password Re-type has the 'wrong characters'
-            var goodString = checkInput(passwordRetype.value);
-            if (goodString === true){
-                //Password is good
-                passwordErr.textContent = '';
-                signUpB.disabled = false;
-            } else {
-                passwordErr.textContent = 'Password contains illegal characters... ';
-                signUpB.disabled = true;
-            }
-        }
     });
 
     /* Send Email to User when fields are filled out...
@@ -153,7 +167,7 @@ window.addEventListener('DOMContentLoaded', function(){
         };
 
         /* Disable the inputs so they can't be changed */
-        signUpB.disabled = true;
+        
         username.disabled = true;
         firstname.disabled = true;
         lastname.disabled = true;
@@ -257,4 +271,54 @@ function checkCode(){
     });
     xhr.send(jsonString);
 
+}
+
+/* This displays an error based on User input*/
+function errorDisplay(theError, whichField) {
+    
+    var signUpB = document.getElementById("submitSignUpButton");
+    var signInErrorP = document.getElementById("signInErrorP");
+    var errorSignUpDiv = document.getElementById("errorSignUpDiv");
+
+    if (theError == ""){
+        /* Error removed from this field. Leave color blank, 
+        then turn their field to okay. Errors may still display if there are more errors*/
+        okayFields[whichField] = 0;
+        errorMessages[whichField] = theError;
+        if ((okayFields[0] == 1) || (okayFields[1] == 1) || (okayFields[2] == 1) || (okayFields[3] == 1)){
+            errorSignUpDiv.style.backgroundColor = "red";
+            signUpB.disabled = true;
+            //Find the first error still occuring
+            for (var x = 0; x < (okayFields.length); x++){
+                if (okayFields[x] == 1) {
+                    signInErrorP.innerHTML = errorMessages[x];
+                    signInErrorP.innerText = errorMessages[x];
+                    break;
+                }
+            }
+        } else {
+            signInErrorP.innerHTML = "";
+            signInErrorP.innerText = "";
+            errorSignUpDiv.style.backgroundColor = "white";
+            signUpB.disabled = false;
+        }
+
+        console.log("Should be displaying this error: " + theError);
+        
+    } else {
+        /* Change the background color, have the newewst error displayed */
+        errorSignUpDiv.style.backgroundColor = "red";
+        errorMessages[whichField] = theError;
+        okayFields[whichField] = 1;
+        signUpB.disabled = true;
+        //Find the first error still occuring
+        for (var x = 0; x < (okayFields.length); x++){
+            if (okayFields[x] == 1) {
+                signInErrorP.innerHTML = errorMessages[x];
+                signInErrorP.innerText = errorMessages[x];
+                break;
+            }
+        }
+        console.log("Should be displaying this error: " + theError);
+    }
 }

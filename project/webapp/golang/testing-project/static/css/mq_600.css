@@ -445,12 +445,13 @@ body, html {
     justify-content: center;
     /* styling */
     width: 340px;
-    height: 500px;
+    height: 700px;
     padding-top: .2em;
     padding-bottom: .2em;
     background-color: white;
     border-radius: 20px;
     /* debug styling */
+    border: 3px solid pink;
 }
 
 .signUpAlignmentDiv {
@@ -486,6 +487,13 @@ body, html {
     padding-bottom: .5em;
     /* Debug */
     border: 1px solid green;
+}
+
+.signUpErrP{
+    text-align: center;
+    font-size: 1rem;
+    font-family: 'Ubuntu', sans-serif;
+    color: white;
 }
 
 .signUpInstructP {

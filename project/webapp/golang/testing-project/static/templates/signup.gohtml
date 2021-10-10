@@ -36,74 +36,52 @@
                 {{/* Begin signup form */}}
                 <div class="signUpAlignmentDiv">
                     {{/* Used to display any errors upon messups */}}
-                    <div class="errorSignUpDiv">
-                        <p class="form-field-err" id="password-err"></p>
+                    <div class="errorSignUpDiv" id="errorSignUpDiv">
+                        <p class="signUpErrP" id="signInErrorP"></p>
                     </div>
                     {{/* USERNAME */}}
                     <div class="signUpFieldSecDiv">
-                        <div class="inputDiv">
-                            <input class="signUpInput" type="text" id="username" name="username" placeholder="username" minlength=1 maxlength=20 required>
-                            <br>
-                            <p id="form-input-info"></p>
-                        </div>
+                        <input class="signUpInput" type="text" id="username" name="username" placeholder="username" minlength=1 maxlength=20 required>
+                        <p id="form-input-info" style="display:none"></p>
                     </div>
                     {{/* FIRSTNAME */}}
                     <div class="signUpFieldSecDiv">
-                        <div class="inputDiv">
-                            <input class="signUpInput" type="text" id="firstname" name="firstname" placeholder="firstname" minlength=1 maxlength=20 required>
-                            <br>
-                            <p id="form-input-info"></p>
-                        </div>
+                        <input class="signUpInput" type="text" id="firstname" name="firstname" placeholder="firstname" minlength=1 maxlength=20 required>
+                        <p id="form-input-info" style="display:none"></p>
                     </div>
                     {{/* LASTNAME */}}
                     <div class="signUpFieldSecDiv">
-                        <div class="inputDiv">
-                            <input class="signUpInput" type="text" id="lastname" name="lastname" placeholder="lastname" minlength=1 maxlength=20 required>
-                            <br>
-                            <p id="form-input-info"></p>
-                        </div>
+                        <input class="signUpInput" type="text" id="lastname" name="lastname" placeholder="lastname" minlength=1 maxlength=20 required>
+                        <p id="form-input-info" style="display:none"></p>
                     </div>
                     {{/* PASSWORD */}}
                     <div class="signUpFieldSecDiv">
-                        <div class="inputDiv">
-                            <input class="signUpInput" type="password" id="password" name="password" placeholder="Password" minlength=8 maxlength=20 autocomplete="off" required>
-                            <br>
-                            <p id="form-input-info2"></p>
-                        </div>
+                        <input class="signUpInput" type="password" id="password" name="password" placeholder="Password" minlength=8 maxlength=20 autocomplete="off" required>
+                        <p id="form-input-info2" style="display:none"></p>
                     </div>
                     {{/* CHECK PASSWORD*/}}
                     <div class="signUpFieldSecDiv">
-                        <div class="inputDiv">
-                            <input class="signUpInput" type="password" id="passwordRetype" name="passwordRetype" placeholder="Re-type password" minlength=8 maxlength=20 autocomplete="off" required>
-                            <br>
-                            <p id="form-input-info2"></p>
-                        </div>
+                        <input class="signUpInput" type="password" id="passwordRetype" name="passwordRetype" placeholder="Re-type password" minlength=8 maxlength=20 autocomplete="off" required>
+                        <p id="form-input-info2" style="display:none"></p>
                     </div>
                     {{/* EMAIL */}}
                     <div class="signUpFieldSecDiv">
-                        <div class="inputDiv">
-                            <input class="signUpInput" type="email" id="email" name="myEmailInput" placeholder="Enter a valid email" maxlength=50>
-                            <!-- Used to inform about status of email -->
-                            <p id="emailOkay">
-                                
-                            </p>
-                        </div>
+                        <input class="signUpInput" type="email" id="email" name="myEmailInput" placeholder="Enter a valid email" maxlength=50>
+                        <!-- Used to inform about status of email -->
+                        <p id="emailOkay">
+                            
+                        </p>
                     </div>
                     {{/* PRIMARY PHONE NUMBER(S) */}}
                     {{/* DEBUG: Need to collect multiple phone numbers; use angular to create new tab(s)*/}}
                     <div class="signUpFieldSecDiv">
-                        <div class="inputDiv">
-                            <input class="signUpInput" type="text" id="primaryPhoneNums" name="primaryPhoneNums" placeholder="Primary phone number" minlength=1 maxlength=20>
-                            <br>
-                            <p id="form-input-info"></p>
-                        </div>
+                        <input class="signUpInput" type="text" id="primaryPhoneNums" name="primaryPhoneNums" placeholder="Primary phone number" minlength=1 maxlength=20>
+                        <p id="form-input-info" style="display:none"></p>
                     </div>
                     {{/* TELL US ABOUT YOU */}}
                     <div class="signUpFieldSecDiv">
-                        <div class="inputDiv">
-                            <textarea class="textareaTellMe" id="textareaTellMe" name="textareaTellMe" 
-                            placeholder="Let us know why you want to join LearnR!"></textarea>
-                        </div>
+                        <textarea class="textareaTellMe" id="textareaTellMe" name="textareaTellMe" 
+                        placeholder="Let us know why you want to join LearnR!"></textarea>
                     </div>
                     {{/* ENTER EMAIL VERIFICATION CODE */}}
                     <div class="signUpFieldSecDiv" id="verificationDiv" style="display:none">
